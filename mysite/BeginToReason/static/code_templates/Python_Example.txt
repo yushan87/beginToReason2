@@ -1,0 +1,13 @@
+for trials in range(0,1000):
+
+      for each in range(0,N):
+         i = np.random.randint(1,N)
+
+         h = np.dot(x[i],w)
+         new_y = h - y[i]
+         delta = np.dot(new_y,x[i])
+         w = w - (alpha * delta)
+
+      if abs(sum(new_w) - sum(w)) < 0.0001:
+          
+          True
