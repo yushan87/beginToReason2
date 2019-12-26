@@ -20,7 +20,14 @@ install:
   - pip install -q django_ace
 
 script:
+  - python manage.py makemigrations app
+  - python manage.py migrate
   - python manage.py test app
 
 env:
   - DJANGO_VERSION=3.0
+
+cache:
+  pip: true
+  directories:
+    - $HOME/download-cache
