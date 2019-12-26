@@ -7,14 +7,14 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('BeginToReason', '0008_code_template'),
+        ('app', '0008_code_template'),
     ]
 
     operations = [
         migrations.AddField(
             model_name='lesson',
             name='template',
-            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='BeginToReason.Code_Template'),
+            field=models.ForeignKey(default=1, on_delete=django.db.models.deletion.CASCADE, to='app.Code_Template'),
             preserve_default=False,
         ),
     ]

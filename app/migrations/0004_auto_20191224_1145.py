@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('BeginToReason', '0003_auto_20191222_1659'),
+        ('app', '0003_auto_20191222_1659'),
     ]
 
     operations = [
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='reference',
             name='lesson',
-            field=models.ManyToManyField(related_name='references', to='BeginToReason.Lesson'),
+            field=models.ManyToManyField(related_name='references', to='app.Lesson'),
         ),
         migrations.AlterField(
             model_name='reference',

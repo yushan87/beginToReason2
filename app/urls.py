@@ -4,7 +4,7 @@ from django.conf.urls import include, url
 from . import views
 
 
-app_name = 'BeginToReason'
+app_name = 'app'
 urlpatterns = [
     path('', views.index, name='index'),
 ]

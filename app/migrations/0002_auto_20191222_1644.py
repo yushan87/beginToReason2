@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('BeginToReason', '0001_initial'),
+        ('app', '0001_initial'),
     ]
 
     operations = [
@@ -32,6 +32,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='references',
             name='lesson',
-            field=models.ManyToManyField(to='BeginToReason.Lesson'),
+            field=models.ManyToManyField(to='app.Lesson'),
         ),
     ]

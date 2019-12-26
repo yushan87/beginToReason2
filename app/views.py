@@ -8,4 +8,4 @@ from django.urls import reverse
 # Create your views here.
 
 def index(request):
-	return HttpResponse("BeginToReason")
+	return HttpResponse("app")
