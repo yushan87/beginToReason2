@@ -1,4 +1,5 @@
 # BeginToReason2
+[![Build Status](https://travis-ci.com/ClemsonRSRG/beginToReason2.svg?branch=master)](https://travis-ci.com/ClemsonRSRG/beginToReason2)
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/ClemsonRSRG/beginToReason2/master/LICENSE.txt)
 
 `BeginToReason2` is a tool that utilizes the RESOLVE programming language to pinpoint difficulties CS students have with learning how to rigorously trace the code they encounter. This version features a new back-end build using Python and Django and a front-end that incorporates Bootstrap and communicates with the RESOLVE verification engine.
