@@ -1,0 +1,11 @@
+/* Home Layout-Related CSS */
+#page-content {
+    position: relative;
+    top: 0;
+    bottom: 80px;
+    min-height: calc(100vh - 180px);
+}
+
+#page-content a {
+    text-decoration: none;
+}

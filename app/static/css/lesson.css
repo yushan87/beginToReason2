@@ -1,0 +1,36 @@
+/* Tutorial Layout-Related CSS */
+#page-content {
+    position: relative;
+    top: 0;
+    bottom: 100px;
+    height: calc(100vh - 180px);
+    overflow: hidden;
+}
+
+#tutorialCol {
+    height: calc(100vh - 180px);
+}
+
+#tutorialContent {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+#tutorialContent a {
+    text-decoration: none;
+}
+
+#tutorialContent .inlineCode {
+    font-family: "Courier New", Courier, monospace;
+}
+
+/* ACE Editor-Related CSS */
+.ace_folding-enabled > .ace_gutter-cell {
+    padding-right: 10px;
+    padding-left: 30px;
+}
+
+.tooltip > .tooltip-inner {
+    color: #000;
+    background-color: #d3d3d3;
+}

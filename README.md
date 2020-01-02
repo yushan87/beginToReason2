@@ -1,4 +1,5 @@
 # BeginToReason2
+[![Build Status](https://travis-ci.com/ClemsonRSRG/beginToReason2.svg?branch=master)](https://travis-ci.com/ClemsonRSRG/beginToReason2)
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/ClemsonRSRG/beginToReason2/master/LICENSE.txt)
 
 `BeginToReason2` is a tool that utilizes the RESOLVE programming language to pinpoint difficulties CS students have with learning how to rigorously trace the code they encounter. This version features a new back-end build using Python and Django and a front-end that incorporates Bootstrap and communicates with the RESOLVE verification engine.
@@ -21,8 +22,8 @@ Developers of this particular test/working-iteration of the `BeginToReason2` inc
 
 * [RESOLVE Software Research Group (RSRG)](https://www.cs.clemson.edu/resolve/) - School of Computing, Clemson University
 * [Florida Atlantic University](http://www.fau.edu/research/)
-* [Indiana University Southeast](https://www.ius.edu/)
+* [Rose-Hulman Institute of Technology](https://www.rose-hulman.edu/)
 
 ## Copyright and license
 
-Copyright © 2019, [RESOLVE Software Research Group (RSRG)](https://www.cs.clemson.edu/resolve/). All rights reserved. The use and distribution terms for this software are covered by the BSD 3-clause license which can be found in the file `LICENSE.txt` at the root of this repository. By using this software in any fashion, you are agreeing to be bound by the terms of this license. You must not remove this notice, or any other, from this software.
+Copyright © 2020, [RESOLVE Software Research Group (RSRG)](https://www.cs.clemson.edu/resolve/). All rights reserved. The use and distribution terms for this software are covered by the BSD 3-clause license which can be found in the file `LICENSE.txt` at the root of this repository. By using this software in any fashion, you are agreeing to be bound by the terms of this license. You must not remove this notice, or any other, from this software.

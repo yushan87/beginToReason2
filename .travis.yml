@@ -1,0 +1,33 @@
+#
+# Continuous integration settings for Travis CI
+#
+dist: xenial
+branches:
+  only:
+    - master
+
+# Jekyll TravisCI settings
+# See: https://jekyllrb.com/docs/continuous-integration/travis-ci/ for more information.
+language: python
+python:
+  - "3.6" # current default Python on Travis CI
+  - "3.7"
+  - "3.8"
+
+# command to install dependencies
+install:
+  - pip install -q Django==$DJANGO_VERSION
+  - pip install -q django_ace
+
+script:
+  - python manage.py makemigrations app
+  - python manage.py migrate
+  - python manage.py test app
+
+env:
+  - DJANGO_VERSION=3.0
+
+cache:
+  pip: true
+  directories:
+    - $HOME/download-cache

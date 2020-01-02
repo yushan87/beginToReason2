@@ -1,0 +1,63 @@
+/* General CSS */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    /* Leaving space for footer */
+    margin-bottom: 100px;
+    background-color: #fdfdfd !important;
+}
+
+/* Header-Related CSS */
+#page-header {
+    min-height: 80px;
+}
+
+#page-header .nav-link {
+    font-size: 0.95rem;
+    color: #343a40 !important;
+}
+
+#page-header .nav-link:hover {
+    color: #337ab7 !important;
+}
+
+#page-header .navbar-brand {
+    color: #343a40 !important;
+}
+
+#page-header .navbar-brand:hover {
+    color: #337ab7 !important;
+}
+
+#page-header-top {
+    background-color: #f66733 !important;
+}
+
+#site-title {
+    font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 1.75rem;
+    font-weight: 200 !important;
+}
+
+/* Footer-Related CSS */
+#page-footer {
+    /* Sticky footer */
+    position: absolute;
+    bottom: 0;
+    height: 100px;
+    color: #fdfdfd !important;
+    background-color: #86898c !important;
+}
+
+#page-footer .footer-link {
+    font-size: 1rem;
+    color: #343a40 !important;
+    text-decoration: none;
+}
+
+#page-footer .footer-link:hover {
+    color: #337ab7 !important;
+}
