@@ -1,0 +1,12 @@
+# https://dependabot.com/docs/config-file/
+version: 1
+update_configs:
+  # Settings for Python and Django
+  - package_manager: "python"
+    directory: "/"
+    update_schedule: "live"
+    # Apply default reviewer and label to created pull requests
+    default_reviewers:
+      - "yushan87"
+    default_labels:
+      - "dependencies"
