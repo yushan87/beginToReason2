@@ -7,6 +7,12 @@ html, body {
     color: #222;
 }
 
+.logo{
+    font-weight: 700;
+    background: #ff8c5f;
+    border-radius: 15px;
+}
+
 .navbar{
     padding: .8rem;
 }

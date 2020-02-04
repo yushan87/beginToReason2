@@ -15,29 +15,29 @@
 <div>
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
-    <div class="container-fluid">
-        <a class="navbar-brand" ><img src="{% static "images/logo2.png" %}" width="60" height="60" >
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="{% url "app:testPage" %}">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url "app:lesson" %}">Lessons</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://www.cs.clemson.edu/resolve/"><i class="fas fa-home fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i>RSRG</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="https://resolve.cs.clemson.edu/"><i class="fas fa-external-link-alt fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i>WebIDE</a>
-                </li>
-            </ul>
-        </div>
-    </div>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" ><img src="{% static "images/logo2.png" %}" width="60" height="60" >
+  <a class="navbar-brand logo" href="#">Resolve</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url "app:testPage" %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url "app:lesson" %}">Lessons</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://www.cs.clemson.edu/resolve/"><i class="fas fa-home fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i>RSRG</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://resolve.cs.clemson.edu/"><i class="fas fa-external-link-alt fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i>WebIDE</a>
+      </li>
+    </ul>
+  </div>
 </nav>
 
 <!--- Image Slider -->
