@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Complete Bootstrap 4 Website Layout</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+	<link rel="stylesheet" href="{% static "css/style.css" %}">
+</head>
+<div>
+
+<!-- Navigation -->
+<nav class="navbar navbar-expand-md navbar-light bg-light sticky-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" ><img src="{% static "images/logo2.png" %}" width="60" height="60" >
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url "app:testPage" %}">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url "app:lesson" %}">Lessons</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://www.cs.clemson.edu/resolve/"><i class="fas fa-home fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i>RSRG</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="https://resolve.cs.clemson.edu/"><i class="fas fa-external-link-alt fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i>WebIDE</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!--- Image Slider -->
+<div id="slides" class="carousel slide" data-ride="carousel">
+    <ul class="carousel-indicators">
+        <li data-target="#slides" data-slide-to="0" class="active"></li>
+        <li data-target="#slides" data-slide-to="1"></li>
+        <li data-target="#slides" data-slide-to="2"></li>
+    </ul>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="{% static "images/h1.png" %}">
+            <div class="carousel-caption">
+                <h1 class="display-2">Resolve</h1>
+                <h3>Begin To Reason Interactive Tool</h3>
+                <button type="button" class="btn btn-outline-light btn-lg" onclick="myFunction()">Begin Tutorial</button>
+                <button type="button" class="btn btn-dark btn-lg">Login</button>
+<script>
+function myFunction() {
+  location.replace("{% url "app:lesson" %}")
+}
+</script>
+            </div>
+        </div>
+        <div class="carousel-item">
+            <img src="{% static "images/home5.png" %}">
+        </div>
+        <div class="carousel-item">
+            <img src="{% static "images/logo.png" %}">
+        </div>
+    </div>
+</div>
+
+<!--- Jumbotron -->
+<div class="container-fluid">
+    <div class="row jumbotron">
+        <div class="col-xs-12 col col-sm-12 col-md-9 col-lg-9 col-xl-10">
+            <p class="lead">The RESOLVE verification vision is indeed ambitious.
+                We welcome professors, practitioners, and students to contribute and get involved in realizing the vision.
+                The RESOLVE project is a GitHub project.</p>
+        </div>
+        <div class="col-xs-12 col col-sm-12 col-md-3 col-lg-3 col-xl-2">
+            <a href="murali@cs.clemson.edu"><button type="button" class="btn btn-light btn-lg">Contact Us</a>
+        </div>
+
+    </div>
+</div>
+
+<!--- Welcome Section -->
+
+
+<!--- Three Column Section -->
+
+
+<!--- Two Column Section -->
+<div class="container-fluid padding">
+    <div class="row padding">
+        <div class="col-md-12 col-lg-6">
+            <h2>Welcome to the Clemson RESOLVE Software Research Group (RSRG) website</h2>
+            <p>The RESOLVE research effort is one of the longest running software engineering efforts in the USA.
+                It spans foundational, practical, and educational aspects of software engineering and computing.
+                The overall RESOLVE verification vision is that of a future in which no production software is
+                considered properly engineered unless it has been fully specified, and fully verified as satisfying these specifications.</p>
+            <p>The RSRG is directed by Murali Sitaraman, from the School of Computing at Clemson University.
+                The RESOLVE effort is funded in part by grants from the U. S. National Science Foundation (NSF),
+                the U. S. Department of Education, and the U. S. National Aeronautics and Space Administration (NASA).</p>
+            <br>
+            <a href="https://www.cs.clemson.edu/resolve/" class="btn btn-dark">Learn More</a>
+        </div>
+        <div class="col-lg-3">
+            <img src="{% static "images/murali.jpeg" %}" class="img-fluid" width="600" height="600">
+        </div>
+        <div class="col-lg-3">
+            <img src="{% static "images/sami.jpeg" %}" class="img-fluid" width="600" height="600">
+        </div>
+    </div>
+</div>
+<div class="carousel-inner">
+    <img src="{% static "images/div.png" %}">
+</div>
+<!--- Fixed background -->
+<div class="row">
+        <div class="col-lg-1"></div>
+        <div class="col-lg-10">
+            <h1>RESOLVE...</h1>
+            <br><br>
+            <p>(REusable SOftware Language with VErification) is a programming and specification language designed
+                for verifying correctness of object oriented programs.</p>
+            <br>
+            <p>The RESOLVE language is designed from the ground up to facilitate mathematical reasoning.
+                As such, the language provides syntactic slots for assertions such as pre-post conditions that are capable of
+                abstractly describing a program's intended behavior. In writing these assertions, users are free to draw from
+                from a variety of pre-existing and user-defined mathematical theories containing fundamental axioms, definitions,
+                and results necessary/useful in establishing program correctness.</p>
+            <br>
+            <p>All phases of the verification process spanning verification condition (VC) generation to proving are performed
+                in-house, while RESOLVE programs are translated to Java and run on the JVM.</p>
+        </div>
+        <div class="col-lg-1"></div>
+</div>
+
+<div class="carousel-inner">
+    <img src="{% static "images/div2.png" %}">
+</div>
+<!--- Two Column Section -->
+
+
+<!--- Connect -->
+
+
+<!--- Footer -->
+<footer>
+    <div class="container-fluid padding">
+        <div class="row text-center">
+            <div class="col-md-4">
+                <img src="{% static "images/rsrg-logo4.svg" %}" width="60" height="60" class="d-none d-sm-inline-flex mr-2" alt="Clemson RSRG Logo 2">
+                <hr class="light">
+                <p>Copyright Ⓒ 2019 Clemson RSRG.</p>
+            </div>
+            <div class="col-md-4">
+                <hr class="light">
+                <h5>This research is funded in part by NSF grants CCF-1161916, DUE-1022941 and DUE-1611714. This is a joint effort involving Clemson University and Denison University.</h5>
+            </div>
+            <div class="col-12">
+                <hr class="light">
+                <h5>&copy; cs.clemson.edu/resolve</h5>
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>
+
+
+

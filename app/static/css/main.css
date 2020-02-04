@@ -17,19 +17,19 @@ body {
 
 #page-header .nav-link {
     font-size: 0.95rem;
-    color: #343a40 !important;
+    color: #ffffff !important;
 }
 
 #page-header .nav-link:hover {
-    color: #337ab7 !important;
+    color: #bdbdbd !important;
 }
 
 #page-header .navbar-brand {
-    color: #343a40 !important;
+    color: #ffffff !important;
 }
 
 #page-header .navbar-brand:hover {
-    color: #337ab7 !important;
+    color: #bdbdbd !important;
 }
 
 #page-header-top {
