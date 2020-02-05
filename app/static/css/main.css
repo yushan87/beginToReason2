@@ -17,7 +17,7 @@ body {
 
 #page-header .nav-link {
     font-size: 0.95rem;
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 #page-header .nav-link:hover {
@@ -25,7 +25,7 @@ body {
 }
 
 #page-header .navbar-brand {
-    color: #ffffff !important;
+    color: #fff !important;
 }
 
 #page-header .navbar-brand:hover {
