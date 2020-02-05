@@ -7,10 +7,10 @@ html, body {
     color: #222;
 }
 
+/* Footer-Related CSS */
+
 .logo{
     font-weight: 700;
-    background: #ff8c5f;
-    border-radius: 15px;
 }
 
 .navbar{
@@ -65,6 +65,11 @@ html, body {
     background: #ff8c5f;
     color: #fff;
 }
+
+.padding{
+    padding-bottom: 2rem;
+}
+
 
 
 /*---Media Queries --*/

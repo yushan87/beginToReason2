@@ -40,6 +40,7 @@
   </div>
 </nav>
 
+<body>
 <!--- Image Slider -->
 <div id="slides" class="carousel slide" data-ride="carousel">
     <ul class="carousel-indicators">
@@ -55,11 +56,7 @@
                 <h3>Begin To Reason Interactive Tool</h3>
                 <button type="button" class="btn btn-outline-light btn-lg" onclick="myFunction()">Begin Tutorial</button>
                 <button type="button" class="btn btn-dark btn-lg">Login</button>
-<script>
-function myFunction() {
-  location.replace("{% url "app:lesson" %}")
-}
-</script>
+
             </div>
         </div>
         <div class="carousel-item">
@@ -149,25 +146,17 @@ function myFunction() {
 
 
 <!--- Footer -->
-<footer>
-    <div class="container-fluid padding">
-        <div class="row text-center">
-            <div class="col-md-4">
-                <img src="{% static "images/rsrg-logo4.svg" %}" width="60" height="60" class="d-none d-sm-inline-flex mr-2" alt="Clemson RSRG Logo 2">
-                <hr class="light">
-                <p>Copyright Ⓒ 2019 Clemson RSRG.</p>
-            </div>
-            <div class="col-md-4">
-                <hr class="light">
-                <h5>This research is funded in part by NSF grants CCF-1161916, DUE-1022941 and DUE-1611714. This is a joint effort involving Clemson University and Denison University.</h5>
-            </div>
-            <div class="col-12">
-                <hr class="light">
-                <h5>&copy; cs.clemson.edu/resolve</h5>
-            </div>
-        </div>
-    </div>
-</footer>
+<footer id="page-footer" class="footer w-100 py-2">
+		<div class="d-flex flex-column flex-md-row justify-content-md-around align-items-center" style="background-color: inherit;">
+			<div class="d-flex flex-row align-items-center px-2">
+				<img src="{% static "images/rsrg-logo4.svg" %}" width="60" height="60" class="d-none d-sm-inline-flex mr-2" alt="Clemson RSRG Logo 2">
+				<div class="d-flex flex-column">
+					<div id="copyright">Copyright &#9400; 2019 Clemson RSRG. <span class="d-none d-sm-inline-flex">(Created with <a class="footer-link" href="https://www.djangoproject.com/" target="_blank">&nbsp;Django</a>)</span></div>
+					<div id="grants-institutions" class="pt-1">This research is funded in part by NSF grants CCF-1161916, DUE-1022941 and DUE-1611714.<br/> This is a joint effort involving Clemson University, Florida Atlantic University and Rose-Hulman Institute of Technology.</div>
+				</div>
+			</div>
+		</div>
+	</footer>
 
 </body>
 </html>
