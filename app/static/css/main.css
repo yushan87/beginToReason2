@@ -1,13 +1,12 @@
 /* General CSS */
-html {
-    position: relative;
-    min-height: 100%;
-}
 
-body {
-    /* Leaving space for footer */
-    margin-bottom: 100px;
-    background-color: #fdfdfd !important;
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
+
+html, body {
+    height: 100%;
+    width: 100%;
+    font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #222;
 }
 
 /* Header-Related CSS */
@@ -45,19 +44,137 @@ body {
 /* Footer-Related CSS */
 #page-footer {
     /* Sticky footer */
-    position: absolute;
     bottom: 0;
     height: 100px;
-    color: #fdfdfd !important;
-    background-color: #86898c !important;
+    color: #fff !important;
+    background-color: #30343f!important;
 }
 
 #page-footer .footer-link {
     font-size: 1rem;
-    color: #343a40 !important;
+    color: #ff8c5f !important;
     text-decoration: none;
 }
 
 #page-footer .footer-link:hover {
     color: #337ab7 !important;
+}
+
+/* Footer-Related CSS */
+
+.logo{
+    font-weight: 700;
+}
+
+.navbar{
+    padding: .8rem;
+}
+
+.navbar-nav li{
+    padding-right: 20px;
+}
+
+.nav-link{
+    font-size: 1.1em !important;
+}
+
+.carousel-inner img{
+    width:100%;
+    height: 100%;
+}
+
+.carousel-caption{
+    position: absolute;
+    top:50%;
+    transform: translateY(-100%);
+}
+
+.carousel-caption h1{
+    font-size: 6vw;
+    text-transform: uppercase;
+    text-shadow: 1px 1px 15px #000;
+}
+
+.carousel-caption h3{
+    font-size: 3vw;
+    font-weight: 500;
+    text-shadow: 1px 1px 10px #000;
+    padding-bottom: 1rem;
+}
+
+.btn-dark{
+    background-color: #30343f;
+    border: 0px solid #30343f;
+}
+
+.btn-dark:hover{
+    background-color: #30343f;
+    border: 1px solid #30343f;
+}
+
+.jumbotron{
+    padding: 1rem;
+    border-radius: 0;
+    background: #ff8c5f;
+    color: #fff;
+}
+
+.padding{
+    padding-bottom: 2rem;
+}
+
+
+
+/*---Media Queries --*/
+@media (max-width: 992px) {
+
+  }
+@media (max-width: 768px) {
+
+}
+@media (max-width: 576px) {
+
+}
+
+
+/*---Firefox Bug Fix --*/
+.carousel-item {
+  transition: -webkit-transform 0.5s ease;
+  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, -webkit-transform 0.5s ease;
+  -webkit-backface-visibility: visible;
+  backface-visibility: visible;
+}
+/*--- Fixed Background Image --*/
+figure {
+  position: relative;
+  width: 100%;
+  height: 60%;
+  margin: 0!important;
+}
+.fixed-wrap {
+  clip: rect(0, auto, auto, 0);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#fixed {
+  background-image: url('img/mac.png');
+  position: fixed;
+  display: block;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center center;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+  will-change: transform;
+}
+/*--- Bootstrap Padding Fix --*/
+[class*="col-"] {
+    padding: 1rem;
 }
