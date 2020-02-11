@@ -1,10 +1,11 @@
 /* General CSS */
 
-@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
+@import url("https://fonts.googleapis.com/css?family=Poppins:400,500,700");
 
-html, body {
-    height: 100%;
+html,
+body {
     width: 100%;
+    height: 100%;
     font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
     color: #222;
 }
@@ -47,7 +48,7 @@ html, body {
     bottom: 0;
     height: 100px;
     color: #fff !important;
-    background-color: #30343f!important;
+    background-color: #30343f !important;
 }
 
 #page-footer .footer-link {
@@ -66,7 +67,7 @@ html, body {
 }
 
 .navbar {
-    padding: .8rem;
+    padding: 0.8rem;
 }
 
 .navbar-nav li {
@@ -78,32 +79,31 @@ html, body {
 }
 
 .carousel-inner img {
-    width:100%;
+    width: 100%;
     height: 100%;
 }
 
 .carousel-caption {
     position: absolute;
-    top:50%;
+    top: 50%;
     transform: translateY(-100%);
 }
 
 .carousel-caption h1 {
     font-size: 6vw;
-    text-transform: uppercase;
     text-shadow: 1px 1px 15px #000;
+    text-transform: uppercase;
 }
 
 .carousel-caption h3 {
     font-size: 3vw;
     font-weight: 500;
-    text-shadow: 1px 1px 10px #000;
     padding-bottom: 1rem;
+    text-shadow: 1px 1px 10px #000;
 }
 
 .btn-dark {
     background-color: #30343f;
-    border: 0px solid #30343f;
 }
 
 .btn-dark:hover {
@@ -114,8 +114,8 @@ html, body {
 .jumbotron {
     padding: 1rem;
     background: #ff8c5f;
-    border-radius: 0;
     color: #fff;
+    border-radius: 0;
 }
 
 .padding {
@@ -150,8 +150,8 @@ figure {
 #fixed {
     position: fixed;
     top: 0;
-    background-image: url("img/mac.png");
     left: 0;
+    background-image: url("img/mac.png");
     display: block;
     width: 100%;
     height: 100%;
