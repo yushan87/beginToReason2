@@ -13,3 +13,6 @@ def lesson(request):
     except Lesson.DoesNotExist:
         raise Http404("Lesson does not exist")
     return render(request, "app/lesson_template.html", {'Lesson':lesson,'content': "Lessons goes here!"})
+
+def testPage(request):
+    return render(request, "app/test.html")
