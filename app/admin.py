@@ -24,8 +24,8 @@ class LessonAdmin(admin.ModelAdmin):
 	form = LessonForm
 	inlines=[RefInline,]
 	
-	list_filter=['lesson_name']
-	ordering = ['lesson_name']
+	list_filter=['Name']
+	ordering = ['Name']
 
 	
 	

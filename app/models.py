@@ -13,12 +13,14 @@ class Code_Template(models.Model):
 		return self.template_name
 
 class Lesson(models.Model):
-	lesson_name = models.CharField(max_length=30)
-	lesson_code = models.TextField(max_length=500)
-	template = Code_Template
+	Name = models.CharField(max_length=30)
+	Concept = models.CharField(max_length=50)
+	Code = models.TextField(max_length=500)
+	Activity = models.TextField(max_length=500)
+	References = models.TextField(max_length=500)
 
 	def __str__(self):
-		return self.lesson_name
+		return self.Name
 
 class Reference(models.Model):
 	reference_key = models.CharField(max_length=30)
