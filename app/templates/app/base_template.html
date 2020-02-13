@@ -11,12 +11,12 @@
 	<title>BeginToReason2</title>
 
 	<!-- Favicon -->
-    <link rel="icon" type="image/png" href="{% static "images/logo2.png" %}">
+    <link rel="icon" type="image/png" href="{% static 'images/logo2.png' %}">
 
 	<!-- CSS -->
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
 		  integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-	<link rel="stylesheet" href="{% static "css/main.css" %}">
+	<link rel="stylesheet" href="{% static 'css/main.css' %}">
 	{% block css %}
 	{% endblock %}
 
@@ -37,23 +37,29 @@
 	{% endblock %}
 
 	<!-- Page Header -->
-	<header id="page-header" class="d-flex flex-column border-bottom">
-		<div id="page-header-top" class="d-inline p-1"></div>
-		<nav class="navbar navbar-expand navbar-light flex-column flex-md-row" style="background-color: #fdfdfd;" role="navigation">
-			<a class="navbar-brand" href="{% url "app:index" %}">
-				<img src="{% static "images/logo2.png" %}" width="40" height="40" alt="Clemson RSRG Logo">
-				<span id="site-title" class="pl-1 text-center align-bottom">BeginToReason2</span>
-			</a>
-			<ul class="navbar-nav flex-row ml-md-auto align-items-center text-center">
-				<li class="nav-item">
-					<a class="nav-link text-dark" href="https://www.cs.clemson.edu/resolve/" target="_blank"><i class="fas fa-home fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i><span class="d-none d-sm-inline-flex">&nbsp; </span>RSRG Home</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link text-dark" href="https://resolve.cs.clemson.edu/" target="_blank"><i class="fas fa-external-link-alt fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i><span class="d-none d-sm-inline-flex">&nbsp; </span>WebIDE</a>
-				</li>
-			</ul>
-		</nav>
-	</header>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<a class="navbar-brand" ><img src="{% static 'images/logo2.png' %}" width="60" height="60" ></a>
+  <a class="navbar-brand logo" href="#">Resolve</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'app:testPage' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'app:lesson' %}">Lessons</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://www.cs.clemson.edu/resolve/"><i class="fas fa-home fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i>RSRG</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="https://resolve.cs.clemson.edu/"><i class="fas fa-external-link-alt fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i>WebIDE</a>
+      </li>
+    </ul>
+  </div>
+</nav>
 
 	<!-- Main Content Block -->
 	<main id="page-content" role="main">
@@ -65,7 +71,7 @@
 	<footer id="page-footer" class="footer w-100 py-2">
 		<div class="d-flex flex-column flex-md-row justify-content-md-around align-items-center" style="background-color: inherit;">
 			<div class="d-flex flex-row align-items-center px-2">
-				<img src="{% static "images/rsrg-logo4.svg" %}" width="60" height="60" class="d-none d-sm-inline-flex mr-2" alt="Clemson RSRG Logo 2">
+				<img src="{% static 'images/rsrg-logo4.svg' %}" width="60" height="60" class="d-none d-sm-inline-flex mr-2" alt="Clemson RSRG Logo 2">
 				<div class="d-flex flex-column">
 					<div id="copyright">Copyright &#9400; 2019 Clemson RSRG. <span class="d-none d-sm-inline-flex">(Created with <a class="footer-link" href="https://www.djangoproject.com/" target="_blank">&nbsp;Django</a>)</span></div>
 					<div id="grants-institutions" class="pt-1">This research is funded in part by NSF grants CCF-1161916, DUE-1022941 and DUE-1611714.<br/> This is a joint effort involving Clemson University, Florida Atlantic University and Rose-Hulman Institute of Technology.</div>
