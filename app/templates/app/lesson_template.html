@@ -13,11 +13,21 @@
 <script src="{% static 'javascript/lesson/mode-resolve.js' %}"></script>
 <script src="{% static 'javascript/lesson/editorUpdate.js' %}"></script>
 <script src="{% static 'javascript/lesson/editorUtils.js' %}"></script>
+<script src="{% static 'javascript/lesson/injectLeft.js' %}"></script>
+<script src="{% static 'javascript/lesson/injectRight.js' %}"></script>
+<script src="{% static 'javascript/lesson/loadLesson.js' %}"></script>
+<script src="{% static 'javascript/lesson/submit.js' %}"></script>
+<script src="{% static 'javascript/lesson/markers.js' %}"></script>
+<script src="{% static 'javascript/lesson/editorUpdate.js' %}"></script>
+
 <script type="application/javascript">
     $(document).ready(function () {
         createEditor();
     });
 </script>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block main_content %}
@@ -29,7 +39,51 @@
                 <div id="tutorialContent" class="p-3">
                     <h1>Lesson Content</h1>
 
-                    <p>To be filled!</p>
+                    <div id="accordion">
+                      <div class="card">
+                        <div class="card-header" id="headingOne">
+                          <h5 class="mb-0">
+                            <button class="btn btn-block btn-dark" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                              Activity
+                            </button>
+                          </h5>
+                        </div>
+
+                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                          <div class="card-body">
+                              Please complete the <b>Confirm</b> assertion(s) by choosing a conditional operator to replace the <b>/* conditional */</b>, then check correctness.
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-header" id="headingTwo">
+                          <h5 class="mb-0">
+                            <button class="btn btn-block btn-dark collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                              Reference Material
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                          <div class="card-body">
+                              At the place marked by <b>Remember</b>, values of variables such as <b>I</b> and <b>J</b> are assumed to be <b>#I</b> and <b>#J</b>.<br><br><b>Conditional operators are:</b>   > =, <, <=, >, >=
+                          </div>
+                        </div>
+                      </div>
+                      <div class="card">
+                        <div class="card-header" id="headingThree">
+                          <h5 class="mb-0">
+                            <button class="btn btn-block btn-dark collapsed" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                              About
+                            </button>
+                          </h5>
+                        </div>
+                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                          <div class="card-body">
+                              This system uses simple activities to understand the difficulties students face in reasoning logically about code, so that instruction can be improved.
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -48,12 +102,22 @@
                         </div>
                         <div id="compilerButtons" class="ml-auto">
                             <button id="checkCorrectness" class="btn btn-success" type="button">Check Correctness</button>
-                            <button id="resetCode" class="btn btn-danger" type="button">Reset Code</button>
+                            <button id="resetCode" class="btn btn-danger" type="button"><i style="font-size:20px" class="fa">&#xf021;</i></button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-lg-2 p-0">
+
+            <a onclick="nextLessonButton()"><button type="button" class="btn btn-light btn-lg">next</button></a>
+            <a onclick="prevLesson()"><button type="button" class="btn btn-light btn-lg">prev</button></a>
+            <br>
+            <button style="width: 49%;"><i onclick="prevLesson()" class=" btn btn-dark btn-lg fa fa-arrow-circle-left"></i></button>
+            <button style="width: 49%;"><i onclick="nextLessonButton()" class=" btn btn-dark btn-lg fa fa-arrow-circle-right"></i></button>
+
+        </div>
     </div>
 </div>
+
 {% endblock %}

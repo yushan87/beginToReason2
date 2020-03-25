@@ -47,7 +47,7 @@ $("#checkCorrectness").click(function () {
     lock();
 
     // Code for checking correctness goes here
-
+console.log("checking correctness");
     // Unlock editor for further user edits
     unlock();
 

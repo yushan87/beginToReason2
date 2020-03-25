@@ -24,6 +24,8 @@
     <script src="https://kit.fontawesome.com/d50a2fb57f.js"></script>
 	{% block head_js %}
 	{% endblock %}
+
+
 </head>
 <body>
 	<!-- JavaScript Libraries -->
@@ -60,7 +62,6 @@
     </ul>
   </div>
 </nav>
-
 	<!-- Main Content Block -->
 	<main id="page-content" role="main">
 		{% block main_content %}
@@ -69,7 +70,7 @@
 
 	<!-- Page Footer -->
 	<footer id="page-footer" class="footer w-100 py-2">
-		<div class="d-flex flex-column flex-md-row justify-content-md-around align-items-center" style="background-color: inherit;">
+		<div class="d-flex flex-column flex-md-row justify-content-md-around align-items-center fixed-bottom" style="background-color: inherit;">
 			<div class="d-flex flex-row align-items-center px-2">
 				<img src="{% static 'images/rsrg-logo4.svg' %}" width="60" height="60" class="d-none d-sm-inline-flex mr-2" alt="Clemson RSRG Logo 2">
 				<div class="d-flex flex-column">

@@ -11,3 +11,6 @@ def lesson(request):
 
 def testPage(request):
     return render(request, "app/test.html")
+
+def progress(request):
+    return render(request, "app/progress.html")

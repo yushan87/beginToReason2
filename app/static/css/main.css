@@ -125,8 +125,6 @@ body {
 /* Firefox Bug Fix */
 .carousel-item {
     transition: -webkit-transform 0.5s ease;
-    transition: transform 0.5s ease;
-    transition: transform 0.5s ease, -webkit-transform 0.5s ease;
     backface-visibility: visible;
 }
 
@@ -154,7 +152,6 @@ figure {
     display: block;
     width: 100%;
     height: 100%;
-    background-image: url("img/mac.png");
     background-position: center center;
     background-size: cover;
 }
