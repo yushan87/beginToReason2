@@ -12,13 +12,6 @@
         integrity="sha256-55Zsk7fyM+qujBBy8OGc5BtLJVQ+x1TcWtS7REs3fIg=" crossorigin="anonymous"></script>
 <script src="{% static 'javascript/lesson/mode-resolve.js' %}"></script>
 <script src="{% static 'javascript/lesson/editorUpdate.js' %}"></script>
-<script src="{% static 'javascript/lesson/editorUtils.js' %}"></script>
-<script src="{% static 'javascript/lesson/injectLeft.js' %}"></script>
-<script src="{% static 'javascript/lesson/injectRight.js' %}"></script>
-<script src="{% static 'javascript/lesson/loadLesson.js' %}"></script>
-<script src="{% static 'javascript/lesson/submit.js' %}"></script>
-<script src="{% static 'javascript/lesson/markers.js' %}"></script>
-<script src="{% static 'javascript/lesson/editorUpdate.js' %}"></script>
 
 <script type="application/javascript">
     $(document).ready(function () {
@@ -26,8 +19,6 @@
     });
 </script>
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 {% endblock %}
 
 {% block main_content %}
@@ -106,6 +97,7 @@
                         </div>
                     </div>
                 </div>
+                <script src="{% static 'javascript/lesson/editorUtils.js' %}"></script>
             </div>
         </div>
         <div class="col-lg-2 p-0">

@@ -61,6 +61,7 @@ $("#resetCode").click(function () {
     // Lock editor to stop user from making changes
     lock();
 
+    editorContent = "Code has been reset";
     // Put the cached content into the editor
     aceEditor.session.setValue(editorContent);
 
