@@ -23,11 +23,11 @@ function createEditor() {
     // Basic editor settings
     aceEditor = ace.edit("editor");
     aceEditor.setTheme("ace/theme/tomorrow_night");
-    fontSize = 16;
+    fontSize = 20;
     aceEditor.setFontSize(fontSize);
 
     // Store the content for future use
-    editorContent = "-- Try adding some RESOLVE code here!";
+    editorContent = "Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;";
     aceEditor.session.setValue(editorContent);
 
     // Set this to RESOLVE mode
@@ -61,7 +61,6 @@ $("#resetCode").click(function () {
     // Lock editor to stop user from making changes
     lock();
 
-    editorContent = "Code has been reset";
     // Put the cached content into the editor
     aceEditor.session.setValue(editorContent);
 

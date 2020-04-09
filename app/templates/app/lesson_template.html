@@ -24,7 +24,7 @@
 {% block main_content %}
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-4 col-sm-6 p-0 border-right">
+        <div class="col-lg-3 col-sm-6 p-0 border-right">
             <div id="tutorialCol" class="d-flex flex-column">
                 <!-- Tutorial Content -->
                 <div id="tutorialContent" class="p-3">
@@ -92,22 +92,35 @@
                             <button id="resetFontSize" class="btn btn-sm btn-light" type="button">Default</button>
                         </div>
                         <div id="compilerButtons" class="ml-auto">
-                            <button id="checkCorrectness" class="btn btn-success" type="button">Check Correctness</button>
                             <button id="resetCode" class="btn btn-danger" type="button"><i style="font-size:20px" class="fa">&#xf021;</i></button>
+                            <button id="checkCorrectness" class="btn btn-success" type="button">Check Correctness</button>
                         </div>
+                    </div>
+                    <div id="directionButtons" class="d-flex">
+                      <div class="mr-auto"><button id="prev" type="button" class="btn btn-light btn-md fa fa-arrow-left" style="margin: 2px 2px 2px 2px;"></button></div>
+                      <div ><button id="next" type="button" class="btn btn-light btn-md fa fa-arrow-right" style="margin: 2px 2px 2px 2px;"></button></div>
+                      <script src="{% static 'javascript/lesson/lessonUtils.js' %}"></script>
                     </div>
                 </div>
                 <script src="{% static 'javascript/lesson/editorUtils.js' %}"></script>
             </div>
         </div>
-        <div class="col-lg-2 p-0">
-
-            <a onclick="nextLessonButton()"><button type="button" class="btn btn-light btn-lg">next</button></a>
-            <a onclick="prevLesson()"><button type="button" class="btn btn-light btn-lg">prev</button></a>
-            <br>
-            <button style="width: 49%;"><i onclick="prevLesson()" class=" btn btn-dark btn-lg fa fa-arrow-circle-left"></i></button>
-            <button style="width: 49%;"><i onclick="nextLessonButton()" class=" btn btn-dark btn-lg fa fa-arrow-circle-right"></i></button>
-
+        <div class="col-lg-3 p-0">
+            <div id="resultCard" class="card" style="margin: 5px 5px 5px 5px">
+              <div class="card-header">
+                Results
+              </div>
+              <div class="card-body" >
+                <h5 class="card-title">Syntax Error<br></h5>
+                <p class="card-text">Check each of the following: <br><br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?</p>
+              </div>
+            </div>
+            <br><br><br>
+            <form id="usrform">
+                <br>
+                <textarea style="width: 90%; margin: 5px;" rows="4" name="comment" form="usrform" placeholder="Explain reasoning here..."></textarea>
+                <input class="btn btn-dark" type="submit" style="float: right; margin: 5px 5px 5px 5px;">
+            </form>
         </div>
     </div>
 </div>
