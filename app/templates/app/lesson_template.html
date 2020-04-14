@@ -16,6 +16,8 @@
 <script type="application/javascript">
     $(document).ready(function () {
         createEditor();
+        $("#checkCorrectness").attr("disabled", "false");
+        //$("#checkCorrectness").removeAttr("disabled");
     });
 </script>
 
@@ -115,14 +117,26 @@
                 <p class="card-text">Check each of the following: <br><br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?</p>
               </div>
             </div>
-            <br><br><br>
+            <br>
             <form id="usrform">
                 <br>
-                <textarea style="width: 90%; margin: 5px;" rows="4" name="comment" form="usrform" placeholder="Explain reasoning here..."></textarea>
-                <input class="btn btn-dark" type="submit" style="float: right; margin: 5px 5px 5px 5px;">
+                <textarea style="width: 90%; margin: 5px;" rows="4" name="comment" form="usrform" placeholder="Explain reasoning in at least 25 characters..." required></textarea>
+                <input class="btn btn-dark" type="button" onclick="validateForm()" value="Submit Explaination" style="float: right; margin: 5px 5px 5px 5px;">
             </form>
         </div>
     </div>
 </div>
+
+    <script>
+        function validateForm() {
+            //is explaination long enough
+            var x = document.forms["usrform"]["comment"].value;
+            if (x.length >= 25) {
+                //allow check correctness to be clickable
+                $("#checkCorrectness").removeAttr("disabled");
+            }
+        }
+    </script>
+
 
 {% endblock %}
