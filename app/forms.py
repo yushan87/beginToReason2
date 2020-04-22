@@ -1,7 +1,7 @@
 from django import forms
 
 from django_ace import AceWidget
-from .models import Lesson, Code_Template
+from .models import Lesson
 
 class LessonForm(forms.ModelForm):
 	class Meta:
@@ -16,13 +16,4 @@ class LessonForm(forms.ModelForm):
 
 		form = {
 			'template':'TemplateForm',
-		}
-
-class TemplateForm(forms.ModelForm):
-	class Meta:
-		model = Code_Template
-		fields = '__all__'
-
-		widgets = {
-			'template_code':AceWidget(mode='python',theme='twilight'),
 		}
