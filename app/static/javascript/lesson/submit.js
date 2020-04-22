@@ -14,13 +14,13 @@ var time = new Date();
 * */
 function submit() {
 
-//this is a popup prompt to get explaination from use
+//this is a popup prompt to get explanation from use
 /**  var bool = 0;
-  var explaination = prompt("Please explain your reasoning for your answer: ", "");
+  var explanation = prompt("Please explain your reasoning for your answer: ", "");
   while(bool == 0){
-    if (explaination == null || explaination == "") {
+    if (explanation == null || explanation == "") {
       bool = 0;
-      explaination = prompt("Please explain your reasoning before pressing ok: ", "");
+      explanation = prompt("Please explain your reasoning before pressing ok: ", "");
     }
     else {
       bool = 1;
@@ -40,7 +40,7 @@ function submit() {
     //data.author = "user.googleId;"   //make userid
     data.milliseconds = getTime();
     data.code = createEditor.getValue();
-    data.explaination = explaination;
+    //data.explanation = explanation;
     //need to get the answer from the multiple choice
     $.postJSON("/verify", data, (results) => {
         if (results.lines !== undefined) {

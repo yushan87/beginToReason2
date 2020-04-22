@@ -30,7 +30,7 @@ function injectCreateEditor() {
     createEditor.session.setMode(new ResolveMode());
 
     // Gets rid of a weird Ace Editor bug
-     createEditor.$blockScrolling = Infinity;
+    createEditor.$blockScrolling = Infinity;
 
     createEditor.setFontSize(24);
     createEditor.on("change", removeMarkers);

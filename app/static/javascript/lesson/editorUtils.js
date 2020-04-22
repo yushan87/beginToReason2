@@ -102,11 +102,10 @@ function createAlertBox(hasError, message) {
  */
 $("#checkCorrectness").click(function () {
     // Lock editor to stop user from making changes
-    if (correctnessChecking){
+    if (correctnessChecking) {
         return;
     }
 
-    console.log("checking");
     lock();
 
     //is explaination long enough
@@ -164,24 +163,20 @@ $("#checkCorrectness").click(function () {
         });
 
      */
-        console.log("3");
         $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
         $("#resultCard").attr("class", "card bg-danger text-white");
         document.getElementById("resultTitle").innerHTML = "Syntax error";
         document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
 
 
-    }
-    else{
+    } else {
         // Create the appropriate alert box
         var msg = "You must fill in the explanation box";
         createAlertBox(true, msg);
         $("#explainBox").attr("style", "border: solid red; width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
     }
-        // Unlock editor for further user edits
-        unlock();
-
-
+    // Unlock editor for further user edits
+    unlock();
 });
 
 /*

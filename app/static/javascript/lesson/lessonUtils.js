@@ -8,7 +8,6 @@
  */
 $("#next").click(function () {
 
-console.log("Next Lesson");
 
     return false;
 });
@@ -18,7 +17,6 @@ console.log("Next Lesson");
  */
 $("#prev").click(function () {
 
-console.log("Previous Lesson");
 
 
     return false;
