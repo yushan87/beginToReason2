@@ -7,9 +7,6 @@
  * Function for moving to next lesson.
  */
 $("#next").click(function () {
-
-
-
     return false;
 });
 
