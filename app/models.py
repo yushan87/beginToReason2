@@ -4,14 +4,14 @@ from django_ace import AceWidget
 
 
 # Create your models here.
-
+'''
 class Code_Template(models.Model):
 	template_name = models.CharField(max_length=30)
 	template_code = models.TextField(max_length=500)
 
 	def __str__(self):
 		return self.template_name
-
+'''
 class Lesson(models.Model):
 	Name = models.CharField(max_length=30)
 	Concept = models.CharField(max_length=50)
@@ -21,7 +21,7 @@ class Lesson(models.Model):
 
 	def __str__(self):
 		return self.Name
-
+'''
 class Reference(models.Model):
 	reference_key = models.CharField(max_length=30)
 	reference_text = models.TextField(max_length=250)
@@ -29,7 +29,7 @@ class Reference(models.Model):
 	
 	def __str__(self):
 		return self.reference_key		
-
+'''
 
 
 
