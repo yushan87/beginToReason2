@@ -77,12 +77,10 @@ WSGI_APPLICATION = 'begintoreason_django.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'beginToReason_test',
-        'USER': 'mefowle',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'beginToReason_testLITE',
+        'USER': 'admin',
         'PASSWORD': '#S=<E>oS',
-        'HOST': 'old-resolve.cs.clemson.edu',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
     }
 }
 

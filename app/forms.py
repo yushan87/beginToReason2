@@ -17,3 +17,13 @@ class LessonForm(forms.ModelForm):
 		form = {
 			'template':'TemplateForm',
 		}
+'''
+class TemplateForm(forms.ModelForm):
+	class Meta:
+		model = Code_Template
+		fields = '__all__'
+
+		widgets = {
+			'template_code':AceWidget(mode='python',theme='twilight'),
+		}
+		'''
