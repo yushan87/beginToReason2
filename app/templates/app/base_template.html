@@ -24,6 +24,8 @@
     <script src="https://kit.fontawesome.com/d50a2fb57f.js"></script>
 	{% block head_js %}
 	{% endblock %}
+
+
 </head>
 <body>
 	<!-- JavaScript Libraries -->
@@ -38,8 +40,8 @@
 
 	<!-- Page Header -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-	<a class="navbar-brand" ><img src="{% static 'images/logo2.png' %}" width="60" height="60" ></a>
-  <a class="navbar-brand logo" href="#">Resolve</a>
+	<a class="navbar-brand" ><img src="{% static 'images/logo2.png' %}" width="40" height="40" ></a>
+  <a class="navbar-brand logo" href="#">RESOLVE</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -60,7 +62,6 @@
     </ul>
   </div>
 </nav>
-
 	<!-- Main Content Block -->
 	<main id="page-content" role="main">
 		{% block main_content %}
@@ -69,7 +70,7 @@
 
 	<!-- Page Footer -->
 	<footer id="page-footer" class="footer w-100 py-2">
-		<div class="d-flex flex-column flex-md-row justify-content-md-around align-items-center" style="background-color: inherit;">
+		<div class="d-flex flex-column flex-md-row justify-content-md-around align-items-center fixed-bottom" style="background-color: inherit;">
 			<div class="d-flex flex-row align-items-center px-2">
 				<img src="{% static 'images/rsrg-logo4.svg' %}" width="60" height="60" class="d-none d-sm-inline-flex mr-2" alt="Clemson RSRG Logo 2">
 				<div class="d-flex flex-column">
