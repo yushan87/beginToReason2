@@ -26,7 +26,6 @@
 
 .navbar-toggle {
     float: left !important;
-    margin-right: 0px;
     margin-left: 15px;
 }
 
@@ -40,12 +39,9 @@
 }
 
 .modal-nav-body ul {
-    padding: 0px;
     width: 100%;
-    margin: 0px;
-    color: #ffffff;
+    color: #fff;
     list-style-type: none;
-
 }
 
 .modal-nav-body ul li {
