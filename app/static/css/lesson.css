@@ -3,12 +3,12 @@
     position: relative;
     top: 0;
     bottom: 100px;
-    height: calc(100vh - 180px);
+    height: calc(100vh - 156px);
     overflow: hidden;
 }
 
 #tutorialCol {
-    height: calc(100vh - 180px);
+    height: calc(100vh - 156px);
 }
 
 #tutorialContent {
@@ -24,6 +24,35 @@
     font-family: "Courier New", Courier, monospace;
 }
 
+.navbar-toggle {
+  float: left !important;
+  margin-left: 15px;
+  margin-right: 0;
+}
+
+.modal-nav-content {
+  width: 100%;
+  height: auto;
+}
+
+.modal-nav-body {
+  margin-top: 100px;
+}
+
+.modal-nav-body ul {
+  list-style-type: none;
+  color: white;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.modal-nav-body ul li {
+  text-align: center;
+  font-size: 130%;
+  padding: 8px;
+  text-transform: uppercase;
+}
 
 /* ACE Editor-Related CSS */
 .ace_folding-enabled > .ace_gutter-cell {

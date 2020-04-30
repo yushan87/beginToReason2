@@ -6,9 +6,8 @@ from . import views
 
 app_name = 'app'
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('lesson', views.lesson, name='lesson'),
-    path('testPage', views.testPage, name='testPage'),
-    path('progress', views.progress, name='progress')
+    path('', views.home, name='home'),
+    path('tutor', views.tutor, name='tutor'),
+    path('login', views.login, name='login')
 
 ]
