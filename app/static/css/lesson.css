@@ -25,33 +25,34 @@
 }
 
 .navbar-toggle {
-  float: left !important;
-  margin-left: 15px;
-  margin-right: 0;
+    float: left !important;
+    margin-right: 0px;
+    margin-left: 15px;
 }
 
 .modal-nav-content {
-  width: 100%;
-  height: auto;
+    width: 100%;
+    height: auto;
 }
 
 .modal-nav-body {
-  margin-top: 100px;
+    margin-top: 100px;
 }
 
 .modal-nav-body ul {
-  list-style-type: none;
-  color: white;
-  margin: 0;
-  padding: 0;
-  width: 100%;
+    padding: 0px;
+    width: 100%;
+    margin: 0px;
+    color: #ffffff;
+    list-style-type: none;
+
 }
 
 .modal-nav-body ul li {
-  text-align: center;
-  font-size: 130%;
-  padding: 8px;
-  text-transform: uppercase;
+    padding: 8px;
+    font-size: 130%;
+    text-align: center;
+    text-transform: uppercase;
 }
 
 /* ACE Editor-Related CSS */
