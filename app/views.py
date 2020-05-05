@@ -4,8 +4,9 @@ from django.shortcuts import render
 from .models import Lesson
 # Create your views here.
 
-def index(request):
-    return render(request, "app/index.html")
+def home(request):
+    return render(request, "app/homePage.html")
+
 
 def lesson(request):
     try:
@@ -20,4 +21,10 @@ def testPage(request):
 
 def progress(request):
     return render(request, "app/progress.html")
+
+def tutor(request):
+    return render(request, "app/lesson_template.html", {'content': "Lessons goes here!"})
+
+def login(request):
+    return render(request, "app/login.html")
 

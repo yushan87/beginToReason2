@@ -63,7 +63,7 @@ function createAlertBox(hasError, message) {
     if (hasError) {
         alertDiv.setAttribute("class", "alert alert-danger alert-dismissible mb-0 fade show");
     } else {
-        alertDiv.setAttribute("class", "alert alert-success alert-dismissible mb-0 fade show");
+        alertDiv.setAttribute("class", "alert alert-secondary alert-dismissible mb-0 fade show");
     }
 
     // Set other attributes
@@ -193,6 +193,21 @@ $("#resetCode").click(function () {
     unlock();
 
     return false;
+});
+
+/*
+ * Function for retrieving hint
+ */
+$("#giveHint").click(function () {
+    // Lock editor to stop user from making changes
+    lock();
+
+    // Create the appropriate alert box
+    let hint = "Check the Reference Material to the left of the editor";
+    createAlertBox(false, hint);
+
+    // Unlock editor for further user edits
+    unlock();
 });
 
 /*
