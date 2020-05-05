@@ -14,7 +14,7 @@
     list-style-type: none;
 }
 
-.progressbar li:before {
+.progressbar li::before {
     display: block;
     width: 30px;
     height: 30px;
@@ -28,7 +28,7 @@
     border-radius: 50%;
 }
 
-.progressbar li:after {
+.progressbar li::after {
     position: absolute;
     top: 20px;
     left: -50%;
@@ -39,18 +39,18 @@
     background-color: #30343f;
 }
 
-.progressbar li:first-child:after {
+.progressbar li:first-child::after {
     content: none;
 }
 
-.progressbar li.active {
+.active {
     color: #f66733;
 }
 
-.progressbar li.active:before {
+.active::before {
     border-color: #bdbdbd;
 }
 
-.progressbar li.active + li:after {
+.active + li::after {
     background-color: #f66733;
 }
