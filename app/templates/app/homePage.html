@@ -13,26 +13,21 @@
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
 
 <!-- Navigation -->
-
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" ><img src="{% static 'images/logo2.png' %}" width="40" height="40" ></a>
-  <a class="navbar-brand logo" href="#">RESOLVE</a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <a class="navbar-brand" href="{% url 'app:home' %}"><img src="{% static 'images/logo2.png' %}" width="40" height="40" ></a><a class="navbar-brand logo" href="{% url 'app:home' %}">RESOLVE</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
-  </button>
+    </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav">
-      <li class="nav-item active">
-        <a class="nav-link" href="{% url 'app:testPage' %}">Home <span class="sr-only">(current)</span></a>
+      <li class="nav-item">
+        <a class="nav-link " href="{% url 'app:tutor' %}"><i class="fas fa-code-branch"></i> TUTOR</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{% url 'app:lesson' %}">Lessons</a>
+        <a class="nav-link" href="https://www.cs.clemson.edu/resolve/"><i class="fas fa-external-link-alt fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i> RSRG</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="https://www.cs.clemson.edu/resolve/"><i class="fas fa-home fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i>RSRG</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="https://resolve.cs.clemson.edu/"><i class="fas fa-external-link-alt fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i>WebIDE</a>
+        <a class="nav-link" href="{% url 'app:login' %}"><i class="fas fa-sign-in-alt"></i> LOGIN</a>
       </li>
     </ul>
   </div>
@@ -51,10 +46,9 @@
             <img src="{% static 'images/h1.png' %}">
             <div class="carousel-caption">
                 <h1 class="display-2">Resolve</h1>
-                <h3>Begin To Reason Interactive Tool</h3>
-                <button type="button" class="btn btn-outline-light btn-lg" onclick="myFunction()">Begin Tutorial</button>
-                <button type="button" class="btn btn-dark btn-lg">Login</button>
-
+                <h3>BeginToReason Interactive Tool</h3>
+                <a href="{% url 'app:tutor' %}" class="btn btn-outline-light btn-lg" role="button" aria-pressed="true">Begin Using Tutor</a>
+                <a href="{% url 'app:login' %}" class="btn btn-dark btn-lg" role="button" aria-pressed="true">Login with <i class="fab fa-google"></i>mail</a>
             </div>
         </div>
         <div class="carousel-item">
@@ -75,7 +69,7 @@
                 The RESOLVE project is a GitHub project.</p>
         </div>
         <div class="col-xs-12 col col-sm-12 col-md-3 col-lg-3 col-xl-2">
-            <a href=#><button type="button" class="btn btn-light btn-lg">Contact Us</button></a>
+            <a href="mailto:murali@clemson.edu"><button type="button" class="btn btn-light btn-lg">Contact Us</button></a>
         </div>
 
     </div>
@@ -141,6 +135,3 @@
 
 </body>
 </html>
-
-
-

@@ -46,7 +46,7 @@ body {
 #page-footer {
     /* Sticky footer */
     bottom: 0;
-    height: 100px;
+    height: 80px;
     color: #fff !important;
     background-color: #30343f !important;
 }
