@@ -3,6 +3,7 @@
 
 {% block css %}
 <link rel="stylesheet" href="{% static 'css/lesson.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/progress.css' %}">
 {% endblock %}
 
 {% block body_js %}
@@ -18,13 +19,12 @@
         createEditor();
     });
 </script>
-
 {% endblock %}
 
 {% block main_content %}
 <div class="container-fluid">
     <div class="row">
-        <div class="col-lg-3 col-sm-6 p-0 border-right">
+        <div class="col-3 p-0 border-right">
             <div id="tutorialCol" class="d-flex flex-column">
                 <!-- Tutorial Content -->
                 <div id="tutorialContent" class="p-3">
@@ -75,8 +75,31 @@
                       </div>
                     </div>
                 </div>
+                <div class="text-center">
+                    <button class="btn btn-dark btn-lg btn-block" style="margin: 5px 5px 5px 5px; width: 98%; bottom: 0; position: absolute;" data-toggle="modal" data-target="#progress-modal" aria-expanded="false" type="button"><i class="navbar-toggle collapsed"></i> Check Your Overall Progress</button>
+                </div>
             </div>
         </div>
+        <!-- Progress Modal -->
+
+        <div class="modal fade" id="progress-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="background-color: rgba(48,52,63,.8);">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-nav-content">
+              <div class="modal-nav-body bg-dark text-white">
+                <div class="container" align="center">
+                    <ul class = "progressbar">
+                        <li class="active">Lesson 1</li>
+                        <li class="active">Lesson 2</li>
+                        <li>Lesson 3</li>
+                        <li>Lesson 4</li>
+                        <li>Lesson 5</li>
+                    </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="col-6 p-0">
             <div id="editorCol" class="d-flex flex-column h-100">
                 <!-- Ace Editor -->
@@ -93,22 +116,23 @@
                             <button id="resetFontSize" class="btn btn-sm btn-light" type="button">Default</button>
                         </div>
                         <div id="compilerButtons" class="ml-auto">
-                            <button id="resetCode" class="btn btn-danger" type="button"><i style="font-size:20px" class="fa">&#xf021;</i></button>
-                            <button id="checkCorrectness" class="btn btn-success" type="button">Check Correctness</button>
+                            <button id="resetCode" class="btn btn-danger" type="button" data-toggle="tooltip" data-placement="top" title="Reset"><i style="font-size:20px" class="fa">&#xf021;</i></button>
+                            <button id="giveHint" class="btn btn-light" type="button" data-toggle="tooltip" data-placement="top" title="Get Help"><i class="far fa-life-ring"></i></button>
+                            <button id="checkCorrectness" class="btn btn-success" type="button" data-toggle="tooltip" data-placement="top" title="Check Correctness">Check Correctness</button>
                         </div>
                     </div>
                     <div id="directionButtons" class="d-flex">
-                      <div class="mr-auto"><button id="prev" type="button" class="btn btn-light btn-md fa fa-arrow-left" style="margin: 2px 2px 2px 2px;"></button></div>
-                      <div ><button id="next" type="button" class="btn btn-light btn-md fa fa-arrow-right" style="margin: 2px 2px 2px 2px;"></button></div>
+                      <div class="mr-auto"><button id="prev" type="button" class="btn btn-light btn-md fa fa-arrow-left" style="margin: 2px 2px 2px 2px;" data-toggle="tooltip" data-placement="top" title="Previous"></button></div>
+                      <div ><button id="next" type="button" class="btn btn-light btn-md fa fa-arrow-right" style="margin: 2px 2px 2px 2px;" data-toggle="tooltip" data-placement="top" title="Next"></button></div>
                       <script src="{% static 'javascript/lesson/lessonUtils.js' %}"></script>
                     </div>
                 </div>
                 <script src="{% static 'javascript/lesson/editorUtils.js' %}"></script>
             </div>
         </div>
-        <div class="col-lg-3 p-0">
+        <div class="col-3 p-0">
             <br>
-            <div id="resultCard" class="card" style="margin: 5px 5px 5px 5px">
+            <div id="resultCard" class="card" style="margin: 5px 5px 5px 5px;">
               <div class="card-header">
                 Results
               </div>
@@ -118,26 +142,26 @@
               </div>
             </div>
             <br>
-             <div id="resultCard" class="card" style="margin: 5px 5px 5px 5px">
+             <div id="resultCard" class="card" style="margin: 5px 5px 5px 5px; bottom: 0; position: absolute;">
                  <div class="card-header">
                 Reasoning
                 </div>
                 <br>
-                <form id="usrform">
+                <form id="usrform" >
                     Please explain your reasoning to Check Correctness <br><br>
                     <textarea id = "explainBox" style="width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;" rows="5" name="comment" form="usrform" placeholder="Write explanation here..." required></textarea>
                 </form>
                 <br>
-                <div class="form-check" style="visibility: hidden">
-                    Whaich of the following best describes your understanding of this concept? <br><br>
+                <div class="form-check">
+                    Which of the following best describes your understanding of this concept? <br>
                   <input class="form-check-input" type="radio" name="selectExplain" id="select1" value="option1" style="margin-left: 12px;">
                   <label class="form-check-label" for="exampleRadios1" style="margin-left: 36px;">
                     First Option
-                  </label>
+                  </label><br>
                   <input class="form-check-input" type="radio" name="selectExplain" id="select2" value="option2" style="margin-left: 12px;">
                   <label class="form-check-label" for="exampleRadios2" style="margin-left: 36px;">
                     Section Option
-                  </label>
+                  </label><br>
                   <input class="form-check-input" type="radio" name="selectExplain" id="select3" value="option3" style="margin-left: 12px;">
                   <label class="form-check-label" for="exampleRadios3" style="margin-left: 36px;">
                     Third Option
