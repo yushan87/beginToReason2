@@ -19,24 +19,12 @@ let prevAnswers = []; //add to this and check
 ///////////////////////////
 // Arrays in Place of DB //
 ///////////////////////////
-let codeArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;",
-                 "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;",
-                "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
-let activityArray = ["<p>Please complete the <b>Confirm</b> assertion(s) by entering an expression for /* expression */, then check correctness.</p>",
-                     "<p>Please complete the <b>Confirm</b> assertion(s) by choosing a conditional operator to replace the /* conditional */, then check correctness.</p>",
-                    "<p>Please complete the <b>Confirm</b> assertion(s) by entering an expression for /* expression */, then check correctness.</p>"];
-let refArray = ["<p><code>:= </code> is the <em>assignment operator</em></p>",
-                "<p>At the place marked by <b>Remember</b>, values of variables such as I and J are assumed to be #I and #J.</p><p>Conditional operators are:<br />=, &lt;, &lt;=, &gt;, &gt;=</p>",
-                "<p>At the place marked by <b>Remember</b>, values of variables such as I and J are assumed to be #I and #J.</p>"];
-let sucArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = 3;\n end Main;\nend BeginToReason;",
-                "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I > #I;\n    end Main;\nend BeginToReason;",
-                "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I + 1;\n    end Main;\nend BeginToReason;"];
-let failArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = 2;\n end Main;\nend BeginToReason;",
-                "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I < #I;\n    end Main;\nend BeginToReason;",
-                "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I;\n    end Main;\nend BeginToReason;"];
-let trivialArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;",
-                "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;",
-                "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
+let codeArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
+let activityArray = ["<p>Please complete the <b>Confirm</b> assertion(s) by entering an expression for /* expression */, then check correctness.</p>", "<p>Please complete the <b>Confirm</b> assertion(s) by choosing a conditional operator to replace the /* conditional */, then check correctness.</p>", "<p>Please complete the <b>Confirm</b> assertion(s) by entering an expression for /* expression */, then check correctness.</p>"];
+let refArray = ["<p><code>:= </code> is the <em>assignment operator</em></p>", "<p>At the place marked by <b>Remember</b>, values of variables such as I and J are assumed to be #I and #J.</p><p>Conditional operators are:<br />=, &lt;, &lt;=, &gt;, &gt;=</p>", "<p>At the place marked by <b>Remember</b>, values of variables such as I and J are assumed to be #I and #J.</p>"];
+let sucArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = 3;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I > #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I + 1;\n    end Main;\nend BeginToReason;"];
+let failArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = 2;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I < #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I;\n    end Main;\nend BeginToReason;"];
+let trivialArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
 
 let codeCounter = 0;
 let activityCounter = 0;
@@ -56,7 +44,7 @@ let trivialCounter = 0;
 function createEditor() {
     // RESOLVE mode
     let ResolveMode = ace.require("ace/mode/resolve").Mode;
-    Range = ace.require("ace/range").Range
+    Range = ace.require("ace/range").Range;
 
     // Basic editor settings
     aceEditor = ace.edit("editor");
@@ -168,11 +156,11 @@ $("#checkCorrectness").click(function () {
         let results = "";
         let code = aceEditor.session.getValue();
 
-        if (code == trivialArray[trivialCounter]){
+        if (code == trivialArray[trivialCounter]) {
             results = "trivial";
-        } else if (code == failArray[failCounter]){
+        } else if (code == failArray[failCounter]) {
             results = "failure";
-        } else if (code == sucArray[sucCounter]){
+        } else if (code == sucArray[sucCounter]) {
             results = "success";
         }
 
@@ -184,7 +172,7 @@ $("#checkCorrectness").click(function () {
             $("#resultCard").attr("class", "card bg-danger text-white");
             //add line errors
             //this will need to be fixed based on verifier return
-            if (codeCounter == 0){
+            if (codeCounter == 0) {
                 aceEditor.session.addGutterDecoration(15, "ace_error");
             } else if (codeCounter == 1) {
                 aceEditor.session.addGutterDecoration(11, "ace_error");
@@ -200,7 +188,7 @@ $("#checkCorrectness").click(function () {
             $("#resultCard").attr("class", "card bg-danger text-white");
             //add line errors
             //this will need to be fixed based on verifier return
-            if (codeCounter == 0){
+            if (codeCounter == 0) {
                 aceEditor.session.addGutterDecoration(15, "ace_error");
             } else if (codeCounter == 1) {
                 aceEditor.session.addGutterDecoration(11, "ace_error");
@@ -216,7 +204,7 @@ $("#checkCorrectness").click(function () {
             $("#resultCard").attr("class", "card bg-danger text-white");
             //add line errors
             //this will need to be fixed based on verifier return
-            if (codeCounter == 0){
+            if (codeCounter == 0) {
                 aceEditor.session.addGutterDecoration(15, "ace_error");
             } else if (codeCounter == 1) {
                 aceEditor.session.addGutterDecoration(11, "ace_error");
