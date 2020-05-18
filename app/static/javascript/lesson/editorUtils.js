@@ -170,11 +170,9 @@ $("#checkCorrectness").click(function () {
 
         if (code == trivialArray[trivialCounter]){
             results = "trivial";
-        }
-        else if (code == failArray[failCounter]){
+        } else if (code == failArray[failCounter]){
             results = "failure";
-        }
-        else if (code == sucArray[sucCounter]){
+        } else if (code == sucArray[sucCounter]){
             results = "success";
         }
 
@@ -188,11 +186,9 @@ $("#checkCorrectness").click(function () {
             //this will need to be fixed based on verifier return
             if (codeCounter == 0){
                 aceEditor.session.addGutterDecoration(15, "ace_error");
-            }
-            else if (codeCounter == 1) {
+            } else if (codeCounter == 1) {
                 aceEditor.session.addGutterDecoration(11, "ace_error");
-            }
-            else if (codeCounter == 2) {
+            } else if (codeCounter == 2) {
                 aceEditor.session.addGutterDecoration(11, "ace_error");
             }
 
@@ -206,11 +202,9 @@ $("#checkCorrectness").click(function () {
             //this will need to be fixed based on verifier return
             if (codeCounter == 0){
                 aceEditor.session.addGutterDecoration(15, "ace_error");
-            }
-            else if (codeCounter == 1) {
+            } else if (codeCounter == 1) {
                 aceEditor.session.addGutterDecoration(11, "ace_error");
-            }
-            else if (codeCounter == 2) {
+            } else if (codeCounter == 2) {
                 aceEditor.session.addGutterDecoration(11, "ace_error");
             }
 
@@ -224,11 +218,9 @@ $("#checkCorrectness").click(function () {
             //this will need to be fixed based on verifier return
             if (codeCounter == 0){
                 aceEditor.session.addGutterDecoration(15, "ace_error");
-            }
-            else if (codeCounter == 1) {
+            } else if (codeCounter == 1) {
                 aceEditor.session.addGutterDecoration(11, "ace_error");
-            }
-            else if (codeCounter == 2) {
+            } else if (codeCounter == 2) {
                 aceEditor.session.addGutterDecoration(11, "ace_error");
             }
 
@@ -240,15 +232,13 @@ $("#checkCorrectness").click(function () {
             $("#resultCard").attr("class", "card bg-success text-white");
             $("#next").removeAttr("disabled", "disabled");
             //take away line errors
-            if (codeCounter == 0){
+            if (codeCounter == 0) {
                 aceEditor.session.removeGutterDecoration(15, "ace_error");
                 aceEditor.session.addGutterDecoration(15, "ace_correct");
-            }
-            else if (codeCounter == 1) {
+            } else if (codeCounter == 1) {
                 aceEditor.session.removeGutterDecoration(11, "ace_error");
                 aceEditor.session.addGutterDecoration(11, "ace_correct");
-            }
-            else if (codeCounter == 2) {
+            } else if (codeCounter == 2) {
                 aceEditor.session.removeGutterDecoration(11, "ace_error");
                 aceEditor.session.addGutterDecoration(11, "ace_correct");
             }
@@ -276,13 +266,11 @@ $("#resetCode").click(function () {
     document.forms["usrform"]["comment"].value = "";
     $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
     //take away line errors
-    if (codeCounter == 0){
+    if (codeCounter == 0) {
         aceEditor.session.removeGutterDecoration(15, "ace_error");
-    }
-    else if (codeCounter == 1) {
+    } else if (codeCounter == 1) {
         aceEditor.session.removeGutterDecoration(11, "ace_error");
-    }
-    else if (codeCounter == 2) {
+    } else if (codeCounter == 2) {
         aceEditor.session.removeGutterDecoration(11, "ace_error");
     }
 
@@ -383,13 +371,11 @@ $("#next").click(function () {
     lock();
 
     //take away line errors
-    if (codeCounter == 0){
+    if (codeCounter == 0) {
         aceEditor.session.removeGutterDecoration(15, "ace_correct");
-    }
-    else if (codeCounter == 1) {
+    } else if (codeCounter == 1) {
         aceEditor.session.removeGutterDecoration(11, "ace_correct");
-    }
-    else if (codeCounter == 2) {
+    } else if (codeCounter == 2) {
         aceEditor.session.removeGutterDecoration(11, "ace_correct");
     }
 
@@ -401,7 +387,7 @@ $("#next").click(function () {
     trivialCounter++;
     progressCounter++;
 
-    if(codeCounter < codeArray.length) {
+    if (codeCounter < codeArray.length) {
 
         if (codeCounter != 0) {
             $("#prev").removeAttr("disabled", "disabled");
@@ -422,14 +408,11 @@ $("#next").click(function () {
         //progress increaser
         if (progressCounter == 1) {
             $("#lesson1").attr("class", "active");
-        }
-        else if (progressCounter == 2) {
+        } else if (progressCounter == 2) {
             $("#lesson2").attr("class", "active");
         }
-
-    }
-    else {
-        //add somthing in db for what was completed then you can go through them
+    } else {
+        //add something in db for what was completed then you can go through them
         document.getElementById("resultTitle").innerHTML = "Congratulations";
         document.getElementById("resultDetails").innerHTML = "You've completed all the activities";
         $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
@@ -455,13 +438,11 @@ $("#prev").click(function () {
     lock();
 
     //take away line errors
-    if (codeCounter == 0){
+    if (codeCounter == 0) {
         aceEditor.session.removeGutterDecoration(15, "ace_correct");
-    }
-    else if (codeCounter == 1) {
+    } else if (codeCounter == 1) {
         aceEditor.session.removeGutterDecoration(11, "ace_correct");
-    }
-    else if (codeCounter == 2) {
+    } else if (codeCounter == 2) {
         aceEditor.session.removeGutterDecoration(11, "ace_correct");
     }
 
