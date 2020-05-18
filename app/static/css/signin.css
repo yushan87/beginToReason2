@@ -21,7 +21,7 @@ h2 {
     margin: 40px 8px 10px 8px;
     font-size: 16px;
     font-weight: 600;
-    color: #cccccc;
+    color: #ccc;
     text-align: center;
     text-transform: uppercase;
 }
@@ -62,7 +62,7 @@ h2 {
 /* TABS */
 
 h2.inactive {
-    color: #cccccc;
+    color: #ccc;
 }
 
 h2.active {
@@ -131,8 +131,8 @@ input[type=text]:focus {
     border-bottom: 2px solid #30343f;
 }
 
-input[type=text]:placeholder {
-    color: #cccccc;
+input[type=text]::placeholder {
+    color: #ccc;
 }
 
 /* ANIMATIONS */
@@ -177,7 +177,8 @@ input[type=text]:placeholder {
 @-webkit-keyframes fadeIn {
     from {
         opacity: 0;
-    } to {
+    }
+    to {
         opacity: 1;
     }
 }
@@ -185,7 +186,8 @@ input[type=text]:placeholder {
 @-moz-keyframes fadeIn {
     from {
         opacity: 0;
-    } to {
+    }
+    to {
         opacity: 1;
     }
 }
@@ -193,7 +195,8 @@ input[type=text]:placeholder {
 @keyframes fadeIn {
     from {
         opacity: 0;
-    } to {
+    }
+    to {
         opacity: 1;
     }
 }
