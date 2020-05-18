@@ -9,15 +9,15 @@
 .progressbar li {
     position: relative;
     float: left;
-    width: 20%;
+    width: 33%;
     text-align: center;
     list-style-type: none;
 }
 
 .progressbar li::before {
     display: block;
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     margin: auto auto auto auto;
     line-height: 30px;
     text-align: center;
@@ -34,7 +34,7 @@
     left: -50%;
     z-index: -1;
     width: 100%;
-    height: 5px;
+    height: 10px;
     content: "";
     background-color: #30343f;
 }
@@ -44,7 +44,7 @@
 }
 
 .active {
-    color: #f66733;
+    color: #ff8c5f;
 }
 
 .active::before {
@@ -52,5 +52,5 @@
 }
 
 .active + li::after {
-    background-color: #f66733;
+    background-color: #ff8c5f;
 }
