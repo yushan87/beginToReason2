@@ -49,16 +49,18 @@ body {
     animation-fill-mode: both;
 }
 
-@-webkit-keyframes fadeInDown {
+@keyframes fadeInDown {
     0% {
         opacity: 0;
         transform: translate3d(0, -100%, 0);
     }
+
     100% {
         opacity: 1;
         transform: none;
     }
 }
+
 .fadeIn {
     opacity: 0;
     animation: fadeIn ease-in 1;
