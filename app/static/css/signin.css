@@ -1,4 +1,4 @@
-/*Signin CSS*/
+/* Signin CSS */
 
 html {
     background-color: #30343f;
@@ -6,24 +6,7 @@ html {
 
 body {
     height: 100vh;
-    font-family: "Poppins", sans-serif;
-}
-
-a {
-    display: inline-block;
-    font-weight: 400;
-    color: #f66733;
-    text-decoration: none;
-}
-
-h2 {
-    display:inline-block;
-    margin: 40px 8px 10px 8px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #ccc;
-    text-align: center;
-    text-transform: uppercase;
+    font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
 /* STRUCTURE */
@@ -46,7 +29,7 @@ h2 {
     text-align: center;
     background: #fff;
     border-radius: 10px 10px 10px 10px;
-    box-shadow: 0 30px 60px 0 rgba(0,0,0,0.3);
+    box-shadow: 0 30px 60px 0 rgba(0, 0, 0, 0.3);
 }
 
 #formFooter {
@@ -55,67 +38,6 @@ h2 {
     background-color: #f6f6f6;
     border-top: 1px solid #dce8f1;
     border-radius: 0 0 10px 10px;
-}
-
-/* TABS */
-
-h2.inactive {
-    color: #ccc;
-}
-
-h2.active {
-    color: #0d0d0d;
-    border-bottom: 2px solid #30343f;
-}
-
-/* FORM TYPOGRAPHY*/
-
-input[type=button], input[type=submit], input[type=reset] {
-    display: inline-block;
-    padding: 15px 80px;
-    margin: 5px 20px 40px 20px;
-    font-size: 13px;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    text-transform: uppercase;
-    background-color: #30343f;
-    border: none;
-    border-radius: 5px 5px 5px 5px;
-    box-shadow: 0 10px 30px 0 rgba(48,52,63,0.4);
-    transition: all 0.3s ease-in-out;
-}
-
-input[type=button]:hover, input[type=submit]:hover, input[type=reset]:hover {
-    background-color: #30343f;
-}
-
-input[type=button]:active, input[type=submit]:active, input[type=reset]:active {
-    transform: scale(0.95);
-}
-
-input[type=text] {
-    display: inline-block;
-    width: 85%;
-    padding: 15px 32px;
-    margin: 5px;
-    font-size: 16px;
-    color: #0d0d0d;
-    text-align: center;
-    text-decoration: none;
-    background-color: #f6f6f6;
-    border: 2px solid #f6f6f6;
-    border-radius: 5px 5px 5px 5px;
-    transition: all 0.5s ease-in-out;
-}
-
-input[type=text]:focus {
-    background-color: #fff;
-    border-bottom: 2px solid #30343f;
-}
-
-input[type=text]::placeholder {
-    color: #ccc;
 }
 
 /* ANIMATIONS */
@@ -137,95 +59,9 @@ input[type=text]::placeholder {
         transform: none;
     }
 }
-
-@keyframes fadeInDown {
-    0% {
-        opacity: 0;
-        transform: translate3d(0, -100%, 0);
-    }
-    100% {
-        opacity: 1;
-        transform: none;
-    }
-}
-
-/* Simple CSS3 Fade-in Animation */
-@-webkit-keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@-moz-keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
-}
-
 .fadeIn {
     opacity: 0;
     animation: fadeIn ease-in 1;
     animation-fill-mode: forwards;
     animation-duration: 1s;
-}
-
-.fadeIn.first {
-    animation-delay: 0.4s;
-}
-
-.fadeIn.second {
-    animation-delay: 0.6s;
-}
-
-.fadeIn.third {
-    animation-delay: 0.8s;
-}
-
-.fadeIn.fourth {
-    animation-delay: 1s;
-}
-
-/* Simple CSS3 Fade-in Animation */
-.underlineHover::after {
-    bottom: -10px;
-    left: 0;
-    display: block;
-    width: 0;
-    height: 2px;
-    content: "";
-    background-color: #30343f;
-    transition: width 0.2s;
-}
-
-.underlineHover:hover {
-    color: #0d0d0d;
-}
-
-.underlineHover:hover::after {
-    width: 100%;
-}
-
-/* OTHERS */
-
-*:focus {
-    outline: none;
-}
-
-#icon {
-    width: 60%;
 }
