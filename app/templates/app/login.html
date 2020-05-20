@@ -10,8 +10,32 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 	<script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
+    <meta name="google-signin-client_id" content="YOUR_CLIENT_ID.apps.googleusercontent.com">
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+    <script src="{% static 'javascript/lesson/lessonUtils.js' %}"></script>
+
+    <!-- https://developers.google.com/identity/branding-guidelines -->
+    <script>
+        function onSuccess(googleUser) {
+          console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+        }
+        function onFailure(error) {
+          console.log(error);
+        }
+        function renderButton() {
+          gapi.signin2.render('my-signin2', {
+            'scope': 'profile email',
+            'width': 240,
+            'height': 50,
+            'longtitle': true,
+            'theme': 'dark',
+            'onsuccess': onSuccess,
+            'onfailure': onFailure
+          });
+        }
+      </script>
+  <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
 
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
@@ -34,13 +58,20 @@
 
     <!-- Icon -->
     <div>
-        <img src="{% static 'images/rsrg.png' %}" width="400" height="100">
+        <img src="{% static 'images/rsrg.png' %}" width="350" height="125">
+    </div>
+    <br>
+    <div class="title">
+        Login
+    </div>
+    <br><br>
+    <div class="text-center">
+        <div id="my-signin2" style="display: flex; justify-content: center;"></div>
+        <p><a class="privacy-link" href="https://policies.google.com/privacy?hl=en-US">Google Privacy Policy</a></p>
     </div>
     <div class="text-center">
-        <button class="btn btn-dark btn-lg btn-block" style="margin: 5px 5px 5px 5px;" type="button">Sign In With Google</button>
-    </div>
-    <div class="text-center">
-        <button class="btn btn-dark btn-lg btn-block" style="margin: 5px 5px 5px 5px;" type="button">Sign In With Microsoft</button>
+        <input type="image" id="microsoft" src="{% static 'images/microsoft.svg' %}" class="center" width="240" height="50"/>
+        <p><a class="privacy-link" href="https://privacy.microsoft.com/en-us/privacystatement">Microsoft Privacy Policy</a></p>
     </div>
   </div>
 </div>

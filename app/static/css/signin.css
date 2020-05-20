@@ -67,3 +67,23 @@ body {
     animation-fill-mode: forwards;
     animation-duration: 1s;
 }
+
+/* Login Button Colors */
+
+.privacy-link {
+    font-size: 1rem;
+    color: #30343f !important;
+    text-decoration: none;
+}
+
+.privacy-link:hover {
+    color: #ff8c5f !important;
+    text-decoration: none;
+}
+
+.title{
+    font-family: "Helvetica Neue", "Segoe UI", Helvetica, Arial, sans-serif;
+    color: #30343f;
+    font-size: 200%;
+    font-weight: 500 !important;
+}
