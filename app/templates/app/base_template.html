@@ -39,7 +39,7 @@
 {% block body_js %}
 {% endblock %}
 
-<!-- Navigation Block -->
+<!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="{% url 'app:home' %}"><img src="{% static 'images/logo2.png' %}" width="40"
                                                              height="40"></a><a class="navbar-brand logo"
@@ -54,20 +54,11 @@
                 <a class="nav-link active" href="{% url 'app:tutor' %}"><i class="fas fa-code-branch"></i> TUTOR</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="https://www.cs.clemson.edu/resolve/"><i
-                        class="fas fa-external-link-alt fa-fw d-none d-sm-inline-flex" aria-hidden="true"></i> RSRG</a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link" href="{% url 'app:login' %}"><i class="fas fa-sign-in-alt"></i> LOGIN</a>
             </li>
         </ul>
     </div>
 </nav>
-
-<!-- progress bar
-<div class="progress">
-  <div class="progress-bar" role="progressbar" style="width: 40%; background-color: #f66733" aria-valuemin="0" aria-valuemax="100"></div>
-</div> -->
 
 <!-- Main Content Block -->
 <main id="page-content" role="main">
