@@ -6,8 +6,8 @@ branches:
   only:
     - master
 
-# Jekyll TravisCI settings
-# See: https://jekyllrb.com/docs/continuous-integration/travis-ci/ for more information.
+# Python TravisCI settings
+# See: https://docs.travis-ci.com/user/languages/python/ for more information.
 language: python
 python:
   - "3.6" # current default Python on Travis CI
@@ -16,17 +16,31 @@ python:
 
 # command to install dependencies
 install:
-  - pip install -q Django==$DJANGO_VERSION
-  - pip install -q django_ace
+  - pip install -r requirements.txt
 
-script:
-  - python manage.py makemigrations app
-  - python manage.py migrate
-  - python manage.py test app
+# Build Stages Order
+stages:
+  - run pylint
+  - app tests
 
-env:
-  - DJANGO_VERSION=3.0
+# Build Stages
+# If caching errors occur, please clear the cache on the Travis CI website.
+jobs:
+  include:
+    # This stage makes sure that our Python code styles are the same.
+    - stage: run pylint
+      script:
+        - pip install pylint
+        - pip install pylint-django
+        - pylint --load-plugins pylint_django app/
+    # This stage runs the Python tests.
+    - stage: app tests
+      script:
+        - python manage.py makemigrations app
+        - python manage.py migrate
+        - python manage.py test app
 
+# Cache
 cache:
   pip: true
   directories:
