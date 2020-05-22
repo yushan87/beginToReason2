@@ -9,10 +9,6 @@ branches:
 # Python TravisCI settings
 # See: https://docs.travis-ci.com/user/languages/python/ for more information.
 language: python
-python:
-  - "3.6" # current default Python on Travis CI
-  - "3.7"
-  - "3.8"
 
 # command to install dependencies
 install:
@@ -20,19 +16,30 @@ install:
 
 # Build Stages Order
 stages:
-  - run pylint
-  - app tests
+  - pylint
+  - test
+
+# command to run tests
+script: pytest
 
 # Build Stages
 # If caching errors occur, please clear the cache on the Travis CI website.
 jobs:
   include:
     # This stage makes sure that our Python code styles are the same.
-    - stage: run pylint
+    - stage: pylint
+      python:
+        - "3.6" # current default Python on Travis CI
+        - "3.7"
+        - "3.8"
       script:
         - pylint app/
     # This stage runs the Python tests.
-    - stage: app tests
+    - stage: test
+      python:
+        - "3.6" # current default Python on Travis CI
+        - "3.7"
+        - "3.8"
       script:
         - python manage.py makemigrations app
         - python manage.py migrate
