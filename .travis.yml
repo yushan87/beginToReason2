@@ -32,7 +32,7 @@ jobs:
       script:
         - pip install pylint
         - pip install pylint-django
-        - pylint --load-plugins pylint_django app/
+        - pylint app/
     # This stage runs the Python tests.
     - stage: app tests
       script:
