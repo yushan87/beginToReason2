@@ -31,7 +31,7 @@ limit-inference-results=100
 
 # List of plugins (as comma separated values of python module names) to load,
 # usually to register additional checkers.
-load-plugins=pylint_django,pylint_django.checkers.db_performance
+load-plugins=pylint_django,pylint_django.checkers.db_performance,pylint.extensions.docstyle,pylint.extensions.docparams
 
 # Pickle collected data for later comparisons.
 persistent=no
@@ -138,7 +138,8 @@ disable=print-statement,
         xreadlines-attribute,
         deprecated-sys-function,
         exception-escape,
-        comprehension-escape
+        comprehension-escape,
+        docstring-first-line-empty
 
 # Enable the message, report, category or checker with the given id(s). You can
 # either give multiple identifier separated by comma (,) or put this option
@@ -593,3 +594,18 @@ preferred-modules=
 # "BaseException, Exception".
 overgeneral-exceptions=BaseException,
                        Exception
+
+
+[PARAMETER DOCUMENTATION]
+
+# Whether to accept totally missing parameter documentation in the docstring of a function that has parameters.
+accept-no-param-doc=no
+
+# Whether to accept totally missing raises documentation in the docstring of a function that raises an exception.
+accept-no-raise-doc=no
+
+# Whether to accept totally missing return documentation in the docstring of a function that returns a statement.
+accept-no-return-doc=no
+
+# Whether to accept totally missing yields documentation in the docstring of a generator.
+accept-no-yields-doc=no
