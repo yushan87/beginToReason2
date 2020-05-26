@@ -1,6 +1,9 @@
 from django.db import models
 from django import forms
 from django_ace import AceWidget
+from django.contrib.auth.models import (
+	BaseUserManager, AbstractBaseUser
+)
 
 
 # Create your models here.
@@ -28,6 +31,20 @@ class Reference(models.Model):
 	def __str__(self):
 		return self.reference_key		
 
+class UserInformation(models.Model):
+	user_email = models.EmailField(max_length=320)
+	user_id = models.IntegerField(max_length=30)
+	user_name = models.TextField(max_length=30)
+
+	def __str__(self):
+		return self.user_id
+
+	@classmethod
+	def create(cls, email, name):
+		user = cls(email=email)
+		user = cls(name=name)
+		# do something with the book
+		return user
 
 
 

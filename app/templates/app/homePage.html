@@ -1,6 +1,6 @@
+{% extends "app/base_template.html" %}
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
 <link>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,25 +12,11 @@
 	<script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
 
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="{% url 'app:home' %}"><img src="{% static 'images/logo2.png' %}" width="40" height="40" ></a><a class="navbar-brand logo" href="{% url 'app:home' %}">RESOLVE</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-    </button>
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link " href="{% url 'app:tutor' %}"><i class="fas fa-code-branch"></i> TUTOR</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'app:login' %}"><i class="fas fa-sign-in-alt"></i> LOGIN</a>
-      </li>
-    </ul>
-  </div>
-</nav>
+<script type="application/javascript">
+        $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-light bg-light");
+</script>
 
-<body>
+{% block main_content %}
 <!--- Image Slider -->
 <div id="slides" class="carousel slide" data-ride="carousel">
     <ul class="carousel-indicators">
@@ -44,8 +30,8 @@
             <div class="carousel-caption">
                 <h1 class="display-2">Resolve</h1>
                 <h3>BeginToReason Interactive Tool</h3>
-                <a href="{% url 'app:tutor' %}" class="btn btn-outline-light btn-lg" role="button" aria-pressed="true">Begin Using Tutor</a>
-                <a href="{% url 'app:login' %}" class="btn btn-dark btn-lg" role="button" aria-pressed="true">Login</a>
+                <a href="https://www.cs.clemson.edu/resolve/" class="btn btn-outline-light btn-lg" role="button" aria-pressed="true">Learn More</a>
+                <a href="mailto:murali@clemson.edu" class="btn btn-dark btn-lg" role="button" aria-pressed="true">Contact Us</a>
             </div>
         </div>
         <div class="carousel-item">
@@ -60,75 +46,10 @@
 <!--- Jumbotron -->
 <div class="container-fluid">
     <div class="row jumbotron">
-        <div class="col-xs-12 col col-sm-12 col-md-9 col-lg-9 col-xl-10">
             <p class="lead">The RESOLVE verification vision is indeed ambitious.
                 We welcome professors, practitioners, and students to contribute and get involved in realizing the vision.
                 The RESOLVE project is a GitHub project.</p>
-        </div>
-        <div class="col-xs-12 col col-sm-12 col-md-3 col-lg-3 col-xl-2">
-            <a href="mailto:murali@clemson.edu"><button type="button" class="btn btn-light btn-lg">Contact Us</button></a>
-        </div>
-
     </div>
 </div>
 
-<!--- Two Column Section -->
-<div class="container-fluid padding">
-    <div class="row padding">
-        <div class="col-md-12 col-lg-6">
-            <h2>Welcome to the Clemson RESOLVE Software Research Group (RSRG) website</h2>
-            <p>The RESOLVE research effort is one of the longest running software engineering efforts in the USA.
-                It spans foundational, practical, and educational aspects of software engineering and computing.
-                The overall RESOLVE verification vision is that of a future in which no production software is
-                considered properly engineered unless it has been fully specified, and fully verified as satisfying these specifications.</p>
-            <p>The RSRG is directed by Murali Sitaraman, from the School of Computing at Clemson University.
-                The RESOLVE effort is funded in part by grants from the U. S. National Science Foundation (NSF),
-                the U. S. Department of Education, and the U. S. National Aeronautics and Space Administration (NASA).</p>
-            <br>
-            <a href="https://www.cs.clemson.edu/resolve/" class="btn btn-dark">Learn More</a>
-        </div>
-    </div>
-</div>
-<div class="carousel-inner">
-    <img src="{% static 'images/div.png' %}">
-</div>
-<!--- Fixed background -->
-<div class="row">
-        <div class="col-lg-1"></div>
-        <div class="col-lg-10">
-            <h1>RESOLVE...</h1>
-            <br><br>
-            <p>(REusable SOftware Language with VErification) is a programming and specification language designed
-                for verifying correctness of object oriented programs.</p>
-            <br>
-            <p>The RESOLVE language is designed from the ground up to facilitate mathematical reasoning.
-                As such, the language provides syntactic slots for assertions such as pre-post conditions that are capable of
-                abstractly describing a program's intended behavior. In writing these assertions, users are free to draw from
-                from a variety of pre-existing and user-defined mathematical theories containing fundamental axioms, definitions,
-                and results necessary/useful in establishing program correctness.</p>
-            <br>
-            <p>All phases of the verification process spanning verification condition (VC) generation to proving are performed
-                in-house, while RESOLVE programs are translated to Java and run on the JVM.</p>
-        </div>
-        <div class="col-lg-1"></div>
-</div>
-
-<div class="carousel-inner">
-    <img src="{% static 'images/div2.png' %}">
-</div>
-
-<!--- Footer -->
-<footer id="page-footer" class="footer w-100 py-2">
-		<div class="d-flex flex-column flex-md-row justify-content-md-around align-items-center" style="background-color: inherit;">
-			<div class="d-flex flex-row align-items-center px-2">
-				<img src="{% static 'images/rsrg-logo4.svg' %}" width="60" height="60" class="d-none d-sm-inline-flex mr-2" alt="Clemson RSRG Logo 2">
-				<div class="d-flex flex-column">
-					<div id="copyright">Copyright &#9400; 2020 Clemson RSRG. <span class="d-none d-sm-inline-flex">(Created with <a class="footer-link" href="https://www.djangoproject.com/" target="_blank">&nbsp;Django</a>)</span></div>
-					<div id="grants-institutions" class="pt-1">This research is funded in part by NSF grants CCF-1161916, DUE-1022941, DUE-1611714, DUE-1915334, DUE-1914667, and DUE-1915088.<br/> This is a joint effort involving Clemson University, Florida Atlantic University and Rose-Hulman Institute of Technology.</div>
-				</div>
-			</div>
-		</div>
-	</footer>
-
-</body>
-</html>
+{% endblock %}

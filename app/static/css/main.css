@@ -78,6 +78,10 @@ body {
     font-size: 1.1em !important;
 }
 
+.rightSide {
+  float: right;
+}
+
 .carousel-inner img {
     width: 100%;
     height: 100%;
