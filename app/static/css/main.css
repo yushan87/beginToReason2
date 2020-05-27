@@ -120,6 +120,9 @@ body {
     color: #fff;
     background: #ff8c5f;
     border-radius: 0;
+    height: 190px;
+    width: 100%;
+    text-align: center;
 }
 
 .padding {

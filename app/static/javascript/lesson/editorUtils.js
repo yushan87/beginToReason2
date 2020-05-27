@@ -11,7 +11,7 @@ let correctnessChecking = false; // A flag that indicates whether or not the che
 let lineErrorMap; // This contains error information for each line in the current file.
 let fontSize; // The current font size
 let time = new Date();
-let hasExplanation = false;
+let hasExplanation = true;
 let progressCounter = 0;
 let prevAnswers = []; //add to this and check
 

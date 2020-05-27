@@ -33,7 +33,7 @@ class Reference(models.Model):
 
 class UserInformation(models.Model):
 	user_email = models.EmailField(max_length=320)
-	user_id = models.IntegerField(max_length=30)
+	user_id = models.IntegerField()
 	user_name = models.TextField(max_length=30)
 
 	def __str__(self):

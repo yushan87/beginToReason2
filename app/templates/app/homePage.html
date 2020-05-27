@@ -12,10 +12,6 @@
 	<script src="https://use.fontawesome.com/releases/v5.0.8/js/all.js"></script>
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
 
-<script type="application/javascript">
-        $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-light bg-light");
-</script>
-
 {% block main_content %}
 <!--- Image Slider -->
 <div id="slides" class="carousel slide" data-ride="carousel">
@@ -29,9 +25,7 @@
             <img src="{% static 'images/h1.png' %}">
             <div class="carousel-caption">
                 <h1 class="display-2">Resolve</h1>
-                <h3>BeginToReason Interactive Tool</h3>
-                <a href="https://www.cs.clemson.edu/resolve/" class="btn btn-outline-light btn-lg" role="button" aria-pressed="true">Learn More</a>
-                <a href="mailto:murali@clemson.edu" class="btn btn-dark btn-lg" role="button" aria-pressed="true">Contact Us</a>
+                <h3>Verification & Reasoning Tutor</h3>
             </div>
         </div>
         <div class="carousel-item">
@@ -44,12 +38,9 @@
 </div>
 
 <!--- Jumbotron -->
-<div class="container-fluid">
-    <div class="row jumbotron">
-            <p class="lead">The RESOLVE verification vision is indeed ambitious.
-                We welcome professors, practitioners, and students to contribute and get involved in realizing the vision.
-                The RESOLVE project is a GitHub project.</p>
+    <div class="jumbotron">
+        <h1>Learn to reason through exercises using our smart code verification tutor</h1>
+        <h2 style="color: #30343f;">Not sure where to begin? <a href="{% url 'app:login' %}" class="btn btn-outline-light btn-lg" role="button" aria-pressed="true">Sign Up with Gmail</a></h2>
     </div>
-</div>
 
 {% endblock %}
