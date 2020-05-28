@@ -15,6 +15,24 @@ The RESOLVE language is designed from the ground up to facilitate *mathematical 
 
 All phases of the verification process spanning verification condition (VC) generation to proving are performed in-house, while RESOLVE programs are translated to Java and run on the JVM.
 
+## Installation and Running the Application
+
+### Requirements
+- ![Python Version](https://img.shields.io/pypi/pyversions/Django)
+- ![Django Version](https://img.shields.io/badge/django-3%2B-blue)
+
+### Steps
+1. Clone this repository: `git clone https://github.com/ClemsonRSRG/beginToReason2.git`
+2. In the root application folder, use the command listed below with either `dev-requirements.txt` (development + production) or `requirements.txt` (production only) to install the necessary dependencies. 
+   - `pip install -r <name of requirements>.txt`
+   - **Note:** `dev-requirements.txt` also installs the dependencies in `requirements.txt`, so no need to run both commands.
+3. Apply database migrations: `python manage.py migrate`
+4. To run the application: `python manage.py runserver`
+   - **Note 1:** This will use the default development settings in the repository. For production environments, please consult [Django Deployment Documentation](https://docs.djangoproject.com/en/3.0/howto/deployment/).
+   - **Note 2:** By default, your application will be running on port `8000`. Please consult the `urls.py` file under `begintoreason_django` (and the sub-applications' `urls.py`) for all links that can be visited in this application.
+   
+For any additional instructions on how to run a Django application, please consult the [Django Documentation](https://docs.djangoproject.com/en/3.0/).
+
 ## Authors and major contributors
 
 The creation and continual evolution of the RESOLVE language is owed to an ongoing joint effort between Clemson University, The Ohio State University, and countless educators and researchers from a variety of [other](https://www.cs.clemson.edu/resolve/about.html) institutions.
