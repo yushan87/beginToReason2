@@ -32,19 +32,10 @@ class Reference(models.Model):
 		return self.reference_key		
 
 class UserInformation(models.Model):
-	user_email = models.EmailField(max_length=320)
+	user_email = models.EmailField()
 	user_id = models.IntegerField()
-	user_name = models.TextField(max_length=30)
+	user_name = models.TextField()
 
-	def __str__(self):
-		return self.user_id
-
-	@classmethod
-	def create(cls, email, name):
-		user = cls(email=email)
-		user = cls(name=name)
-		# do something with the book
-		return user
 
 
 
