@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django_ace import AceWidget
 
-from .models import Lesson, Reference, Code_Template
+from .models import Lesson, Reference, Code_Template, UserInformation
 from .forms import LessonForm, TemplateForm
 
 
@@ -38,3 +38,4 @@ class ReferenceAdmin(admin.ModelAdmin):
 admin.site.register(Lesson,LessonAdmin)
 admin.site.register(Reference)
 admin.site.register(Code_Template,TemplateAdmin)
+admin.site.register(UserInformation)

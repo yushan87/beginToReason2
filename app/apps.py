@@ -4,7 +4,7 @@ This module is a mapping between URL path expressions to Python functions (your 
 from django.apps import AppConfig
 
 
-class BegintoReasonConfig(AppConfig):
+class BegintoreasonConfig(AppConfig):
     """
     The BeginToReasonConfig object stores the configuration for the BeginToReason sub-application.
     """

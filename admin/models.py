@@ -36,7 +36,8 @@ class UserInformation(models.Model):
 	user_id = models.IntegerField()
 	user_name = models.TextField()
 
-
+	def __str__(self):
+		return self.user_id
 
 
 
