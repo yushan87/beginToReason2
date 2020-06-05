@@ -138,3 +138,11 @@ developer.properties
 Icon?
 ehthumbs.db
 Thumbs.db
+
+
+######################
+# Node.js            #
+######################
+node_modules
+package-lock.json
+package.json
