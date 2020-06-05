@@ -4,6 +4,7 @@ from .models import Lesson, Reference
 
 # Create your tests here.
 
+
 class LessonModelTests(TestCase):
 	def test_add_multiple_references(self):
 		'''

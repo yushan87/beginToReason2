@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django_ace import AceWidget
 
-from .models import Lesson, Reference, Code_Template, UserInformation
+from .models import Lesson, Reference, CodeTemplate
 from .forms import LessonForm, TemplateForm
 
 
@@ -12,7 +12,7 @@ class RefInline(admin.StackedInline):
 
 
 class TemplateAdmin(admin.ModelAdmin):
-    model = Code_Template
+    model = CodeTemplate
     fields = ['template_name', 'template_code']
     form = TemplateForm
 
@@ -38,5 +38,4 @@ class ReferenceAdmin(admin.ModelAdmin):
 # Register your models here.
 admin.site.register(Lesson, LessonAdmin)
 admin.site.register(Reference)
-admin.site.register(Code_Template, TemplateAdmin)
-admin.site.register(UserInformation)
+admin.site.register(CodeTemplate, TemplateAdmin)

@@ -8,20 +8,22 @@ from django.contrib.auth.models import (
 
 # Create your models here.
 
-class Code_Template(models.Model):
+class CodeTemplate(models.Model):
 	template_name = models.CharField(max_length=30)
 	template_code = models.TextField(max_length=500)
 
 	def __str__(self):
 		return self.template_name
 
+
 class Lesson(models.Model):
 	lesson_name = models.CharField(max_length=30)
 	lesson_code = models.TextField(max_length=500)
-	template = Code_Template
+	template = CodeTemplate
 
 	def __str__(self):
 		return self.lesson_name
+
 
 class Reference(models.Model):
 	reference_key = models.CharField(max_length=30)
@@ -29,16 +31,7 @@ class Reference(models.Model):
 	lesson = models.ManyToManyField(Lesson, related_name='references')#, through= 'LessonReferences')
 	
 	def __str__(self):
-		return self.reference_key		
-
-class UserInformation(models.Model):
-	user_email = models.EmailField()
-	user_id = models.IntegerField()
-	user_name = models.TextField()
-
-	def __str__(self):
-		return self.user_id
-
+		return self.reference_key
 
 
 '''
@@ -47,6 +40,7 @@ class LessonForm(forms.Form):
 		model = Reference.lesson.through
 		widgets = forms.ManyToManyRawIdWidget()
 		fields = '__all__'
+		
 		
 class LessonReferences(models.Model):
 	class Meta:
