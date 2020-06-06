@@ -33,7 +33,7 @@ body {
 }
 
 #page-header-top {
-    background-color: #ff8c5f !important;
+    background-color: #ff5512 !important;
 }
 
 #site-title {
@@ -53,7 +53,7 @@ body {
 
 #page-footer .footer-link {
     font-size: 1rem;
-    color: #ff8c5f !important;
+    color: #ff5512 !important;
     text-decoration: none;
 }
 
@@ -118,7 +118,7 @@ body {
 .jumbotron {
     padding: 1rem;
     color: #fff;
-    background: #ff8c5f;
+    background: #ff5512;
     border-radius: 0;
     height: 190px;
     width: 100%;
@@ -147,7 +147,7 @@ body {
 }
 
 .ace-chaos .ace_keyword.ace_operator {
-    color: #ff8c5f;
+    color: #ff5512;
 }
 
 .ace-chaos .ace_keyword {
