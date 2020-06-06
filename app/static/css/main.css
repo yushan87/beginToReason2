@@ -79,7 +79,7 @@ body {
 }
 
 .rightSide {
-  float: right;
+    float: right;
 }
 
 .carousel-inner img {
@@ -116,13 +116,13 @@ body {
 }
 
 .jumbotron {
+    width: 100%;
+    height: 190px;
     padding: 1rem;
     color: #fff;
+    text-align: center;
     background: #ff5512;
     border-radius: 0;
-    height: 190px;
-    width: 100%;
-    text-align: center;
 }
 
 .padding {
