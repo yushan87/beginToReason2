@@ -16,4 +16,4 @@ def profile(request):
 
 
 def logout(request):
-    return render(request, "accounts/logout.html")
+    return

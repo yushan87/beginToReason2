@@ -141,6 +141,6 @@ STATIC_URL = '/static/'
 
 LOGIN_URL = '/auth/login/google-oauth2/'
 
-LOGIN_REDIRECT_URL = '/app'
-LOGOUT_REDIRECT_URL = '/app'
+LOGIN_REDIRECT_URL = '/accounts/profile'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'

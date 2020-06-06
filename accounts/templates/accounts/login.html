@@ -63,7 +63,7 @@
         <br>
         <br>
         {% if user.is_authenticated %}
-      <p>Logged as {{ user.username }}</p>
+      <p>Logged as {{ user.email }}</p>
       <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Logout</a>
     {% else %}
       <a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">
