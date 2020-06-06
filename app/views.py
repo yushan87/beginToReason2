@@ -8,4 +8,7 @@ def home(request):
 
 
 def tutor(request):
-    return render(request, "app/lesson_template.html", {'content': "Lessons goes here!"})
+    if request.user.is_authenticated:
+        return render(request, "app/lesson_template.html")
+    else:
+        return render(request, "accounts/login.html")
