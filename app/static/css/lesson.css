@@ -2,7 +2,7 @@
 #page-content {
     position: relative;
     top: 0;
-    bottom: 100px;
+    bottom: 60px;
     height: calc(100vh - 156px);
     overflow: hidden;
 }

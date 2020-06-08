@@ -31,28 +31,28 @@ jobs:
     - stage: pylint
       python: "3.8"
       script:
-        - pylint app/
+        - pylint app/ accounts/
     # This stage runs the Python tests using Python 3.6.
     - stage: test
       python: "3.6"
       script:
-        - python manage.py makemigrations app
+        - python manage.py makemigrations app accounts
         - python manage.py migrate
-        - python manage.py test app
+        - python manage.py test app accounts
     # This stage runs the Python tests using Python 3.7.
     - stage: test
       python: "3.7"
       script:
-        - python manage.py makemigrations app
+        - python manage.py makemigrations app accounts
         - python manage.py migrate
-        - python manage.py test app
+        - python manage.py test app accounts
     # This stage runs the Python tests using Python 3.8.
     - stage: test
       python: "3.8"
       script:
-        - python manage.py makemigrations app
+        - python manage.py makemigrations app accounts
         - python manage.py migrate
-        - python manage.py test app
+        - python manage.py test app accounts
 
 # Cache
 cache:

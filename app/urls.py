@@ -12,5 +12,4 @@ app_name = 'app'
 urlpatterns = [
     path('', views.home, name='home'),
     path('tutor', views.tutor, name='tutor'),
-    path('login', views.login, name='login')
 ]

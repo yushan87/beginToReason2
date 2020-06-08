@@ -8,10 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    <title>BeginToReason2</title>
+    <title>Resolve</title>
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{% static 'images/logo2.png' %}">
+    <link rel="icon" type="image/png" href="{% static 'images/resolve_logo_1.png' %}">
 
     <!-- CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
@@ -26,65 +26,66 @@
     {% endblock %}
 </head>
 <body>
-<!-- JavaScript Libraries -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
-        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
-        crossorigin="anonymous"></script>
-{% block body_js %}
-{% endblock %}
-
-<!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="{% url 'app:home' %}"><img src="{% static 'images/logo2.png' %}" width="40"
-                                                             height="40"></a><a class="navbar-brand logo"
-                                                                                href="{% url 'app:home' %}">RESOLVE</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a class="nav-link active" href="{% url 'app:tutor' %}"><i class="fas fa-code-branch"></i> TUTOR</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'app:login' %}"><i class="fas fa-sign-in-alt"></i> LOGIN</a>
-            </li>
-        </ul>
-    </div>
-</nav>
-
-<!-- Main Content Block -->
-<main id="page-content" role="main">
-    {% block main_content %}
+    <!-- JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+            integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+            integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+            integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+            crossorigin="anonymous"></script>
+    {% block body_js %}
     {% endblock %}
-</main>
 
-<!-- Page Footer -->
-<footer id="page-footer" class="footer w-100 py-2 fixed-bottom">
-    <div class="d-flex flex-column flex-md-row justify-content-md-around align-items-center fixed-bottom"
-         style="background-color: inherit;">
-        <div class="d-flex flex-row align-items-center px-2">
-            <img src="{% static 'images/rsrg-logo4.svg' %}" width="60" height="60" class="d-none d-sm-inline-flex mr-2"
-                 alt="Clemson RSRG Logo 2">
-            <div class="d-flex flex-column">
-                <div id="copyright">Copyright &#9400; 2020 Clemson RSRG. <span class="d-none d-sm-inline-flex">(Created with <a
-                        class="footer-link" href="https://www.djangoproject.com/"
-                        target="_blank">&nbsp;Django</a>)</span></div>
-                <div id="grants-institutions" class="pt-1">This research is funded in part by NSF grants CCF-1161916,
-                    DUE-1022941, DUE-1611714, DUE-1915334, DUE-1914667, and DUE-1915088.<br/> This is a joint effort
-                    involving Clemson University, Florida Atlantic University and Rose-Hulman Institute of Technology.
+    <!-- Navigation -->
+    <nav id="navbarColor" class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="{% url 'app:home' %}">
+            <img src="{% static 'images/resolve_logo_1.png' %}" width="40" height="40" >
+        </a>
+        <a class="navbar-brand logo" href="{% url 'app:home' %}">RESOLVE</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li id="tutor" class="nav-item">
+                    <a class="nav-link " href="{% url 'app:tutor' %}"><i class="fas fa-code-branch"></i> TUTOR</a>
+                </li>
+            </ul>
+            <div class="form-inline navbar-nav">
+                <li id="login" class="nav-item">
+                    <a id="logged" class="nav-link" href="{% url 'accounts:login' %}"><i class="fas fa-sign-in-alt"></i> LOGIN</a>
+                </li>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Block -->
+    <main id="page-content" role="main">
+        {% block main_content %}
+        {% endblock %}
+    </main>
+
+    <!-- Page Footer -->
+    <footer id="page-footer" class="footer w-100 py-2 fixed-bottom">
+        <div class="d-flex flex-column flex-md-row justify-content-md-around align-items-center fixed-bottom" style="background-color: inherit;">
+            <div class="d-flex flex-row align-items-center px-2">
+                <img src="{% static 'images/resolve_logo_2.png' %}" width="60" height="60" class="d-none d-sm-inline-flex mr-2" alt="Clemson RSRG Logo 2">
+                <div class="d-flex flex-column">
+                    <div id="copyright">Copyright &#9400; 2020 Clemson RSRG.
+                        <span class="d-none d-sm-inline-flex">(Created with <a class="footer-link" href="https://www.djangoproject.com/" target="_blank">&nbsp;Django</a>)</span>
+                    </div>
+                    <div id="grants-institutions" class="pt-1">
+                        This research is funded in part by NSF grants CCF-1161916,
+                        DUE-1022941, DUE-1611714, DUE-1915334, DUE-1914667, and DUE-1915088.<br/> This is a joint effort
+                        involving Clemson University, Florida Atlantic University and Rose-Hulman Institute of Technology.
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</footer>
+    </footer>
 </body>
 
 </html>

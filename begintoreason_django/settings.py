@@ -27,11 +27,14 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# client keys and secret for google auth
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '440772211828-t27jfq6nq5sa75aueb7e4uknd67lhrin.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'QitezbEq7hPQWRUod9-Tg90G'
 
 # Application definition
 
 INSTALLED_APPS = [
-    'app.apps.BegintoReasonConfig',
+    'app.apps.BegintoreasonConfig',
     'django_ace',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,7 +42,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'accounts',
+    'social_django',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,6 +90,14 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # google oauth2
+    'social_core.backends.google.GoogleOAuth2',
+]
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -120,3 +136,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGIN_URL = '/auth/login/google-oauth2/'
+
+LOGIN_REDIRECT_URL = '/accounts/profile'
+LOGOUT_REDIRECT_URL = '/accounts/login/'
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
