@@ -31,7 +31,7 @@ jobs:
     - stage: pylint
       python: "3.8"
       script:
-        - pylint app/
+        - pylint app/ accounts/
     # This stage runs the Python tests using Python 3.6.
     - stage: test
       python: "3.6"
