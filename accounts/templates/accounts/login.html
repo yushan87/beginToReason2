@@ -66,8 +66,8 @@
       <p>Logged as {{ user.email }}</p>
       <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Logout</a>
     {% else %}
-      <a class="btn btn-primary" href="{% url 'social:begin' 'google-oauth2' %}">
-        Login
+      <a class="" href="{% url 'social:begin' 'google-oauth2' %}">
+        <input type="image" src="{% static 'images/google.png' %}" class="center" width="240" height="55"/>
       </a>
     {% endif %}
     </div>

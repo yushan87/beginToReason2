@@ -1,6 +1,6 @@
 """
-TODO: Need to fill in the correct information for this module after
-      we remove experimental things that don't work.
+This file contains templates for the database tables related to the lesson portion of the application
+To create a new item in a database, a new instance of a model will be made
 """
 from django.db import models
 
