@@ -14,13 +14,20 @@
 <script src="{% static 'javascript/lesson/mode-resolve.js' %}"></script>
 <script src="{% static 'javascript/lesson/editorUpdate.js' %}"></script>
 
+<script src="{% static 'javascript/sessionRecording/sessionRecording.api.js' %}"></script>
+<script src="{% static 'javascript/sessionRecording/sessionRecording.utils.js' %}"></script>
+<script src="{% static 'javascript/sessionRecording/speechToText.utils.js' %}"></script>
+
 <script type="application/javascript">
     $(document).ready(function () {
         createEditor();
         $("#next").attr("disabled", "disabled");
         $("#tutor").attr("class", "nav-item active");
-        $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark")
+        $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
 
+        // session recording and transcribing
+        setupRecording(); // for recording a session
+        transcribeAudio(); // for transcribing audio
     });
 </script>
 {% endblock %}
