@@ -1,0 +1,87 @@
+/* Google Fonts */
+@import url("https://fonts.googleapis.com/css?family=Oswald");
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+/* General CSS */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-family: "Roboto", Helvetica, Arial, sans-serif;
+}
+
+/* Header-Related CSS */
+#page-header {
+    position: sticky;
+    top: 0;
+    z-index: 1071;
+    min-height: 90px;
+    background-color: #3a4958 !important;
+}
+
+#page-header .nav-link {
+    font-size: 1rem;
+    color: #d4c99e !important;
+}
+
+#page-header .nav-link:hover {
+    color: #337ab7 !important;
+}
+
+#page-header .navbar-brand {
+    color: #fff !important;
+}
+
+#page-header .navbar-brand:hover {
+    color: #337ab7 !important;
+}
+
+#site-title {
+    font-family: "Oswald", Helvetica, Arial, sans-serif;
+    font-size: 1.75rem;
+    font-weight: 200 !important;
+}
+
+#page-header .dropdown-menu {
+    min-width: 0;
+}
+
+#page-header .dropdown-item {
+    color: #337ab7 !important;
+}
+
+#page-header .dropdown-item:hover {
+    color: #fff !important;
+    background-color: #3a4958 !important;
+    opacity: 0.15;
+}
+
+#page-header .btn-auth {
+    color: #d4c99e !important;
+    border-color: #d4c99e !important;
+}
+
+#page-header .btn-auth:hover {
+    color: #337ab7 !important;
+    background-color: #d4c99e !important;
+    border-color: #d4c99e !important;
+}
+
+/* Footer-Related CSS */
+#page-footer {
+    height: 90px;
+    color: #fdfdfd !important;
+    background-color: #86898c !important;
+}
+
+#page-footer .footer-link {
+    font-size: 1rem;
+    color: #d4c99e !important;
+    text-decoration: none;
+}
+
+#page-footer .footer-link:hover {
+    color: #337ab7 !important;
+}
