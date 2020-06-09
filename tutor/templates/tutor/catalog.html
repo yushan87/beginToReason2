@@ -3,7 +3,7 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <link rel="stylesheet" href="{% static 'css/fade.css' %}">
 {% endblock %}
 
@@ -19,16 +19,7 @@
             <div class="card-body">
                 <img class="mb-4" src="{% static 'other_images/resolve_logo_3.png' %}" width="300" height="125"
                      alt="RSRG Logo 3">
-                {% if user.is_authenticated %}
-                    <h2 class="card-title mb-3">Logged in as {{ user.email }}</h2>
-                    <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Logout</a>
-                {% else %}
-                    <h2 class="card-title mb-3">Log In to BeginToReason</h2>
-                    <a class="" href="{% url 'social:begin' 'google-oauth2' %}">
-                        <input type="image" src="{% static 'other_images/google.png' %}" width="240"
-                               height="55" alt="Sign in with Google"/>
-                    </a>
-                {% endif %}
+                <h2 class="card-title">Lesson plan catalog page coming soon</h2>
             </div>
         </div>
     </div>

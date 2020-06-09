@@ -1,5 +1,5 @@
 """
-This file contains custom forms used to collect the information needed to create a model
+This module contains custom forms used to collect the information needed to create a model.
 """
 from django import forms
 

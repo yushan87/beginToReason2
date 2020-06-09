@@ -48,7 +48,7 @@
         </a>
         <ul class="navbar-nav flex-row align-items-center text-center">
             <li class="nav-item ml-3">
-                <a class="nav-link pb-0" href="#">Catalog</a>
+                <a class="nav-link pb-0" href="{% url 'tutor:catalog' %}">Catalog</a>
             </li>
             {% block header_navigation_links %}
             {% endblock %}
@@ -72,7 +72,7 @@
                     </button>
                     <div class="dropdown-menu dropdown-menu-right m-0" aria-labelledby="accountDropdownButton">
                         <a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a>
-                        <a class="dropdown-item" href="#">Account Settings</a>
+                        <a class="dropdown-item" href="{% url 'accounts:settings' %}">Account Settings</a>
                         <a class="dropdown-item" href="{% url 'accounts:logout' %}">Log out</a>
                     </div>
                 </li>
