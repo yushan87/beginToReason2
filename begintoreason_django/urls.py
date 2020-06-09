@@ -20,8 +20,13 @@ from core import views
 urlpatterns = [
     # Our own applications
     path('', views.home, name='index'),
-    path('app/', include('app.urls', namespace='app')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
+    path('data_analysis/', include('data_analysis.urls', namespace='data_analysis')),
+    path('educator/', include('educator.urls', namespace='educator')),
+    path('think_aloud/', include('think_aloud.urls', namespace='think_aloud')),
+    path('tutor/', include('tutor.urls', namespace='tutor')),
+
+    # Django admin
     path('admin/', admin.site.urls),
 
     # External Plugins

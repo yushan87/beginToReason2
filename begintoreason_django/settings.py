@@ -44,9 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     # Our own applications
-    'core',
-    'app',
     'accounts',
+    'core',
+    'data_analysis',
+    'educator',
+    'think_aloud',
+    'tutor',
 
     # External Plugins
     'social_django',

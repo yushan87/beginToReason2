@@ -33,7 +33,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('reference_key', models.CharField(max_length=30)),
                 ('reference_text', models.TextField(max_length=250)),
-                ('lesson', models.ManyToManyField(related_name='references', to='app.Lesson')),
+                ('lesson', models.ManyToManyField(related_name='references', to='tutor.Lesson')),
             ],
         ),
     ]

@@ -1,14 +1,11 @@
 /* Tutorial Layout-Related CSS */
 #page-content {
-    position: relative;
-    top: 0;
-    bottom: 60px;
-    height: calc(100vh - 156px);
+    height: calc(100vh - 180px);
     overflow: hidden;
 }
 
 #tutorialCol {
-    height: calc(100vh - 156px);
+    height: calc(100vh - 180px);
 }
 
 #tutorialContent {
@@ -49,6 +46,34 @@
     font-size: 130%;
     text-align: center;
     text-transform: uppercase;
+}
+
+.btn-dark {
+    background-color: #30343f;
+}
+
+.btn-dark:hover {
+    background-color: #30343f;
+    border: 1px solid #30343f;
+}
+
+.ace-chaos .ace_gutter-cell.ace_correct {
+    padding-left: 0;
+    color: #000;
+    background: #58c554;
+    border-left: none;
+}
+
+.tool-back {
+    background: #30343f;
+}
+
+.ace-chaos .ace_keyword.ace_operator {
+    color: #ff5512;
+}
+
+.ace-chaos .ace_keyword {
+    color: #577590;
 }
 
 /* ACE Editor-Related CSS */

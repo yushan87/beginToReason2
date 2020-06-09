@@ -1,19 +1,7 @@
 """
-This module is where we create and keep track of all the Django views.
+This module contains our Django views for the "tutor" application.
 """
 from django.shortcuts import render
-
-
-def home(request):
-    """function home This function handles the view for the index page of the application.
-
-    Args:
-        request (HTTPRequest): A http request object created automatically by Django.
-
-    Returns:
-        HttpResponse: A generated http response object to the request.
-    """
-    return render(request, "app/homePage.html")
 
 
 def tutor(request):
@@ -27,6 +15,6 @@ def tutor(request):
                       the user is authenticated.
     """
     if request.user.is_authenticated:
-        return render(request, "app/lesson_template.html")
+        return render(request, "tutor/lesson_template.html")
     else:
         return render(request, "accounts/login.html")
