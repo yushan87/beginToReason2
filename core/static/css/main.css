@@ -9,7 +9,7 @@ html {
 }
 
 body {
-    font-family: "Roboto", Helvetica, Arial, sans-serif;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* Header-Related CSS */
@@ -39,7 +39,7 @@ body {
 }
 
 #site-title {
-    font-family: "Oswald", Helvetica, Arial, sans-serif;
+    font-family: Oswald, Helvetica, Arial, sans-serif;
     font-size: 1.75rem;
     font-weight: 200 !important;
 }
