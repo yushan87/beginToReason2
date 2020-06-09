@@ -1,4 +1,4 @@
 /* Main Layout-Related CSS */
 #page-content {
-    min-height: calc(100vh - 180px);
+    min-height: calc(100vh - 180px - 1rem);
 }
