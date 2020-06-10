@@ -1,0 +1,24 @@
+/* Main Layout-Related CSS */
+#page-content {
+    min-height: calc(100vh - 160px);
+}
+
+#page-content a {
+    text-decoration: none;
+}
+
+#page-content .jumbotron {
+    color: #fdfdfd !important;
+    background-color: #4c6085 !important;
+}
+
+#page-content .btn-get-started {
+    color: #d4c99e !important;
+    border-color: #d4c99e !important;
+}
+
+#page-content .btn-get-started:hover {
+    color: #fdfdfd !important;
+    background-color: #d4c99e !important;
+    border-color: #d4c99e !important;
+}

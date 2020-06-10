@@ -1,6 +1,7 @@
 """
-This file contains templates for the database tables related to the user account portion of the application
-To create a new item in a database, a new instance of a model will be made
+This module contains model templates for the "accounts" application. In particular, it contains templates for the
+database tables related to the user account information. When we create a new item in the database,
+a new instance of a model will be made.
 """
 from django.db import models
 

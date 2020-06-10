@@ -15,11 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.conf import settings
+from core import views
 
 urlpatterns = [
-    path('app/', include('app.urls', namespace='app')),
+    # Our own applications
+    path('', views.home, name='index'),
     path('accounts/', include('accounts.urls', namespace='accounts')),
+    path('data_analysis/', include('data_analysis.urls', namespace='data_analysis')),
+    path('educator/', include('educator.urls', namespace='educator')),
+    path('think_aloud/', include('think_aloud.urls', namespace='think_aloud')),
+    path('tutor/', include('tutor.urls', namespace='tutor')),
+
+    # Django admin
     path('admin/', admin.site.urls),
-    path('', include('social_django.urls', namespace='social')),
+
+    # External Plugins
+    path('', include('social_django.urls', namespace='social'))
 ]

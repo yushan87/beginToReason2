@@ -34,8 +34,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'QitezbEq7hPQWRUod9-Tg90G'
 # Application definition
 
 INSTALLED_APPS = [
-    'app.apps.BegintoreasonConfig',
-    'django_ace',
+    # Django Applications
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -43,8 +42,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+
+    # Our own applications
     'accounts',
+    'core',
+    'data_analysis',
+    'educator',
+    'think_aloud',
+    'tutor',
+
+    # External Plugins
     'social_django',
+    'django_ace'
 ]
 
 SITE_ID = 1
@@ -91,7 +100,7 @@ DATABASES = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    # Needed to login by username in Django admin, regardless of `allauth`
+    # Needed to login by username in Django admin
     'django.contrib.auth.backends.ModelBackend',
 
     # google oauth2
@@ -137,8 +146,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Python Social Auth
+# https://python-social-auth.readthedocs.io/en/latest/
+
 LOGIN_URL = '/auth/login/google-oauth2/'
 
 LOGIN_REDIRECT_URL = '/accounts/profile'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+
+LOGOUT_REDIRECT_URL = '/'
+
 SOCIAL_AUTH_URL_NAMESPACE = 'social'

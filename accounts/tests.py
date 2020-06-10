@@ -1,5 +1,5 @@
 """
-This module is a stores all of our unit and functional tests for this sub-application.
+This module contains our unit and functional tests for the "accounts" application.
 """
 
 # Create your tests here.

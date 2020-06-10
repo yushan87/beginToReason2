@@ -1,5 +1,6 @@
 """
-This file generates the admin db tables related to accounts
+This module registers the models we created for the "accounts" application. After registering
+the model, the data will be accessible through Django's admin functionality.
 """
 from django.contrib import admin
 
