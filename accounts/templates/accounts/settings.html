@@ -1,4 +1,4 @@
-{% extends "core/base_template.html" %}
+{% extends "core/base.html" %}
 {% load static %}
 
 {% block css %}
@@ -8,9 +8,11 @@
 {% endblock %}
 
 {% block header_navigation_links %}
-    <li class="nav-item ml-3">
-        <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
-    </li>
+    {% if user.is_authenticated %}
+        <li class="nav-item ml-3">
+            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
+        </li>
+    {% endif %}
 {% endblock %}
 
 {% block main_content %}

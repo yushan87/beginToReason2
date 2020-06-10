@@ -1,4 +1,4 @@
-{% extends "core/base_template.html" %}
+{% extends "core/base.html" %}
 {% load static %}
 
 {% block css %}
@@ -33,9 +33,11 @@
 {% endblock %}
 
 {% block header_navigation_links %}
-    <li class="nav-item ml-3">
-        <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
-    </li>
+    {% if user.is_authenticated %}
+        <li class="nav-item ml-3">
+            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
+        </li>
+    {% endif %}
 {% endblock %}
 
 {% block main_content %}
@@ -118,11 +120,10 @@
 
             <div class="col-6 p-0">
                 <div id="editorCol" class="d-flex flex-column h-100">
-
                     <!-- Ace Editor -->
                     <div id="editor" class="flex-grow-1 p-0"></div>
 
-                    <!-- error card -->
+                    <!-- Error Card -->
                     <div id="compilerResult"></div>
 
                     <!-- Editor Toolbar -->

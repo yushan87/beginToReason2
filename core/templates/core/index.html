@@ -1,4 +1,4 @@
-{% extends "core/base_template.html" %}
+{% extends "core/base.html" %}
 {% load static %}
 
 {% block css %}
@@ -6,9 +6,11 @@
 {% endblock %}
 
 {% block header_navigation_links %}
-    <li class="nav-item ml-3">
-        <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
-    </li>
+    {% if user.is_authenticated %}
+        <li class="nav-item ml-3">
+            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
+        </li>
+    {% endif %}
 {% endblock %}
 
 {% block main_content %}
@@ -25,42 +27,6 @@
     <!-- Introduction to BeginToReason -->
     <div class="container">
         <h2>What is BeginToReason?</h2>
-        <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel nibh in nisl finibus mattis sed eget
-            urna. Cras feugiat sem quis euismod iaculis. Morbi vehicula et erat at tempor. Maecenas ac consequat nisi,
-            vitae faucibus sapien. Nam quis est risus. Praesent pellentesque pulvinar varius. Proin molestie, sapien in
-            viverra finibus, elit dui accumsan nunc, ut accumsan dolor libero id est. Aliquam erat volutpat. Ut nec
-            dolor imperdiet dui fermentum dapibus. Maecenas sit amet odio quis purus vehicula tincidunt. Nulla tincidunt
-            leo aliquam condimentum malesuada. Pellentesque a tempus tortor. Donec ullamcorper tellus turpis.</p>
-        <p>
-            Maecenas congue vitae purus ultrices sollicitudin. Pellentesque eu diam nec justo euismod viverra eget at
-            neque. Pellentesque sit amet luctus felis, sit amet condimentum est. Lorem ipsum dolor sit amet, consectetur
-            adipiscing elit. Nullam elit lectus, condimentum at erat non, placerat congue purus. Integer ut sagittis
-            ipsum. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae; Cras nibh
-            tortor, posuere ultricies aliquet in, gravida vitae elit. Praesent tempor sagittis augue, viverra auctor
-            arcu molestie quis. Mauris tincidunt ut magna nec hendrerit. Nullam hendrerit quis lectus sit amet ornare.
-            Integer elementum dui vitae dui bibendum gravida.</p>
-        <p>
-            Mauris purus mauris, molestie ac condimentum eu, dictum quis justo. Aenean dignissim dui id sagittis
-            aliquet. Vestibulum erat ex, ultrices ac mauris id, finibus hendrerit dolor. Phasellus ut felis fringilla,
-            tempus libero id, suscipit metus. Donec volutpat, arcu ac feugiat congue, nulla orci mattis lorem, a tempus
-            ipsum metus ut tortor. Praesent rhoncus, diam eget aliquam feugiat, est quam sollicitudin orci, lobortis
-            consequat dolor augue quis metus. Praesent feugiat rutrum lacus. Integer feugiat mi lectus, ut luctus justo
-            rhoncus ac. Phasellus pellentesque ex sit amet metus commodo, in ultricies risus aliquet. Phasellus euismod
-            augue vel nunc rhoncus, ut imperdiet lectus facilisis.</p>
-        <p>
-            Suspendisse ullamcorper metus a dictum eleifend. Phasellus congue diam metus, ac congue ex pretium et. Ut
-            dapibus laoreet commodo. Praesent odio quam, accumsan nec blandit sit amet, efficitur quis turpis. Donec sed
-            elementum dolor, at porttitor dui. Ut id urna sed sem egestas porta. Curabitur finibus elementum enim, quis
-            molestie sem auctor sed. Donec at pretium erat, in gravida dui. Donec ornare vel lorem eu luctus.</p>
-        <p>
-            Proin lectus neque, cursus vel semper ac, scelerisque vel eros. In sodales nulla quis nibh scelerisque, in
-            interdum ante laoreet. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia
-            curae; Etiam sit amet urna enim. Ut finibus maximus orci, vel ornare ex laoreet at. Ut fermentum est sit
-            amet lectus rhoncus, eu fringilla mauris dignissim. Integer dapibus, ipsum vitae tincidunt rutrum, nisl
-            sapien tristique eros, eu dapibus orci diam sed nisl. Etiam vitae ultrices mi. Donec et vulputate lacus.
-            Vestibulum non velit sit amet sem sagittis consequat. Maecenas ac nulla tortor. Nam a maximus ex. Morbi
-            ullamcorper sem vel dolor scelerisque vulputate. Praesent sem libero, lacinia eu aliquam congue, convallis
-            id urna. Sed consequat diam id bibendum congue.</p>
+        {% lorem 5 p %}
     </div>
 {% endblock %}

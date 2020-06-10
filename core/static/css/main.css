@@ -17,7 +17,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 1071;
-    min-height: 90px;
+    min-height: 70px;
     background-color: #3a4958 !important;
 }
 
