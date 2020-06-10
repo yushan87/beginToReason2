@@ -31,11 +31,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'app.apps.BegintoreasonConfig',
+    'app.apps.BegintoReasonConfig',
     'django_ace',
     'django.contrib.admin',
-    'django.contrib.auth',  #core authentication framework
-    'django.contrib.contenttypes',  #Django content type system (allows permissions to be associated with models).
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
@@ -43,10 +43,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware', #Manages sessions across requests
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',  #Associates users with requests using sessions.
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -78,9 +78,7 @@ WSGI_APPLICATION = 'begintoreason_django.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'beginToReason_testLITE',
-        'USER': 'admin',
-        'PASSWORD': '#S=<E>oS',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 

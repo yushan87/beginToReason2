@@ -4,11 +4,35 @@
 // Global Variables //
 //////////////////////
 
-var aceEditor; // This is the ACE Editor embedded to the page.
-var editorContent = ""; // Content to be displayed in ACE Editor
-var correctnessChecking = false; // A flag that indicates whether or not the check correctness button has been clicked.
-var fontSize; // The current font size
-var time = new Date();
+let aceEditor; // This is the ACE Editor embedded to the page.
+let editorContent = ""; // Content to be displayed in ACE Editor
+let Range;
+let correctnessChecking = false; // A flag that indicates whether or not the check correctness button has been clicked.
+let lineErrorMap; // This contains error information for each line in the current file.
+let fontSize; // The current font size
+let time = new Date();
+let hasExplanation = false;
+let progressCounter = 0;
+let prevAnswers = []; //add to this and check
+
+
+///////////////////////////
+// Arrays in Place of DB //
+///////////////////////////
+let codeArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
+let activityArray = ["<p>Please complete the <b>Confirm</b> assertion(s) by entering an expression for /* expression */, then check correctness.</p>", "<p>Please complete the <b>Confirm</b> assertion(s) by choosing a conditional operator to replace the /* conditional */, then check correctness.</p>", "<p>Please complete the <b>Confirm</b> assertion(s) by entering an expression for /* expression */, then check correctness.</p>"];
+let refArray = ["<p><code>:= </code> is the <em>assignment operator</em></p>", "<p>At the place marked by <b>Remember</b>, values of variables such as I and J are assumed to be #I and #J.</p><p>Conditional operators are:<br />=, &lt;, &lt;=, &gt;, &gt;=</p>", "<p>At the place marked by <b>Remember</b>, values of variables such as I and J are assumed to be #I and #J.</p>"];
+let sucArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = 3;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I > #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I + 1;\n    end Main;\nend BeginToReason;"];
+let failArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = 2;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I < #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I;\n    end Main;\nend BeginToReason;"];
+let trivialArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
+
+let codeCounter = 0;
+let activityCounter = 0;
+let refCounter = 0;
+let sucCounter = 0;
+let failCounter = 0;
+let trivialCounter = 0;
+
 
 ///////////////////////////////////////
 // Main ACE Editor-Related Functions //
@@ -19,17 +43,26 @@ var time = new Date();
  */
 function createEditor() {
     // RESOLVE mode
-    var ResolveMode = ace.require("ace/mode/resolve").Mode;
+    let ResolveMode = ace.require("ace/mode/resolve").Mode;
+    Range = ace.require("ace/range").Range;
 
     // Basic editor settings
     aceEditor = ace.edit("editor");
-    aceEditor.setTheme("ace/theme/tomorrow_night");
+    aceEditor.setTheme("ace/theme/chaos"); //chaos or tomorrow_night_bright
     fontSize = 20;
     aceEditor.setFontSize(fontSize);
 
     // Store the content for future use
-    editorContent = "Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;";
+    editorContent = codeArray[codeCounter];
     aceEditor.session.setValue(editorContent);
+    document.getElementById("activity").innerHTML = activityArray[activityCounter];
+    document.getElementById("referenceMaterial").innerHTML = refArray[refCounter];
+    document.getElementById("about").innerHTML = "This system uses simple activities to understand the difficulties students face in reasoning logically about code, so that instruction can be improved.";
+    $("#prev").attr("disabled", "disabled");
+    document.getElementById("resultCard").style.display = "none";
+
+    //add a check for if need explaination and set hasExplanation
+    //hide or unhide explaination box
 
     // Set this to RESOLVE mode
     aceEditor.getSession().setMode(new ResolveMode());
@@ -56,7 +89,7 @@ function clearAlertBox() {
  */
 function createAlertBox(hasError, message) {
     // New HTML Object #1: Alert Box
-    var alertDiv = document.createElement("div");
+    let alertDiv = document.createElement("div");
     alertDiv.setAttribute("id", "resultAlertBox");
 
     // Change alert box color depending if it has error
@@ -71,14 +104,14 @@ function createAlertBox(hasError, message) {
     alertDiv.setAttribute("aria-hidden", "true");
 
     // New HTML Object #2: Close Button
-    var closeButton = document.createElement("button");
+    let closeButton = document.createElement("button");
     closeButton.setAttribute("type", "button");
     closeButton.setAttribute("class", "close");
     closeButton.setAttribute("data-dismiss", "alert");
     closeButton.setAttribute("aria-label", "Close");
 
     // New HTML Object #3: Close Icon
-    var closeIconSpan = document.createElement("span");
+    let closeIconSpan = document.createElement("span");
     closeIconSpan.setAttribute("aria-hidden", "true");
     closeIconSpan.innerHTML = "&times;";
 
@@ -92,6 +125,7 @@ function createAlertBox(hasError, message) {
     // Add the alert box to the div
     $("#compilerResult").append(alertDiv);
 }
+
 
 ///////////////////////////////
 // Toolbar-Related Functions //
@@ -109,71 +143,100 @@ $("#checkCorrectness").click(function () {
     lock();
 
     //is explaination long enough
-    var x = document.forms["usrform"]["comment"].value;
-    if (x.length >= 25) {
-
-        /*
-        var data = {};
-
-        data.module = currentLesson.module;
-        data.name = currentLesson.name;
-        data.author = author;
-        //data.author = "user.googleId;"   //make userid
-        data.milliseconds = getTime();
-        data.code = aceEditor.session.getValue();
-        //data.explaination = explaination;
-
-        //need to get the answer from the multiple choice
-        $.postJSON("/verify", data, (results) => {
-            console.log("2");
-            if (results.lines !== undefined) {
-                addLines(results.lines);
-            }
-
-            if (results.status == "trivial") {
-                unlock();
-                document.getElementById("resultTitle").innerHTML = "Trivial answer";
-                document.getElementById("resultDetails").innerHTML = "Try again!";
-            } else if (results.status == "unparsable") {
-                unlock();
-                document.getElementById("resultTitle").innerHTML = "Syntax error";
-                document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
-            } else if (results.status == "failure") {
-                if ("problem" in results) {
-                    unlock();
-                    document.getElementById("resultTitle").innerHTML = "Sorry, not correct";
-                    document.getElementById("resultDetails").innerHTML = "Try this other lesson!";
-                    //parseLesson(results.problem);
-                } else {
-                    unlock();
-                    document.getElementById("resultTitle").innerHTML = "Wrong answer";
-                    document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>3. Do you understand the specification parameter modes (e.g. Updates)?";
-                }
-            } else if (results.status == "success") {
-                unlock();
-                 document.getElementById("resultTitle").innerHTML = "Correct!";
-                 document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
-                //console.log(results.problem);
-                //parseLesson(results.problem);
-            } else {
-                unlock();
-                document.getElementById("resultTitle").innerHTML = "Something went wrong";
-                document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
-            }
-        });
-
-     */
-        $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
-        $("#resultCard").attr("class", "card bg-danger text-white");
-        document.getElementById("resultTitle").innerHTML = "Syntax error";
-        document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
-
-
-    } else {
+    let boxVal = document.forms["usrform"]["comment"].value;
+    if (hasExplanation && boxVal.length < 25) {
         // Create the appropriate alert box
-        var msg = "You must fill in the explanation box";
+        let msg = "You must fill in the explanation box";
         createAlertBox(true, msg);
         $("#explainBox").attr("style", "border: solid red; width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+
+    } else {
+        document.getElementById("resultCard").style.display = "block";
+
+        let results = "";
+        let code = aceEditor.session.getValue();
+
+        if (code == trivialArray[trivialCounter]) {
+            results = "trivial";
+        } else if (code == failArray[failCounter]) {
+            results = "failure";
+        } else if (code == sucArray[sucCounter]) {
+            results = "success";
+        }
+
+        if (results == "trivial") {
+            unlock();
+            document.getElementById("resultTitle").innerHTML = "Trivial answer";
+            document.getElementById("resultDetails").innerHTML = "Try again!";
+            $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+            $("#resultCard").attr("class", "card bg-danger text-white");
+            //add line errors
+            //this will need to be fixed based on verifier return
+            if (codeCounter == 0) {
+                aceEditor.session.addGutterDecoration(15, "ace_error");
+            } else if (codeCounter == 1) {
+                aceEditor.session.addGutterDecoration(11, "ace_error");
+            } else if (codeCounter == 2) {
+                aceEditor.session.addGutterDecoration(11, "ace_error");
+            }
+
+        } else if (results == "unparsable") {
+            unlock();
+            document.getElementById("resultTitle").innerHTML = "Syntax error";
+            document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
+            $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+            $("#resultCard").attr("class", "card bg-danger text-white");
+            //add line errors
+            //this will need to be fixed based on verifier return
+            if (codeCounter == 0) {
+                aceEditor.session.addGutterDecoration(15, "ace_error");
+            } else if (codeCounter == 1) {
+                aceEditor.session.addGutterDecoration(11, "ace_error");
+            } else if (codeCounter == 2) {
+                aceEditor.session.addGutterDecoration(11, "ace_error");
+            }
+
+        } else if (results == "failure") {
+            unlock();
+            document.getElementById("resultTitle").innerHTML = "Wrong answer";
+            document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>3. Do you understand the specification parameter modes (e.g. Updates)?";
+            $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+            $("#resultCard").attr("class", "card bg-danger text-white");
+            //add line errors
+            //this will need to be fixed based on verifier return
+            if (codeCounter == 0) {
+                aceEditor.session.addGutterDecoration(15, "ace_error");
+            } else if (codeCounter == 1) {
+                aceEditor.session.addGutterDecoration(11, "ace_error");
+            } else if (codeCounter == 2) {
+                aceEditor.session.addGutterDecoration(11, "ace_error");
+            }
+
+        } else if (results == "success") {
+            unlock();
+            document.getElementById("resultTitle").innerHTML = "Correct!";
+            document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
+            $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+            $("#resultCard").attr("class", "card bg-success text-white");
+            $("#next").removeAttr("disabled", "disabled");
+            //take away line errors
+            if (codeCounter == 0) {
+                aceEditor.session.removeGutterDecoration(15, "ace_error");
+                aceEditor.session.addGutterDecoration(15, "ace_correct");
+            } else if (codeCounter == 1) {
+                aceEditor.session.removeGutterDecoration(11, "ace_error");
+                aceEditor.session.addGutterDecoration(11, "ace_correct");
+            } else if (codeCounter == 2) {
+                aceEditor.session.removeGutterDecoration(11, "ace_error");
+                aceEditor.session.addGutterDecoration(11, "ace_correct");
+            }
+        } else {
+            unlock();
+            document.getElementById("resultTitle").innerHTML = "Something went wrong";
+            document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
+            $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+            $("#resultCard").attr("class", "card bg-danger text-white");
+        }
     }
     // Unlock editor for further user edits
     unlock();
@@ -185,10 +248,20 @@ $("#checkCorrectness").click(function () {
 $("#resetCode").click(function () {
     // Lock editor to stop user from making changes
     lock();
+
     // Put the cached content into the editor
     aceEditor.session.setValue(editorContent);
     document.forms["usrform"]["comment"].value = "";
     $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+    //take away line errors
+    if (codeCounter == 0) {
+        aceEditor.session.removeGutterDecoration(15, "ace_error");
+    } else if (codeCounter == 1) {
+        aceEditor.session.removeGutterDecoration(11, "ace_error");
+    } else if (codeCounter == 2) {
+        aceEditor.session.removeGutterDecoration(11, "ace_error");
+    }
+
     // Unlock editor for further user edits
     unlock();
 
@@ -215,7 +288,7 @@ $("#giveHint").click(function () {
  */
 $("#fontIncrease").click(function () {
     // Increase font size
-    var currentFontSize = $("#editor").css("font-size");
+    let currentFontSize = $("#editor").css("font-size");
     currentFontSize = parseFloat(currentFontSize) * 1.2;
     $("#editor").css("font-size", currentFontSize);
 
@@ -227,7 +300,7 @@ $("#fontIncrease").click(function () {
  */
 $("#fontDecrease").click(function () {
     // Decrease font size
-    var currentFontSize = $("#editor").css("font-size");
+    let currentFontSize = $("#editor").css("font-size");
     currentFontSize = parseFloat(currentFontSize) / 1.2;
     $("#editor").css("font-size", currentFontSize);
 
@@ -273,6 +346,134 @@ function unlock() {
     // Focus on the editor.
     aceEditor.focus();
 }
+
+
+///////////////////////////////
+// Nav-Related Functions //
+///////////////////////////////
+
+/*
+ * Function for moving to next lesson.
+ */
+$("#next").click(function () {
+    lock();
+
+    //take away line errors
+    if (codeCounter == 0) {
+        aceEditor.session.removeGutterDecoration(15, "ace_correct");
+    } else if (codeCounter == 1) {
+        aceEditor.session.removeGutterDecoration(11, "ace_correct");
+    } else if (codeCounter == 2) {
+        aceEditor.session.removeGutterDecoration(11, "ace_correct");
+    }
+
+    codeCounter++;
+    activityCounter++;
+    refCounter++;
+    sucCounter++;
+    failCounter++;
+    trivialCounter++;
+    progressCounter++;
+
+    if (codeCounter < codeArray.length) {
+
+        if (codeCounter != 0) {
+            $("#prev").removeAttr("disabled", "disabled");
+        }
+
+        document.getElementById("resultCard").style.display = "none";
+        editorContent = codeArray[codeCounter];
+        aceEditor.session.setValue(editorContent);
+        document.getElementById("activity").innerHTML = activityArray[activityCounter];
+        document.getElementById("referenceMaterial").innerHTML = refArray[refCounter];
+        document.forms["usrform"]["comment"].value = "";
+        $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+        document.getElementById("resultTitle").innerHTML = "";
+        document.getElementById("resultDetails").innerHTML = "";
+        $("#resultCard").attr("class", "card bg-light");
+        $("#next").attr("disabled", "disabled");
+
+        //progress increaser
+        if (progressCounter == 1) {
+            $("#lesson1").attr("class", "active");
+        } else if (progressCounter == 2) {
+            $("#lesson2").attr("class", "active");
+        }
+    } else {
+        //add something in db for what was completed then you can go through them
+        document.getElementById("resultTitle").innerHTML = "Congratulations";
+        document.getElementById("resultDetails").innerHTML = "You've completed all the activities";
+        $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+        $("#resultCard").attr("class", "card bg-dark text-white");
+        $("#next").attr("disabled", "disabled");
+        editorContent = "No more activities";
+        aceEditor.session.setValue(editorContent);
+
+
+        if (progressCounter == 3) {
+            $("#lesson3").attr("class", "active");
+        }
+    }
+
+    unlock();
+    return false;
+});
+
+/*
+ * Function for moving to prev lesson.
+ */
+$("#prev").click(function () {
+    lock();
+
+    //take away line errors
+    if (codeCounter == 0) {
+        aceEditor.session.removeGutterDecoration(15, "ace_correct");
+    } else if (codeCounter == 1) {
+        aceEditor.session.removeGutterDecoration(11, "ace_correct");
+    } else if (codeCounter == 2) {
+        aceEditor.session.removeGutterDecoration(11, "ace_correct");
+    }
+
+    codeCounter--;
+    activityCounter--;
+    refCounter--;
+    sucCounter--;
+    failCounter--;
+    trivialCounter--;
+    progressCounter--;
+
+    if (codeCounter < codeArray.length) {
+
+        if (codeCounter == 0) {
+            $("#prev").attr("disabled", "disabled");
+        }
+        document.getElementById("resultCard").style.display = "none";
+        editorContent = codeArray[codeCounter];
+        aceEditor.session.setValue(editorContent);
+        document.getElementById("activity").innerHTML = activityArray[activityCounter];
+        document.getElementById("referenceMaterial").innerHTML = refArray[refCounter];
+        document.forms["usrform"]["comment"].value = "";
+        $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+        document.getElementById("resultTitle").innerHTML = "";
+        document.getElementById("resultDetails").innerHTML = "";
+        $("#resultCard").attr("class", "card bg-light");
+        $("#next").removeAttr("disabled", "disabled");
+
+    }
+
+    unlock();
+    return false;
+});
+
+/*
+$.ajax({
+  type: "POST",
+  url: "/python/verify.py",
+  data: { param: text}
+}).done(function( o ) {
+   // do something
+});
+*/
 
 /*
 function getTime() {

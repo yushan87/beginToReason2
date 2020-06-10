@@ -33,7 +33,7 @@ body {
 }
 
 #page-header-top {
-    background-color: #f66733 !important;
+    background-color: #ff8c5f !important;
 }
 
 #site-title {
@@ -61,7 +61,7 @@ body {
     color: #337ab7 !important;
 }
 
-/* Footer-Related CSS */
+/* Header-Related CSS */
 .logo {
     font-weight: 700;
 }
@@ -126,6 +126,25 @@ body {
 .carousel-item {
     transition: -webkit-transform 0.5s ease;
     backface-visibility: visible;
+}
+
+.ace-chaos .ace_gutter-cell.ace_correct {
+    padding-left: 0;
+    color: #000;
+    background: #58c554;
+    border-left: none;
+}
+
+.tool-back {
+    background: #30343f;
+}
+
+.ace-chaos .ace_keyword.ace_operator {
+    color: #ff8c5f;
+}
+
+.ace-chaos .ace_keyword {
+    color: #577590;
 }
 
 /* Fixed Background Image */
