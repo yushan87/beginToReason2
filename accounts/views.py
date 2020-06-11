@@ -24,6 +24,7 @@ def login(request):
     return render(request, "accounts/login.html")
 
 
+@csrf_protect
 def profile(request):
     """function profile This function handles the view for the profile page of the application.
 
@@ -36,12 +37,33 @@ def profile(request):
     """
 
     if request.user.is_authenticated:
-        return render(request, "accounts/profile.html")
+        # print(request.user.email)
+        if request.method == 'POST':
+            #if UserInformation.getuser():
+                # how to find user in db
+                #a = UserInformation.getuser()
+                #form = CreateUser(request.POST, instance=a)
+                #form.save()
+            #else:
+                form = CreateUser(request.POST)
+                # print(request.POST.get('user_name'))
+                # print(request.POST.get('user_email'))
+                # print(request.POST)
+
+                # name = request.POST.get('user_name')
+                # email = request.POST.get('user_email')
+
+                # user = UserInformation(user_email=request.POST.get('user_email'), user_name=request.POST.get('user_name'))
+                # user = CreateUser(email=email, name=name)
+                form.save()
+                return render(request, "accounts/settings.html")
+        else:
+            form = CreateUser(initial={'user_email': request.user.email, 'user_name': request.user.username})
+        return render(request, "accounts/profile.html", {'form': form})
     else:
         return render(request, "accounts/login.html")
 
 
-@csrf_protect
 def settings(request):
     """function settings This function handles the view for the account settings page of the application.
 
@@ -53,23 +75,7 @@ def settings(request):
                       the user is authenticated.
     """
     if request.user.is_authenticated:
-        # print(request.user.email)
-        if request.method == 'POST':
-            form = CreateUser(request.POST)
-            # print(request.POST.get('user_name'))
-            # print(request.POST.get('user_email'))
-            # print(request.POST)
-
-            name = request.POST.get('user_name')
-            email = request.POST.get('user_email')
-
-            # user = UserInformation(user_email=email, user_id=token, user_name=name)
-            user = CreateUser(user_email=email, user_name=name)
-            user.save()
-            redirect("accounts/profile.html")
-        else:
-            form = CreateUser()
-        return render(request, "accounts/settings.html", {'form': form})
+        return render(request, "accounts/settings.html")
     else:
         return render(request, "accounts/login.html")
 

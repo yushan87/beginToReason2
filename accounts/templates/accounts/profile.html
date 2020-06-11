@@ -21,7 +21,15 @@
             <div class="card-body">
                 <img class="mb-4" src="{% static 'images/logo4.png' %}" width="300" height="125"
                      alt="RSRG Logo 4">
-                <h2 class="card-title">Landing page coming soon</h2>
+                <h2 class="card-title">Please Fill In Missing Information</h2>
+                <form action="{% url 'accounts:profile' %}" method="POST">{% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn" style="background-color: #3a4958; color: #fff" data-toggle="collapse"
+                                                data-target="#collapseOne" aria-expanded="true"
+                                                aria-controls="collapseOne">
+                                            Confirm
+                                        </button>
+                </form>
             </div>
         </div>
     </div>

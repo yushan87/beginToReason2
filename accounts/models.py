@@ -23,3 +23,11 @@ class UserInformation(models.Model):
                 str: user name
         """
         return self.user_name
+
+    def getuser(self):
+        """function getuser is called on a user to retrieve information
+
+                    Returns:
+                        str: user email
+                """
+        return self.user_email
