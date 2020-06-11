@@ -151,20 +151,20 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # django-compressor
 # https://django-compressor.readthedocs.io/en/stable/
 
-STATICFILES_FINDERS = (
+STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
 
     # other finders..
-    'compressor.finders.CompressorFinder',
-)
+    'compressor.finders.CompressorFinder'
+]
 
 # django-libsass
 # https://github.com/torchbox/django-libsass
 
-COMPRESS_PRECOMPILERS = (
+COMPRESS_PRECOMPILERS = [
     ('text/x-scss', 'django_libsass.SassCompiler')
-)
+]
 
 # Python Social Auth
 # https://python-social-auth.readthedocs.io/en/latest/

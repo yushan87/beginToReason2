@@ -1,3 +1,9 @@
+// lesson.scss
+// This file extends _base to generate all the CSS required to render the lesson page
+@import "../base/base";
+@import "../components/_progress";
+@import "../utils/variables";
+
 /* Tutorial Layout-Related CSS */
 #page-content {
     height: calc(100vh - 160px);
@@ -11,14 +17,14 @@
 #tutorialContent {
     overflow-x: hidden;
     overflow-y: auto;
-}
 
-#tutorialContent a {
-    text-decoration: none;
-}
+    a {
+        text-decoration: none;
+    }
 
-#tutorialContent .inlineCode {
-    font-family: "Courier New", Courier, monospace;
+    .inlineCode {
+        font-family: "Courier New", Courier, monospace;
+    }
 }
 
 #editor {
@@ -38,19 +44,19 @@
 
 .modal-nav-body {
     margin-top: 100px;
-}
 
-.modal-nav-body ul {
-    width: 100%;
-    color: #fff;
-    list-style-type: none;
-}
+    ul {
+        width: 100%;
+        color: #fff;
+        list-style-type: none;
+    }
 
-.modal-nav-body ul li {
-    padding: 8px;
-    font-size: 130%;
-    text-align: center;
-    text-transform: uppercase;
+    ul li {
+        padding: 8px;
+        font-size: 130%;
+        text-align: center;
+        text-transform: uppercase;
+    }
 }
 
 .btn-dark {

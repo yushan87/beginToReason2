@@ -1,0 +1,31 @@
+// index.scss
+// This file extends _base to generate all the CSS required to render the index page
+@import "../base/base";
+@import "../utils/variables";
+
+/* Main Layout-Related CSS */
+#page-content {
+    min-height: calc(100vh - #{$page-header-min-height + $page-footer-height} );
+
+    // Links
+    a {
+        text-decoration: none;
+    }
+
+    // Getting Started Jumbotron
+    .jumbotron {
+        color: $white;
+        background-color: $queen-blue;
+    }
+
+    .btn-get-started {
+        color: $sage;
+        border-color: $sage;
+    }
+
+    .btn-get-started:hover {
+        color: $white;
+        background-color: $sage;
+        border-color: $sage;
+    }
+}

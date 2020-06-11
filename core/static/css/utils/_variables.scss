@@ -1,0 +1,53 @@
+// _variables.scss
+// In this file we define all the variables that we plan to use in our other SCSS/SASS files
+
+// Google Fonts
+@import url("https://fonts.googleapis.com/css?family=Oswald");
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+/** This section defines the various fonts and colors */
+
+// Colors used by the application
+// Note 1: Used the names from https://coolors.co/
+// Note 2: This doesn't include the default CSS colors or ones used by Bootstrap
+$charcoal: #3a4958 !important;
+$gray-web: #86898c !important;
+$queen-blue: #4c6085 !important;
+$sage: #d4c99e !important;
+$steel-blue: #337ab7 !important;
+$white: #fdfdfd !important;
+
+// Fonts
+$font-family-1: Roboto, Helvetica, Arial, sans-serif;
+$font-family-2: Oswald, Helvetica, Arial, sans-serif;
+
+/**
+ *  This section contains the various SCSS variables we are going to use.
+ *  Note that this section will use the font and color variables we have defined
+ *  in the previous section.
+ */
+
+// Body
+$body-font: $font-family-1;
+
+// Page Header-Related
+$page-header-min-height: 70px;
+$page-header-bg-color: $charcoal;
+
+$page-header-navbrand-color: $white;
+$page-header-navlink-color: $sage;
+$page-header-navlink-hover-color: $steel-blue;
+
+$page-header-dropdownlink-color: $steel-blue;
+$page-header-dropdownlink-hover-color: $white;
+$page-header-dropdownlink-bg-color: $charcoal;
+
+$site-title-font: $font-family-2;
+
+// Page-Footer
+$page-footer-height: 90px;
+$page-footer-color: $white;
+$page-footer-bg-color: $gray-web;
+
+$page-footer-navlink-color: $sage;
+$page-footer-navlink-hover-color: $steel-blue;

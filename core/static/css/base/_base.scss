@@ -1,0 +1,96 @@
+// _base.scss
+// This file is the base component that includes the basic CSS styles for
+// html, body, page-header and page-footer. All other SCSS/SASS files should
+// extend this file to include their own styles for the various components
+// used in their respective pages.
+
+@import "../utils/_variables";
+
+/* General CSS */
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-family: $body-font;
+}
+
+/* Header-Related CSS */
+#page-header {
+    position: sticky;
+    top: 0;
+    z-index: 1071;
+    min-height: $page-header-min-height;
+    background-color: $page-header-bg-color;
+
+    // Navbar Link
+    .nav-link {
+        font-size: 1rem;
+        color: $page-header-navlink-color;
+    }
+
+    .nav-link:hover {
+        color: $page-header-navlink-hover-color;
+    }
+
+    // Navbar Brand
+    .navbar-brand {
+        color: $page-header-navbrand-color;
+    }
+
+    .navbar-brand:hover {
+        color: $page-header-navlink-hover-color;
+    }
+
+    // Navbar Dropdown Menu and Links
+    .dropdown-menu {
+        min-width: 0;
+    }
+
+    .dropdown-item {
+        color: $page-header-dropdownlink-color;
+    }
+
+    .dropdown-item:hover {
+        color: $page-header-dropdownlink-hover-color;
+        background-color: $page-header-dropdownlink-bg-color;
+        opacity: 0.15;
+    }
+
+    // Navbar Login Button
+    .btn-auth {
+        color: $page-header-navlink-color;
+        border-color: $page-header-navlink-color;
+    }
+
+    .btn-auth:hover {
+        color: $page-header-navlink-hover-color;
+        background-color: $page-header-navlink-color;
+        border-color: $page-header-navlink-color;
+    }
+}
+
+#site-title {
+    font-family: $site-title-font;
+    font-size: 1.75rem;
+    font-weight: 200 !important;
+}
+
+/* Footer-Related CSS */
+#page-footer {
+    height: $page-footer-height;
+    color: $page-footer-color;
+    background-color: $page-footer-bg-color;
+
+    // Footer Links
+    .footer-link {
+        font-size: 1rem;
+        color: $page-footer-navlink-color;
+        text-decoration: none;
+    }
+
+    .footer-link:hover {
+        color: $page-footer-navlink-hover-color;
+    }
+}
