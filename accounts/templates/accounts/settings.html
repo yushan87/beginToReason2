@@ -19,9 +19,13 @@
     <div class="container">
         <div class="card w-50 mt-3 mx-auto shadow-lg rounded fadeInDown text-center">
             <div class="card-body">
-                <img class="mb-4" src="{% static 'other_images/resolve_logo_3.png' %}" width="300" height="125"
+                <img class="mb-4" src="{% static 'images/logo4.png' %}" width="300" height="125"
                      alt="RSRG Logo 3">
-                <h2 class="card-title">Account settings page coming soon</h2>
+                <h2 class="card-title">Fill in your information</h2>
+                <form action="{% url 'accounts:profile' %}" method="POST">{% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="Submit">
+                </form>
             </div>
         </div>
     </div>
