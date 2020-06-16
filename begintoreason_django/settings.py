@@ -53,8 +53,11 @@ INSTALLED_APPS = [
 
     # External Plugins
     'social_django',
-    'django_ace'
+    'django_ace',
+    'crispy_forms',
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 SITE_ID = 1
 

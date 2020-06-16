@@ -71,8 +71,7 @@
                         <span class="d-none d-sm-inline-flex">&nbsp; </span>{{ user.username }}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right m-0" aria-labelledby="accountDropdownButton">
-                        <a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a>
-                        <a class="dropdown-item" href="{% url 'accounts:settings' %}">Account Settings</a>
+                        <a class="dropdown-item" href="{% url 'accounts:settings' %}">My Profile</a>
                         <a class="dropdown-item" href="{% url 'accounts:logout' %}">Log out</a>
                     </div>
                 </li>
@@ -95,7 +94,7 @@
 </main>
 
 <!-- Page Footer -->
-<footer id="page-footer" class="footer w-100 mt-auto py-2">
+<footer id="page-footer" class="footer w-100 mt-auto py-2 fixed-bottom">
     <div class="d-flex flex-column flex-md-row justify-content-md-around align-items-center"
          style="background-color: inherit;">
         <div class="d-flex flex-row align-items-center px-2">

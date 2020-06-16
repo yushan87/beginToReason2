@@ -1,9 +1,9 @@
 """
 This module contains our Django views for the "accounts" application.
 """
-from django.shortcuts import render, redirect
-from .models import UserInformation
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import csrf_protect
+from .models import UserInformation
 from .forms import CreateUser
 
 
@@ -39,25 +39,26 @@ def profile(request):
     if request.user.is_authenticated:
         # print(request.user.email)
         if request.method == 'POST':
-            #if UserInformation.getuser():
-                # how to find user in db
-                #a = UserInformation.getuser()
-                #form = CreateUser(request.POST, instance=a)
-                #form.save()
-            #else:
-                form = CreateUser(request.POST)
-                # print(request.POST.get('user_name'))
-                # print(request.POST.get('user_email'))
-                # print(request.POST)
-
-                # name = request.POST.get('user_name')
-                # email = request.POST.get('user_email')
-
-                # user = UserInformation(user_email=request.POST.get('user_email'), user_name=request.POST.get('user_name'))
-                # user = CreateUser(email=email, name=name)
+            form = CreateUser(request.POST)
+            if form.is_valid():
                 form.save()
                 return render(request, "accounts/settings.html")
         else:
+            registered_users = UserInformation.objects.all()
+            count = 0
+            while count < len(registered_users):
+                # print(len(registered_users))
+                # print(registered_users[count])
+                # print(" and ")
+                # print(request.user.username)
+                request_name = str(request.user.username)
+                registered_name = str(registered_users[count])
+                if registered_name == request_name:
+                    # print("username matches")
+                    return render(request, "accounts/settings.html")
+                count += 1
+            # print(registered_users[count])
+            # print(UserInformation.objects.get(user_email=request.user.email))
             form = CreateUser(initial={'user_email': request.user.email, 'user_name': request.user.username})
         return render(request, "accounts/profile.html", {'form': form})
     else:
