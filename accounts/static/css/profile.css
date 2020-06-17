@@ -10,6 +10,7 @@ nav > div .nav-item.nav-link {
     background: #ff8c5f;
     border-right: 1px solid #4c6085;
     border-left: 1px solid #4c6085;
+    border-radius: 0;
 }
 
 nav > div .nav-item.nav-link.active {

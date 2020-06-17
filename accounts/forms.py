@@ -41,7 +41,7 @@ class CreateUser(forms.ModelForm):
         (prefer, 'Prefer Not To Answer')
     ]
 
-    na = 'American Indian or Alaska Native'
+    native = 'American Indian or Alaska Native'
     asian = 'Asian'
     black = 'Black or African American'
     hispanic = 'Hispanic or Latino'
@@ -49,7 +49,7 @@ class CreateUser(forms.ModelForm):
     white = 'White'
     races = [
         (blank, ''),
-        (na, 'American Indian or Alaska Native'),
+        (native, 'American Indian or Alaska Native'),
         (asian, 'Asian'),
         (black, 'Black or African American'),
         (hispanic, 'Hispanic or Latino'),

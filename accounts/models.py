@@ -3,8 +3,8 @@ This module contains model templates for the "accounts" application. In particul
 database tables related to the user account information. When we create a new item in the database,
 a new instance of a model will be made.
 """
-from django.db import models
 from datetime import datetime
+from django.db import models
 
 # Create your models here.
 
@@ -65,7 +65,7 @@ class UserInformation(models.Model):
         default=prefer
     )
 
-    na = 'American Indian or Alaska Native'
+    native = 'American Indian or Alaska Native'
     asian = 'Asian'
     black = 'Black or African American'
     hispanic = 'Hispanic or Latino'
@@ -73,7 +73,7 @@ class UserInformation(models.Model):
     white = 'White'
     races = [
         (blank, ''),
-        (na, 'American Indian or Alaska Native'),
+        (native, 'American Indian or Alaska Native'),
         (asian, 'Asian'),
         (black, 'Black or African American'),
         (hispanic, 'Hispanic or Latino'),

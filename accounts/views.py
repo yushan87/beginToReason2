@@ -1,7 +1,7 @@
 """
 This module contains our Django views for the "accounts" application.
 """
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
 from django.views.decorators.csrf import csrf_protect
 from .models import UserInformation
 from .forms import CreateUser
