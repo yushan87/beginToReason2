@@ -1,53 +1,49 @@
-nav > .nav.nav-tabs{
-
-  border: none;
-    color:#fff;
-    background:#ff8c5f;
-    border-radius:0;
-
+nav > .nav.nav-tabs {
+    color: #fff;
+    background: #ff8c5f;
+    border: none;
+    border-radius: 0;
 }
-nav > div a.nav-item.nav-link
-{
-  border: none;
+nav > div a.nav-item.nav-link {
     padding: 18px 25px;
-    color:#fff;
-    background:#ff8c5f;
-    border-radius:0;
+    color: #fff;
+    background: #ff8c5f;
+    border-right: 1px solid #4c6085;
+    border-left: 1px solid #4c6085;
+    border-radius: 0;
 }
 
-nav > div a.nav-item.nav-link.active
-{
-  border: none;
+nav > div a.nav-item.nav-link.active {
     padding: 18px 25px;
-    color:#fff;
-    background:#4c6085;
-    border-radius:0;
+    color: #fff;
+    background: #4c6085;
+    border: none;
+    border-radius: 0;
 }
 
-nav > div a.nav-item.nav-link.active:after
- {
-  content: "";
-  position: relative;
-  bottom: -60px;
-  left: -10%;
-  border: 15px solid transparent;
-  border-top-color: #4c6085 ;
+nav > div a.nav-item.nav-link.active:after {
+    position: relative;
+    content: "";
+    bottom: -60px;
+    left: -10%;
+    border: 15px solid transparent;
+    border-top-color: #4c6085 ;
 }
-.tab-content{
-  background: #fdfdfd;
+
+.tab-content {
+    padding: 30px 25px;
     line-height: 25px;
+    background: #fdfdfd;
     border: 1px solid #ddd;
-    border-top:5px solid #4c6085;
-    border-bottom:5px solid #4c6085;
-    padding:30px 25px;
+    border-top: 5px solid #4c6085;
+    border-bottom: 5px solid #4c6085;
 }
 
 nav > div a.nav-item.nav-link:hover,
-nav > div a.nav-item.nav-link:focus
-{
-  border: none;
+nav > div a.nav-item.nav-link:focus {
+    color: #fff;
     background: #4c6085;
-    color:#fff;
-    border-radius:0;
-    transition:background 0.20s linear;
+    border: none;
+    border-radius: 0;
+    transition: background 0.20s linear;
 }

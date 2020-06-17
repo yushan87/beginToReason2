@@ -47,18 +47,11 @@ def profile(request):
             registered_users = UserInformation.objects.all()
             count = 0
             while count < len(registered_users):
-                # print(len(registered_users))
-                # print(registered_users[count])
-                # print(" and ")
-                # print(request.user.username)
                 request_name = str(request.user.username)
                 registered_name = str(registered_users[count])
                 if registered_name == request_name:
-                    # print("username matches")
                     return render(request, "accounts/settings.html")
                 count += 1
-            # print(registered_users[count])
-            # print(UserInformation.objects.get(user_email=request.user.email))
             form = CreateUser(initial={'user_email': request.user.email, 'user_name': request.user.username})
         return render(request, "accounts/profile.html", {'form': form})
     else:
