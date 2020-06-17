@@ -3,8 +3,8 @@
 
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
-    <link rel="stylesheet" href="{% static 'css/fade.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock %}
 
 {% block header_navigation_links %}
@@ -16,12 +16,34 @@
 {% endblock %}
 
 {% block main_content %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1>Welcome {{ user.email }} <a href="#" class="btn btn-lg btn-get-started" role="button"
+               aria-pressed="true">Edit Profile</a></h1>
+        </div>
+    </div>
+
     <div class="container">
-        <div class="card w-50 mt-3 mx-auto shadow-lg rounded fadeInDown text-center">
-            <div class="card-body">
-                <img class="mb-4" src="{% static 'other_images/resolve_logo_3.png' %}" width="300" height="125"
-                     alt="RSRG Logo 3">
-                <h2 class="card-title">Account settings page coming soon</h2>
+        <div class="row">
+            <div class="col-xs-12 ">
+                <nav>
+                    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">Current Courses</a>
+                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Course History</a>
+                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact" role="tab" aria-controls="nav-contact" aria-selected="false">More</a>
+                    </div>
+                </nav>
+                <div class="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        {% lorem 2 p %}
+                    </div>
+                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                        {% lorem 2 p %}
+                    </div>
+                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                        {% lorem 2 p %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
