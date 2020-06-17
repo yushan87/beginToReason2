@@ -3,7 +3,7 @@ This module contains model templates for the "accounts" application. In particul
 database tables related to the user account information. When we create a new item in the database,
 a new instance of a model will be made.
 """
-from datetime import datetime
+# from datetime import datetime
 from django.db import models
 
 # Create your models here.
@@ -16,7 +16,7 @@ class UserInformation(models.Model):
     """
     user_email = models.EmailField()
     user_name = models.TextField()
-    date_joined = models.DateTimeField(default=datetime.now())
+    # date_joined = models.DateTimeField(default=datetime.now())
     user_school = models.CharField(max_length=50)
     user_class = models.CharField(max_length=50)
     user_gender = models.CharField(max_length=50)
