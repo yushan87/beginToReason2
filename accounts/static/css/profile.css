@@ -1,0 +1,47 @@
+nav > .nav.nav-tabs {
+    color: #fff;
+    background: #ff8c5f;
+    border: none;
+}
+
+nav > div .nav-item.nav-link {
+    padding: 18px 25px;
+    color: #fff;
+    background: #ff8c5f;
+    border-right: 1px solid #4c6085;
+    border-left: 1px solid #4c6085;
+    border-radius: 0;
+}
+
+nav > div .nav-item.nav-link.active {
+    padding: 18px 25px;
+    color: #fff;
+    background: #4c6085;
+    border: none;
+}
+
+nav > div .nav-item.nav-link.active::after {
+    position: relative;
+    bottom: -60px;
+    left: -10%;
+    content: "";
+    border: 15px solid transparent;
+    border-top-color: #4c6085;
+}
+
+.tab-content {
+    padding: 30px 25px;
+    line-height: 25px;
+    background: #fdfdfd;
+    border: 1px solid #ddd;
+    border-top: 5px solid #4c6085;
+    border-bottom: 5px solid #4c6085;
+}
+
+nav > div .nav-item.nav-link:hover,
+nav > div .nav-item.nav-link:focus {
+    color: #fff;
+    background: #4c6085;
+    border: none;
+    transition: background 0.2s linear;
+}
