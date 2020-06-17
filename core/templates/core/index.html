@@ -1,8 +1,10 @@
 {% extends "core/base.html" %}
-{% load static %}
+{% load static compress %}
 
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/index.scss' %}" media="screen">
+    {% endcompress %}
 {% endblock %}
 
 {% block header_navigation_links %}

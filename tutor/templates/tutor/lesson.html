@@ -1,9 +1,10 @@
 {% extends "core/base.html" %}
-{% load static %}
+{% load static compress %}
 
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/lesson.css' %}">
-    <link rel="stylesheet" href="{% static 'css/progress.css' %}">
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/lesson.scss' %}" media="screen">
+    {% endcompress %}
 {% endblock %}
 
 {% block body_js %}
