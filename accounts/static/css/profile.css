@@ -2,32 +2,29 @@ nav > .nav.nav-tabs {
     color: #fff;
     background: #ff8c5f;
     border: none;
-    border-radius: 0;
 }
-nav > div a.nav-item.nav-link {
+nav > div .nav-item.nav-link {
     padding: 18px 25px;
     color: #fff;
     background: #ff8c5f;
     border-right: 1px solid #4c6085;
     border-left: 1px solid #4c6085;
-    border-radius: 0;
 }
 
-nav > div a.nav-item.nav-link.active {
+nav > div .nav-item.nav-link.active {
     padding: 18px 25px;
     color: #fff;
     background: #4c6085;
     border: none;
-    border-radius: 0;
 }
 
-nav > div a.nav-item.nav-link.active:after {
+nav > div .nav-item.nav-link.active:after {
     position: relative;
     content: "";
     bottom: -60px;
     left: -10%;
     border: 15px solid transparent;
-    border-top-color: #4c6085 ;
+    border-top-color: #4c6085;
 }
 
 .tab-content {
@@ -39,11 +36,10 @@ nav > div a.nav-item.nav-link.active:after {
     border-bottom: 5px solid #4c6085;
 }
 
-nav > div a.nav-item.nav-link:hover,
-nav > div a.nav-item.nav-link:focus {
+nav > div .nav-item.nav-link:hover,
+nav > div .nav-item.nav-link:focus {
     color: #fff;
     background: #4c6085;
     border: none;
-    border-radius: 0;
-    transition: background 0.20s linear;
+    transition: background 0.2s linear;
 }
