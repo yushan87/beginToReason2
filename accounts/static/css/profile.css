@@ -20,9 +20,9 @@ nav > div .nav-item.nav-link.active {
 
 nav > div .nav-item.nav-link.active:after {
     position: relative;
-    content: "";
     bottom: -60px;
     left: -10%;
+    content: "";
     border: 15px solid transparent;
     border-top-color: #4c6085;
 }
