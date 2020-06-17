@@ -3,6 +3,7 @@ nav > .nav.nav-tabs {
     background: #ff8c5f;
     border: none;
 }
+
 nav > div .nav-item.nav-link {
     padding: 18px 25px;
     color: #fff;
@@ -18,7 +19,7 @@ nav > div .nav-item.nav-link.active {
     border: none;
 }
 
-nav > div .nav-item.nav-link.active:after {
+nav > div .nav-item.nav-link.active::after {
     position: relative;
     bottom: -60px;
     left: -10%;
