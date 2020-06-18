@@ -1,9 +1,10 @@
 {% extends "core/base.html" %}
-{% load static %}
+{% load static compress %}
 
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/lesson.css' %}">
-    <link rel="stylesheet" href="{% static 'css/progress.css' %}">
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/lesson.scss' %}" media="screen">
+    {% endcompress %}
 {% endblock %}
 
 {% block body_js %}
@@ -54,7 +55,8 @@
                             <div class="card">
                                 <div class="card-header" id="headingOne">
                                     <h5 class="mb-0">
-                                        <button class="btn btn-block" style="background-color: #3a4958; color: #fff" data-toggle="collapse"
+                                        <button class="btn btn-block" style="background-color: #3a4958; color: #fff"
+                                                data-toggle="collapse"
                                                 data-target="#collapseOne" aria-expanded="true"
                                                 aria-controls="collapseOne">
                                             Activity
@@ -70,7 +72,8 @@
                             <div class="card">
                                 <div class="card-header" id="headingTwo">
                                     <h5 class="mb-0">
-                                        <button class="btn btn-block collapsed" style="background-color: #3a4958; color: #fff" data-toggle="collapse"
+                                        <button class="btn btn-block collapsed"
+                                                style="background-color: #3a4958; color: #fff" data-toggle="collapse"
                                                 data-target="#collapseTwo" aria-expanded="false"
                                                 aria-controls="collapseTwo">
                                             Reference Material
@@ -85,7 +88,8 @@
                             </div>
                             <div class="card">
                                 <div class="card-header" id="headingThree">
-                                    <button class="btn btn-block collapsed" style="background-color: #3a4958; color: #fff" data-toggle="collapse"
+                                    <button class="btn btn-block collapsed"
+                                            style="background-color: #3a4958; color: #fff" data-toggle="collapse"
                                             data-target="#collapseThree" aria-expanded="false"
                                             aria-controls="collapseThree">
                                         About
@@ -143,7 +147,8 @@
                                 <button id="resetCode" class="btn btn-danger" type="button" data-toggle="tooltip"
                                         data-placement="top" title="Reset"><i style="font-size:20px"
                                                                               class="fa">&#xf021;</i></button>
-                                <button id="giveHint" class="btn" style="background-color: #ff8c5f; color: #fff" type="button" data-toggle="tooltip"
+                                <button id="giveHint" class="btn" style="background-color: #ff8c5f; color: #fff"
+                                        type="button" data-toggle="tooltip"
                                         data-placement="top" title="Get Help"><i class="far fa-life-ring"></i></button>
                                 <button class="btn btn-light" data-toggle="modal" data-target="#progress-modal"
                                         aria-expanded="false" type="button"><i class="fas fa-spinner"></i> Progress

@@ -1,0 +1,83 @@
+// profile.scss
+// This file extends _base to generate all the CSS required to render the profile page
+@import "../base/base";
+@import "../components/_jumbotron.scss";
+@import "../utils/variables";
+
+/* Main Layout-Related CSS */
+#page-content {
+    min-height: calc(100vh - #{$page-header-min-height + $page-footer-height});
+    color: $page-content-text-color-dark;
+
+    // Links
+    a {
+        text-decoration: none;
+    }
+
+    // Use the jumbotron mixin to generate the necessary CSS code
+    @include generateJumbotron($page-content-text-color-light, $page-content-bg-color-1, $page-content-border-color-2);
+
+    // Nav Tabs
+    nav > .nav {
+        &.nav-tabs {
+            color: $page-content-text-color-light;
+            background: $page-content-bg-color-3;
+            border: none;
+        }
+    }
+
+    // Nav Items
+    nav > div .nav-item {
+        // CSS for nav-links
+        &.nav-link {
+            padding: 18px 25px;
+            color: $page-content-text-color-light;
+            background: $page-content-bg-color-3;
+
+            // No border left for the first child
+            &:nth-child(n+2) {
+                border-left: 2px solid $page-content-border-color-2;
+                border-radius: 0;
+            }
+
+            // CSS for nav-links that we hover or focus
+            &:hover,
+            &:focus {
+                background: $page-content-bg-color-1;
+                border: none;
+                transition: background 0.2s linear;
+            }
+
+            // CSS for active nav-links
+            &.active {
+                padding: 19px 25px 1px;
+                background: $page-content-bg-color-1;
+                border: none;
+
+                &::after {
+                    position: relative;
+                    bottom: -23px;
+                    display: block;
+                    width: 0;
+                    height: 0;
+                    margin: auto;
+                    content: "";
+                    border-top: 10px solid $page-content-border-color-2;
+                    border-right: 10px solid transparent;
+                    border-left: 10px solid transparent;
+                }
+            }
+        }
+    }
+
+    // CSS for tab content
+    .tab-content {
+        padding: 30px 25px;
+        line-height: 25px;
+        background: $page-content-bg-color-light;
+        border-top: 5px solid $page-content-border-color-2;
+        border-right: 1px solid $page-content-border-color-2;
+        border-bottom: 5px solid $page-content-border-color-2;
+        border-left: 1px solid $page-content-border-color-2;
+    }
+}
