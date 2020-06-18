@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     # External Plugins
     'social_django',
     'django_ace',
-    'compressor'
+    'compressor',
     'crispy_forms'
 ]
 
