@@ -6,7 +6,7 @@
 
 /* Main Layout-Related CSS */
 #page-content {
-    min-height: calc(100vh - #{$page-header-min-height + $page-footer-height} );
+    min-height: calc(100vh - #{$page-header-min-height + $page-footer-height});
     color: $page-content-text-color-dark;
 
     // Links
@@ -77,7 +77,7 @@
         background: $page-content-bg-color-light;
         border-top: 5px solid $page-content-border-color-2;
         border-bottom: 5px solid $page-content-border-color-2;
-        border-left: 1px solid $page-content-border-color-2;
         border-right: 1px solid $page-content-border-color-2;
+        border-left: 1px solid $page-content-border-color-2;
     }
 }
