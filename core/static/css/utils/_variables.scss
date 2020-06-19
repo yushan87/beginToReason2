@@ -1,0 +1,71 @@
+// _variables.scss
+// In this file we define all the variables that we plan to use in our other SCSS/SASS files
+
+// Google Fonts
+@import url("https://fonts.googleapis.com/css?family=Oswald");
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+
+/** This section defines the various fonts and colors */
+
+// Colors used by the application
+// Note 1: Used the names from https://coolors.co/
+// Note 2: This doesn't include the ones used by Bootstrap
+$black: #000 !important;
+$charcoal: #3a4958 !important;
+$coral: #ff8c5f !important;
+$gray-web: #86898c !important;
+$queen-blue: #4c6085 !important;
+$sage: #d4c99e !important;
+$steel-blue: #337ab7 !important;
+$white: #fdfdfd !important;
+
+// Fonts
+$font-family-1: roboto, helvetica, arial, sans-serif;
+$font-family-2: oswald, helvetica, arial, sans-serif;
+
+/**
+ *  This section contains the various SCSS variables we are going to use.
+ *  Note that this section will use the font and color variables we have defined
+ *  in the previous section.
+ */
+
+// Body
+$body-font: $font-family-1;
+
+// Page-Header
+$page-header-min-height: 70px;
+$page-header-bg-color: $charcoal;
+
+$page-header-navbrand-color: $white;
+$page-header-navlink-color: $sage;
+$page-header-navlink-hover-color: $steel-blue;
+
+$page-header-dropdownlink-color: $steel-blue;
+$page-header-dropdownlink-hover-color: $white;
+$page-header-dropdownlink-bg-color: $charcoal;
+
+$page-header-site-title-font: $font-family-2;
+
+// Page-Content
+$page-content-text-color-dark: $black;
+$page-content-text-color-light: $white;
+
+$page-content-bg-color-1: $queen-blue;
+$page-content-bg-color-2: $sage;
+$page-content-bg-color-3: $coral;
+$page-content-bg-color-dark: $black;
+$page-content-bg-color-light: $white;
+
+$page-content-border-color-1: $queen-blue;
+$page-content-border-color-2: $sage;
+$page-content-border-color-3: $coral;
+$page-content-border-color-dark: $black;
+$page-content-border-color-light: $white;
+
+// Page-Footer
+$page-footer-height: 90px;
+$page-footer-color: $white;
+$page-footer-bg-color: $gray-web;
+
+$page-footer-navlink-color: $sage;
+$page-footer-navlink-hover-color: $steel-blue;

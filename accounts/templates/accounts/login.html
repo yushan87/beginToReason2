@@ -1,10 +1,10 @@
 {% extends "core/base.html" %}
-{% load static %}
+{% load static compress %}
 
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
-    <link rel="stylesheet" href="{% static 'css/fade.css' %}">
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/signin.scss' %}" media="screen">
+    {% endcompress %}
 {% endblock %}
 
 {% block header_navigation_links %}
@@ -19,7 +19,7 @@
     <div class="container">
         <div class="card w-50 mt-3 mx-auto shadow-lg rounded fadeInDown text-center">
             <div class="card-body">
-                <img class="mb-4" src="{% static 'other_images/resolve_logo_3.png' %}" width="300" height="125"
+                <img class="mb-4" src="{% static 'images/logo4.png' %}" width="300" height="125"
                      alt="RSRG Logo 3">
                 {% if user.is_authenticated %}
                     <h2 class="card-title mb-3">Logged in as {{ user.email }}</h2>

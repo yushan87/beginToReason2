@@ -1,10 +1,10 @@
 {% extends "core/base.html" %}
-{% load static %}
+{% load static compress crispy_forms_tags %}
 
 {% block css %}
-    <link rel="stylesheet" href="{% static 'css/main.css' %}">
-    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
-    <link rel="stylesheet" href="{% static 'css/fade.css' %}">
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/signin.scss' %}" media="screen">
+    {% endcompress %}
 {% endblock %}
 
 {% block header_navigation_links %}
@@ -19,9 +19,33 @@
     <div class="container">
         <div class="card w-50 mt-3 mx-auto shadow-lg rounded fadeInDown text-center">
             <div class="card-body">
-                <img class="mb-4" src="{% static 'other_images/resolve_logo_3.png' %}" width="300" height="125"
-                     alt="RSRG Logo 3">
-                <h2 class="card-title">Landing page coming soon</h2>
+                <img class="mb-4" src="{% static 'images/logo4.png' %}" width="300" height="125"
+                     alt="RSRG Logo 4">
+                <h2 class="card-title">Please Fill In Missing Information</h2>
+                <form action="{% url 'accounts:profile' %}" method="POST">{% csrf_token %}
+                    {{ form.user_email|as_crispy_field }}
+                    {{ form.user_name|as_crispy_field }}
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.user_school|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.user_class|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.user_gender|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                            {{ form.user_race|as_crispy_field }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn" style="background-color: #3a4958; color: #fff"
+                            data-toggle="collapse"
+                            data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Confirm
+                    </button>
+                </form>
             </div>
         </div>
     </div>
