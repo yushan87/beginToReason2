@@ -1,0 +1,37 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fade.css' %}">
+{% endblock %}
+
+{% block header_navigation_links %}
+    {% if user.is_authenticated %}
+        <li class="nav-item ml-3">
+            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block main_content %}
+    <div class="container">
+        <div class="card w-50 mt-3 mx-auto shadow-lg rounded fadeInDown text-center">
+            <div class="card-body">
+                <img class="mb-4" src="{% static 'other_images/resolve_logo_3.png' %}" width="300" height="125"
+                     alt="RSRG Logo 3">
+                {% if user.is_authenticated %}
+                    <h2 class="card-title mb-3">Logged in as {{ user.email }}</h2>
+                    <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Logout</a>
+                {% else %}
+                    <h2 class="card-title mb-3">Log In to BeginToReason</h2>
+                    <a class="" href="{% url 'social:begin' 'google-oauth2' %}">
+                        <input type="image" src="{% static 'other_images/google.png' %}" width="240"
+                               height="55" alt="Sign in with Google"/>
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

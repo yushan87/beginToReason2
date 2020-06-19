@@ -31,28 +31,28 @@ jobs:
     - stage: pylint
       python: "3.8"
       script:
-        - pylint app/
+        - pylint accounts/ core/ data_analysis/ educator/ think_aloud/ tutor/
     # This stage runs the Python tests using Python 3.6.
     - stage: test
       python: "3.6"
       script:
-        - python manage.py makemigrations app
+        - python manage.py makemigrations accounts core data_analysis educator think_aloud tutor
         - python manage.py migrate
-        - python manage.py test app
+        - python manage.py test accounts core data_analysis educator think_aloud tutor
     # This stage runs the Python tests using Python 3.7.
     - stage: test
       python: "3.7"
       script:
-        - python manage.py makemigrations app
+        - python manage.py makemigrations accounts core data_analysis educator think_aloud tutor
         - python manage.py migrate
-        - python manage.py test app
+        - python manage.py test accounts core data_analysis educator think_aloud tutor
     # This stage runs the Python tests using Python 3.8.
     - stage: test
       python: "3.8"
       script:
-        - python manage.py makemigrations app
+        - python manage.py makemigrations accounts core data_analysis educator think_aloud tutor
         - python manage.py migrate
-        - python manage.py test app
+        - python manage.py test accounts core data_analysis educator think_aloud tutor
 
 # Cache
 cache:

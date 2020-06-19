@@ -1,0 +1,28 @@
+{% extends "core/base.html" %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
+    <link rel="stylesheet" href="{% static 'css/signin.css' %}">
+    <link rel="stylesheet" href="{% static 'css/fade.css' %}">
+{% endblock %}
+
+{% block header_navigation_links %}
+    {% if user.is_authenticated %}
+        <li class="nav-item ml-3">
+            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
+        </li>
+    {% endif %}
+{% endblock %}
+
+{% block main_content %}
+    <div class="container">
+        <div class="card w-50 mt-3 mx-auto shadow-lg rounded fadeInDown text-center">
+            <div class="card-body">
+                <img class="mb-4" src="{% static 'other_images/resolve_logo_3.png' %}" width="300" height="125"
+                     alt="RSRG Logo 3">
+                <h2 class="card-title">Account settings page coming soon</h2>
+            </div>
+        </div>
+    </div>
+{% endblock %}
