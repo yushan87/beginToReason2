@@ -16,11 +16,6 @@ def login(request):
     Returns:
         HttpResponse: A generated http response object to the request.
     """
-    # if request.method == 'POST':
-    # user = UserInformation(user_email=user.email, user_id=1234, user_name="test user")
-    # user = UserInformation(request.POST)
-    # user.save()
-    # return redirect('accounts: profile')
     return render(request, "accounts/login.html")
 
 
@@ -37,22 +32,25 @@ def profile(request):
     """
 
     if request.user.is_authenticated:
-        # print(request.user.email)
         if request.method == 'POST':
             form = CreateUser(request.POST)
             if form.is_valid():
                 form.save()
+                request.session.set_expiry(0)
                 return render(request, "accounts/settings.html")
         else:
-            registered_users = UserInformation.objects.all()
-            count = 0
-            while count < len(registered_users):
-                request_name = str(request.user.username)
-                registered_name = str(registered_users[count])
-                if registered_name == request_name:
-                    return render(request, "accounts/settings.html")
-                count += 1
-            form = CreateUser(initial={'user_email': request.user.email, 'user_name': request.user.username})
+            if UserInformation.objects.filter(user_email=request.user.email).exists():
+                if UserInformation.objects.filter(user_email=request.user.email).values('user_name') == "" or \
+                        UserInformation.objects.filter(user_email=request.user.email).values('user_school') == "" or \
+                        UserInformation.objects.filter(user_email=request.user.email).values('user_class') == "" or \
+                        UserInformation.objects.filter(user_email=request.user.email).values('user_gender') == "" or \
+                        UserInformation.objects.filter(user_email=request.user.email).values('user_race') == "":
+                    form = CreateUser(initial={'user_email': request.user.email})
+                    form.update()
+                # print(UserInformation.objects.filter(user_email=request.user.email).values())
+                request.session.set_expiry(0)
+                return render(request, "accounts/settings.html")
+            form = CreateUser(initial={'user_email': request.user.email})
         return render(request, "accounts/profile.html", {'form': form})
     else:
         return render(request, "accounts/login.html")
