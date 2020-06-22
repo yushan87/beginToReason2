@@ -46,7 +46,7 @@ def profile(request):
                         UserInformation.objects.filter(user_email=request.user.email).values('user_gender') == "" or \
                         UserInformation.objects.filter(user_email=request.user.email).values('user_race') == "":
                     form = CreateUser(initial={'user_email': request.user.email})
-                    form.update()
+                    form.save()
                 # print(UserInformation.objects.filter(user_email=request.user.email).values())
                 request.session.set_expiry(0)
                 return render(request, "accounts/settings.html")

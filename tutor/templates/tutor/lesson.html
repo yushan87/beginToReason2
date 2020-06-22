@@ -147,8 +147,7 @@
                                 <button id="resetCode" class="btn btn-danger" type="button" data-toggle="tooltip"
                                         data-placement="top" title="Reset"><i style="font-size:20px"
                                                                               class="fa">&#xf021;</i></button>
-                                <button id="giveHint" class="btn" style="background-color: #ff8c5f; color: #fff"
-                                        type="button" data-toggle="tooltip"
+                                <button id="giveHint" class="btn btn-light" type="button" data-toggle="tooltip"
                                         data-placement="top" title="Get Help"><i class="far fa-life-ring"></i></button>
                                 <button class="btn btn-light" data-toggle="modal" data-target="#progress-modal"
                                         aria-expanded="false" type="button"><i class="fas fa-spinner"></i> Progress
@@ -189,15 +188,15 @@
                     </div>
                 </div>
                 <br>
-                <div id="explainCard" class="card" style="margin: 5px 5px 5px 5px; bottom: 0; position: absolute;">
-                    <div class="card-header">
+                <div id="explainCard" class="card" style="margin: 5px 5px 5px 5px; bottom: 0;">
+                    <div class="card-header" style="background-color: #3a4958; color: #fff;">
                         Reasoning
                     </div>
                     <br>
                     <form id="usrform">
-                        Please explain your reasoning to Check Correctness
-                        <br>
-                        <br>
+                        <div>
+                            &emsp;Please explain your reasoning to Check Correctness:
+                        </div>
                         <textarea id="explainBox"
                                   style="width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;"
                                   rows="5" name="comment" form="usrform" placeholder="Write explanation here..."

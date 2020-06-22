@@ -1,0 +1,61 @@
+// catalog.scss
+// This file extends _base to generate all the CSS required to render the sign-in page
+@import "../base/_base";
+@import "../components/_fade";
+@import "../utils/_variables";
+@import "../components/_jumbotron.scss";
+
+
+/* Main Layout-Related CSS */
+#page-content {
+    min-height: calc(100vh - #{$page-header-min-height + $page-footer-height} - 1rem);
+
+    // Use the jumbotron mixin to generate the necessary CSS code
+    @include generateJumbotron($page-content-text-color-light, $page-content-bg-color-1, $page-content-border-color-2);
+
+    .accordion {
+        width: 100%;
+        padding: 18px;
+        font-size: 15px;
+        color: #444;
+        text-align: left;
+        background-color: #eee;
+        transition: 0.4s;
+    }
+
+    .active, .accordion:hover {
+        background-color: #ccc;
+    }
+
+    .panel {
+        display: none;
+        padding: 0 18px;
+        overflow: hidden;
+        background-color: white;
+    }
+
+    .rotate {
+        transition: all .3s linear;
+    }
+
+    .rotate.down {
+        transform:rotate(90deg);
+    }
+
+    .right-icon-holder {
+        position:relative;
+    }
+
+    .right-icon-holder .fa {
+        position:absolute;
+        top:50%;
+        right: 10px;
+        margin-top: -12px; /* Half of line height to keep left middle postion of container */
+        line-height: 24px;
+    }
+
+    .card-horizontal {
+        display: flex;
+        flex: 1 1 auto;
+    }
+}
