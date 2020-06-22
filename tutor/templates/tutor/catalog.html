@@ -8,14 +8,6 @@
     {% endcompress %}
 {% endblock %}
 
-{% block header_navigation_links %}
-    {% if user.is_authenticated %}
-        <li class="nav-item ml-3">
-            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
-        </li>
-    {% endif %}
-{% endblock %}
-
 {% block main_content %}
     <div class="jumbotron jumbotron-fluid">
         <div class="container" style="text-align: center">
@@ -27,13 +19,13 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-3 p-0">
-                <button onclick="turn1()" class="accordion right-icon-holder" style="background-color: #3a4958; color: #fff">Subjects <div id="subject" class="fa fa-chevron-right rotate"></div></button>
+                <button onclick="turn1()" class="accordion right-icon-holder" style="background-color: #3a4958; color: #fff; outline: none">Subjects <div id="subject" class="fa fa-chevron-right rotate"></div></button>
                 <div class="panel">
                     <a class="dropdown-item" href="#reason">Reasoning</a>
                     <a class="dropdown-item" href="#verify">Verification</a>
                     <a class="dropdown-item" href="#loop">Loops</a>
                 </div>
-                <button onclick="turn2()" class="accordion right-icon-holder" style="background-color: #3a4958; color: #fff">Verified Sets <div id="lesson" class="fa fa-chevron-right rotate"></div></button>
+                <button onclick="turn2()" class="accordion right-icon-holder" style="background-color: #3a4958; color: #fff; outline: none">Verified Sets <div id="lesson" class="fa fa-chevron-right rotate"></div></button>
                 <div class="panel">
                     <a class="dropdown-item" href="#2150">CPSC 2150</a>
                     <a class="dropdown-item" href="#3720">CPSC 3720</a>
@@ -42,7 +34,7 @@
                     <a class="dropdown-item" href="#2000">CS 2000</a>
                     <a class="dropdown-item" href="#4000">CS 4000</a>
                 </div>
-                <button onclick="turn3()" class="accordion right-icon-holder" style="background-color: #3a4958; color: #fff">Lesson Sets <div id="approved" class="fa fa-chevron-right rotate"></div></button>
+                <button onclick="turn3()" class="accordion right-icon-holder" style="background-color: #3a4958; color: #fff; outline: none">Lesson Sets <div id="approved" class="fa fa-chevron-right rotate"></div></button>
                 <div class="panel">
                     <a class="dropdown-item" href="#begin">Begin To Reason</a>
                     <a class="dropdown-item" href="#continue">Continue To Reason</a>
@@ -53,41 +45,46 @@
             </div>
             <div class="col-7 p-0">
                 <div class="container">
-        <div class="row">
-            <div class="col-xs-12 ">
-                <nav>
-                    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
-                           role="tab" aria-controls="nav-home" aria-selected="true">Current Courses</a>
-                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
-                           role="tab" aria-controls="nav-profile" aria-selected="false">Course History</a>
-                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
-                           role="tab" aria-controls="nav-contact" aria-selected="false">More</a>
-                    </div>
-                </nav>
-                <div class="tab-content py-3 px-3" id="nav-tabContent">
-                    <div class="tab-pane fade show active text-dark bg-light" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                        {% lorem 2 p %}
-                    </div>
-                    <div class="tab-pane fade text-dark bg-light" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                        {% lorem 2 p %}
-                    </div>
-                    <div class="tab-pane fade text-dark bg-light" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                        {% lorem 2 p %}
+                    <div class="row">
+                        <div class="col-xs-12 ">
+                            <nav>
+                                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
+                                       role="tab" aria-controls="nav-home" aria-selected="true">Current Courses</a>
+                                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
+                                       role="tab" aria-controls="nav-profile" aria-selected="false">Course History</a>
+                                    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
+                                       role="tab" aria-controls="nav-contact" aria-selected="false">More</a>
+                                </div>
+                            </nav>
+                            <div class="tab-content py-3 px-3" id="nav-tabContent">
+                                <div class="tab-pane fade show active text-dark bg-light" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                                    {% lorem 2 p %}
+                                </div>
+                                <div class="tab-pane fade text-dark bg-light" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                                    {% lorem 2 p %}
+                                </div>
+                                <div class="tab-pane fade text-dark bg-light" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
+                                    {% lorem 2 p %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
+                <br>
+                <div>
+                    <hr class="solid" style="border-top: 5px solid #4C6085;">
+                </div>
                 <div id="begin" class="card" style="margin: 50px 50px 50px 50px;">
                     <div class="card-horizontal">
                         <div class="img-square-wrapper">
                             <img class="" src="{% static 'images/begin.png' %}" style="height: 180px; width: 300px" alt="Card image cap">
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">Begin To Reason</h5>
+                            <h5 class="card-title">Begin To Reason <span class="badge" style="background-color: #ff8c5f; color: #fff">Recommended</span></h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                            <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
@@ -99,7 +96,8 @@
                         <div class="card-body">
                             <h5 class="card-title">Continue To Reason</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                            <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
@@ -111,7 +109,8 @@
                         <div class="card-body">
                             <h5 class="card-title">Master To Reason</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                            <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
@@ -123,7 +122,8 @@
                         <div class="card-body">
                             <h5 class="card-title">Reasoning With Loops</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                            <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
@@ -135,7 +135,8 @@
                         <div class="card-body">
                             <h5 class="card-title">Learning About Verification</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                            <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
@@ -147,10 +148,15 @@
                         <div class="card-body">
                             <h5 class="card-title">Learning About Reasoning</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                            <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
+                <div>
+                    <hr class="solid" style="border-top: 5px solid #4C6085;">
+                </div>
+                <br>
                 <div class="row">
                     <div id="2150" class="card" style="margin: 5px 5px 5px 70px; width: 300px">
                         <div class="card-img-top">
@@ -159,7 +165,8 @@
                         <div class="card-body">
                             <h5 class="card-title">CPSC 2150</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                            <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                     <div id="3720" class="card" style="margin: 5px 5px 5px 5px; width: 300px">
@@ -169,7 +176,8 @@
                         <div class="card-body">
                             <h5 class="card-title">CPSC 3720</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                             <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                             <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                     <div id="3000" class="card" style="margin: 5px 5px 5px 5px; width: 300px">
@@ -179,7 +187,8 @@
                         <div class="card-body">
                             <h5 class="card-title">CS 3000</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                             <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                             <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
@@ -191,7 +200,8 @@
                         <div class="card-body">
                             <h5 class="card-title">CS 1000</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                            <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                     <div id="2000" class="card" style="margin: 5px 5px 5px 5px; width: 300px">
@@ -201,7 +211,8 @@
                         <div class="card-body">
                             <h5 class="card-title">CS 2000</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                             <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                             <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                     <div id="4000" class="card" style="margin: 5px 5px 5px 5px; width: 300px">
@@ -211,7 +222,8 @@
                         <div class="card-body">
                             <h5 class="card-title">CS 4000</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                             <button class="btn" style="background-color: #3a4958; color: #fff">Start Training</button>
+                             <a href="{% url 'tutor:lesson' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                            aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>

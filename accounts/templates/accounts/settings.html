@@ -7,14 +7,6 @@
     {% endcompress %}
 {% endblock %}
 
-{% block header_navigation_links %}
-    {% if user.is_authenticated %}
-        <li class="nav-item ml-3">
-            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
-        </li>
-    {% endif %}
-{% endblock %}
-
 {% block main_content %}
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
@@ -29,7 +21,7 @@
                     <div class="card" style="width: 18rem;">
                         <img class="card-img-top" src="{% static 'images/logo4.png' %}" width="300" height="125" alt="Card image cap">
                         <div class="card-body">
-                            <h5 class="card-title">{{ user.username }}</h5>
+                            <h5 class="card-title">{{ name }}</h5>
                             <p class="card-text">Last Logged In On {{ user.last_login }}</p>
                         </div>
                         <ul class="list-group list-group-flush">
@@ -40,8 +32,18 @@
                     </div>
                 </div>
             </div>
-            <div class="col-9 p-0">
-                
+            <div class="col-8 p-0">
+                <div class="card-group">
+                    <div class="card" style="margin: 5px 5px 5px 5px;">
+                        <img src="{% static 'other_images/placeholder.png' %}" class=" card-img-top">
+                    </div>
+                    <div class="card" style="margin: 5px 5px 5px 5px;">
+                        <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top">
+                    </div>
+                    <div class="card" style="margin: 5px 5px 5px 5px;">
+                        <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top">
+                    </div>
+                </div>
             </div>
         </div>
     </div>

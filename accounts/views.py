@@ -40,14 +40,14 @@ def profile(request):
                 return render(request, "accounts/settings.html")
         else:
             if UserInformation.objects.filter(user_email=request.user.email).exists():
-                if UserInformation.objects.filter(user_email=request.user.email).values('user_name') == "" or \
-                        UserInformation.objects.filter(user_email=request.user.email).values('user_school') == "" or \
-                        UserInformation.objects.filter(user_email=request.user.email).values('user_class') == "" or \
-                        UserInformation.objects.filter(user_email=request.user.email).values('user_gender') == "" or \
-                        UserInformation.objects.filter(user_email=request.user.email).values('user_race') == "":
+                if UserInformation.objects.get(user_email=request.user.email).user_name == "" or \
+                        UserInformation.objects.get(user_email=request.user.email).user_school == "" or \
+                        UserInformation.objects.get(user_email=request.user.email).user_class == "" or \
+                        UserInformation.objects.get(user_email=request.user.email).user_gender == "" or \
+                        UserInformation.objects.get(user_email=request.user.email).user_race == "":
                     form = CreateUser(initial={'user_email': request.user.email})
                     form.save()
-                # print(UserInformation.objects.filter(user_email=request.user.email).values())
+                # print(UserInformation.objects.get(user_email=request.user.email).user_name)
                 request.session.set_expiry(0)
                 return render(request, "accounts/settings.html")
             form = CreateUser(initial={'user_email': request.user.email})
@@ -67,7 +67,8 @@ def settings(request):
                       the user is authenticated.
     """
     if request.user.is_authenticated:
-        return render(request, "accounts/settings.html")
+        return render(request, "accounts/settings.html",
+                      {'name': UserInformation.objects.get(user_email=request.user.email).user_name})
     else:
         return render(request, "accounts/login.html")
 

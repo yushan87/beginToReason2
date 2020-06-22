@@ -7,14 +7,6 @@
     {% endcompress %}
 {% endblock %}
 
-{% block header_navigation_links %}
-    {% if user.is_authenticated %}
-        <li class="nav-item ml-3">
-            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
-        </li>
-    {% endif %}
-{% endblock %}
-
 {% block main_content %}
     <div class="container">
         <div class="card w-50 mt-3 mx-auto shadow-lg rounded fadeInDown text-center">
