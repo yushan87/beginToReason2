@@ -49,7 +49,8 @@ def profile(request):
                     form.save()
                 # print(UserInformation.objects.get(user_email=request.user.email).user_name)
                 request.session.set_expiry(0)
-                return render(request, "accounts/settings.html")
+                return render(request, "accounts/settings.html",
+                              {'name': UserInformation.objects.get(user_email=request.user.email).user_name})
             form = CreateUser(initial={'user_email': request.user.email})
         return render(request, "accounts/profile.html", {'form': form})
     else:
