@@ -18,21 +18,56 @@ class Lesson(models.Model):
 	Name = models.CharField(max_length=30)
 	Concept = models.CharField(max_length=50)
 	Code = models.TextField(max_length=500)
-	Activity = models.TextField(max_length=500)
-	References = models.TextField(max_length=500)
 
 	def __str__(self):
 		return self.Name
 
-'''
+
+class Instruction(models.Model):
+	instruction_key = models.CharField(max_length=30)
+	instruction_text = models.TextField(max_length=250)
+
+	# lesson = models.ManyToManyField(Lesson, related_name='references')#, through= 'LessonReferences')
+
+	def __str__(self):
+		return self.reference_key
+
+
 class Reference(models.Model):
 	reference_key = models.CharField(max_length=30)
 	reference_text = models.TextField(max_length=250)
-	lesson = models.ManyToManyField(Lesson, related_name='references')#, through= 'LessonReferences')
+	#lesson = models.ManyToManyField(Lesson, related_name='references')#, through= 'LessonReferences')
 	
 	def __str__(self):
 		return self.reference_key		
-'''
+
+
+class Reasoning(models.Model):
+	reasoning_key = models.CharField(max_length=30)
+	reasoning_text = models.TextField(max_length=250)
+
+
+	# lesson = models.ManyToManyField(Lesson, related_name='references')#, through= 'LessonReferences')
+
+	NONE = 'None'
+	MULTIPLE = 'MC'
+	TEXT = 'Text'
+
+	RESPONSE_OPTIONS = [
+		(NONE, 'None')
+		(MULTIPLE, 'Multiple Choice')
+		(TEXT, 'Text Response')
+	]
+
+	reasoning_type = models.CharField(
+		max_length=4,
+		choices=RESPONSE_OPTIONS,
+		default=NONE
+	)
+
+
+	def __str__(self):
+		return self.reference_key
 
 
 

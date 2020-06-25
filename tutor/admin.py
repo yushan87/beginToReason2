@@ -4,10 +4,10 @@ TODO: Need to fill in the correct information for this module after
 """
 from django.contrib import admin
 
-from .models import Lesson, Reference, CodeTemplate
+from .models import Lesson, Reference, CodeTemplate, Instruction, Reasoning, MC_Choice, Question, Free_Resp
 from .forms import LessonForm, TemplateForm
 
-
+'''
 class RefInline(admin.StackedInline):
     """
     TODO: Need to fill in the correct information for this class after
@@ -17,7 +17,7 @@ class RefInline(admin.StackedInline):
     extra = 0
     Reference.objects.filter(reference_key=model)
 
-
+'''
 class TemplateAdmin(admin.ModelAdmin):
     """
     TODO: Need to fill in the correct information for this class after
@@ -44,7 +44,6 @@ class LessonAdmin(admin.ModelAdmin):
           remove experimental things that don't work.
     """
     form = LessonForm
-    inlines = [RefInline, ]
 
     list_filter = ['lesson_name']
     ordering = ['lesson_name']
@@ -58,7 +57,15 @@ class ReferenceAdmin(admin.ModelAdmin):
     model = Reference
 
 
+
+
+
 # Register your models here.
-admin.site.register(Lesson, LessonAdmin)
+admin.site.register(Lesson)
 admin.site.register(Reference)
-admin.site.register(CodeTemplate, TemplateAdmin)
+admin.site.register(CodeTemplate)
+admin.site.register(Instruction)
+admin.site.register(Reasoning)
+admin.site.register(Question)
+admin.site.register(MC_Choice)
+admin.site.register(Free_Resp)
