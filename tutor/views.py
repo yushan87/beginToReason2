@@ -31,4 +31,3 @@ def tutor(request):
         return render(request, "tutor/tutor.html")
     else:
         return render(request, "accounts/login.html")
-
