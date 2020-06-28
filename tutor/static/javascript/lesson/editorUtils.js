@@ -265,6 +265,8 @@ $("#resetCode").click(function () {
     // Unlock editor for further user edits
     unlock();
 
+    $('#areYouSure').modal('hide')
+
     return false;
 });
 
