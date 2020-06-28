@@ -23,7 +23,8 @@
         transition: 0.4s;
     }
 
-    .active, .accordion:hover {
+    .active,
+    .accordion:hover {
         background-color: #ccc;
     }
 
@@ -58,23 +59,23 @@
         display: flex;
         flex: 1 1 auto;
     }
+}
 
-    #top {
-        position: fixed;
-        right: 30px;
-        bottom: 20px;
-        z-index: 99;
-        padding: 15px;
-        font-size: 18px;
-        color: $white;
-        cursor: pointer;
-        background-color: $charcoal;
-        border: none;
-        border-radius: 4px;
-        outline: none;
-    }
+#top {
+    position: fixed;
+    right: 30px;
+    bottom: 20px;
+    z-index: 99;
+    padding: 15px;
+    font-size: 18px;
+    color: $white;
+    cursor: pointer;
+    background-color: $charcoal;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+}
 
-    #top:hover {
-        background-color: $coral;
-    }
+#top:hover {
+    background-color: $coral;
 }
