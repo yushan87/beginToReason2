@@ -137,7 +137,7 @@
                             </div>
                             <div id="compilerButtons" class="ml-auto">
                                 <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#areYouSure">
-                                  <i style="font-size:20px" class="fa">&#xf021;</i>
+                                  <i class="fa">&#xf021;</i>
                                 </button>
                                 <!-- AreYouSure Modal -->
                                 <div class="modal fade" id="areYouSure" tabindex="-1" role="dialog">
@@ -145,15 +145,12 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title w-100 text-center" style="color: #30343f;">Reset Code?</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-block" style="background-color: #3a4958; color: #fff" data-dismiss="modal">
-                                                    Don't Reset <i class="fa fa-exclamation" aria-hidden="true"></i>
+                                                <button type="button" class="btn btn-block right-icon-holder" style="background-color: #3a4958; color: #fff" data-dismiss="modal">
+                                                    Don't Reset <i class="fa fa-times" aria-hidden="true"></i>
                                                 </button>
-                                                <button id="resetCode" class="btn btn-danger btn-block" type="button" data-toggle="tooltip" data-placement="top" title="Reset">
+                                                <button id="resetCode" class="btn btn-danger btn-block right-icon-holder" type="button" data-toggle="tooltip" data-placement="top" title="Reset">
                                                     Confirm Reset <i class="fa fa-check" aria-hidden="true"></i>
                                                 </button>
                                             </div>
@@ -201,14 +198,14 @@
                     </div>
                 </div>
                 <br>
-                <div id="explainCard" class="card" style="margin: 5px 5px 5px 5px; bottom: 0;">
+                <div id="explainCard" class="card" style="margin: 5px 5px 5px 5px; bottom: 0; position: absolute;">
                     <div class="card-header" style="background-color: #3a4958; color: #fff;">
                         Reasoning
                     </div>
                     <br>
                     <form id="usrform">
                         <div>
-                            &emsp;Please explain your reasoning to Check Correctness:
+                            Please explain your reasoning to Check Correctness:
                         </div>
                         <textarea id="explainBox"
                                   style="width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;"
@@ -216,7 +213,7 @@
                                   required></textarea>
                     </form>
                     <br>
-                    <div class="form-check">
+                    <div class="form-check" hidden>
                         Which of the following best describes your understanding of this concept? <br>
                         <input class="form-check-input" type="radio" name="selectExplain" id="select1" value="option1"
                                style="margin-left: 12px;">
