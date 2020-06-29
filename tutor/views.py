@@ -2,6 +2,7 @@
 This module contains our Django views for the "tutor" application.
 """
 from django.shortcuts import render
+from accounts.models import UserInformation
 
 
 def catalog(request):
@@ -14,7 +15,11 @@ def catalog(request):
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.
     """
-    return render(request, "tutor/catalog.html")
+    if request.user.is_authenticated:
+        return render(request, "tutor/catalog.html",
+                      {'name': UserInformation.objects.get(user_email=request.user.email).user_name})
+    else:
+        return render(request, "tutor/catalog.html")
 
 
 def tutor(request):
@@ -28,6 +33,7 @@ def tutor(request):
                       the user is authenticated.
     """
     if request.user.is_authenticated:
-        return render(request, "tutor/tutor.html")
+        return render(request, "tutor/tutor.html",
+                      {'name': UserInformation.objects.get(user_email=request.user.email).user_name})
     else:
         return render(request, "accounts/login.html")

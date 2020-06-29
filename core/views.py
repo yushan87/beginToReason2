@@ -2,6 +2,7 @@
 This module contains our Django views for the "core" application.
 """
 from django.shortcuts import render
+from accounts.models import UserInformation
 
 
 def home(request):
@@ -13,4 +14,8 @@ def home(request):
     Returns:
         HttpResponse: A generated http response object to the request.
     """
-    return render(request, "core/index.html")
+    if request.user.is_authenticated:
+        return render(request, "core/index.html",
+                      {'name': UserInformation.objects.get(user_email=request.user.email).user_name})
+    else:
+        return render(request, "core/index.html")
