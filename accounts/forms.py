@@ -59,7 +59,7 @@ class CreateUser(forms.ModelForm):
     ]
 
     # this should be not changeable / read only
-    user_email = forms.EmailField(label='Email')
+    user_email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'readonly': 'readonly'}))
     user_name = forms.CharField(label='Username', max_length=100)
     user_school = forms.ChoiceField(label='School', choices=schools)
     user_class = forms.ChoiceField(label='Class', choices=classes)

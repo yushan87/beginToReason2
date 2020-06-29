@@ -29,18 +29,10 @@
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
 
             // session recording and transcribing
-            setupRecording(); // for recording a session
-            transcribeAudio(); // for transcribing audio
+            //setupRecording(); // for recording a session
+            //transcribeAudio(); // for transcribing audio
         });
     </script>
-{% endblock %}
-
-{% block header_navigation_links %}
-    {% if user.is_authenticated %}
-        <li class="nav-item ml-3">
-            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
-        </li>
-    {% endif %}
 {% endblock %}
 
 {% block main_content %}
@@ -114,9 +106,9 @@
                         <div class="modal-nav-body bg-dark text-white">
                             <div class="container" align="center">
                                 <ul class="progressbar">
-                                    <li id="lesson1">Lesson 1</li>
-                                    <li id="lesson2">Lesson 2</li>
-                                    <li id="lesson3">Lesson 3</li>
+                                    <li id="lesson1"></li>
+                                    <li id="lesson2"></li>
+                                    <li id="lesson3"></li>
                                 </ul>
                             </div>
                         </div>
@@ -144,11 +136,28 @@
                                 <button id="resetFontSize" class="btn btn-sm btn-light" type="button">Default</button>
                             </div>
                             <div id="compilerButtons" class="ml-auto">
-                                <button id="resetCode" class="btn btn-danger" type="button" data-toggle="tooltip"
-                                        data-placement="top" title="Reset"><i style="font-size:20px"
-                                                                              class="fa">&#xf021;</i></button>
-                                <button id="giveHint" class="btn" style="background-color: #ff8c5f; color: #fff"
-                                        type="button" data-toggle="tooltip"
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#areYouSure">
+                                  <i class="fa">&#xf021;</i>
+                                </button>
+                                <!-- AreYouSure Modal -->
+                                <div class="modal fade" id="areYouSure" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title w-100 text-center" style="color: #30343f;">Reset Code?</h5>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-block right-icon-holder" style="background-color: #3a4958; color: #fff" data-dismiss="modal">
+                                                    Don't Reset <i class="fa fa-times" aria-hidden="true"></i>
+                                                </button>
+                                                <button id="resetCode" class="btn btn-danger btn-block right-icon-holder" type="button" data-toggle="tooltip" data-placement="top" title="Reset">
+                                                    Confirm Reset <i class="fa fa-check" aria-hidden="true"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button id="giveHint" class="btn btn-light" type="button" data-toggle="tooltip"
                                         data-placement="top" title="Get Help"><i class="far fa-life-ring"></i></button>
                                 <button class="btn btn-light" data-toggle="modal" data-target="#progress-modal"
                                         aria-expanded="false" type="button"><i class="fas fa-spinner"></i> Progress
@@ -190,21 +199,21 @@
                 </div>
                 <br>
                 <div id="explainCard" class="card" style="margin: 5px 5px 5px 5px; bottom: 0; position: absolute;">
-                    <div class="card-header">
+                    <div class="card-header" style="background-color: #3a4958; color: #fff;">
                         Reasoning
                     </div>
                     <br>
                     <form id="usrform">
-                        Please explain your reasoning to Check Correctness
-                        <br>
-                        <br>
+                        <div>
+                            Please explain your reasoning to Check Correctness:
+                        </div>
                         <textarea id="explainBox"
                                   style="width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;"
                                   rows="5" name="comment" form="usrform" placeholder="Write explanation here..."
                                   required></textarea>
                     </form>
                     <br>
-                    <div class="form-check">
+                    <div class="form-check" hidden>
                         Which of the following best describes your understanding of this concept? <br>
                         <input class="form-check-input" type="radio" name="selectExplain" id="select1" value="option1"
                                style="margin-left: 12px;">

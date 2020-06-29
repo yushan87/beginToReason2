@@ -17,6 +17,7 @@ class UserInformation(models.Model):
     user_email = models.EmailField()
     user_name = models.TextField()
     # date_joined = models.DateTimeField(default=datetime.now())
+    # last_signin
     user_school = models.CharField(max_length=50)
     user_class = models.CharField(max_length=50)
     user_gender = models.CharField(max_length=50)
@@ -28,12 +29,4 @@ class UserInformation(models.Model):
             Returns:
                 str: user name
         """
-        return self.user_name
-
-    def getuser(self):
-        """function getuser is called on a user to retrieve information
-
-                    Returns:
-                        str: user email
-                """
         return self.user_email

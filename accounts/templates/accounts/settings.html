@@ -7,14 +7,6 @@
     {% endcompress %}
 {% endblock %}
 
-{% block header_navigation_links %}
-    {% if user.is_authenticated %}
-        <li class="nav-item ml-3">
-            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
-        </li>
-    {% endif %}
-{% endblock %}
-
 {% block main_content %}
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
@@ -22,29 +14,35 @@
                                             aria-pressed="true">Edit Profile</a></h1>
         </div>
     </div>
-
-    <div class="container">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-xs-12 ">
-                <nav>
-                    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
-                           role="tab" aria-controls="nav-home" aria-selected="true">Current Courses</a>
-                        <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
-                           role="tab" aria-controls="nav-profile" aria-selected="false">Course History</a>
-                        <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
-                           role="tab" aria-controls="nav-contact" aria-selected="false">More</a>
+            <div class="col-3 p-0">
+                <div class="container">
+                    <div class="card">
+                        <img class="card-img-top" src="{% static 'images/logo4.png' %}" height="175" alt="Card image cap">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ name }}</h5>
+                            <p class="card-text">Date Joined On {{ user.date_joined | date:"F d, Y"  }}</p>
+                            <p class="card-text">Last Logged In On {{ user.last_login }}</p>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Lessons Completed: 0</li>
+                            <li class="list-group-item">Sets Completed: 0</li>
+                            <li class="list-group-item">Current Daily Streak: 0</li>
+                        </ul>
                     </div>
-                </nav>
-                <div class="tab-content py-3 px-3" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                        {% lorem 2 p %}
+                </div>
+            </div>
+            <div class="col-8 p-0">
+                <div class="card-group">
+                    <div class="card" style="margin: 5px 5px 5px 5px;">
+                        <img src="{% static 'other_images/placeholder.png' %}" class=" card-img-top">
                     </div>
-                    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                        {% lorem 2 p %}
+                    <div class="card" style="margin: 5px 5px 5px 5px;">
+                        <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top">
                     </div>
-                    <div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                        {% lorem 2 p %}
+                    <div class="card" style="margin: 5px 5px 5px 5px;">
+                        <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top">
                     </div>
                 </div>
             </div>

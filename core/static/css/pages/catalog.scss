@@ -1,0 +1,81 @@
+// catalog.scss
+// This file extends _base to generate all the CSS required to render the sign-in page
+@import "../base/_base";
+@import "../components/_fade";
+@import "../utils/_variables";
+@import "../components/_jumbotron.scss";
+
+
+/* Main Layout-Related CSS */
+#page-content {
+    min-height: calc(100vh - #{$page-header-min-height + $page-footer-height} - 1rem);
+
+    // Use the jumbotron mixin to generate the necessary CSS code
+    @include generateJumbotron($page-content-text-color-light, $page-content-bg-color-1, $page-content-border-color-2);
+
+    .accordion {
+        width: 100%;
+        padding: 18px;
+        font-size: 15px;
+        text-align: left;
+        background-color: #eee;
+        border: none;
+        transition: 0.4s;
+    }
+
+    .active,
+    .accordion:hover {
+        background-color: #ccc;
+    }
+
+    .panel {
+        display: none;
+        padding: 0 18px;
+        overflow: hidden;
+        background-color: $white;
+    }
+
+    .rotate {
+        transition: all 0.3s linear;
+    }
+
+    .rotate.down {
+        transform: rotate(90deg);
+    }
+
+    .right-icon-holder {
+        position: relative;
+    }
+
+    .right-icon-holder .fa {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        margin-top: -12px;
+        line-height: 24px;
+    }
+
+    .card-horizontal {
+        display: flex;
+        flex: 1 1 auto;
+    }
+}
+
+#top {
+    position: fixed;
+    right: 30px;
+    bottom: 20px;
+    z-index: 99;
+    padding: 15px;
+    font-size: 18px;
+    color: $white;
+    cursor: pointer;
+    background-color: $charcoal;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+}
+
+#top:hover {
+    background-color: $coral;
+}

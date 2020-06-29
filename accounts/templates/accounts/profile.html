@@ -4,49 +4,62 @@
 {% block css %}
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/signin.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
     {% endcompress %}
 {% endblock %}
 
-{% block header_navigation_links %}
-    {% if user.is_authenticated %}
-        <li class="nav-item ml-3">
-            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
-        </li>
-    {% endif %}
-{% endblock %}
-
 {% block main_content %}
-    <div class="container">
-        <div class="card w-50 mt-3 mx-auto shadow-lg rounded fadeInDown text-center">
-            <div class="card-body">
-                <img class="mb-4" src="{% static 'images/logo4.png' %}" width="300" height="125"
-                     alt="RSRG Logo 4">
-                <h2 class="card-title">Please Fill In Missing Information</h2>
-                <form action="{% url 'accounts:profile' %}" method="POST">{% csrf_token %}
-                    {{ form.user_email|as_crispy_field }}
-                    {{ form.user_name|as_crispy_field }}
-                    <div class="form-row">
-                        <div class="form-group col-md-6 mb-0">
-                            {{ form.user_school|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-md-6 mb-0">
-                            {{ form.user_class|as_crispy_field }}
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6 mb-0">
-                            {{ form.user_gender|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-md-6 mb-0">
-                            {{ form.user_race|as_crispy_field }}
-                        </div>
-                    </div>
-                    <button type="submit" class="btn" style="background-color: #3a4958; color: #fff"
-                            data-toggle="collapse"
-                            data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Confirm
-                    </button>
-                </form>
-            </div>
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container" style="text-align: center">
+            <h1 class="display-1 font-weight-bold" style="color: #fff;">
+                    Account Settings
+            </h1>
         </div>
+    </div>
+    <div class="container">
+        <h1 class="card-title text-center" style="color: #3a4958">Please Fill In Missing Information</h1>
+        <form action="{% url 'accounts:profile' %}" method="POST">{% csrf_token %}
+            <br><br>
+            <div>
+                <h3 style="color: #3a4958">Basic Information</h3>
+                <hr class="solid" style="border-top: 5px solid #4C6085;">
+            </div>
+            <br>
+            {{ form.user_email|as_crispy_field }}
+            {{ form.user_name|as_crispy_field }}
+            <br><br>
+            <div>
+                <h3 style="color: #3a4958">Academic Information</h3>
+                <hr class="solid" style="border-top: 5px solid #4C6085;">
+            </div>
+            <br>
+            <div class="form-row">
+                <div class="form-group col-md-6 mb-0">
+                    {{ form.user_school|as_crispy_field }}
+                </div>
+                <div class="form-group col-md-6 mb-0">
+                    {{ form.user_class|as_crispy_field }}
+                </div>
+            </div>
+            <br><br>
+            <div>
+                <h3 style="color: #3a4958">Demographic Information</h3>
+                <hr class="solid" style="border-top: 5px solid #4C6085;">
+            </div>
+            <br>
+            <div class="form-row">
+                <div class="form-group col-md-6 mb-0">
+                    {{ form.user_gender|as_crispy_field }}
+                </div>
+                <div class="form-group col-md-6 mb-0">
+                    {{ form.user_race|as_crispy_field }}
+                </div>
+            </div>
+            <button type="submit" class="btn" style="background-color: #3a4958; color: #fff"
+                    data-toggle="collapse"
+                    data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Confirm
+            </button>
+        </form>
+        <br>
     </div>
 {% endblock %}
