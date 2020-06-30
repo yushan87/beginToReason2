@@ -337,16 +337,6 @@ $("#fontDecrease").click(function () {
 });
 
 /*
- * Function for reset the editor's font size.
- */
-$("#resetFontSize").click(function () {
-    // Reset font size
-    $("#editor").css("font-size", fontSize);
-
-    return false;
-});
-
-/*
  * Function for locking the check syntax and reset buttons.
  */
 function lock() {

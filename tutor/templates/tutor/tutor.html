@@ -47,7 +47,7 @@
                             <div class="card">
                                 <div class="card-header" id="headingOne">
                                     <h5 class="mb-0">
-                                        <button class="btn btn-block" style="background-color: #3a4958; color: #fff"
+                                        <button class="btn btn-block" id="activity-cards"
                                                 data-toggle="collapse"
                                                 data-target="#collapseOne" aria-expanded="true"
                                                 aria-controls="collapseOne">
@@ -65,7 +65,8 @@
                                 <div class="card-header" id="headingTwo">
                                     <h5 class="mb-0">
                                         <button class="btn btn-block collapsed"
-                                                style="background-color: #3a4958; color: #fff" data-toggle="collapse"
+                                                id="activity-cards"
+                                                data-toggle="collapse"
                                                 data-target="#collapseTwo" aria-expanded="false"
                                                 aria-controls="collapseTwo">
                                             Reference Material
@@ -81,7 +82,8 @@
                             <div class="card">
                                 <div class="card-header" id="headingThree">
                                     <button class="btn btn-block collapsed"
-                                            style="background-color: #3a4958; color: #fff" data-toggle="collapse"
+                                            id="activity-cards"
+                                            data-toggle="collapse"
                                             data-target="#collapseThree" aria-expanded="false"
                                             aria-controls="collapseThree">
                                         About
@@ -99,8 +101,7 @@
             </div>
 
             <!-- Progress Modal -->
-            <div class="modal fade" id="progress-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
-                 style="background-color: rgba(48,52,63,.8);">
+            <div class="modal fade" id="progress-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
                 <div class="modal-dialog modal-xl" role="document">
                     <div class="modal-nav-content">
                         <div class="modal-nav-body bg-dark text-white">
@@ -129,11 +130,12 @@
                         <div class="btn-toolbar font-weight-light" role="toolbar" aria-label="Editor Toolbar">
                             <div id="fontButtons" class="d-inline-flex border border-white p-1">
                                 <span class="d-none d-md-block my-auto mr-2">Font Size:</span>
-                                <button id="fontIncrease" class="btn btn-sm btn-light mr-1" type="button"><i
-                                        class="fas fa-plus fa-fw" aria-hidden="true" title="+"></i></button>
-                                <button id="fontDecrease" class="btn btn-sm btn-light mr-1" type="button"><i
-                                        class="fas fa-minus fa-fw" aria-hidden="true" title="-"></i></button>
-                                <button id="resetFontSize" class="btn btn-sm btn-light mr-1" type="button">Default</button>
+                                <button id="fontIncrease" class="btn btn-sm btn-light mr-1" type="button">
+                                    <i class="fas fa-plus fa-fw" aria-hidden="true" title="+"></i>
+                                </button>
+                                <button id="fontDecrease" class="btn btn-sm btn-light mr-1" type="button">
+                                    <i class="fas fa-minus fa-fw" aria-hidden="true" title="-"></i>
+                                </button>
                                 <button class="btn btn-sm btn-light" id="changeMode" type="button">
                                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-brightness-high-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
@@ -142,50 +144,57 @@
                                 </button>
                             </div>
                             <div id="compilerButtons" class="ml-auto">
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#areYouSure">
-                                  <i class="fa">&#xf021;</i>
-                                </button>
                                 <!-- AreYouSure Modal -->
                                 <div class="modal fade" id="areYouSure" tabindex="-1" role="dialog">
                                     <div class="modal-dialog modal-dialog-centered modal-md" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title w-100 text-center" style="color: #30343f;">
+                                                <h5 class="modal-title w-100 text-center" id="are-you-sure">
                                                     Are you sure you want to reset back to the default code template? You will lose your current code.
                                                 </h5>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-block right-icon-holder" style="background-color: #3a4958; color: #fff" data-dismiss="modal">
-                                                    Don't Reset <i class="fa fa-times" aria-hidden="true"></i>
+                                                <button type="button" class="btn btn-block right-icon-holder" id="dont" data-dismiss="modal">
+                                                    Don't Reset
+                                                    <i class="fa fa-times" aria-hidden="true"></i>
                                                 </button>
                                                 <button id="resetCode" class="btn btn-danger btn-block right-icon-holder" type="button" data-toggle="tooltip" data-placement="top" title="Reset">
-                                                    Confirm Reset <i class="fa fa-check" aria-hidden="true"></i>
+                                                    Confirm Reset
+                                                    <i class="fa fa-check" aria-hidden="true"></i>
                                                 </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 <button id="giveHint" class="btn btn-light" type="button" data-toggle="tooltip"
-                                        data-placement="top" title="Get Help"><i class="far fa-life-ring"></i></button>
+                                        data-placement="top" title="Get Help">
+                                    <i class="far fa-life-ring"></i>
+                                </button>
                                 <button class="btn btn-light" data-toggle="modal" data-target="#progress-modal"
-                                        aria-expanded="false" type="button"><i class="fas fa-spinner"></i> Progress
+                                        aria-expanded="false" type="button">
+                                    <i class="fas fa-spinner"></i>
+                                    Progress
+                                </button>
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#areYouSure">
+                                  <i class="fa">&#xf021;</i>
                                 </button>
                                 <button id="checkCorrectness" class="btn btn-success" type="button"
-                                        data-toggle="tooltip" data-placement="top" title="Check Correctness"><i
-                                        class="fas fa-clipboard-check"></i> Check Correctness
+                                        data-toggle="tooltip" data-placement="top" title="Check Correctness">
+                                    <i class="fas fa-clipboard-check"></i>
+                                    Run
                                 </button>
                             </div>
                         </div>
                         <div id="directionButtons" class="d-flex">
                             <div class="mr-auto">
                                 <button id="prev" type="button" class="btn btn-light btn-md"
-                                        style="margin: 2px 2px 2px 2px;" data-toggle="tooltip" data-placement="top"
+                                        data-toggle="tooltip" data-placement="top"
                                         title="Previous">Back
                                 </button>
                             </div>
                             <div>
                                 <button id="next" type="button" class="btn btn-light btn-md"
-                                        style="margin: 2px 2px 2px 2px;" data-toggle="tooltip" data-placement="top"
+                                        data-toggle="tooltip" data-placement="top"
                                         title="Next">Next
                                 </button>
                             </div>
@@ -196,7 +205,7 @@
             </div>
             <div class="col-3 p-0">
                 <br>
-                <div id="resultCard" class="card" style="margin: 5px 5px 5px 5px;">
+                <div id="resultCard" class="card">
                     <div class="card-header">
                         Results
                     </div>
@@ -206,39 +215,31 @@
                     </div>
                 </div>
                 <br>
-                <div id="explainCard" class="card" style="margin: 5px 5px 5px 5px; bottom: 0; position: absolute;">
-                    <div class="card-header" style="background-color: #3a4958; color: #fff;">
+                <div id="explainCard" class="card">
+                    <div class="card-header" id="activity-cards">
                         Reasoning
                     </div>
                     <form id="usrform">
-                        <div style="margin: 5px 5px 5px 5px;">
-                            Please explain your reasoning to Check Correctness:
+                        <div id="results">
+                            Explain your reasoning before attempting to Run:
                         </div>
-                        <textarea id="explainBox"
-                                  style="width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;"
-                                  rows="5" name="comment" form="usrform" placeholder="Write explanation here..."
-                                  required></textarea>
+                        <textarea id="explainBox" rows="5" name="comment" form="usrform" placeholder="Write explanation here..." required></textarea>
                     </form>
-                    <br>
                     <div class="form-check" hidden>
                         Which of the following best describes your understanding of this concept? <br>
-                        <input class="form-check-input" type="radio" name="selectExplain" id="select1" value="option1"
-                               style="margin-left: 12px;">
-                        <label class="form-check-label" for="exampleRadios1" style="margin-left: 36px;">
+                        <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option1">
+                        <label class="form-check-label" for="exampleRadios1" id="radio">
                             First Option
                         </label><br>
-                        <input class="form-check-input" type="radio" name="selectExplain" id="select2" value="option2"
-                               style="margin-left: 12px;">
-                        <label class="form-check-label" for="exampleRadios2" style="margin-left: 36px;">
+                        <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option2">
+                        <label class="form-check-label" for="exampleRadios2" id="radio">
                             Section Option
                         </label><br>
-                        <input class="form-check-input" type="radio" name="selectExplain" id="select3" value="option3"
-                               style="margin-left: 12px;">
-                        <label class="form-check-label" for="exampleRadios3" style="margin-left: 36px;">
+                        <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option3">
+                        <label class="form-check-label" for="exampleRadios3" id="radio">
                             Third Option
                         </label>
                     </div>
-                    <br>
                 </div>
             </div>
         </div>

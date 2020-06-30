@@ -28,8 +28,7 @@
 }
 
 #editor {
-    border-top: 5px solid #141414 !important;
-    border-bottom: 5px solid #141414 !important;
+    border-right: 1px solid #4C6085 !important;
 }
 
 .navbar-toggle {
@@ -66,6 +65,59 @@
 .btn-dark:hover {
     background-color: #30343f;
     border: 1px solid #30343f;
+}
+
+#activity-cards {
+    background-color: #3a4958;
+    color: #fff
+}
+
+#progress-modal {
+    background-color: rgba(48,52,63,.8);
+}
+
+#are-you-sure {
+    color: #30343f;
+}
+
+#dont {
+    background-color: #3a4958;
+    color: #fff
+}
+
+#prev {
+    margin: 2px 2px 2px 2px;
+}
+
+#next {
+    margin: 2px 2px 2px 2px;
+}
+
+#results {
+    margin: 5px 5px 5px 5px;
+}
+
+#explainCard {
+    position: absolute;
+    bottom: 0;
+    width: 95%;
+    margin: 5px 5px 5px 5px;
+}
+
+#explainBox {
+    display: block;
+    width: 90%;
+    resize: none;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+#select {
+    margin-left: 12px;
+}
+
+#radio {
+    margin-left: 36px;
 }
 
 .ace-chaos .ace_gutter-cell.ace_correct {
