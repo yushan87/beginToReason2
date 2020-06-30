@@ -174,7 +174,7 @@ COMPRESS_PRECOMPILERS = [
 
 LOGIN_URL = '/auth/login/google-oauth2/'
 
-LOGIN_REDIRECT_URL = '/accounts/profile'
+LOGIN_REDIRECT_URL = '/accounts/settings'
 
 LOGOUT_REDIRECT_URL = '/'
 
