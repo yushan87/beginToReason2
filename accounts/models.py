@@ -14,10 +14,9 @@ class UserInformation(models.Model):
     Contains a model of a user to keep track of user information
     @param models.Model
     """
+    # TODO: documentation needs work.
     user_email = models.EmailField()
     user_name = models.TextField()
-    # date_joined = models.DateTimeField(default=datetime.now())
-    # last_signin
     user_school = models.CharField(max_length=50)
     user_class = models.CharField(max_length=50)
     user_gender = models.CharField(max_length=50)

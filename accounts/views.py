@@ -30,6 +30,8 @@ def profile(request):
                       the user is authenticated.
     """
     if request.user.is_authenticated:
+        # TODO: Need to check to see if the user information has all the proper information.
+        #       If not, need to redirect to settings page
         return render(request, "accounts/profile.html",
                       {'name': UserInformation.objects.get(user_email=request.user.email).user_name})
     else:
@@ -47,6 +49,7 @@ def settings(request):
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.
     """
+    # TODO: Need to rework the form validation so it can be easily reused.
     # Case 1: User has logged in and has been properly authenticated
     if request.user.is_authenticated:
         # Case 1a: We have received a POST request with some data
@@ -62,6 +65,7 @@ def settings(request):
         else:
             # Case 1ba: The user email exists in our user information table.
             if UserInformation.objects.filter(user_email=request.user.email).exists():
+                # TODO: Need to check the logic for these two cases.
                 # Case 1baa: The user information has all the required fields filled in.
                 if UserInformation.objects.get(user_email=request.user.email).user_name == "" or \
                         UserInformation.objects.get(user_email=request.user.email).user_school == "" or \
