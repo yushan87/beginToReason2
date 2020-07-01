@@ -59,3 +59,21 @@ class Reference(models.Model):
             str: TODO: Need to fill in the correct information for this function.
         """
         return self.reference_key
+
+
+class LessonSet(models.Model):
+    """
+    TODO: Need to fill in the correct information for this class after
+          remove experimental things that don't work.
+    """
+    lesson_set_id = models.IntegerField()
+    lesson_set_name = models.CharField(max_length=50)
+    # some way of holding all the lessons in this set (many to many)
+
+    def __str__(self):
+        """function __str__ TODO: Need to fill in the correct information for this function.
+
+        Returns:
+            str: TODO: Need to fill in the correct information for this function.
+        """
+        return self.lesson_set_id

@@ -68,7 +68,6 @@ def settings(request):
                       the user is authenticated.
     """
     if request.user.is_authenticated:
-        print(request.META.get('HTTP_REFERER'))
         return render(request, "accounts/settings.html",
                       {'name': UserInformation.objects.get(user_email=request.user.email).user_name})
     else:
