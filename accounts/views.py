@@ -16,7 +16,12 @@ def login(request):
     Returns:
         HttpResponse: A generated http response object to the request.
     """
-    return render(request, "accounts/login.html")
+    # Case 1: User has logged in and has been properly authenticated
+    if request.user.is_authenticated:
+        return redirect(request, "accounts/profile.html")
+    # Case 2: User needs to log in
+    else:
+        return render(request, "accounts/login.html")
 
 
 def profile(request):
