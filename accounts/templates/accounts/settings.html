@@ -1,39 +1,32 @@
 {% extends "core/base.html" %}
-{% load static compress crispy_forms_tags %}
+{% load static compress crispy_forms_tags crispy_forms_filters %}
 
 {% block css %}
     {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/signin.scss' %}" media="screen">
-        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/settings.scss' %}" media="screen">
     {% endcompress %}
 {% endblock %}
 
 {% block main_content %}
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container" style="text-align: center">
-            <h1 class="display-1 font-weight-bold" style="color: #fff;">
-                Account Settings
-            </h1>
+    <div class="jumbotron jumbotron-fluid py-5 mb-0">
+        <div class="container text-center">
+            <h1>Account Settings</h1>
         </div>
     </div>
-    <div class="container">
-        <h1 class="card-title text-center" style="color: #3a4958">Please Fill In Missing Information</h1>
-        <form action="{% url 'accounts:profile' %}" method="POST">{% csrf_token %}
-            <br><br>
-            <div>
-                <h3 style="color: #3a4958">Basic Information</h3>
-                <hr class="solid" style="border-top: 5px solid #4C6085;">
+    <div class="container px-3 py-0">
+        <form action="{% url 'accounts:settings' %}" method="POST">
+            {% csrf_token %}
+            <div class="page-section-heading my-3">
+                <h3>Basic Information</h3>
             </div>
-            <br>
-            {{ form.user_email|as_crispy_field }}
-            {{ form.user_name|as_crispy_field }}
-            <br><br>
-            <div>
-                <h3 style="color: #3a4958">Academic Information</h3>
-                <hr class="solid" style="border-top: 5px solid #4C6085;">
+            <div class="my-4">
+                {{ form.user_email|as_crispy_field }}
+                {{ form.user_nickname|as_crispy_field }}
             </div>
-            <br>
-            <div class="form-row">
+            <div class="page-section-heading my-3">
+                <h3>Academic Information</h3>
+            </div>
+            <div class="form-row my-4">
                 <div class="form-group col-md-6 mb-0">
                     {{ form.user_school|as_crispy_field }}
                 </div>
@@ -41,13 +34,10 @@
                     {{ form.user_class|as_crispy_field }}
                 </div>
             </div>
-            <br><br>
-            <div>
-                <h3 style="color: #3a4958">Demographic Information</h3>
-                <hr class="solid" style="border-top: 5px solid #4C6085;">
+            <div class="ppage-section-heading my-3">
+                <h3>Demographic Information</h3>
             </div>
-            <br>
-            <div class="form-row">
+            <div class="form-row my-4">
                 <div class="form-group col-md-6 mb-0">
                     {{ form.user_gender|as_crispy_field }}
                 </div>
@@ -55,10 +45,10 @@
                     {{ form.user_race|as_crispy_field }}
                 </div>
             </div>
-            <button type="submit" class="btn" style="background-color: #3a4958; color: #fff"
-                    data-toggle="collapse"
-                    data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Confirm
-            </button>
+            <div class="d-flex p-0 justify-content-center">
+                <button type="submit" class="btn btn-success" aria-expanded="true">Confirm</button>
+                <a href="{% url 'accounts:profile' %}" class="btn btn-danger ml-2" role="button" aria-pressed="true">Cancel</a>
+            </div>
         </form>
         <br>
     </div>
