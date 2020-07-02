@@ -8,42 +8,170 @@
 {% endblock %}
 
 {% block main_content %}
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h1>Welcome {{ user.email }} <a href="{% url 'accounts:settings' %}" class="btn btn-lg btn-jumbotron" role="button"
-                                            aria-pressed="true">Edit Profile</a></h1>
-        </div>
-    </div>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-3 p-0">
-                <div class="container">
-                    <div class="card">
-                        <img class="card-img-top" src="{% static 'images/logo4.png' %}" height="175"
-                             alt="Card image cap">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ name }}</h5>
-                            <p class="card-text">Date Joined On {{ user.date_joined | date:"F d, Y" }}</p>
-                            <p class="card-text">Last Logged In On {{ user.last_login }}</p>
+    <div class="jumbotron jumbotron-fluid py-5 mb-0">
+        <div class="container p-0">
+            <div class="row">
+                <div class="col-8 col-lg-6">
+                    <div class="card border-0" style="background-color: inherit;">
+                        <div class="row no-gutters">
+                            <div class="col-md-4 align-self-center">
+                                <img src="{% static 'images/logo4.png' %}" class="card-img" alt="RSRG Logo 4">
+                                <div class="d-flex py-2 justify-content-center">
+                                    <a href="{% url 'accounts:settings' %}" class="btn btn-sm btn-jumbotron"
+                                       role="button"
+                                       aria-pressed="true">Edit Profile</a>
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h2 class="card-title m-0 text-white text-uppercase font-weight-bolder">{{ name }}</h2>
+                                    <p class="card-text m-0 text-white">
+                                        <i class="far fa-envelope mr-2"></i>
+                                        {{ user.email }}
+                                    </p>
+                                    <p class="card-text m-0 text-white">
+                                        <i class="far fa-calendar-alt mr-2"></i>
+                                        {{ user.date_joined | date:"F j, Y" }}
+                                        <span class="badge badge-info ml-2">Date Joined</span>
+                                    </p>
+                                    <p class="card-text m-0 text-white">
+                                        <i class="far fa-calendar-alt mr-2"></i>
+                                        {{ user.last_login }}
+                                        <span class="badge badge-info ml-2">Last Logged In</span>
+                                    </p>
+                                </div>
+                            </div>
                         </div>
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">Lessons Completed: 0</li>
-                            <li class="list-group-item">Sets Completed: 0</li>
-                            <li class="list-group-item">Current Daily Streak: 0</li>
-                        </ul>
+                    </div>
+                    <h2></h2>
+                </div>
+                <div class="col-4 col-lg-6 align-self-center">
+                    <div class="card border-0 float-right" style="background-color: inherit;">
+                        <p class="card-text m-0 text-white">
+                            <span class="text-white-50">Lessons Completed:</span> 0
+                        </p>
+                        <p class="card-text m-0 text-white">
+                            <span class="text-white-50">Sets Completed:</span> 0
+                        </p>
+                        <p class="card-text m-0 text-white">
+                            <span class="text-white-50">Current Daily Streak:</span> 0
+                        </p>
                     </div>
                 </div>
             </div>
-            <div class="col-8 p-0">
-                <div class="card-group">
-                    <div class="card" style="margin: 5px 5px 5px 5px;">
-                        <img src="{% static 'other_images/placeholder.png' %}" class=" card-img-top">
+        </div>
+    </div>
+    <div class="container px-0 py-3">
+        <div class="row">
+            <div class="col-12">
+                <nav>
+                    <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                        <a class="nav-item nav-link active" id="nav-courses-tab" data-toggle="tab"
+                           href="#nav-courses"
+                           role="tab" aria-controls="nav-courses" aria-selected="true">Courses</a>
+                        <a class="nav-item nav-link" id="nav-badges-tab" data-toggle="tab" href="#nav-badges"
+                           role="tab" aria-controls="nav-badges" aria-selected="false">Badges</a>
                     </div>
-                    <div class="card" style="margin: 5px 5px 5px 5px;">
-                        <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top">
+                </nav>
+                <div class="tab-content py-3 px-3" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-courses" role="tabpanel"
+                         aria-labelledby="nav-courses-tab">
+                        <div class="page-section-heading my-3">
+                            <h3>In Progress</h3>
+                        </div>
+                        <div class="my-4">
+                            <div class="card" style="background-color: inherit;">
+                                <div class="row no-gutters">
+                                    <div class="col-md-4">
+                                        <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
+                                    </div>
+                                    <div class="col-md-8 align-self-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Lesson Plan Title</h5>
+                                            <p class="card-text">Some description of the lesson</p>
+                                            <p class="card-text"><small class="text-muted">Last attempted: 3 mins
+                                                ago</small></p>
+                                            <a href="#" class="btn btn-primary" role="button" aria-pressed="true">Continue</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="page-section-heading my-3">
+                            <h3>Completed</h3>
+                        </div>
+                        <div class="my-4">
+                            <div class="card mb-3" style="background-color: inherit;">
+                                <div class="row no-gutters">
+                                    <div class="col-md-4">
+                                        <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
+                                    </div>
+                                    <div class="col-md-8 align-self-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Lesson Plan Title</h5>
+                                            <p class="card-text">Some description of the lesson</p>
+                                            <p class="card-text">
+                                                <small class="text-muted">Completed: 3 mins ago</small>
+                                            </p>
+                                            <a href="#" class="btn btn-primary" role="button"
+                                               aria-pressed="true">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-3" style="background-color: inherit;">
+                                <div class="row no-gutters">
+                                    <div class="col-md-4">
+                                        <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
+                                    </div>
+                                    <div class="col-md-8 align-self-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Lesson Plan Title</h5>
+                                            <p class="card-text">Some description of the lesson</p>
+                                            <p class="card-text">
+                                                <small class="text-muted">Completed: 3 mins ago</small>
+                                            </p>
+                                            <a href="#" class="btn btn-primary" role="button"
+                                               aria-pressed="true">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card mb-3" style="background-color: inherit;">
+                                <div class="row no-gutters">
+                                    <div class="col-md-4">
+                                        <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
+                                    </div>
+                                    <div class="col-md-8 align-self-center">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Lesson Plan Title</h5>
+                                            <p class="card-text">Some description of the lesson</p>
+                                            <p class="card-text">
+                                                <small class="text-muted">Completed: 3 mins ago</small>
+                                            </p>
+                                            <a href="#" class="btn btn-primary" role="button"
+                                               aria-pressed="true">View</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="card" style="margin: 5px 5px 5px 5px;">
-                        <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top">
+                    <div class="tab-pane fade" id="nav-badges" role="tabpanel" aria-labelledby="nav-badges-tab">
+                        <div class="card-deck">
+                            <div class="card">
+                                <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top"
+                                     alt="Card image">
+                            </div>
+                            <div class="card">
+                                <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top"
+                                     alt="Card image">
+                            </div>
+                            <div class="card">
+                                <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top"
+                                     alt="Card image">
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
