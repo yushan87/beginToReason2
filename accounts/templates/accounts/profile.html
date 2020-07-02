@@ -10,7 +10,7 @@
 {% block main_content %}
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
-            <h1>Welcome {{ user.email }} <a href="#" class="btn btn-lg btn-jumbotron" role="button"
+            <h1>Welcome {{ user.email }} <a href="{% url 'accounts:settings' %}" class="btn btn-lg btn-jumbotron" role="button"
                                             aria-pressed="true">Edit Profile</a></h1>
         </div>
     </div>
