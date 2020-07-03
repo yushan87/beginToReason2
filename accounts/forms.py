@@ -84,7 +84,7 @@ class UserInformationForm(forms.ModelForm):
         super(UserInformationForm, self).__init__(*args, **kwargs)
 
         # Validator that makes sure all the fields have been filled in
-        for field in self.fields.items():
+        for _field_name, field in self.fields.items():
             field.required = True
 
     class Meta:
