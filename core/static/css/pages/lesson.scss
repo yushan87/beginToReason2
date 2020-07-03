@@ -68,8 +68,8 @@
 }
 
 #activity-cards {
-    background-color: #3a4958;
-    color: #fff
+    background-color: $charcoal;
+    color: $white;
 }
 
 #progress-modal {
@@ -77,11 +77,11 @@
 }
 
 #are-you-sure {
-    color: #30343f;
+    color: $charcoal;
 }
 
 #dont {
-    background-color: #3a4958;
+    background-color: $charcoal;
     color: #fff
 }
 
@@ -118,6 +118,10 @@
 
 #radio {
     margin-left: 36px;
+}
+
+#lessonName {
+  color: $charcoal;
 }
 
 .ace-chaos .ace_gutter-cell.ace_correct {

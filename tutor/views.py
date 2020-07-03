@@ -33,6 +33,10 @@ def tutor(request):
                       the user is authenticated.
     """
     if request.user.is_authenticated:
+        '''
+        query lessonset table
+        get first lesson from set
+        '''
         return render(request, "tutor/tutor.html",
                       {'name': UserInformation.objects.get(user_email=request.user.email).user_name})
     else:
