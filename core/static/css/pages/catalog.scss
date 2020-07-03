@@ -2,9 +2,8 @@
 // This file extends _base to generate all the CSS required to render the sign-in page
 @import "../base/_base";
 @import "../components/_fade";
-@import "../utils/_variables";
 @import "../components/_jumbotron.scss";
-
+@import "../utils/_variables";
 
 /* Main Layout-Related CSS */
 #page-content {

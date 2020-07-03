@@ -1,6 +1,7 @@
 // profile.scss
 // This file extends _base to generate all the CSS required to render the profile page
 @import "../base/base";
+@import "../components/_fade";
 @import "../components/_jumbotron.scss";
 @import "../utils/variables";
 
@@ -44,7 +45,6 @@
             &:hover,
             &:focus {
                 background: $page-content-bg-color-1;
-                border: none;
                 transition: background 0.2s linear;
             }
 
