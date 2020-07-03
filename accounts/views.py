@@ -27,6 +27,9 @@ def logout(request):
 
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
+
+    Returns:
+        HttpResponse: A generated http response object to the request.
     """
     return redirect("/")
 

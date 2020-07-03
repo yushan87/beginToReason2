@@ -76,11 +76,15 @@ class UserInformationForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         """function __init__ is called to instantiate the user information form
+
+        Args:
+            *args: Variable length argument list.
+            **kwargs: Arbitrary keyword arguments.
         """
         super(UserInformationForm, self).__init__(*args, **kwargs)
 
         # Validator that makes sure all the fields have been filled in
-        for field_name, field in self.fields.items():
+        for field in self.fields.items():
             field.required = True
 
     class Meta:

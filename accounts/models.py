@@ -23,7 +23,16 @@ class UserInformation(models.Model):
     def __str__(self):
         """function __str__ is used to create a string representation of this class
 
-            Returns:
-                str: user email
+        Returns:
+            str: user email
         """
         return self.user.email
+
+    def get_user_email(self):
+        """function get_user_email is an helper function to retrieve the email associated with the user
+
+        Returns:
+            str: user email
+        """
+        return self.user.email
+    get_user_email.short_description = 'User Email'  # Renames column head
