@@ -5,7 +5,7 @@ TODO: Need to fill in the correct information for this module after
 from django import forms
 
 from django_ace import AceWidget
-from .models import Lesson, CodeTemplate
+from .models import Lesson
 
 
 class LessonForm(forms.ModelForm):
@@ -28,15 +28,4 @@ class LessonForm(forms.ModelForm):
         }
 
 
-class TemplateForm(forms.ModelForm):
-    """
-    TODO: Need to fill in the correct information for this class after
-          remove experimental things that don't work.
-    """
-    class Meta:
-        model = CodeTemplate
-        fields = '__all__'
 
-        widgets = {
-            'template_code': AceWidget(mode='python', theme='twilight'),
-        }
