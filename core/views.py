@@ -1,9 +1,10 @@
 """
 This module contains our Django views for the "core" application.
 """
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from accounts.models import UserInformation
-from accounts.forms import CreateUser
+from django.contrib.auth.models import User
 
 
 def home(request):
@@ -15,15 +16,4 @@ def home(request):
     Returns:
         HttpResponse: A generated http response object to the request.
     """
-    if request.user.is_authenticated:
-        """if str(request.META.get('HTTP_REFERER')) == "http://localhost:8000/accounts/profile":
-            print("tried to leave")
-            form = CreateUser(initial={'user_email': request.user.email})
-            return render(request, "accounts/profile.html", {'form': form})
-          else:
-            return render(request, "core/index.html",
-                          {'name': UserInformation.objects.get(user_email=request.user.email).user_name})"""
-        return render(request, "core/index.html",
-                      {'name': UserInformation.objects.get(user_email=request.user.email).user_name})
-    else:
-        return render(request, "core/index.html")
+    return render(request, "core/index.html")

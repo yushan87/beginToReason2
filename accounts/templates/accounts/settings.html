@@ -34,35 +34,25 @@
                     {{ form.user_class|as_crispy_field }}
                 </div>
             </div>
-            <div class="col-8 p-0">
-                <div class="card-group">
-                    <div class="card" id="badges">
-                        <img src="{% static 'other_images/placeholder.png' %}" class=" card-img-top">
-                    </div>
-                    <div class="card" id="badges">
-                        <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top">
-                    </div>
-                    <div class="card" id="badges">
-                        <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top">
-                    </div>
-                    <div class="ppage-section-heading my-3">
-                        <h3>Demographic Information</h3>
-                    </div>
-                    <div class="form-row my-4">
-                        <div class="form-group col-md-6 mb-0">
-                            {{ form.user_gender|as_crispy_field }}
-                        </div>
-                        <div class="form-group col-md-6 mb-0">
-                            {{ form.user_race|as_crispy_field }}
-                        </div>
-                    </div>
-                    <div class="d-flex p-0 justify-content-center">
-                        <button type="submit" class="btn btn-success" aria-expanded="true">Confirm</button>
-                        <a href="{% url 'accounts:profile' %}" class="btn btn-danger ml-2" role="button" aria-pressed="true">Cancel</a>
-                    </div>
+            <div class="page-section-heading my-3">
+                <h3>Demographic Information</h3>
+            </div>
+            <div class="form-row my-4">
+                <div class="form-group col-md-6 mb-0">
+                    {{ form.user_gender|as_crispy_field }}
                 </div>
+                <div class="form-group col-md-6 mb-0">
+                    {{ form.user_race|as_crispy_field }}
+                </div>
+            </div>
+            <div class="d-flex p-0 justify-content-center">
+                <button type="submit" class="btn btn-success" aria-expanded="true">Confirm</button>
+                <a href="{% url 'accounts:profile' %}" class="btn btn-danger ml-2" role="button" aria-pressed="true">Cancel</a>
             </div>
         </form>
         <br>
     </div>
+{% endblock %}
+{% block footer %}
+    {% include 'core/footer.html' %}
 {% endblock %}

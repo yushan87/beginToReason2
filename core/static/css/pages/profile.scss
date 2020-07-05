@@ -10,13 +10,13 @@
     min-height: calc(100vh - #{$page-header-min-height + $page-footer-height});
     color: $page-content-text-color-dark;
 
+    // Links
+    a {
+        text-decoration: none;
+    }
+
     // Use the jumbotron mixin to generate the necessary CSS code
     @include generateJumbotron($page-content-text-color-light, $page-content-bg-color-1, $page-content-border-color-2);
-}
-
-
-#badges {
-    margin: 5px 5px 5px 5px;
 
     // Nav Tabs
     nav > .nav {
@@ -86,4 +86,9 @@
         color: $charcoal;
         border-bottom: 5px solid $queen-blue;
     }
+}
+
+.select-btn {
+    color: $white;
+    background-color: $queen-blue;
 }

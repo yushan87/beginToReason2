@@ -1,7 +1,8 @@
 """
 This module contains our Django views for the "tutor" application.
 """
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
 from accounts.models import UserInformation
 
 
@@ -15,13 +16,10 @@ def catalog(request):
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.
     """
-    if request.user.is_authenticated:
-        return render(request, "tutor/catalog.html",
-                      {'name': UserInformation.objects.get(user_email=request.user.email).user_name})
-    else:
-        return render(request, "tutor/catalog.html")
+    return render(request, "tutor/catalog.html")
 
 
+@login_required(login_url='/accounts/login/')
 def tutor(request):
     """function tutor This function handles the view for the tutor page of the application.
 
@@ -32,12 +30,4 @@ def tutor(request):
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.
     """
-    if request.user.is_authenticated:
-        '''
-        query lessonset table
-        get first lesson from set
-        '''
-        return render(request, "tutor/tutor.html",
-                      {'name': UserInformation.objects.get(user_email=request.user.email).user_name})
-    else:
-        return render(request, "accounts/login.html")
+    return render(request, "tutor/tutor.html")
