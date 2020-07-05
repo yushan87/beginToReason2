@@ -61,7 +61,7 @@ class Question(models.Model):
 
 
 
-class MC_Choice(models.Model):
+class McChoice(models.Model):
     """
     Contains a model of Multiple Choice Answers. Each choice is attached to one Question.
     @param models.Model
@@ -91,20 +91,20 @@ class Reasoning(models.Model):
     reasoning_name = models.CharField(max_length=30)
     reasoning_question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
-    MULTIPLE = 'MC'
-    TEXT = 'Text'
-    BOTH = 'Both'
+    multiple = 'MC'
+    text = 'Text'
+    both = 'Both'
 
-    RESPONSE_OPTIONS = [
-        (MULTIPLE, 'Multiple Choice'),
-        (TEXT, 'Text Response'),
-        (BOTH, "Multiple Choice and Free Response")
+    response_options = [
+        (multiple, 'Multiple Choice'),
+        (text, 'Free Response'),
+        (both, "Multiple Choice and Free Response")
     ]
 
     reasoning_type = models.CharField(
         max_length=4,
-        choices=RESPONSE_OPTIONS,
-        default=MULTIPLE
+        choices=response_options,
+        default=multiple
     )
 
     # Free response has been removed, only because it does not serve a purpose. It belongs in the data collection
@@ -112,7 +112,7 @@ class Reasoning(models.Model):
 
     #free_response_text = models.CharField(max_length=100, default="Enter default message", blank=True)
 
-    mc_set = models.ManyToManyField(MC_Choice,blank=True,null=True)
+    mc_set = models.ManyToManyField(McChoice, blank=True, null=True)
 
 
     def __str__(self):
@@ -157,3 +157,4 @@ class Lesson(models.Model):
             str: lesson name
         """
         return self.lesson_name
+    
