@@ -7,14 +7,6 @@
     {% endcompress %}
 {% endblock %}
 
-{% block header_navigation_links %}
-    {% if user.is_authenticated %}
-        <li class="nav-item ml-3">
-            <a class="nav-link pb-0" href="{% url 'tutor:tutor' %}">Tutor</a>
-        </li>
-    {% endif %}
-{% endblock %}
-
 {% block main_content %}
     <!--- Jumbotron -->
     <div class="jumbotron jumbotron-fluid">

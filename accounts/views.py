@@ -1,10 +1,13 @@
 """
 This module contains our Django views for the "accounts" application.
 """
-from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 from .models import UserInformation
-from .forms import CreateUser
+from .forms import UserInformationForm
 
 
 def login(request):
@@ -16,15 +19,22 @@ def login(request):
     Returns:
         HttpResponse: A generated http response object to the request.
     """
-    # if request.method == 'POST':
-    # user = UserInformation(user_email=user.email, user_id=1234, user_name="test user")
-    # user = UserInformation(request.POST)
-    # user.save()
-    # return redirect('accounts: profile')
     return render(request, "accounts/login.html")
 
 
-@csrf_protect
+def logout(request):
+    """function logout This function handles the view for the logout page of the application.
+
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+
+    Returns:
+        HttpResponse: A generated http response object to the request.
+    """
+    return redirect("/")
+
+
+@login_required(login_url='/accounts/login/')
 def profile(request):
     """function profile This function handles the view for the profile page of the application.
 
@@ -35,29 +45,31 @@ def profile(request):
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.
     """
+    # Query for user in the 'User' table
+    user = User.objects.get(email=request.user.email)
 
-    if request.user.is_authenticated:
-        # print(request.user.email)
-        if request.method == 'POST':
-            form = CreateUser(request.POST)
-            if form.is_valid():
-                form.save()
-                return render(request, "accounts/settings.html")
-        else:
-            registered_users = UserInformation.objects.all()
-            count = 0
-            while count < len(registered_users):
-                request_name = str(request.user.username)
-                registered_name = str(registered_users[count])
-                if registered_name == request_name:
-                    return render(request, "accounts/settings.html")
-                count += 1
-            form = CreateUser(initial={'user_email': request.user.email, 'user_name': request.user.username})
-        return render(request, "accounts/profile.html", {'form': form})
+    # Case 1: The user email exists in our user information table.
+    if UserInformation.objects.filter(user=user).exists():
+        # Validate that we have a proper user information model
+        user_info = UserInformation.objects.get(user=user)
+        try:
+            user_info.full_clean()
+
+            # Case 1a: The user information model is valid, therefore we can render the profile page.
+            request.session.set_expiry(0)
+            return render(request, "accounts/profile.html", {'name': user_info.user_nickname})
+        except ValidationError:
+            # Case 1b: The user information model is invalid,
+            #           we redirect to the settings page
+            return redirect("/accounts/settings")
+    # Case 2: The user doesn't have an entry in our user information table,
+    #          we redirect to the settings page
     else:
-        return render(request, "accounts/login.html")
+        return redirect("/accounts/settings")
 
 
+@login_required(login_url='/accounts/login/')
+@csrf_protect
 def settings(request):
     """function settings This function handles the view for the account settings page of the application.
 
@@ -68,16 +80,38 @@ def settings(request):
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.
     """
-    if request.user.is_authenticated:
-        return render(request, "accounts/settings.html")
+    # Query for user in the 'User' table
+    user = User.objects.get(email=request.user.email)
+
+    # Case 1: We have received a POST request with some data
+    if request.method == 'POST':
+        # Check to see if we are creating a new user information entry or updating an existing one
+        if UserInformation.objects.filter(user=user).exists():
+            form = UserInformationForm(request.POST, instance=UserInformation.objects.get(user=user))
+        else:
+            form = UserInformationForm(request.POST)
+
+        # Case 1a: A valid user profile form
+        if form.is_valid():
+            # Since 'user' is a foreign key, we must store the queried entry from the 'User' table
+            user_info = form.save(commit=False)
+            user_info.user = user
+            user_info.save()
+
+            request.session.set_expiry(0)
+            return redirect("/accounts/profile")
+        # Case 1b: Not a valid user profile form, render the settings page with the current form
+        else:
+            return render(request, "accounts/settings.html", {'form': form})
+    # Case 2: We have received something other than a POST request
     else:
-        return render(request, "accounts/login.html")
+        # Case 2a: The user exists in our user information table.
+        if UserInformation.objects.filter(user=user).exists():
+            form = UserInformationForm(instance=UserInformation.objects.get(user=user),
+                                       initial={'user_email': request.user.email})
+        # Case 2b: The user email doesn't exist in our user information table.
+        else:
+            form = UserInformationForm(initial={'user_email': request.user.email, 'user_nickname': user.username})
 
-
-def logout(request):
-    """function logout This function handles the view for the logout page of the application.
-
-    Args:
-        request (HTTPRequest): A http request object created automatically by Django.
-    """
-    return
+        request.session.set_expiry(0)
+        return render(request, "accounts/settings.html", {'form': form})

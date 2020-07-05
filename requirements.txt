@@ -1,7 +1,6 @@
-Django==3.0.7
+Django==3.0.8
 django-ace==1.0.7
 django-compressor==2.4
 django-libsass==0.8
-social-auth-app-django==3.4.0
+social-auth-app-django==4.0.0
 django-crispy-forms==1.9.1
-

@@ -28,6 +28,6 @@ def tutor(request):
                       the user is authenticated.
     """
     if request.user.is_authenticated:
-        return render(request, "tutor/lesson.html")
+        return render(request, "tutor/tutor.html")
     else:
         return render(request, "accounts/login.html")
