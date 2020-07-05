@@ -5,51 +5,6 @@ TODO: Need to fill in the correct information for this module after
 from django.contrib import admin
 
 from .models import Lesson, Reference, Reasoning, MC_Choice, Question,Code
-from .forms import LessonForm
-
-'''
-class RefInline(admin.StackedInline):
-    """
-    TODO: Need to fill in the correct information for this class after
-          remove experimental things that don't work.
-    """
-    model = Reference.lesson.through
-    extra = 0
-    Reference.objects.filter(reference_key=model)
-
-'''
-
-
-class ReferenceInline(admin.TabularInline):
-    """
-    TODO: Need to fill in the correct information for this class after
-          remove experimental things that don't work.
-    """
-    model = Reference
-    extra = 0
-    fields = ['reference_key', 'reference_text']
-
-
-class LessonAdmin(admin.ModelAdmin):
-    """
-    TODO: Need to fill in the correct information for this class after
-          remove experimental things that don't work.
-    """
-    form = LessonForm
-
-    list_filter = ['lesson_name']
-    ordering = ['lesson_name']
-
-
-class ReferenceAdmin(admin.ModelAdmin):
-    """
-    TODO: Need to fill in the correct information for this class after
-          remove experimental things that don't work.
-    """
-    model = Reference
-
-
-
 
 
 # Register your models here.

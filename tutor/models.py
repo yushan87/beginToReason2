@@ -4,86 +4,102 @@ a new instance of a model will be made.
 """
 from django.db import models
 
-# Create your models here.
-
-
-
-
-
-
-
 
 class Code(models.Model):
     """
-    TODO: Need to fill in the correct information for this class after
-          remove experimental things that don't work.
+    Contains a model of the code, allows for the ability to reuse.
+    @param models.Model
     """
     code_name = models.CharField(max_length=30)
     lesson_code = models.TextField(max_length=500)
 
     def __str__(self):
-        """function __str__ TODO: Need to fill in the correct information for this function.
+        """
+        function __str__ is called to display the name of the code
 
         Returns:
-            str: TODO: Need to fill in the correct information for this function.
+            str: code name
         """
         return self.code_name
 
 
 
-
-
-
-
 class Reference(models.Model):
     """
-    TODO: Need to fill in the correct information for this class after
-          remove experimental things that don't work.
+    Contains a model of references. Each reference can be used by multiple Lessons.
+    @param models.Model
     """
     reference_key = models.CharField(max_length=30)
     reference_text = models.TextField(max_length=250)
 
-    # lesson = models.ManyToManyField(Lesson, related_name='references')#, through= 'LessonReferences')
-
     def __str__(self):
-        """function __str__ TODO: Need to fill in the correct information for this function.
+        """"
+        function __str__ is called to display the reference texts. Helps for admin usability.
 
         Returns:
-            str: TODO: Need to fill in the correct information for this function.
+            str: reference text
         """
         return self.reference_text
 
 
 
-
 class Question(models.Model):
+    """
+    Contains a model of Questions. Each question can be used by multiple Lessons.
+    @param models.Model
+    """
     question_text = models.CharField(max_length=200)
 
     def __str__(self):
+        """"
+        function __str__ is called to display the question texts. Helps for admin usability.
+
+        Returns:
+            str: question text
+        """
         return self.question_text
 
+
+
 class MC_Choice(models.Model):
+    """
+    Contains a model of Multiple Choice Answers. Each choice is attached to one Question.
+    @param models.Model
+    """
+
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
+
     def __str__(self):
+        """"
+        function __str__ is called to display the multiple choice texts. Helps for admin usability.
+
+        Returns:
+            str: choice text
+        """
         return self.choice_text
 
 
 
 class Reasoning(models.Model):
+    """
+    Contains a model of Reasoning. There must be a question, and potential to be free response, multiple choice,
+    or both. Includes an indicator for type of response needed.
+    @param models.Model
+    """
 
-    reasoning_key = models.CharField(max_length=30)
-    reasoning_text = models.ForeignKey(Question, on_delete=models.CASCADE)
+    reasoning_name = models.CharField(max_length=30)
+    reasoning_question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
     MULTIPLE = 'MC'
     TEXT = 'Text'
+    BOTH = 'Both'
 
     RESPONSE_OPTIONS = [
         (MULTIPLE, 'Multiple Choice'),
         (TEXT, 'Text Response'),
+        (BOTH, "Multiple Choice and Free Response")
     ]
-
-    free_response_text = models.CharField(max_length=100, default="Enter default message",blank=True)
 
     reasoning_type = models.CharField(
         max_length=4,
@@ -91,29 +107,53 @@ class Reasoning(models.Model):
         default=MULTIPLE
     )
 
+    # Free response has been removed, only because it does not serve a purpose. It belongs in the data collection
+    # side of things.
+
+    #free_response_text = models.CharField(max_length=100, default="Enter default message", blank=True)
+
     mc_set = models.ManyToManyField(MC_Choice,blank=True,null=True)
 
 
-
-
-    #if mc, self.mc_choice_set.all() returns all the choices
-    #associated with this question
-
-
     def __str__(self):
-        return self.reasoning_key
+        """"
+        function __str__ is called to display the reasoning key. Due to the potential for multiple reasoning
+        activities using the same question, the key must be the identifying feature.
+
+        Returns:
+            str: reasoning name
+        """
+        return self.reasoning_name
 
 
 
 class Lesson(models.Model):
+    """
+    Contains a model of a Lesson.
+    Name - For identifying purposes.
+    Concept - May be helpful to display to the user.
+    Instruction - Directions for how to perform the activity.
+    Code - The code activities that student will be interacting with. Will pull from the Code model.
+    Reference Set - May contain multiple references, or no references at all.
+    Reason - There is only one reasoning activity allowed per Lesson. May contain mc, fr, or both.
+    Screen_Record - Boolean for whether or not to record the activity.
+    @param models.Model
+    """
 
-    lesson_name = models.CharField(max_length=30)
+    lesson_name = models.CharField(max_length=50)
     lesson_concept = models.CharField(max_length=50)
-    instruction = models.CharField(max_length=30)
-    reference_set = models.ManyToManyField(Reference)
+    instruction = models.TextField()
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
-    reason = models.ManyToManyField(Reasoning)
+    reference_set = models.ManyToManyField(Reference, blank=True)
+    reason = models.ForeignKey(Reasoning, on_delete=models.CASCADE, blank=True)
+    screen_record = models.BooleanField()
 
     def __str__(self):
-        return self.lesson_name
+        """"
+        function __str__ is called to display the Lesson name. This will be useful for admin/educators when
+        building the Lesson Plan
 
+        Returns:
+            str: lesson name
+        """
+        return self.lesson_name
