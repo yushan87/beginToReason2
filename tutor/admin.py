@@ -4,4 +4,3 @@ the model, the data will be accessible through Django's admin functionality.
 """
 
 # Register your models here.
-
