@@ -9,8 +9,9 @@ from .models import Lesson, Reference, Reasoning, McChoice, Question, Code
 
 # Register your models here.
 admin.site.register(Lesson)
+admin.site.register(Code)
 admin.site.register(Reference)
 admin.site.register(Reasoning)
 admin.site.register(Question)
 admin.site.register(McChoice)
-admin.site.register(Code)
+
