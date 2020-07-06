@@ -43,7 +43,6 @@ class Reference(models.Model):
         return self.reference_text
 
 
-
 class Question(models.Model):
     """
     Contains a model of Questions. Each question can be used by multiple Lessons.
@@ -113,7 +112,6 @@ class Reasoning(models.Model):
     #free_response_text = models.CharField(max_length=100, default="Enter default message", blank=True)
 
     mc_set = models.ManyToManyField(McChoice, blank=True, null=True)
-
 
     def __str__(self):
         """"
