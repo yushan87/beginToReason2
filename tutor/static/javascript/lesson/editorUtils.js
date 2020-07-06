@@ -11,7 +11,7 @@ let correctnessChecking = false; // A flag that indicates whether or not the che
 let lineErrorMap; // This contains error information for each line in the current file.
 let fontSize; // The current font size
 let time = new Date();
-let hasExplanation = true;
+let hasExplanation = false;
 let progressCounter = 0;
 let darkTheme = true;
 let prevAnswers = []; //add to this and check
@@ -58,7 +58,6 @@ function createEditor() {
     aceEditor.session.setValue(editorContent);
     document.getElementById("activity").innerHTML = activityArray[activityCounter];
     document.getElementById("referenceMaterial").innerHTML = refArray[refCounter];
-    document.getElementById("about").innerHTML = "This system uses simple activities to understand the difficulties students face in reasoning logically about code, so that instruction can be improved.";
     $("#prev").attr("disabled", "disabled");
     document.getElementById("resultCard").style.display = "none";
 
@@ -169,7 +168,7 @@ $("#checkCorrectness").click(function () {
             unlock();
             document.getElementById("resultTitle").innerHTML = "Trivial answer";
             document.getElementById("resultDetails").innerHTML = "Try again!";
-            $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-danger text-white");
             //add line errors
             //this will need to be fixed based on verifier return
@@ -185,7 +184,7 @@ $("#checkCorrectness").click(function () {
             unlock();
             document.getElementById("resultTitle").innerHTML = "Syntax error";
             document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
-            $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-danger text-white");
             //add line errors
             //this will need to be fixed based on verifier return
@@ -201,7 +200,7 @@ $("#checkCorrectness").click(function () {
             unlock();
             document.getElementById("resultTitle").innerHTML = "Wrong answer";
             document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>3. Do you understand the specification parameter modes (e.g. Updates)?";
-            $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-danger text-white");
             //add line errors
             //this will need to be fixed based on verifier return
@@ -217,7 +216,7 @@ $("#checkCorrectness").click(function () {
             unlock();
             document.getElementById("resultTitle").innerHTML = "Correct!";
             document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
-            $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-success text-white");
             $("#next").removeAttr("disabled", "disabled");
             //take away line errors
@@ -235,7 +234,7 @@ $("#checkCorrectness").click(function () {
             unlock();
             document.getElementById("resultTitle").innerHTML = "Something went wrong";
             document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
-            $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-danger text-white");
         }
     }
@@ -253,7 +252,7 @@ $("#resetCode").click(function () {
     // Put the cached content into the editor
     aceEditor.session.setValue(editorContent);
     document.forms["usrform"]["comment"].value = "";
-    $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+    $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
     //take away line errors
     if (codeCounter == 0) {
         aceEditor.session.removeGutterDecoration(15, "ace_error");
@@ -313,8 +312,8 @@ $("#changeMode").click(function () {
             "    bottom: 0;\n" +
             "    width: 98%;\n" +
             "    margin: 5px 5px 5px 5px;\n" +
-            "    background-color: #4C6085;\n" +
-            "    color: #fff;");
+            "    background-color: #E0E0E0;\n" +
+            "    color: #333;");
         document.getElementById("changeMode").innerHTML = "<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-brightness-high-fill\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
             "  <path d=\"M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z\"/>\n" +
             "  <path fill-rule=\"evenodd\" d=\"M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z\"/>\n" +
@@ -420,7 +419,7 @@ $("#next").click(function () {
         document.getElementById("activity").innerHTML = activityArray[activityCounter];
         document.getElementById("referenceMaterial").innerHTML = refArray[refCounter];
         document.forms["usrform"]["comment"].value = "";
-        $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+        $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         document.getElementById("resultTitle").innerHTML = "";
         document.getElementById("resultDetails").innerHTML = "";
         $("#resultCard").attr("class", "card bg-light");
@@ -436,7 +435,7 @@ $("#next").click(function () {
         //add something in db for what was completed then you can go through them
         document.getElementById("resultTitle").innerHTML = "Congratulations";
         document.getElementById("resultDetails").innerHTML = "You've completed all the activities";
-        $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+        $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         $("#resultCard").attr("class", "card bg-dark text-white");
         $("#next").attr("disabled", "disabled");
         editorContent = "No more activities";
@@ -486,7 +485,7 @@ $("#prev").click(function () {
         document.getElementById("activity").innerHTML = activityArray[activityCounter];
         document.getElementById("referenceMaterial").innerHTML = refArray[refCounter];
         document.forms["usrform"]["comment"].value = "";
-        $("#explainBox").attr("style", "width: 90%; resize: none; display: block; margin-left: auto; margin-right: auto;");
+        $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         document.getElementById("resultTitle").innerHTML = "";
         document.getElementById("resultDetails").innerHTML = "";
         $("#resultCard").attr("class", "card bg-light");

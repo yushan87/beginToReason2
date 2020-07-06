@@ -2,9 +2,9 @@
 This module contains model templates for the "tutor" application. When we create a new item in the database,
 a new instance of a model will be made.
 """
-from django.db import models
 
 # Create your models here.
+<<<<<<< HEAD
 
 
 class CodeTemplate(models.Model):
@@ -77,3 +77,5 @@ class LessonSet(models.Model):
             str: TODO: Need to fill in the correct information for this function.
         """
         return self.lesson_set_id
+=======
+>>>>>>> upstream/master
