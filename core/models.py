@@ -112,7 +112,7 @@ class Reasoning(models.Model):
 
     #free_response_text = models.CharField(max_length=100, default="Enter default message", blank=True)
 
-    mc_set = models.ManyToManyField(McChoice, blank=True, null=True)
+    mc_set = models.ManyToManyField(McChoice, blank=True)
 
 
     def __str__(self):
