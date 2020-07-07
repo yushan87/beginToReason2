@@ -10,7 +10,7 @@
     height: calc(100vh - #{$page-header-min-height});
     overflow: hidden;
 
-   // Use the jumbotron mixin to generate the necessary CSS code
+    // Use the jumbotron mixin to generate the necessary CSS code
     @include generateJumbotron($page-content-text-color-light, $page-content-bg-color-1, $page-content-border-color-2);
 }
 
@@ -72,12 +72,12 @@
 }
 
 #activity-cards {
-    background-color: $queen-blue;
     color: $white;
+    background-color: $queen-blue;
 }
 
 #progress-modal {
-    background-color: rgba(48,52,63,.8);
+    background-color: rgba(48, 52, 63, 0.8);
 }
 
 #are-you-sure {
@@ -85,8 +85,8 @@
 }
 
 #dont {
-    background-color: $charcoal;
     color: #fff;
+    background-color: $charcoal;
 }
 
 #prev {
@@ -145,7 +145,7 @@
 }
 
 .ace-chaos .ace_gutter {
-  color: $white;
+    color: $white;
 }
 
 /* ACE Editor-Related CSS */
@@ -161,8 +161,8 @@
 
 
 .ace-solarized-light .ace_gutter {
-    background: #E0E0E0;
     color: $steel-blue;
+    background: #e0e0e0;
 }
 
 .ace-solarized-light .ace_print-margin {
@@ -171,8 +171,8 @@
 }
 
 .ace-solarized-light {
-    background-color: $white;
     color: $charcoal;
+    background-color: $white;
 }
 
 .ace-solarized-light .ace_cursor {
@@ -184,7 +184,7 @@
 }
 
 .ace-solarized-light.ace_multiselect .ace_selection.ace_start {
-    box-shadow: 0 0 3px 0px #FDF6E3;
+    box-shadow: 0 0 3px 0 #fdf6e3;
 }
 
 .ace-solarized-light .ace_marker-layer .ace_step {
@@ -193,7 +193,7 @@
 
 .ace-solarized-light .ace_marker-layer .ace_bracket {
     margin: -1px 0 0 -1px;
-    border: 1px solid rgba(147, 161, 161, 0.50);
+    border: 1px solid rgba(147, 161, 161, 0.5);
 }
 
 .ace-solarized-light .ace_marker-layer .ace_active-line {
@@ -242,7 +242,7 @@
 .ace-solarized-light .ace_support.ace_function,
 .ace-solarized-light .ace_variable,
 .ace-solarized-light .ace_variable.ace_language {
-    color: #268Bd2;
+    color: #268bd2;
 }
 
 .ace-solarized-light .ace_storage {

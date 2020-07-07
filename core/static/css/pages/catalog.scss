@@ -12,7 +12,7 @@
     // Use the jumbotron mixin to generate the necessary CSS code
     @include generateJumbotron($page-content-text-color-light, $page-content-bg-color-1, $page-content-border-color-2);
 
-     // Links
+    // Links
     a {
         text-decoration: none;
     }
@@ -147,7 +147,7 @@
 
 #jumbo-title {
     color: $white;
-    text-align: center
+    text-align: center;
 }
 
 #border {
