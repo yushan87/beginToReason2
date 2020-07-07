@@ -39,7 +39,6 @@ class Reference(models.Model):
         return self.reference_text
 
 
-
 class Question(models.Model):
     """
     Contains a model of Questions. Each question can be used by multiple Lessons.

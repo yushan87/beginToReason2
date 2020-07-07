@@ -33,12 +33,13 @@ def tutor(request):
     # need a check for if lesson exists
     if Lesson.objects.filter(lesson_name='testLesson').exists():
         lesson1 = Lesson.objects.get(lesson_name='testLesson')
+        print(lesson1.reference_set.all())
         return render(request, "tutor/tutor.html",
                       {'lessonName': lesson1.lesson_name,
                        'concept': lesson1.lesson_concept,
                        'instruction': lesson1.instruction,
                        'code': lesson1.code,
-                       'referenceSet': lesson1.reference_set.get(reference_key='1'),
+                       'referenceSet': lesson1.reference_set.all(),
                        'reason': lesson1.reason})
     else:
         return render(request, "tutor/tutor.html")
