@@ -2,12 +2,17 @@
 // This file extends _base to generate all the CSS required to render the lesson page
 @import "../base/base";
 @import "../components/_progress";
+@import "../components/_ace";
 @import "../utils/variables";
+@import "../components/_jumbotron.scss";
 
 /* Tutorial Layout-Related CSS */
 #page-content {
     height: calc(100vh - #{$page-header-min-height + $page-footer-height});
     overflow: hidden;
+
+    // Use the jumbotron mixin to generate the necessary CSS code
+    @include generateJumbotron($page-content-text-color-light, $page-content-bg-color-1, $page-content-border-color-2);
 }
 
 #tutorialCol {
@@ -28,8 +33,7 @@
 }
 
 #editor {
-    border-top: 5px solid #141414 !important;
-    border-bottom: 5px solid #141414 !important;
+    border-right: 10px solid #3a4958 !important;
 }
 
 .navbar-toggle {
@@ -68,32 +72,60 @@
     border: 1px solid #30343f;
 }
 
-.ace-chaos .ace_gutter-cell.ace_correct {
-    padding-left: 0;
-    color: #000;
-    background: #58c554;
-    border-left: none;
+#activity-cards {
+    color: $white;
+    background-color: $queen-blue;
+}
+
+#progress-modal {
+    background-color: rgba(48, 52, 63, 0.8);
+}
+
+#are-you-sure {
+    color: $charcoal;
+}
+
+#dont {
+    color: #fff;
+    background-color: $charcoal;
+}
+
+#prev {
+    margin: 2px 2px 2px 2px;
+}
+
+#next {
+    margin: 2px 2px 2px 2px;
+}
+
+#results {
+    margin: 5px 5px 5px 5px;
+}
+
+#resultCard {
+    margin: 5px 5px 5px 5px;
+}
+
+#explainBox {
+    display: block;
+    width: 100%;
+    resize: none;
+}
+
+#select {
+    margin-left: 12px;
+}
+
+#radio {
+    margin-left: 36px;
+}
+
+// Section Heading
+.page-section-heading {
+    color: #222529;
+    border-bottom: 5px solid $queen-blue;
 }
 
 .tool-back {
-    background: #3a4958;
-}
-
-.ace-chaos .ace_keyword.ace_operator {
-    color: #ff8c5f;
-}
-
-.ace-chaos .ace_keyword {
-    color: #337ab7;
-}
-
-/* ACE Editor-Related CSS */
-.ace_folding-enabled > .ace_gutter-cell {
-    padding-right: 10px;
-    padding-left: 30px;
-}
-
-.tooltip > .tooltip-inner {
-    color: #000;
-    background-color: #d3d3d3;
+    background: $charcoal;
 }

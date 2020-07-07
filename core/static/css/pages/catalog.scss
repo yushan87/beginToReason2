@@ -12,19 +12,75 @@
     // Use the jumbotron mixin to generate the necessary CSS code
     @include generateJumbotron($page-content-text-color-light, $page-content-bg-color-1, $page-content-border-color-2);
 
+    // Links
+    a {
+        text-decoration: none;
+    }
+
+    // Use the jumbotron mixin to generate the necessary CSS code
+    @include generateJumbotron($page-content-text-color-light, $page-content-bg-color-1, $page-content-border-color-2);
+
+    // Nav Tabs
+    nav > .nav {
+        &.nav-tabs {
+            color: $page-content-text-color-light;
+            background: $page-content-bg-color-3;
+            border: none;
+        }
+    }
+
+    // Nav Items
+    nav > div .nav-item {
+        // CSS for nav-links
+        &.nav-link {
+            padding: 18px 25px;
+            color: $page-content-text-color-light;
+            background: $page-content-bg-color-3;
+
+            // No border left for the first child
+            &:nth-child(n+2) {
+                border-left: 2px solid $page-content-border-color-2;
+                border-radius: 0;
+            }
+
+            // CSS for nav-links that we hover or focus
+            &:hover,
+            &:focus {
+                background: $page-content-bg-color-1;
+                border: none;
+                transition: background 0.2s linear;
+            }
+
+            // CSS for active nav-links
+            &.active {
+                padding: 19px 25px 1px;
+                background: $page-content-bg-color-1;
+                border: none;
+
+                &::after {
+                    position: relative;
+                    bottom: -23px;
+                    display: block;
+                    width: 0;
+                    height: 0;
+                    margin: auto;
+                    content: "";
+                    border-top: 10px solid $page-content-border-color-2;
+                    border-right: 10px solid transparent;
+                    border-left: 10px solid transparent;
+                }
+            }
+        }
+    }
+
     .accordion {
         width: 100%;
         padding: 18px;
         font-size: 15px;
         text-align: left;
-        background-color: #eee;
+        background-color: $white;
         border: none;
         transition: 0.4s;
-    }
-
-    .active,
-    .accordion:hover {
-        background-color: #ccc;
     }
 
     .panel {
@@ -77,4 +133,56 @@
 
 #top:hover {
     background-color: $coral;
+}
+
+// CSS for tab content
+.tab-content {
+    padding: 30px 25px;
+    line-height: 25px;
+    border-top: 5px solid $page-content-border-color-2;
+    border-right: 1px solid $page-content-border-color-2;
+    border-bottom: 5px solid $page-content-border-color-2;
+    border-left: 1px solid $page-content-border-color-2;
+}
+
+#jumbo-title {
+    color: $white;
+    text-align: center;
+}
+
+#border {
+    border-top: 5px solid $charcoal;
+}
+
+.lesson-card {
+    margin: 50px 50px 50px 50px;
+}
+
+#card-img {
+    width: 300px;
+    height: 180px;
+}
+
+.recommended {
+    color: $white;
+    background-color: $coral;
+}
+
+.select-btn {
+    color: $white;
+    background-color: $queen-blue;
+}
+
+.select-btn:hover {
+    color: $white;
+    background-color: $charcoal;
+}
+
+.vertical-card {
+    width: 50vh;
+    margin: 5px 5px 5px 5px;
+}
+
+.vertical-img {
+    height: 30vh;
 }

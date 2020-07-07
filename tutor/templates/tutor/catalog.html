@@ -10,8 +10,8 @@
 
 {% block main_content %}
     <div class="jumbotron jumbotron-fluid">
-        <div class="container" style="text-align: center">
-            <h1 class="display-1 font-weight-bold" style="color: #fff;">
+        <div class="container">
+            <h1 class="font-weight-bold" id="jumbo-title">
                     Full Catalog
             </h1>
         </div>
@@ -21,156 +21,128 @@
             <div class="col-1 p-0">
             </div>
             <div class="col-10 p-0">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-xs-12 ">
-                            <nav>
-                                <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                                    <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home"
-                                       role="tab" aria-controls="nav-home" aria-selected="true">Current Courses</a>
-                                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile"
-                                       role="tab" aria-controls="nav-profile" aria-selected="false">Course History</a>
-                                    <a class="nav-item nav-link" id="nav-contact-tab" data-toggle="tab" href="#nav-contact"
-                                       role="tab" aria-controls="nav-contact" aria-selected="false">More</a>
-                                </div>
-                            </nav>
-                            <div class="tab-content py-3 px-3" id="nav-tabContent">
-                                <div class="tab-pane fade show active text-dark bg-light" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                                    {% lorem 2 p %}
-                                </div>
-                                <div class="tab-pane fade text-dark bg-light" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                    {% lorem 2 p %}
-                                </div>
-                                <div class="tab-pane fade text-dark bg-light" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab">
-                                    {% lorem 2 p %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <br>
-                <div>
-                    <hr class="solid" style="border-top: 5px solid #4C6085;">
-                </div>
-                <div id="begin" class="card" style="margin: 50px 50px 50px 50px;">
+                <h1 class="mb-0 page-section-heading">
+                    Available Lessons
+                </h1>
+                <div id="begin" class="card lesson-card">
                     <div class="card-horizontal">
                         <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/begin.png' %}" style="height: 180px; width: 300px" alt="Card image cap">
+                            <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">Begin To Reason <span class="badge" style="background-color: #ff8c5f; color: #fff">Recommended</span></h5>
+                            <h5 class="card-title">Begin To Reason <span class="badge recommended">Recommended</span></h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
                                             aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
-                <div id="continue" class="card" style="margin: 50px 50px 50px 50px;">
+                <div id="continue" class="card lesson-card">
                     <div class="card-horizontal">
                         <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/continue.png' %}" style="height: 180px; width: 300px" alt="Card image cap">
+                            <img class="" src="{% static 'images/continue.png' %}" id="card-img" alt="Card image cap">
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">Continue To Reason</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
                                             aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
-                <div id="master" class="card" style="margin: 50px 50px 50px 50px;">
+                <div id="master" class="card lesson-card">
                     <div class="card-horizontal">
                         <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/master.png' %}" style="height: 180px; width: 300px" alt="Card image cap">
+                            <img class="" src="{% static 'images/master.png' %}" id="card-img" alt="Card image cap">
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">Master To Reason</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
                                             aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
-                <div id="loop" class="card" style="margin: 50px 50px 50px 50px;">
+                <div id="loop" class="card lesson-card">
                     <div class="card-horizontal">
                         <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/loops.png' %}" style="height: 180px; width: 300px" alt="Card image cap">
+                            <img class="" src="{% static 'images/loops.png' %}" id="card-img" alt="Card image cap">
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">Reasoning With Loops</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
                                             aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
-                <div id="verify" class="card" style="margin: 50px 50px 50px 50px;">
+                <div id="verify" class="card lesson-card">
                     <div class="card-horizontal">
                         <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/learn.png' %}" style="height: 180px; width: 300px" alt="Card image cap">
+                            <img class="" src="{% static 'images/learn.png' %}" id="card-img" alt="Card image cap">
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">Learning About Verification</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
                                             aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
-                <div id="reason" class="card" style="margin: 50px 50px 50px 50px;">
+                <div id="reason" class="card lesson-card">
                     <div class="card-horizontal">
                         <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/reason.png' %}" style="height: 180px; width: 300px" alt="Card image cap">
+                            <img class="" src="{% static 'images/reason.png' %}" id="card-img" alt="Card image cap">
                         </div>
                         <div class="card-body">
                             <h5 class="card-title">Learning About Reasoning</h5>
                             <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
                                             aria-pressed="true">Start Training</a>
                         </div>
                     </div>
                 </div>
-                <div>
-                    <hr class="solid" style="border-top: 5px solid #4C6085;">
-                </div>
+                <h1 class="mb-0 page-section-heading">
+                    Verified Lessons
+                </h1>
                 <br>
                 <div id="verified">
                     <div class="row">
                     <div class="d-flex">
-                        <div id="1000" class="card flex-fill" style="margin: 5px 5px 5px 5px; width: 50vh">
+                        <div id="1000" class="card flex-fill vertical-card">
                             <div class="card-img-top">
-                                <img class="" src="{% static 'images/verify.png' %}" style="height: 30vh" alt="Card image cap">
+                                <img class="vertical-img" src="{% static 'images/verify.png' %}" alt="Card image cap">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">CS 1000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                <a href="{% url 'tutor:tutor' %}" class="btn  select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
                     </div>
                     <div class="d-flex">
-                        <div id="2000" class="card flex-fill" style="margin: 5px 5px 5px 5px; width: 50vh">
+                        <div id="2000" class="card flex-fill vertical-card">
                             <div class="card-img-top">
-                                <img class="" src="{% static 'images/verify2.png' %}" style="height: 30vh" alt="Card image cap">
+                                <img class="vertical-img" src="{% static 'images/verify2.png' %}" alt="Card image cap">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">CS 2000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                 <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
                     </div>
                     <div class="d-flex">
-                        <div id="4000" class="card flex-fill" style="margin: 5px 5px 5px 5px; width: 50vh">
+                        <div id="4000" class="card flex-fill vertical-card">
                             <div class="card-img-top">
-                                <img class="" src="{% static 'images/verify3.png' %}" style="height: 30vh" alt="Card image cap">
+                                <img class="vertical-img" src="{% static 'images/verify3.png' %}" alt="Card image cap">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">CS 4000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                 <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
@@ -178,40 +150,40 @@
                 </div>
                 <div class="row">
                     <div class="d-flex">
-                        <div id="1000" class="card flex-fill" style="margin: 5px 5px 5px 5px; width: 50vh">
+                        <div id="1000" class="card flex-fill vertical-card">
                             <div class="card-img-top">
-                                <img class="" src="{% static 'images/verify.png' %}" style="height: 30vh" alt="Card image cap">
+                                <img class="vertical-img" src="{% static 'images/verify.png' %}" alt="Card image cap">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">CS 1000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
                     </div>
                     <div class="d-flex">
-                        <div id="2000" class="card flex-fill" style="margin: 5px 5px 5px 5px; width: 50vh">
+                        <div id="2000" class="card flex-fill vertical-card">
                             <div class="card-img-top">
-                                <img class="" src="{% static 'images/verify2.png' %}" style="height: 30vh" alt="Card image cap">
+                                <img class="vertical-img" src="{% static 'images/verify2.png' %}" alt="Card image cap">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">CS 2000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                 <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
                     </div>
                     <div class="d-flex">
-                        <div id="4000" class="card flex-fill" style="margin: 5px 5px 5px 5px; width: 50vh">
+                        <div id="4000" class="card flex-fill vertical-card">
                             <div class="card-img-top">
-                                <img class="" src="{% static 'images/verify3.png' %}" style="height: 30vh" alt="Card image cap">
+                                <img class="vertical-img" src="{% static 'images/verify3.png' %}" alt="Card image cap">
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">CS 4000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="{% url 'tutor:tutor' %}" class="btn" style="background-color: #3a4958; color: #fff" role="button"
+                                 <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
@@ -225,24 +197,11 @@
         </div>
     </div>
 
-    <script>
-        var acc = document.getElementsByClassName("accordion");
-        var i;
+    <script type="application/javascript">
+        $(document).ready(function () {
+            document.getElementById("top").style.display = "none";
+        });
 
-        for (i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                var panel = this.nextElementSibling;
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
-                } else {
-                    panel.style.display = "block";
-                }
-            });
-        }
-    </script>
-
-    <script>
         var mybutton = document.getElementById("top");
         // When the user scrolls down 20px from the top of the document, show the button
         window.onscroll = function() {scrollFunction()};
@@ -258,6 +217,21 @@
         function topFunction() {
             document.body.scrollTop = 0;
             document.documentElement.scrollTop = 0;
+        }
+
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
         }
     </script>
 {% endblock %}
