@@ -8,6 +8,7 @@ from django.db import models
 class Code(models.Model):
     """
     Contains a model of the code, allows for the ability to reuse.
+
     @param models.Model The base model
     """
     code_name = models.CharField(max_length=30)
@@ -16,6 +17,7 @@ class Code(models.Model):
     def __str__(self):
         """
         function __str__ is called to display the name of the code
+
         Returns:
             str: code name
         """
@@ -25,6 +27,7 @@ class Code(models.Model):
 class Reference(models.Model):
     """
     Contains a model of references. Each reference can be used by multiple Lessons.
+
     @param models.Model The base model
     """
     reference_key = models.CharField(max_length=30)
@@ -33,16 +36,17 @@ class Reference(models.Model):
     def __str__(self):
         """"
         function __str__ is called to display the reference texts. Helps for admin usability.
+
         Returns:
             str: reference text
         """
         return self.reference_text
 
 
-
 class Question(models.Model):
     """
     Contains a model of Questions. Each question can be used by multiple Lessons.
+
     @param models.Model The base model
     """
     question_text = models.CharField(max_length=200)
@@ -50,6 +54,7 @@ class Question(models.Model):
     def __str__(self):
         """"
         function __str__ is called to display the question texts. Helps for admin usability.
+
         Returns:
             str: question text
         """
@@ -59,6 +64,7 @@ class Question(models.Model):
 class McChoice(models.Model):
     """
     Contains a model of Multiple Choice Answers. Each choice is attached to one Question.
+
     @param models.Model The base model
     """
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -67,6 +73,7 @@ class McChoice(models.Model):
     def __str__(self):
         """"
         function __str__ is called to display the multiple choice texts. Helps for admin usability.
+
         Returns:
             str: choice text
         """
@@ -77,6 +84,7 @@ class Reasoning(models.Model):
     """
     Contains a model of Reasoning. There must be a question, and potential to be free response, multiple choice,
     or both. Includes an indicator for type of response needed.
+
     @param models.Model The base model
     """
     reasoning_name = models.CharField(max_length=30)
@@ -105,11 +113,11 @@ class Reasoning(models.Model):
 
     mc_set = models.ManyToManyField(McChoice, blank=True)
 
-
     def __str__(self):
         """"
         function __str__ is called to display the reasoning key. Due to the potential for multiple reasoning
         activities using the same question, the key must be the identifying feature.
+
         Returns:
             str: reasoning name
         """
@@ -126,6 +134,7 @@ class Lesson(models.Model):
     Reference Set - May contain multiple references, or no references at all.
     Reason - There is only one reasoning activity allowed per Lesson. May contain mc, fr, or both.
     Screen_Record - Boolean for whether or not to record the activity.
+
     @param models.Model The base model
     """
     lesson_name = models.CharField(max_length=50)
