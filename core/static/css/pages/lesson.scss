@@ -2,6 +2,7 @@
 // This file extends _base to generate all the CSS required to render the lesson page
 @import "../base/base";
 @import "../components/_progress";
+@import "../components/_ace";
 @import "../utils/variables";
 @import "../components/_jumbotron.scss";
 
@@ -125,139 +126,6 @@
     border-bottom: 5px solid $queen-blue;
 }
 
-.ace-chaos .ace_gutter-cell.ace_correct {
-    padding-left: 0;
-    color: #000;
-    background: #5cb85c;
-    border-left: none;
-}
-
 .tool-back {
     background: $charcoal;
-}
-
-.ace-chaos .ace_keyword.ace_operator {
-    color: $coral;
-}
-
-.ace-chaos .ace_keyword {
-    color: #337ab7;
-}
-
-.ace-chaos .ace_gutter {
-    color: $white;
-}
-
-/* ACE Editor-Related CSS */
-.ace_folding-enabled > .ace_gutter-cell {
-    padding-right: 10px;
-    padding-left: 30px;
-}
-
-.tooltip > .tooltip-inner {
-    color: #000;
-    background-color: #d3d3d3;
-}
-
-
-.ace-solarized-light .ace_gutter {
-    color: $steel-blue;
-    background: #e0e0e0;
-}
-
-.ace-solarized-light .ace_print-margin {
-    width: 1px;
-    background: #e8e8e8;
-}
-
-.ace-solarized-light {
-    color: $charcoal;
-    background-color: $white;
-}
-
-.ace-solarized-light .ace_cursor {
-    color: $steel-blue;
-}
-
-.ace-solarized-light .ace_marker-layer .ace_selection {
-    background: rgba(7, 54, 67, 0.09);
-}
-
-.ace-solarized-light.ace_multiselect .ace_selection.ace_start {
-    box-shadow: 0 0 3px 0 #fdf6e3;
-}
-
-.ace-solarized-light .ace_marker-layer .ace_step {
-    background: rgb(255, 255, 0);
-}
-
-.ace-solarized-light .ace_marker-layer .ace_bracket {
-    margin: -1px 0 0 -1px;
-    border: 1px solid rgba(147, 161, 161, 0.5);
-}
-
-.ace-solarized-light .ace_marker-layer .ace_active-line {
-    background: #e0e0e0;
-}
-
-.ace-solarized-light .ace_gutter-active-line {
-    background-color: #a0a0a0;
-}
-
-.ace-solarized-light .ace_marker-layer .ace_selected-word {
-    border: 1px solid $steel-blue;
-}
-
-.ace-solarized-light .ace_invisible {
-    color: rgba(147, 161, 161, 0.5);
-}
-
-.ace-solarized-light .ace_keyword,
-.ace-solarized-light .ace_meta,
-.ace-solarized-light .ace_support.ace_class,
-.ace-solarized-light .ace_support.ace_type {
-    color: #9f41a4;
-}
-
-.ace-solarized-light .ace_constant.ace_character,
-.ace-solarized-light .ace_constant.ace_other {
-    color: #cb4b16;
-}
-
-.ace-solarized-light .ace_constant.ace_language {
-    color: #916a22;
-}
-
-.ace-solarized-light .ace_constant.ace_numeric {
-    color: #916a22;
-}
-
-.ace-solarized-light .ace_fold {
-    background-color: #268bd2;
-    border-color: #586e75;
-}
-
-.ace-solarized-light .ace_entity.ace_name.ace_function,
-.ace-solarized-light .ace_entity.ace_name.ace_tag,
-.ace-solarized-light .ace_support.ace_function,
-.ace-solarized-light .ace_variable,
-.ace-solarized-light .ace_variable.ace_language {
-    color: #268bd2;
-}
-
-.ace-solarized-light .ace_storage {
-    color: #073642;
-}
-
-.ace-solarized-light .ace_string {
-    color: #649e59;
-}
-
-.ace-solarized-light .ace_string.ace_regexp {
-    color: $steel-blue;
-}
-
-.ace-solarized-light .ace_comment,
-.ace-solarized-light .ace_entity.ace_other.ace_attribute-name {
-    color: #8a8a8a;
 }
