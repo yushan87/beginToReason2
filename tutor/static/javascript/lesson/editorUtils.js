@@ -21,15 +21,11 @@ let prevAnswers = []; //add to this and check
 // Arrays in Place of DB //
 ///////////////////////////
 let codeArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
-let activityArray = ["<p>Please complete the <b>Confirm</b> assertion(s) by entering an expression for /* expression */, then check correctness. <br><br> Answer in terms of variables.</p>", "<p>Please complete the <b>Confirm</b> assertion(s) by choosing a conditional operator to replace the /* conditional */, then check correctness.</p>", "<p>Please complete the <b>Confirm</b> assertion(s) by entering an expression for /* expression */, then check correctness.</p>"];
-let refArray = ["<p><code>:= </code> is the <em>assignment operator</em></p>", "<p>At the place marked by <b>Remember</b>, values of variables such as I and J are assumed to be #I and #J.</p><p>Conditional operators are:<br />=, &lt;, &lt;=, &gt;, &gt;=</p>", "<p>At the place marked by <b>Remember</b>, values of variables such as I and J are assumed to be #I and #J.</p>"];
 let sucArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = 3;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I > #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I + 1;\n    end Main;\nend BeginToReason;"];
 let failArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = 2;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I < #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I;\n    end Main;\nend BeginToReason;"];
 let trivialArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
 
 let codeCounter = 0;
-let activityCounter = 0;
-let refCounter = 0;
 let sucCounter = 0;
 let failCounter = 0;
 let trivialCounter = 0;
@@ -56,8 +52,6 @@ function createEditor() {
     // Store the content for future use
     editorContent = codeArray[codeCounter];
     aceEditor.session.setValue(editorContent);
-    document.getElementById("activity").innerHTML = activityArray[activityCounter];
-    document.getElementById("referenceMaterial").innerHTML = refArray[refCounter];
     $("#prev").attr("disabled", "disabled");
     document.getElementById("resultCard").style.display = "none";
 
@@ -400,8 +394,6 @@ $("#next").click(function () {
     }
 
     codeCounter++;
-    activityCounter++;
-    refCounter++;
     sucCounter++;
     failCounter++;
     trivialCounter++;
@@ -416,8 +408,6 @@ $("#next").click(function () {
         document.getElementById("resultCard").style.display = "none";
         editorContent = codeArray[codeCounter];
         aceEditor.session.setValue(editorContent);
-        document.getElementById("activity").innerHTML = activityArray[activityCounter];
-        document.getElementById("referenceMaterial").innerHTML = refArray[refCounter];
         document.forms["usrform"]["comment"].value = "";
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         document.getElementById("resultTitle").innerHTML = "";
@@ -467,8 +457,6 @@ $("#prev").click(function () {
     }
 
     codeCounter--;
-    activityCounter--;
-    refCounter--;
     sucCounter--;
     failCounter--;
     trivialCounter--;
@@ -482,8 +470,6 @@ $("#prev").click(function () {
         document.getElementById("resultCard").style.display = "none";
         editorContent = codeArray[codeCounter];
         aceEditor.session.setValue(editorContent);
-        document.getElementById("activity").innerHTML = activityArray[activityCounter];
-        document.getElementById("referenceMaterial").innerHTML = refArray[refCounter];
         document.forms["usrform"]["comment"].value = "";
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         document.getElementById("resultTitle").innerHTML = "";

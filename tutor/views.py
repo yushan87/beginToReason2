@@ -3,7 +3,7 @@ This module contains our Django views for the "tutor" application.
 """
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from accounts.models import UserInformation
+from core.models import Lesson
 
 
 def catalog(request):
@@ -30,4 +30,12 @@ def tutor(request):
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.
     """
-    return render(request, "tutor/tutor.html")
+    lesson1 = Lesson.objects.get(lesson_name='testLesson')
+    print(lesson1.reference_set.all())
+    return render(request, "tutor/tutor.html",
+                  {'lessonName': lesson1.lesson_name,
+                   'concept': lesson1.lesson_concept,
+                   'instruction': lesson1.instruction,
+                   'code': lesson1.code,
+                   'referenceSet': lesson1.reference_set,
+                   'reason': lesson1.reason})

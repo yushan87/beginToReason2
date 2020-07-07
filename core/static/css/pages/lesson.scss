@@ -86,7 +86,7 @@
 
 #dont {
     background-color: $charcoal;
-    color: #fff
+    color: #fff;
 }
 
 #prev {
@@ -145,7 +145,7 @@
 }
 
 .ace-chaos .ace_gutter {
-  color: $white
+  color: $white;
 }
 
 /* ACE Editor-Related CSS */
@@ -161,80 +161,80 @@
 
 
 .ace-solarized-light .ace_gutter {
-  background: #E0E0E0;
-  color: $steel-blue
+    background: #E0E0E0;
+    color: $steel-blue;
 }
 
 .ace-solarized-light .ace_print-margin {
-  width: 1px;
-  background: #e8e8e8
+    width: 1px;
+    background: #e8e8e8;
 }
 
 .ace-solarized-light {
-  background-color: $white;
-  color: $charcoal
+    background-color: $white;
+    color: $charcoal;
 }
 
 .ace-solarized-light .ace_cursor {
-  color: $steel-blue
+    color: $steel-blue;
 }
 
 .ace-solarized-light .ace_marker-layer .ace_selection {
-  background: rgba(7, 54, 67, 0.09)
+    background: rgba(7, 54, 67, 0.09);
 }
 
 .ace-solarized-light.ace_multiselect .ace_selection.ace_start {
-  box-shadow: 0 0 3px 0px #FDF6E3;
+    box-shadow: 0 0 3px 0px #FDF6E3;
 }
 
 .ace-solarized-light .ace_marker-layer .ace_step {
-  background: rgb(255, 255, 0)
+    background: rgb(255, 255, 0);
 }
 
 .ace-solarized-light .ace_marker-layer .ace_bracket {
-  margin: -1px 0 0 -1px;
-  border: 1px solid rgba(147, 161, 161, 0.50)
+    margin: -1px 0 0 -1px;
+    border: 1px solid rgba(147, 161, 161, 0.50);
 }
 
 .ace-solarized-light .ace_marker-layer .ace_active-line {
-  background: #E0E0E0
+    background: #e0e0e0;
 }
 
 .ace-solarized-light .ace_gutter-active-line {
-  background-color : #a0a0a0
+    background-color: #a0a0a0;
 }
 
 .ace-solarized-light .ace_marker-layer .ace_selected-word {
-  border: 1px solid $steel-blue
+    border: 1px solid $steel-blue;
 }
 
 .ace-solarized-light .ace_invisible {
-  color: rgba(147, 161, 161, 0.50)
+    color: rgba(147, 161, 161, 0.50);
 }
 
 .ace-solarized-light .ace_keyword,
 .ace-solarized-light .ace_meta,
 .ace-solarized-light .ace_support.ace_class,
 .ace-solarized-light .ace_support.ace_type {
-  color: #9F41A4
+    color: #9f41a4;
 }
 
 .ace-solarized-light .ace_constant.ace_character,
 .ace-solarized-light .ace_constant.ace_other {
-  color: #CB4B16
+    color: #cb4b16;
 }
 
 .ace-solarized-light .ace_constant.ace_language {
-  color: #916A22
+    color: #916a22;
 }
 
 .ace-solarized-light .ace_constant.ace_numeric {
-  color: #916A22
+    color: #916a22
 }
 
 .ace-solarized-light .ace_fold {
-  background-color: #268BD2;
-  border-color: #586E75
+    background-color: #268bd2;
+    border-color: #586e75;
 }
 
 .ace-solarized-light .ace_entity.ace_name.ace_function,
@@ -242,22 +242,22 @@
 .ace-solarized-light .ace_support.ace_function,
 .ace-solarized-light .ace_variable,
 .ace-solarized-light .ace_variable.ace_language {
-  color: #268BD2
+    color: #268Bd2;
 }
 
 .ace-solarized-light .ace_storage {
-  color: #073642
+    color: #073642;
 }
 
 .ace-solarized-light .ace_string {
-  color: #649E59
+    color: #649e59;
 }
 
 .ace-solarized-light .ace_string.ace_regexp {
-  color: $steel-blue
+    color: $steel-blue;
 }
 
 .ace-solarized-light .ace_comment,
 .ace-solarized-light .ace_entity.ace_other.ace_attribute-name {
-  color: #8A8A8A
+    color: #8a8a8a;
 }

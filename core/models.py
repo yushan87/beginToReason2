@@ -109,9 +109,9 @@ class Reasoning(models.Model):
     # Free response has been removed, only because it does not serve a purpose. It belongs in the data collection
     # side of things.
 
-    #free_response_text = models.CharField(max_length=100, default="Enter default message", blank=True)
+    # free_response_text = models.CharField(max_length=100, default="Enter default message", blank=True)
 
-    mc_set = models.ManyToManyField(McChoice, blank=True, null=True)
+    mc_set = models.ManyToManyField(McChoice, blank=True)
 
     def __str__(self):
         """"

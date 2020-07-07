@@ -43,14 +43,16 @@
                     <!-- Tutorial Content -->
                     <div class="jumbotron jumbotron-fluid py-4 mb-0">
                         <div class="container text-center">
-                            <h1 id="lessonName">Lesson Name</h1>
+                            <h1 id="lessonName">{{lessonName}}</h1>
                         </div>
                     </div>
                     <div id="tutorialContent" class="p-3">
                         <h3 class="mb-0 page-section-heading" id="">
                             Activity Description
                         </h3>
+                        <br>
                         <div class="" id="activity">
+                            {{ instruction|safe }}
                         </div>
                         <br>
                         <h3 class="mb-0 page-section-heading" id="">
@@ -60,9 +62,18 @@
                         <div class="card bg-light mb-3" >
                             <div class="card-body">
                                 <div class="" id="referenceMaterial">
+                                    {{ referenceSet|safe }}
                                 </div>
                             </div>
                         </div>
+                        <br>
+                        <h3 class="mb-0 page-section-heading" id="">
+                            Lesson Concepts
+                        </h3>
+                        <br>
+                        <span class="badge badge-info ml-2">
+                            {{concept}}
+                        </span>
                     </div>
                 </div>
             </div>
