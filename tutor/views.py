@@ -2,7 +2,7 @@
 This module contains our Django views for the "tutor" application.
 """
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from core.models import Lesson
 
 
