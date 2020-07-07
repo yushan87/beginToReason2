@@ -18,7 +18,7 @@
                     <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Logout</a>
                 {% else %}
                     <h2 class="card-title mb-3">Log In to BeginToReason</h2>
-                    <a class="" href="{% url 'social:begin' 'google-oauth2' %}">
+                    <a class="" href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}">
                         <input type="image" src="{% static 'other_images/google.png' %}" width="240"
                                height="55" alt="Sign in with Google"/>
                     </a>
