@@ -56,7 +56,7 @@ def tutor(request):
             if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                 return render(request, "tutor/tutor.html",
                               {'lessonName': current_lesson.lesson_title,
-                               'concept': current_lesson.lesson_concept,
+                               'concept': current_lesson.lesson_concept.all(),
                                'instruction': current_lesson.instruction,
                                'code': current_lesson.code.lesson_code,
                                'referenceSet': current_lesson.reference_set.all(),
@@ -65,9 +65,10 @@ def tutor(request):
                                'mc_set': current_lesson.reason.mc_set.all(),
                                'screen_record': current_lesson.screen_record})
             else:
+                print(current_lesson.reason.reasoning_type)
                 return render(request, "tutor/tutor.html",
                               {'lessonName': current_lesson.lesson_title,
-                               'concept': current_lesson.lesson_concept,
+                               'concept': current_lesson.lesson_concept.all(),
                                'instruction': current_lesson.instruction,
                                'code': current_lesson.code.lesson_code,
                                'referenceSet': current_lesson.reference_set.all(),

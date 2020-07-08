@@ -11,7 +11,8 @@ let correctnessChecking = false; // A flag that indicates whether or not the che
 let lineErrorMap; // This contains error information for each line in the current file.
 let fontSize; // The current font size
 let time = new Date();
-let hasExplanation = false;
+let hasFR;
+let hasMC;
 let progressCounter = 0;
 let darkTheme = true;
 let prevAnswers = []; //add to this and check
@@ -20,10 +21,10 @@ let prevAnswers = []; //add to this and check
 ///////////////////////////
 // Arrays in Place of DB //
 ///////////////////////////
-let codeArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
-let sucArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = 3;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I > #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I + 1;\n    end Main;\nend BeginToReason;"];
-let failArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = 2;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I < #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I;\n    end Main;\nend BeginToReason;"];
-let trivialArray = ["Facility BeginToReason;\n uses Integer_Ext_Theory;\n\n Operation Main();\n Procedure\n Var I, J, K: Integer;\n\n I := 2;\n J := 3;\n\n K := I;\n If (J > I) then\n K := J;\n end;\n\n Confirm K = /*expression*/;\n end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
+let codeArray = ["Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n    Var I, J, K: Integer;\n\n    I := 2;\n    J := 3;\n\n    K := I;\n    If (J > I) then\n    K := J;\n    end;\n\n    Confirm K = /*expression*/;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
+let sucArray = ["Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n    Var I, J, K: Integer;\n\n    I := 2;\n    J := 3;\n\n    K := I;\n    If (J > I) then\n    K := J;\n    end;\n\n    Confirm K = 3;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I > #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I + 1;\n    end Main;\nend BeginToReason;"];
+let failArray = ["Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n    Var I, J, K: Integer;\n\n    I := 2;\n    J := 3;\n\n    K := I;\n    If (J > I) then\n    K := J;\n    end;\n\n    Confirm K = 2;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I < #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I;\n    end Main;\nend BeginToReason;"];
+let trivialArray = ["Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n    Var I, J, K: Integer;\n\n    I := 2;\n    J := 3;\n\n    K := I;\n    If (J > I) then\n    K := J;\n    end;\n\n    Confirm K = /*expression*/;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
 
 let codeCounter = 0;
 let sucCounter = 0;
@@ -55,7 +56,7 @@ function createEditor(code, explain) {
     $("#prev").attr("disabled", "disabled");
     document.getElementById("resultCard").style.display = "none";
 
-    //add a check for if need explaination and set hasExplanation
+    //add a check for if need explaination and set hasFR
     //hide or unhide explaination box
 
     // Set this to RESOLVE mode
@@ -63,10 +64,16 @@ function createEditor(code, explain) {
     //style = "visibility: hidden"; to hide text area element
     //use if statement to decide if should hide or show and if we need to check if it is full
     if (explain == 'MC') {
-        hasExplanation = false;
+        hasFR = false;
+        hasMC = true;
+    }
+    else if (explain == 'Text'){
+        hasFR = true;
+        hasMC = false;
     }
     else {
-        hasExplanation = true;
+        hasFR = true;
+        hasMC = true;
     }
 }
 
@@ -143,16 +150,28 @@ $("#checkCorrectness").click(function () {
     lock();
 
     //is explaination long enough
-    if (hasExplanation) {
+    if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
         if (boxVal.length < 25) {
             // Create the appropriate alert box
-        let msg = "You must fill in the your explanation to the right";
-        createAlertBox(true, msg);
-        $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
-
+            let msg = "You must fill in the your explanation to the right";
+            createAlertBox(true, msg);
+            $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
+            return
         }
-    } else {
+    } else if (hasMC) {
+        // if a radio is not selected
+
+    } else if (hasMC && hasFR) {
+        let boxVal = document.forms["usrform"]["comment"].value;
+        if (boxVal.length < 25) {
+            // Create the appropriate alert box
+            let msg = "You must fill in the your explanation to the right";
+            createAlertBox(true, msg);
+            $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
+        }
+            // if a radio is not selected
+    }
         document.getElementById("resultCard").style.display = "block";
 
         let results = "";
@@ -283,7 +302,6 @@ $("#checkCorrectness").click(function () {
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-danger text-white");
         }
-    }
     // Unlock editor for further user edits
     unlock();
 });
@@ -297,8 +315,10 @@ $("#resetCode").click(function () {
 
     // Put the cached content into the editor
     aceEditor.session.setValue(editorContent);
-    document.forms["usrform"]["comment"].value = "";
-    $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+    if (hasFR) {
+        document.forms["usrform"]["comment"].value = "";
+        $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+    }
     //take away line errors
     if (codeCounter == 0) {
         aceEditor.session.removeGutterDecoration(15, "ace_error");
@@ -460,8 +480,10 @@ $("#next").click(function () {
         document.getElementById("resultCard").style.display = "none";
         editorContent = codeArray[codeCounter];
         aceEditor.session.setValue(editorContent);
-        document.forms["usrform"]["comment"].value = "";
-        $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+        if (hasFR){
+            document.forms["usrform"]["comment"].value = "";
+            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+        }
         document.getElementById("resultTitle").innerHTML = "";
         document.getElementById("resultDetails").innerHTML = "";
         $("#resultCard").attr("class", "card bg-light");
@@ -522,8 +544,10 @@ $("#prev").click(function () {
         document.getElementById("resultCard").style.display = "none";
         editorContent = codeArray[codeCounter];
         aceEditor.session.setValue(editorContent);
-        document.forms["usrform"]["comment"].value = "";
-        $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+        if (hasFR) {
+            document.forms["usrform"]["comment"].value = "";
+            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+        }
         document.getElementById("resultTitle").innerHTML = "";
         document.getElementById("resultDetails").innerHTML = "";
         $("#resultCard").attr("class", "card bg-light");

@@ -43,6 +43,25 @@ class Reference(models.Model):
         return self.reference_text
 
 
+class Concept(models.Model):
+    """
+    Contains a model of references. Each reference can be used by multiple Lessons.
+
+    @param models.Model The base model
+    """
+    concept_key = models.CharField(max_length=30)
+    concept_text = models.CharField(max_length=50)
+
+    def __str__(self):
+        """"
+        function __str__ is called to display the reference texts. Helps for admin usability.
+
+        Returns:
+            str: reference text
+        """
+        return self.concept_text
+
+
 class Question(models.Model):
     """
     Contains a model of Questions. Each question can be used by multiple Lessons.
@@ -109,7 +128,7 @@ class Reasoning(models.Model):
     # Free response has been removed, only because it does not serve a purpose. It belongs in the data collection
     # side of things.
 
-    #free_response_text = models.CharField(max_length=100, default="Enter default message", blank=True)
+    # free_response_text = models.CharField(max_length=100, default="Enter default message", blank=True)
 
     mc_set = models.ManyToManyField(McChoice, blank=True)
 
@@ -139,7 +158,7 @@ class Lesson(models.Model):
     """
     lesson_name = models.CharField(max_length=50)
     lesson_title = models.CharField(max_length=50, default='default')
-    lesson_concept = models.CharField(max_length=50)
+    lesson_concept = models.ManyToManyField(Concept, blank=True)
     instruction = models.TextField()
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
     reference_set = models.ManyToManyField(Reference, blank=True)

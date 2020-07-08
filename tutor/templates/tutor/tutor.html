@@ -75,9 +75,11 @@
                             Concepts
                         </h3>
                         <br>
-                        <span class="badge badge-info ml-2">
-                            {{concept}}
-                        </span>
+                        {% for obj in concept %}
+                            <span class="badge badge-info ml-2">
+                                {{ obj | safe}}
+                            </span>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
@@ -211,7 +213,7 @@
                             {{reason}}
                             {% for obj in mc_set %}
                                 <br>
-                                <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option">
+                                <input class="form-check-input" type="radio" name="selectExplain" id="select" value="{{ obj | safe}}">
                                 <label class="form-check-label" for="exampleRadios1" id="radio">
                                     {{ obj | safe}}
                                 </label>
@@ -227,19 +229,14 @@
                             <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
                         </form>
                         <div class="form-check">
-                            Which of the following best describes your understanding of this concept? <br>
-                            <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option1">
-                            <label class="form-check-label" for="exampleRadios1" id="radio">
-                                First Option
-                            </label><br>
-                            <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option2">
-                            <label class="form-check-label" for="exampleRadios2" id="radio">
-                                Section Option
-                            </label><br>
-                            <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option3">
-                            <label class="form-check-label" for="exampleRadios3" id="radio">
-                                Third Option
-                            </label>
+                            {{reason}}
+                            {% for obj in mc_set %}
+                                <br>
+                                <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option">
+                                <label class="form-check-label" for="exampleRadios1" id="radio">
+                                    {{ obj | safe}}
+                                </label>
+                            {% endfor %}
                         </div>
                     {% endif %}
                 </div>
