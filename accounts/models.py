@@ -13,7 +13,7 @@ class UserInformation(models.Model):
     Contains a model of a user to keep track of user information.
     """
     # All of the fields in the model has validators to make sure they are valid.
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  # Foreign key referring to an entry in the user table
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Foreign key referring to an entry in the user table
     user_nickname = models.CharField("Nickname", max_length=25, validators=[MinLengthValidator(1)])  # Nickname field
     user_school = models.CharField("School", max_length=100, validators=[MinLengthValidator(1)])  # School field
     user_class = models.CharField("Class", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
