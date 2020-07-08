@@ -67,7 +67,7 @@
                     <button class="btn btn-auth dropdown-toggle" type="button" id="accountDropdownButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="far fa-user-circle"></i>
-                        <span class="d-none d-sm-inline-flex">&nbsp; </span>{{ user.username }}
+                        <span class="d-none d-sm-inline-flex">&nbsp; </span>{% if user.userinformation.user_nickname %}{{ user.userinformation.user_nickname }}{% else %}{{ user.username }}{% endif %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right m-0" aria-labelledby="accountDropdownButton">
                         <a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a>
