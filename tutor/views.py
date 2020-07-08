@@ -53,7 +53,6 @@ def tutor(request):
         # need a check for if lesson exists
         if Lesson.objects.filter(lesson_name='lesson1').exists():
             current_lesson = Lesson.objects.get(lesson_name='lesson1')
-            print(current_lesson.screen_record)
             if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                 return render(request, "tutor/tutor.html",
                               {'lessonName': current_lesson.lesson_title,

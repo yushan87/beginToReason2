@@ -38,7 +38,7 @@ let trivialCounter = 0;
 /*
  * Function for creating and embedding the ACE Editor into our page.
  */
-function createEditor(code) {
+function createEditor(code, explain) {
     // RESOLVE mode
     let ResolveMode = ace.require("ace/mode/resolve").Mode;
     Range = ace.require("ace/range").Range;
@@ -62,6 +62,12 @@ function createEditor(code) {
     aceEditor.getSession().setMode(new ResolveMode());
     //style = "visibility: hidden"; to hide text area element
     //use if statement to decide if should hide or show and if we need to check if it is full
+    if (explain == 'MC') {
+        hasExplanation = false;
+    }
+    else {
+        hasExplanation = true;
+    }
 }
 
 
@@ -137,13 +143,15 @@ $("#checkCorrectness").click(function () {
     lock();
 
     //is explaination long enough
-    let boxVal = document.forms["usrform"]["comment"].value;
-    if (hasExplanation && boxVal.length < 25) {
-        // Create the appropriate alert box
+    if (hasExplanation) {
+        let boxVal = document.forms["usrform"]["comment"].value;
+        if (boxVal.length < 25) {
+            // Create the appropriate alert box
         let msg = "You must fill in the your explanation to the right";
         createAlertBox(true, msg);
         $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
 
+        }
     } else {
         document.getElementById("resultCard").style.display = "block";
 

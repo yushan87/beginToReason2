@@ -23,11 +23,11 @@
 
     <script type="application/javascript">
         $(document).ready(function () {
-            createEditor("{{ code | safe }}");
+            createEditor("{{ code | safe }}", "{{ reason_type | safe }}");
             $("#next").attr("disabled", "disabled");
             $("#tutor").attr("class", "nav-item active");
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
-            
+
             // session recording and transcribing
             if ("{{screen_record}}" == true){
                 setupRecording(); // for recording a session
@@ -102,8 +102,7 @@
             <div class="col-6 p-0">
                 <div id="editorCol" class="d-flex flex-column h-100">
                     <!-- Ace Editor -->
-                    <div id="editor" class="flex-grow-1 p-0">
-                    </div>
+                    <div id="editor" class="flex-grow-1 p-0"></div>
 
                     <!-- Error Card -->
                     <div id="compilerResult"></div>
@@ -247,5 +246,4 @@
             </div>
         </div>
     </div>
-
 {% endblock %}
