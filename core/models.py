@@ -138,6 +138,7 @@ class Lesson(models.Model):
     @param models.Model The base model
     """
     lesson_name = models.CharField(max_length=50)
+    lesson_title = models.CharField(max_length=50, default='default')
     lesson_concept = models.CharField(max_length=50)
     instruction = models.TextField()
     code = models.ForeignKey(Code, on_delete=models.CASCADE)

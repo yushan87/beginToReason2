@@ -23,14 +23,16 @@
 
     <script type="application/javascript">
         $(document).ready(function () {
-            createEditor();
+            createEditor("{{ code | safe }}");
             $("#next").attr("disabled", "disabled");
             $("#tutor").attr("class", "nav-item active");
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
-
+            
             // session recording and transcribing
-            //setupRecording(); // for recording a session
-            //transcribeAudio(); // for transcribing audio
+            if ("{{screen_record}}" == true){
+                setupRecording(); // for recording a session
+                transcribeAudio(); // for transcribing audio
+            }
         });
     </script>
 {% endblock %}
@@ -62,7 +64,9 @@
                         <div class="card bg-light mb-3" >
                             <div class="card-body">
                                 <div class="" id="referenceMaterial">
-                                    {{ referenceSet|safe }}
+                                    {% for obj in referenceSet %}
+                                        <p> {{ obj | safe}} </p>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
@@ -98,7 +102,8 @@
             <div class="col-6 p-0">
                 <div id="editorCol" class="d-flex flex-column h-100">
                     <!-- Ace Editor -->
-                    <div id="editor" class="flex-grow-1 p-0"></div>
+                    <div id="editor" class="flex-grow-1 p-0">
+                    </div>
 
                     <!-- Error Card -->
                     <div id="compilerResult"></div>
@@ -192,32 +197,52 @@
                         <p class="card-text" id="resultDetails"></p>
                     </div>
                 </div>
-                <br>
                 <div id="explainCard" class="card" style="position: absolute; bottom: 0; width: 98%; margin: 5px 5px 5px 5px; background-color: #E0E0E0; color: #333;">
-
-                    <form id="usrform">
-                        <div id="results">
-                            <b>
-                                Explain your reasoning before attempting to Run:
-                            </b>
+                    {% if reason_type == 'Text' %}
+                        <form id="usrform">
+                            <div id="results">
+                                <b>
+                                    {{reason}}
+                                </b>
+                            </div>
+                            <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
+                        </form>
+                    {% elif reason_type == 'MC' %}
+                        <div class="form-check">
+                            {{reason}}
+                            {% for obj in mc_set %}
+                                <br>
+                                <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option">
+                                <label class="form-check-label" for="exampleRadios1" id="radio">
+                                    {{ obj | safe}}
+                                </label>
+                            {% endfor %}
                         </div>
-                        <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
-                    </form>
-                    <div class="form-check" hidden>
-                        Which of the following best describes your understanding of this concept? <br>
-                        <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option1">
-                        <label class="form-check-label" for="exampleRadios1" id="radio">
-                            First Option
-                        </label><br>
-                        <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option2">
-                        <label class="form-check-label" for="exampleRadios2" id="radio">
-                            Section Option
-                        </label><br>
-                        <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option3">
-                        <label class="form-check-label" for="exampleRadios3" id="radio">
-                            Third Option
-                        </label>
-                    </div>
+                    {% else %}
+                        <form id="usrform">
+                            <div id="results">
+                                <b>
+                                    {{reason}}
+                                </b>
+                            </div>
+                            <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
+                        </form>
+                        <div class="form-check">
+                            Which of the following best describes your understanding of this concept? <br>
+                            <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option1">
+                            <label class="form-check-label" for="exampleRadios1" id="radio">
+                                First Option
+                            </label><br>
+                            <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option2">
+                            <label class="form-check-label" for="exampleRadios2" id="radio">
+                                Section Option
+                            </label><br>
+                            <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option3">
+                            <label class="form-check-label" for="exampleRadios3" id="radio">
+                                Third Option
+                            </label>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

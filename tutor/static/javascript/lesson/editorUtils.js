@@ -38,7 +38,7 @@ let trivialCounter = 0;
 /*
  * Function for creating and embedding the ACE Editor into our page.
  */
-function createEditor() {
+function createEditor(code) {
     // RESOLVE mode
     let ResolveMode = ace.require("ace/mode/resolve").Mode;
     Range = ace.require("ace/range").Range;
@@ -50,7 +50,7 @@ function createEditor() {
     aceEditor.setFontSize(fontSize);
 
     // Store the content for future use
-    editorContent = codeArray[codeCounter];
+    editorContent = code;
     aceEditor.session.setValue(editorContent);
     $("#prev").attr("disabled", "disabled");
     document.getElementById("resultCard").style.display = "none";
@@ -149,6 +149,50 @@ $("#checkCorrectness").click(function () {
 
         let results = "";
         let code = aceEditor.session.getValue();
+
+
+
+
+
+
+
+
+
+
+        //need some kind of post to send code to views
+
+        //add check for trivials
+        //use code from verify.js
+
+
+        //send code to backend where the websocket is opened
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         if (code == trivialArray[trivialCounter]) {
             results = "trivial";
