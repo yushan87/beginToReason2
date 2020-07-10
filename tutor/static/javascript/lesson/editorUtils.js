@@ -150,40 +150,18 @@ $("#checkCorrectness").click(function () {
     lock();
 
     //is explaination long enough
-    if (hasFR) {
-        let boxVal = document.forms["usrform"]["comment"].value;
-        if (boxVal.length < 25) {
-            // Create the appropriate alert box
-            let msg = "You must fill in the your explanation to the right";
-            createAlertBox(true, msg);
-            $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
-            return
-        }
-    } else if (hasMC) {
-        // if a radio is not selected
+    let boxVal = document.forms["usrform"]["comment"].value;
+    if (hasFR && boxVal.length < 25) {
+        // Create the appropriate alert box
+        let msg = "You must fill in the your explanation to the right";
+        createAlertBox(true, msg);
+        $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
 
-    } else if (hasMC && hasFR) {
-        let boxVal = document.forms["usrform"]["comment"].value;
-        if (boxVal.length < 25) {
-            // Create the appropriate alert box
-            let msg = "You must fill in the your explanation to the right";
-            createAlertBox(true, msg);
-            $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
-        }
-            // if a radio is not selected
-    }
+    } else {
         document.getElementById("resultCard").style.display = "block";
 
         let results = "";
         let code = aceEditor.session.getValue();
-
-
-
-
-
-
-
-
 
 
         //need some kind of post to send code to views
@@ -193,32 +171,6 @@ $("#checkCorrectness").click(function () {
 
 
         //send code to backend where the websocket is opened
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         if (code == trivialArray[trivialCounter]) {
@@ -231,7 +183,7 @@ $("#checkCorrectness").click(function () {
 
         if (results == "trivial") {
             unlock();
-            document.getElementById("resultTitle").innerHTML = "Trivial answer";
+            document.getElementById("resultsHeader").innerHTML = "Trivial answer";
             document.getElementById("resultDetails").innerHTML = "Try again!";
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-danger text-white");
@@ -247,7 +199,7 @@ $("#checkCorrectness").click(function () {
 
         } else if (results == "unparsable") {
             unlock();
-            document.getElementById("resultTitle").innerHTML = "Syntax error";
+            document.getElementById("resultsHeader").innerHTML = "Syntax error";
             document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-danger text-white");
@@ -263,7 +215,7 @@ $("#checkCorrectness").click(function () {
 
         } else if (results == "failure") {
             unlock();
-            document.getElementById("resultTitle").innerHTML = "Wrong answer";
+            document.getElementById("resultsHeader").innerHTML = "Wrong answer";
             document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>3. Do you understand the specification parameter modes (e.g. Updates)?";
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-danger text-white");
@@ -279,7 +231,7 @@ $("#checkCorrectness").click(function () {
 
         } else if (results == "success") {
             unlock();
-            document.getElementById("resultTitle").innerHTML = "Correct!";
+            document.getElementById("resultsHeader").innerHTML = "Correct!";
             document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-success text-white");
@@ -297,11 +249,12 @@ $("#checkCorrectness").click(function () {
             }
         } else {
             unlock();
-            document.getElementById("resultTitle").innerHTML = "Something went wrong";
+            document.getElementById("resultsHeader").innerHTML = "Something went wrong";
             document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-danger text-white");
         }
+    }
     // Unlock editor for further user edits
     unlock();
 });
@@ -484,7 +437,7 @@ $("#next").click(function () {
             document.forms["usrform"]["comment"].value = "";
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         }
-        document.getElementById("resultTitle").innerHTML = "";
+        document.getElementById("resultsHeader").innerHTML = "";
         document.getElementById("resultDetails").innerHTML = "";
         $("#resultCard").attr("class", "card bg-light");
         $("#next").attr("disabled", "disabled");
@@ -497,7 +450,7 @@ $("#next").click(function () {
         }
     } else {
         //add something in db for what was completed then you can go through them
-        document.getElementById("resultTitle").innerHTML = "Congratulations";
+        document.getElementById("resultsHeader").innerHTML = "Congratulations";
         document.getElementById("resultDetails").innerHTML = "You've completed all the activities";
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         $("#resultCard").attr("class", "card bg-dark text-white");
@@ -548,7 +501,7 @@ $("#prev").click(function () {
             document.forms["usrform"]["comment"].value = "";
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         }
-        document.getElementById("resultTitle").innerHTML = "";
+        document.getElementById("resultsHeader").innerHTML = "";
         document.getElementById("resultDetails").innerHTML = "";
         $("#resultCard").attr("class", "card bg-light");
         $("#next").removeAttr("disabled", "disabled");

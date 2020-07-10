@@ -32,6 +32,12 @@
     background-color: #d3d3d3;
 }
 
+.ace-solarized-light .ace_gutter-cell.ace_correct {
+    padding-left: 0;
+    color: #000;
+    background: #5cb85c;
+    border-left: none;
+}
 
 .ace-solarized-light .ace_gutter {
     color: $steel-blue;

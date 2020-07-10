@@ -6,6 +6,7 @@ a new instance of a model will be made.
 from django.contrib.auth.models import User
 from django.core.validators import MinLengthValidator
 from django.db import models
+from core.models import LessonSet
 
 
 class UserInformation(models.Model):
@@ -19,6 +20,8 @@ class UserInformation(models.Model):
     user_class = models.CharField("Class", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
     user_gender = models.CharField("Gender", max_length=50, validators=[MinLengthValidator(1)])  # Gender field
     user_race = models.CharField("Race", max_length=50, validators=[MinLengthValidator(1)])  # Race field
+    current_lesson_set = models.ForeignKey(LessonSet, blank=True, on_delete=models.CASCADE, null=True)
+    current_lesson_index = models.IntegerField(default=0)
 
     def __str__(self):
         """function __str__ is used to create a string representation of this class

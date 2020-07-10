@@ -24,84 +24,26 @@
                 <h1 class="mb-0 page-section-heading">
                     Available Lessons
                 </h1>
+                {% for obj in LessonSet %}
                 <div id="begin" class="card lesson-card">
                     <div class="card-horizontal">
                         <div class="img-square-wrapper">
                             <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
                         </div>
                         <div class="card-body">
-                            <h5 class="card-title">Begin To Reason <span class="badge recommended">Recommended</span></h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
-                                            aria-pressed="true">Start Training</a>
+                            <h5 class="card-title">{{obj}} <span class="badge recommended">Recommended</span></h5>
+                            <p class="card-text">{{obj.set_description}}</p>
+                            <form action="{% url 'tutor:catalog' %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="set_name" value="{{ obj }}"/>
+                                <button class="btn select-btn" type="submit" aria-pressed="true">
+                                    Start Training
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-                <div id="continue" class="card lesson-card">
-                    <div class="card-horizontal">
-                        <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/continue.png' %}" id="card-img" alt="Card image cap">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Continue To Reason</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
-                                            aria-pressed="true">Start Training</a>
-                        </div>
-                    </div>
-                </div>
-                <div id="master" class="card lesson-card">
-                    <div class="card-horizontal">
-                        <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/master.png' %}" id="card-img" alt="Card image cap">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Master To Reason</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
-                                            aria-pressed="true">Start Training</a>
-                        </div>
-                    </div>
-                </div>
-                <div id="loop" class="card lesson-card">
-                    <div class="card-horizontal">
-                        <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/loops.png' %}" id="card-img" alt="Card image cap">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Reasoning With Loops</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
-                                            aria-pressed="true">Start Training</a>
-                        </div>
-                    </div>
-                </div>
-                <div id="verify" class="card lesson-card">
-                    <div class="card-horizontal">
-                        <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/learn.png' %}" id="card-img" alt="Card image cap">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Learning About Verification</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
-                                            aria-pressed="true">Start Training</a>
-                        </div>
-                    </div>
-                </div>
-                <div id="reason" class="card lesson-card">
-                    <div class="card-horizontal">
-                        <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/reason.png' %}" id="card-img" alt="Card image cap">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">Learning About Reasoning</h5>
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
-                                            aria-pressed="true">Start Training</a>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
                 <h1 class="mb-0 page-section-heading">
                     Verified Lessons
                 </h1>
@@ -116,7 +58,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">CS 1000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                <a href="{% url 'tutor:tutor' %}" class="btn  select-btn" role="button"
+                                <a href="" class="btn  select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
@@ -129,7 +71,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">CS 2000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
+                                 <a href="" class="btn select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
@@ -142,7 +84,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">CS 4000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
+                                 <a href="" class="btn select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
@@ -157,7 +99,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">CS 1000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
+                                <a href="" class="btn select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
@@ -170,7 +112,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">CS 2000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
+                                 <a href="" class="btn select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
@@ -183,7 +125,7 @@
                             <div class="card-body">
                                 <h5 class="card-title">CS 4000</h5>
                                 <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="{% url 'tutor:tutor' %}" class="btn select-btn" role="button"
+                                 <a href="" class="btn select-btn" role="button"
                                                 aria-pressed="true">Start Training</a>
                             </div>
                         </div>
