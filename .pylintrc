@@ -31,7 +31,7 @@ limit-inference-results=100
 
 # List of plugins (as comma separated values of python module names) to load,
 # usually to register additional checkers.
-load-plugins=pylint_django,pylint_django.checkers.db_performance,pylint.extensions.docstyle,pylint.extensions.docparams
+load-plugins=pylint_django,pylint_django.checkers.migrations,pylint.extensions.docstyle,pylint.extensions.docparams
 
 # Pickle collected data for later comparisons.
 persistent=no
