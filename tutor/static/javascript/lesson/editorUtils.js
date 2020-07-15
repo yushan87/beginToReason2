@@ -16,6 +16,7 @@ let hasMC;
 let progressCounter = 0;
 let darkTheme = true;
 let prevAnswers = []; //add to this and check
+let name
 
 
 ///////////////////////////
@@ -39,7 +40,7 @@ let trivialCounter = 0;
 /*
  * Function for creating and embedding the ACE Editor into our page.
  */
-function createEditor(code, explain) {
+function createEditor(code, explain, lessonName) {
     // RESOLVE mode
     let ResolveMode = ace.require("ace/mode/resolve").Mode;
     Range = ace.require("ace/range").Range;
@@ -52,6 +53,7 @@ function createEditor(code, explain) {
 
     // Store the content for future use
     editorContent = code;
+    name = lessonName;
     aceEditor.session.setValue(editorContent);
     $("#prev").attr("disabled", "disabled");
     document.getElementById("resultCard").style.display = "none";
@@ -151,7 +153,7 @@ $("#checkCorrectness").click(function () {
 
     //is explaination long enough
     let boxVal = document.forms["usrform"]["comment"].value;
-    if (hasFR && boxVal.length < 25) {
+    if (hasFR && boxVal.length < 0) {
         // Create the appropriate alert box
         let msg = "You must fill in the your explanation to the right";
         createAlertBox(true, msg);
@@ -160,8 +162,6 @@ $("#checkCorrectness").click(function () {
     } else {
         document.getElementById("resultCard").style.display = "block";
 
-        let results = "";
-        let code = aceEditor.session.getValue();
 
 
         //need some kind of post to send code to views
@@ -170,91 +170,59 @@ $("#checkCorrectness").click(function () {
         //use code from verify.js
 
 
-        //send code to backend where the websocket is opened
 
+        let results = "";
+        let code = aceEditor.session.getValue();
+        let data = {};
+        //data.module = currentLesson.module;
+        data.name = name;
+        //data.author = author;
+        //data.author = "user.googleId;"   //make userid
+        //data.milliseconds = getTime();
+        data.code = code;
+        data.explanation = document.forms["usrform"]["comment"].value;
 
-        if (code == trivialArray[trivialCounter]) {
-            results = "trivial";
-        } else if (code == failArray[failCounter]) {
-            results = "failure";
-        } else if (code == sucArray[sucCounter]) {
-            results = "success";
-        }
-
-        if (results == "trivial") {
-            unlock();
-            document.getElementById("resultsHeader").innerHTML = "Trivial answer";
-            document.getElementById("resultDetails").innerHTML = "Try again!";
-            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-            $("#resultCard").attr("class", "card bg-danger text-white");
-            //add line errors
-            //this will need to be fixed based on verifier return
-            if (codeCounter == 0) {
-                aceEditor.session.addGutterDecoration(15, "ace_error");
-            } else if (codeCounter == 1) {
-                aceEditor.session.addGutterDecoration(11, "ace_error");
-            } else if (codeCounter == 2) {
-                aceEditor.session.addGutterDecoration(11, "ace_error");
+        $.postJSON("tutor", data, (results) => {
+            /*if (results.lines !== undefined) {
+                addLines(results.lines);
+            }*/
+            if (results.status == "trivial") {
+                document.getElementById("resultsHeader").innerHTML = "Trivial answer";
+                document.getElementById("resultDetails").innerHTML = "Try again!";
+                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                $("#resultCard").attr("class", "card bg-danger text-white");
+                //add line errors
+                //this will need to be fixed based on verifier return
+            } else if (results.status == "unparsable") {
+                document.getElementById("resultsHeader").innerHTML = "Syntax error";
+                document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
+                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                $("#resultCard").attr("class", "card bg-danger text-white");
+                //add line errors
+                //this will need to be fixed based on verifier return
+            } else if (results.status == "failure") {
+                document.getElementById("resultsHeader").innerHTML = "Wrong answer";
+                document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>3. Do you understand the specification parameter modes (e.g. Updates)?";
+                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                $("#resultCard").attr("class", "card bg-danger text-white");
+                //add line errors
+                //this will need to be fixed based on verifier return
+            } else if (results.status == "success") {
+                document.getElementById("resultsHeader").innerHTML = "Correct!";
+                document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
+                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                $("#resultCard").attr("class", "card bg-success text-white");
+                $("#next").removeAttr("disabled", "disabled");
+                $("#checkCorrectness").attr("disabled", "disabled");
+                // aceEditor.session.addGutterDecoration(need this from views/verifier, "ace_correct");
+            } else {
+                document.getElementById("resultsHeader").innerHTML = "Something went wrong";
+                document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
+                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                $("#resultCard").attr("class", "card bg-danger text-white");
             }
-
-        } else if (results == "unparsable") {
-            unlock();
-            document.getElementById("resultsHeader").innerHTML = "Syntax error";
-            document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
-            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-            $("#resultCard").attr("class", "card bg-danger text-white");
-            //add line errors
-            //this will need to be fixed based on verifier return
-            if (codeCounter == 0) {
-                aceEditor.session.addGutterDecoration(15, "ace_error");
-            } else if (codeCounter == 1) {
-                aceEditor.session.addGutterDecoration(11, "ace_error");
-            } else if (codeCounter == 2) {
-                aceEditor.session.addGutterDecoration(11, "ace_error");
-            }
-
-        } else if (results == "failure") {
-            unlock();
-            document.getElementById("resultsHeader").innerHTML = "Wrong answer";
-            document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>3. Do you understand the specification parameter modes (e.g. Updates)?";
-            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-            $("#resultCard").attr("class", "card bg-danger text-white");
-            //add line errors
-            //this will need to be fixed based on verifier return
-            if (codeCounter == 0) {
-                aceEditor.session.addGutterDecoration(15, "ace_error");
-            } else if (codeCounter == 1) {
-                aceEditor.session.addGutterDecoration(11, "ace_error");
-            } else if (codeCounter == 2) {
-                aceEditor.session.addGutterDecoration(11, "ace_error");
-            }
-
-        } else if (results == "success") {
-            unlock();
-            document.getElementById("resultsHeader").innerHTML = "Correct!";
-            document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
-            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-            $("#resultCard").attr("class", "card bg-success text-white");
-            $("#next").removeAttr("disabled", "disabled");
-            //take away line errors
-            if (codeCounter == 0) {
-                aceEditor.session.removeGutterDecoration(15, "ace_error");
-                aceEditor.session.addGutterDecoration(15, "ace_correct");
-            } else if (codeCounter == 1) {
-                aceEditor.session.removeGutterDecoration(11, "ace_error");
-                aceEditor.session.addGutterDecoration(11, "ace_correct");
-            } else if (codeCounter == 2) {
-                aceEditor.session.removeGutterDecoration(11, "ace_error");
-                aceEditor.session.addGutterDecoration(11, "ace_correct");
-            }
-        } else {
-            unlock();
-            document.getElementById("resultsHeader").innerHTML = "Something went wrong";
-            document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
-            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-            $("#resultCard").attr("class", "card bg-danger text-white");
-        }
-    }
+        });
+    };
     // Unlock editor for further user edits
     unlock();
 });
@@ -271,14 +239,6 @@ $("#resetCode").click(function () {
     if (hasFR) {
         document.forms["usrform"]["comment"].value = "";
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-    }
-    //take away line errors
-    if (codeCounter == 0) {
-        aceEditor.session.removeGutterDecoration(15, "ace_error");
-    } else if (codeCounter == 1) {
-        aceEditor.session.removeGutterDecoration(11, "ace_error");
-    } else if (codeCounter == 2) {
-        aceEditor.session.removeGutterDecoration(11, "ace_error");
     }
 
     // Unlock editor for further user edits
@@ -377,7 +337,6 @@ function lock() {
     aceEditor.setReadOnly(true);
 
     // Disable the button and set checkCorrectness to true.
-    $("#checkCorrectness").attr("disabled", "disabled");
     $("#resetCode").attr("disabled", "disabled");
     correctnessChecking = true;
 }
@@ -391,7 +350,6 @@ function unlock() {
 
     // No longer checkCorrectness, so enable the button again.
     correctnessChecking = false;
-    $("#checkCorrectness").removeAttr("disabled", "disabled");
     $("#resetCode").removeAttr("disabled", "disabled");
 
     // Focus on the editor.
@@ -408,6 +366,23 @@ function unlock() {
  */
 $("#next").click(function () {
     lock();
+
+    $.ajax({
+        url: 'tutor',
+        datatype: 'json',
+        type: 'GET',
+        headers: {
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+        },
+        success: function(data) {
+            console.log(data)
+        }
+    });
+
+
+
+
+
 
     //take away line errors
     if (codeCounter == 0) {
@@ -441,6 +416,7 @@ $("#next").click(function () {
         document.getElementById("resultDetails").innerHTML = "";
         $("#resultCard").attr("class", "card bg-light");
         $("#next").attr("disabled", "disabled");
+        $("#checkCorrectness").removeAttr("disabled", "disabled");
 
         //progress increaser
         if (progressCounter == 1) {
@@ -455,6 +431,7 @@ $("#next").click(function () {
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         $("#resultCard").attr("class", "card bg-dark text-white");
         $("#next").attr("disabled", "disabled");
+        $("#checkCorrectness").removeAttr("disabled", "disabled");
         editorContent = "No more activities";
         aceEditor.session.setValue(editorContent);
 
@@ -528,15 +505,19 @@ function getTime() {
     var result = endTime.getTime() - time.getTime();
     time = endTime;
     return result;
-}
+}*/
 
 $.postJSON = (url, data, callback) => {
+
     return $.ajax({
         type: "POST",
         url: url,
         contentType: "application/json",
         data: JSON.stringify(data),
         dataType: "json",
+        headers: {
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+        },
         success: callback
     });
-};*/
+};
