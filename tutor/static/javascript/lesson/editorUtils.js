@@ -79,6 +79,28 @@ function createEditor(code, explain, lessonName) {
     }
 }
 
+/*
+ * Function for creating and embedding the ACE Editor into our page.
+ */
+function loadLesson(code, explain, lessonName) {
+    editorContent = code;
+    name = lessonName;
+    aceEditor.session.setValue(editorContent);
+
+    if (explain == 'MC') {
+        hasFR = false;
+        hasMC = true;
+    }
+    else if (explain == 'Text'){
+        hasFR = true;
+        hasMC = false;
+    }
+    else {
+        hasFR = true;
+        hasMC = true;
+    }
+}
+
 
 ////////////////////////////////////
 // Editor Alert-Related Functions //
@@ -375,14 +397,17 @@ $("#next").click(function () {
             'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
         },
         success: function(data) {
-            console.log(data)
+            //loadLesson()
+
         }
     });
 
+    //loadLesson()
+    unlock();
 
+return;
 
-
-
+console.log("after return")
 
     //take away line errors
     if (codeCounter == 0) {
