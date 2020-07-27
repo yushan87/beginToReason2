@@ -79,6 +79,26 @@ function createEditor(code, explain, lessonName) {
     }
 }
 
+function encode(data) {
+    var regex1 = new RegExp(" ", "g")
+    var regex2 = new RegExp("/+", "g")
+
+    var content = encodeURIComponent(data)
+    content = content.replace(regex1, "%20")
+    content = content.replace(regex2, "%2B")
+
+    var json = {}
+
+    json.name = "BeginToReason"
+    json.pkg = "User"
+    json.project = "Teaching_Project"
+    json.content = content
+    json.parent = "undefined"
+    json.type = "f"
+
+    console.log( JSON.stringify(json))
+}
+
 /*
  * Function for creating and embedding the ACE Editor into our page.
  */
@@ -204,10 +224,13 @@ $("#checkCorrectness").click(function () {
         data.code = code;
         data.explanation = document.forms["usrform"]["comment"].value;
 
+        encode(code);
+
         $.postJSON("tutor", data, (results) => {
             /*if (results.lines !== undefined) {
                 addLines(results.lines);
             }*/
+
             if (results.status == "trivial") {
                 document.getElementById("resultsHeader").innerHTML = "Trivial answer";
                 document.getElementById("resultDetails").innerHTML = "Try again!";

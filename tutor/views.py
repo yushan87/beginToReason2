@@ -1,6 +1,7 @@
 """
 This module contains our Django views for the "tutor" application.
 """
+import asyncio
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -9,6 +10,7 @@ from accounts.models import UserInformation
 import json
 from django.http import JsonResponse
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete
+from tutor.py_helper_functions.websocket_helper import hello
 
 
 def catalog(request):
@@ -54,12 +56,14 @@ def tutor(request):
         '''
         # Case 1a: if the user exists
         if user_auth(request):
-            # submitted_json = json.loads(request.body)
+            submitted_json = json.loads(request.body)
             # hook up websocket and verify
             # if success, return next lesson
             # if fail, do something
             # Case 1aa: if the user has not completed set
             if set_not_complete(request):
+                print("calling server")
+                hello()
                 return JsonResponse({'status': 'success'})
             # Case 1ab: if the user has not completed set
             else:
