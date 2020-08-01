@@ -9,6 +9,7 @@ from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 import json
 from django.http import JsonResponse
+from data_analysis.py_helper_functions.datalog_helper import log_data
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete
 from tutor.py_helper_functions.websocket_helper import hello
 
@@ -56,14 +57,26 @@ def tutor(request):
         '''
         # Case 1a: if the user exists
         if user_auth(request):
-            submitted_json = json.loads(request.body)
+            submitted_json = json.loads(request.body.decode('utf-8'))
+            log_data(request)
             # hook up websocket and verify
             # if success, return next lesson
             # if fail, do something
             # Case 1aa: if the user has not completed set
             if set_not_complete(request):
-                print("calling server")
-                hello()
+                # print(submitted_json['code'])
+                print("before")
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                print("inside")
+                # event_loop = asyncio.new_event_loop()
+                # threading.Thread(target=lambda: run_loop(event_loop)).start()
+                # event_loop.call_soon_threadsafe(lambda: hello())
+                asyncio.get_event_loop().run_until_complete(hello())
+                # event_loop.call_soon_threadsafe(event_loop.stop)
+
+                loop.close()
+                print("after")
                 return JsonResponse({'status': 'success'})
             # Case 1ab: if the user has not completed set
             else:

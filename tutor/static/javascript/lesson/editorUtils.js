@@ -79,25 +79,6 @@ function createEditor(code, explain, lessonName) {
     }
 }
 
-function encode(data) {
-    var regex1 = new RegExp(" ", "g")
-    var regex2 = new RegExp("/+", "g")
-
-    var content = encodeURIComponent(data)
-    content = content.replace(regex1, "%20")
-    content = content.replace(regex2, "%2B")
-
-    var json = {}
-
-    json.name = "BeginToReason"
-    json.pkg = "User"
-    json.project = "Teaching_Project"
-    json.content = content
-    json.parent = "undefined"
-    json.type = "f"
-
-    console.log( JSON.stringify(json))
-}
 
 /*
  * Function for creating and embedding the ACE Editor into our page.
@@ -119,6 +100,110 @@ function loadLesson(code, explain, lessonName) {
         hasFR = true;
         hasMC = true;
     }
+}
+
+
+/*
+    Checks for any trivial answers the student may provide, such as "Confirm
+    true", "Confirm I = I", or "Confirm I /= I + 1". Returns a list of lines
+    and an indicator of trivial or not for each line. Note: may not perfectly
+    check for all possible trivials.
+*/
+function checkForTrivials(content) {
+    var lines = content.split("\n");
+    var confirms = [];
+    var overall = 'success';
+    var regex;
+    var i;
+
+    // Find all the confirm or ensures statements, with their line numbers
+    regex = new RegExp("Confirm [^;]*;|ensures [^;]*;", "mg");
+    for (i = 0; i < lines.length; i++) {
+        var confirm = lines[i].match(regex);
+        if (confirm) {
+            confirms.push({lineNum: i+1, text: confirm[0], status: 'success'})
+        }
+    }
+
+    regex = new RegExp("requires [^;]*;" ,"g");
+    if (confirms.length == 0 && !regex.test(content)) {
+        return {confirms: [], overall: 'failure'}
+    }
+
+    for (i = 0; i < confirms.length; i++) {
+        // Remove the "Confirm " and "ensures " so that we can find the variable names
+        var statement = confirms[i].text;
+        statement = statement.substr(8);
+
+        // Search for an illegal "/="
+        regex = new RegExp("/=");
+        if (statement.search(regex) > -1) {
+            overall = 'failure';
+            confirms[i].status = "failure";
+            continue
+        }
+
+        // Split the string at the conditional, first looking for >= and <=
+        regex = new RegExp(">=|<=");
+        var parts = statement.split(regex);
+        if (parts.length > 2) {
+            overall = 'failure';
+            confirms[i].status = "failure";
+            continue
+        }
+
+        // If there is no >= or <=
+        if (parts.length == 1) {
+            regex = new RegExp("=");
+            parts = statement.split(regex);
+            if (parts.length > 2) {
+                overall = 'failure';
+                confirms[i].status = "failure";
+                continue
+            }
+        }
+
+        // If there is no >=, <=, or =
+        if (parts.length == 1) {
+            regex = new RegExp(">|<");
+            parts = statement.split(regex);
+            if (parts.length != 2) {
+                overall = 'failure';
+                confirms[i].status = "failure";
+                continue
+            }
+        }
+
+        // Find the variables used on the left side. If there are none, mark it correct.
+        var left = parts[0];
+        var right = parts[1];
+        regex = new RegExp("[a-np-zA-QS-Z]", "g") // Temporary fix to allow Reverse(#S) o #T on section2, lesson6
+        var variables = left.match(regex);
+        if (variables === null) {
+            overall = 'failure';
+            confirms[i].status = "failure";
+            continue
+        }
+
+        // Search for these variables on the right side
+        var j;
+        for (j = 0; j < variables.length; j++) {
+            var variable = variables[j];
+            regex = new RegExp(" " + variable, "g");
+            if (right.search(regex) > -1) {
+                overall = 'failure';
+                confirms[i].status = "failure";
+                continue
+            }
+        }
+    }
+
+    // Get rid of the text field
+    for (var confirm of confirms) {
+        delete confirm.text
+    }
+
+    return {confirms: confirms, overall: overall}
 }
 
 
@@ -202,18 +287,7 @@ $("#checkCorrectness").click(function () {
         $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
 
     } else {
-        document.getElementById("resultCard").style.display = "block";
-
-
-
-        //need some kind of post to send code to views
-
-        //add check for trivials
-        //use code from verify.js
-
-
-
-        let results = "";
+        document.getElementById("resultCard").style.display = "block";let results = "";
         let code = aceEditor.session.getValue();
         let data = {};
         //data.module = currentLesson.module;
@@ -224,50 +298,55 @@ $("#checkCorrectness").click(function () {
         data.code = code;
         data.explanation = document.forms["usrform"]["comment"].value;
 
-        encode(code);
+        // Check for trivials
+        let trivials = checkForTrivials(code);
+        if (trivials.overall == "failure") {
+            document.getElementById("resultsHeader").innerHTML = "Trivial answer";
+            document.getElementById("resultDetails").innerHTML = "Try again!";
+            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+            $("#resultCard").attr("class", "card bg-danger text-white");
+            //add line errors
+            //this will need to be fixed based on verifier return
+            //log data
+        }
+        else{
 
-        $.postJSON("tutor", data, (results) => {
-            /*if (results.lines !== undefined) {
-                addLines(results.lines);
-            }*/
+            $.postJSON("tutor", data, (results) => {
+                /*if (results.lines !== undefined) {
+                    addLines(results.lines);
+                }*/
 
-            if (results.status == "trivial") {
-                document.getElementById("resultsHeader").innerHTML = "Trivial answer";
-                document.getElementById("resultDetails").innerHTML = "Try again!";
-                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                $("#resultCard").attr("class", "card bg-danger text-white");
-                //add line errors
-                //this will need to be fixed based on verifier return
-            } else if (results.status == "unparsable") {
-                document.getElementById("resultsHeader").innerHTML = "Syntax error";
-                document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
-                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                $("#resultCard").attr("class", "card bg-danger text-white");
-                //add line errors
-                //this will need to be fixed based on verifier return
-            } else if (results.status == "failure") {
-                document.getElementById("resultsHeader").innerHTML = "Wrong answer";
-                document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>3. Do you understand the specification parameter modes (e.g. Updates)?";
-                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                $("#resultCard").attr("class", "card bg-danger text-white");
-                //add line errors
-                //this will need to be fixed based on verifier return
-            } else if (results.status == "success") {
-                document.getElementById("resultsHeader").innerHTML = "Correct!";
-                document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
-                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                $("#resultCard").attr("class", "card bg-success text-white");
-                $("#next").removeAttr("disabled", "disabled");
-                $("#checkCorrectness").attr("disabled", "disabled");
-                // aceEditor.session.addGutterDecoration(need this from views/verifier, "ace_correct");
-            } else {
-                document.getElementById("resultsHeader").innerHTML = "Something went wrong";
-                document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
-                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                $("#resultCard").attr("class", "card bg-danger text-white");
-            }
-        });
-    };
+                if (results.status == "unparsable") {
+                    document.getElementById("resultsHeader").innerHTML = "Syntax error";
+                    document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
+                    $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                    $("#resultCard").attr("class", "card bg-danger text-white");
+                    //add line errors
+                    //this will need to be fixed based on verifier return
+                } else if (results.status == "failure") {
+                    document.getElementById("resultsHeader").innerHTML = "Wrong answer";
+                    document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>3. Do you understand the specification parameter modes (e.g. Updates)?";
+                    $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                    $("#resultCard").attr("class", "card bg-danger text-white");
+                    //add line errors
+                    //this will need to be fixed based on verifier return
+                } else if (results.status == "success") {
+                    document.getElementById("resultsHeader").innerHTML = "Correct!";
+                    document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
+                    $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                    $("#resultCard").attr("class", "card bg-success text-white");
+                    $("#next").removeAttr("disabled", "disabled");
+                    $("#checkCorrectness").attr("disabled", "disabled");
+                    // aceEditor.session.addGutterDecoration(need this from views/verifier, "ace_correct");
+                } else {
+                    document.getElementById("resultsHeader").innerHTML = "Something went wrong";
+                    document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
+                    $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                    $("#resultCard").attr("class", "card bg-danger text-white");
+                }
+            });
+        }
+    }
     // Unlock editor for further user edits
     unlock();
 });
