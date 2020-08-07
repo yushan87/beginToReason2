@@ -92,19 +92,16 @@
             </div>
 
             <!-- Progress Modal -->
-            <div class="modal fade" id="progress-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-xl" role="document">
-                    <div class="modal-nav-content">
-                        <div class="modal-nav-body bg-dark text-white">
-                            <div class="container" align="center">
-                                <ul class="progressbar">
-                                    <li id="lesson1"></li>
-                                    <li id="lesson2"></li>
-                                    <li id="lesson3"></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+            <div id="myNav" class="overlay">
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <div class="overlay-content">
+                    <ol>
+                        <li style="font-size: 150%; color: white"><a href="#">Using If Statements</a></li>
+                        <li style="font-size: 150%; color: white"><a href="#">Relating Values of Variables</a></li>
+                        <li style="font-size: 150%; color: white"><a href="#">Asserting Values of Variables</a></li>
+                        <li style="font-size: 150%; color: white"><a href="#">Lesson 4</a></li>
+                        <li style="font-size: 150%; color: white"><a href="#">Lesson 5</a></li>
+                    </ol>
                 </div>
             </div>
 
@@ -158,10 +155,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-light" data-toggle="modal" data-target="#progress-modal"
-                                        aria-expanded="false" type="button" title="Progress">
-                                    <i class="fas fa-spinner"></i>
-                                    Progress
+                                <button id="toggleOverlay" class="btn btn-light">
+                                    <i class="fa fa-list" aria-hidden="true"></i>
+                                    View Lessons
                                 </button>
                                 <button id="giveHint" class="btn btn-light" type="button" data-toggle="tooltip"
                                         data-placement="top" title="Get Help">
@@ -196,10 +192,10 @@
                                     <div class="bullet">3</div>
                                 </div>
                                 <div class="step">
-                                    <div class="bullet">4</div>
+                                    <div class="bullet end">4</div>
                                 </div>
                                 <div class="step">
-                                    <div class="bullet">5</div>
+                                    <div class="bullet end">5</div>
                                 </div>
                             </div>
                             <div>

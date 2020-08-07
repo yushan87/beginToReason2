@@ -1,7 +1,7 @@
 // lesson.scss
 // This file extends _base to generate all the CSS required to render the lesson page
 @import "../base/base";
-@import "../components/_progress";
+@import "../components/overlay";
 @import "../components/_ace";
 @import "../utils/variables";
 @import "../components/_jumbotron.scss";
@@ -80,7 +80,7 @@
 }
 
 #progress-modal {
-    background-color: rgba(48, 52, 63, 0.8);
+    background-color: rgba(48, 52, 63, 0.9);
 }
 
 #are-you-sure {

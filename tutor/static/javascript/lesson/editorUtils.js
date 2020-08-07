@@ -16,7 +16,8 @@ let hasMC;
 let progressCounter = 0;
 let darkTheme = true;
 let prevAnswers = []; //add to this and check
-let name
+let name;
+let overlayOpen = false;
 
 
 ///////////////////////////
@@ -439,6 +440,24 @@ $("#fontIncrease").click(function () {
 
     return false;
 });
+
+
+/*
+ * Function for opening and closing overlay
+ */
+$("#toggleOverlay").click(function () {
+    if(overlayOpen){
+        document.getElementById("myNav").style.width = "0%";
+        overlayOpen = false;
+        document.getElementById("toggleOverlay").innerHTML = "<i class=\"fa fa-list\" aria-hidden=\"true\"></i> View Lessons";
+    }
+    else{
+        document.getElementById("myNav").style.width = "25%";
+        overlayOpen = true;
+        document.getElementById("toggleOverlay").innerHTML = "<i class=\"fa fa-times\" aria-hidden=\"true\"></i> Close List";
+    }
+});
+
 
 /*
  * Function for decreasing the editor's font size.
