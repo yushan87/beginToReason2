@@ -36,6 +36,12 @@
             }
         });
     </script>
+
+    <script>
+        //const INPUTS = document.querySelectorAll('#smileys input');
+        //const updateValue = e => document.querySelector('#result').innerHTML = e.target.value;
+        //INPUTS.forEach(el => el.addEventListener('click', e => updateValue(e)));
+    </script>
 {% endblock %}
 
 {% block main_content %}
@@ -179,6 +185,23 @@
                                         title="Previous">Back
                                 </button>
                             </div>
+                            <div id="stepProgressBar">
+                                <div class="step">
+                                    <div class="bullet completed">1</div>
+                                </div>
+                                <div class="step">
+                                    <div class="bullet completed">2</div>
+                                </div>
+                                <div class="step">
+                                    <div class="bullet">3</div>
+                                </div>
+                                <div class="step">
+                                    <div class="bullet">4</div>
+                                </div>
+                                <div class="step">
+                                    <div class="bullet">5</div>
+                                </div>
+                            </div>
                             <div>
                                 <button id="next" type="button" class="btn btn-light btn-md"
                                         data-toggle="tooltip" data-placement="top"
@@ -238,6 +261,18 @@
                             {% endfor %}
                         </div>
                     {% endif %}
+                    <div id="results">
+                                <b>
+                                    How are you feeling:
+                                </b>
+                            </div>
+                    <form id="smileys" style="text-align: center;">
+                        <input type="radio" name="smiley" value="upset" class="upset">
+                        <input type="radio" name="smiley" value="sad" class="sad">
+                        <input type="radio" name="smiley" value="neutral" class="neutral" checked="checked">
+                        <input type="radio" name="smiley" value="happy" class="happy">
+                        <input type="radio" name="smiley" value="excited" class="excited">
+                    </form>
                 </div>
             </div>
         </div>

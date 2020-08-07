@@ -11,7 +11,7 @@ import json
 from django.http import JsonResponse
 from data_analysis.py_helper_functions.datalog_helper import log_data
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete
-from tutor.py_helper_functions.websocket_helper import hello
+from tutor.py_helper_functions.websocket_helper import verify_socket
 
 
 def catalog(request):
@@ -72,12 +72,12 @@ def tutor(request):
                 # event_loop = asyncio.new_event_loop()
                 # threading.Thread(target=lambda: run_loop(event_loop)).start()
                 # event_loop.call_soon_threadsafe(lambda: hello())
-                asyncio.get_event_loop().run_until_complete(hello())
+                asyncio.get_event_loop().run_until_complete(verify_socket())
                 # event_loop.call_soon_threadsafe(event_loop.stop)
 
                 loop.close()
                 print("after")
-                return JsonResponse({'status': 'success'})
+                return JsonResponse({'status': 'failure'})
             # Case 1ab: if the user has not completed set
             else:
                 # this would mean it was the last lesson in the set

@@ -1,0 +1,49 @@
+// smiley.scss
+// Simple CSS3 Progress Overlay
+
+// Custom radio buttons
+form {
+	&#smileys {
+		input[type="radio"] {
+			-webkit-appearance: none;
+			width: 60px;
+			height: 60px;
+			border: none;
+			cursor: pointer;
+			transition: border .2s ease;
+			filter: grayscale(100%);
+			margin: 5px 5px 5px;
+			transition: all .2s ease;
+
+			&:hover, &:checked {
+				filter:	grayscale(0);
+			}
+
+			&:focus {
+				outline: 0;
+			}
+
+			&.excited {
+				background-image: url('../../images/excitedFace.png');
+				background-size: cover;
+			}
+			&.happy {
+				background-image: url('../../images/happyFace.png');
+				background-size: cover;
+			}
+
+			&.neutral {
+				background-image: url('../../images/neutralFace.png');
+				background-size: cover;
+			}
+			&.sad {
+				background-image: url('../../images/sadFace.png');
+				background-size: cover;
+			}
+			&.upset {
+				background-image: url('../../images/upsetFace.png');
+				background-size: cover;
+			}
+		}
+	}
+}
