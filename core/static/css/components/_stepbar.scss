@@ -6,59 +6,59 @@
 $number-lessons: 5;
 // 42vw / $number-lessons = vw per lesson
 
-#stepProgressBar  {
-	display: flex;
-	align-items: flex-end;
-	justify-content: space-between;
-	width: 40vw;
-	margin: 0 auto;
+#stepProgressBar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 40vw;
+    margin: 0 auto;
 }
 
 
-.step  {
-	text-align: center;
+.step {
+    text-align: center;
 }
 
 
 .bullet {
-	position: relative;
-	display: inline-block;
-	width: 30px;
-	height: 30px;
-	line-height: 30px;
-	color: #3A4958;
-	background-color:  white;
-	border-radius: 100%;
-	transition: background-color 500ms;
+    position: relative;
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    color: #3A4958;
+    background-color:  white;
+    border-radius: 100%;
+    transition: background-color 500ms;
 }
 
 
-.bullet.completed  {
-	color: white;
-	background-color: #ff8c5f;
+.bullet.completed {
+    color: white;
+    background-color: #ff8c5f;
 }
 
 
 .bullet.completed::after {
-	position: absolute;
-	bottom: 11px;
-	width: 45vw / $number-lessons;
-	height: 5px;
-	content: '';
-	background-color: #ff8c5f;
+    position: absolute;
+    bottom: 11px;
+    width: 45vw / $number-lessons;
+    height: 5px;
+    content: '';
+    background-color: #ff8c5f;
 }
 
 
 .bullet.end::before {
-	position: absolute;
-	right: 2vw;
-	bottom: 11px;
-	width: 36vw / $number-lessons;
-	content: '';
-	border-top: 5px dashed #ffffff;
+    position: absolute;
+    right: 2vw;
+    bottom: 11px;
+    width: 36vw / $number-lessons;
+    content: '';
+    border-top: 5px dashed #fff;
 }
 
 
-.text-center  {
-	text-align: center;
+.text-center {
+    text-align: center;
 }
