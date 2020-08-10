@@ -454,8 +454,20 @@ $("#toggleOverlay").click(function () {
     else{
         document.getElementById("myNav").style.width = "25%";
         overlayOpen = true;
-        document.getElementById("toggleOverlay").innerHTML = "<i class=\"fa fa-times\" aria-hidden=\"true\"></i> Close List";
+        document.getElementById("toggleOverlay").innerHTML = "<i class=\"fa fa-times\" aria-hidden=\"true\"></i> Dismiss";
     }
+});
+
+
+/*
+ * Function for x of overlay
+ */
+$("#closeOverlay").click(function () {
+
+        document.getElementById("myNav").style.width = "0%";
+        overlayOpen = false;
+        document.getElementById("toggleOverlay").innerHTML = "<i class=\"fa fa-list\" aria-hidden=\"true\"></i> View Lessons";
+
 });
 
 

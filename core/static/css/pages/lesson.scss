@@ -1,9 +1,9 @@
 // lesson.scss
 // This file extends _base to generate all the CSS required to render the lesson page
 @import "../base/base";
-@import "../components/overlay";
 @import "../components/_ace";
 @import "../utils/variables";
+@import "../components/_overlay.scss";
 @import "../components/_jumbotron.scss";
 @import "../components/_smiley.scss";
 @import "../components/_stepbar.scss";

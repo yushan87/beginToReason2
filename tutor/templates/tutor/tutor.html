@@ -93,7 +93,7 @@
 
             <!-- Progress Modal -->
             <div id="myNav" class="overlay">
-                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+                <a id="closeOverlay" class="closebtn">&times;</a>
                 <div class="overlay-content">
                     <ol>
                         <li style="font-size: 150%; color: white"><a href="#">Using If Statements</a></li>
@@ -155,13 +155,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button id="toggleOverlay" class="btn btn-light">
-                                    <i class="fa fa-list" aria-hidden="true"></i>
-                                    View Lessons
+                                <button id="toggleOverlay" class="btn btn-light" type="button">
+                                    <i class="fa fa-list" aria-hidden="true"></i> View Lessons
                                 </button>
                                 <button id="giveHint" class="btn btn-light" type="button" data-toggle="tooltip"
                                         data-placement="top" title="Get Help">
-                                    <i class="far fa-life-ring"></i> Get Help
+                                    <i class="far fa-life-ring"></i>
                                 </button>
                                 <button type="button" class="btn btn-danger" title="Reset" data-toggle="modal" data-target="#areYouSure">
                                   <i class="fa">&#xf021;</i>
@@ -169,7 +168,7 @@
                                 <button id="checkCorrectness" class="btn btn-success" type="button"
                                         data-toggle="tooltip" data-placement="top" title="Check Correctness">
                                     <i class="fas fa-clipboard-check"></i>
-                                    Check Correctness
+                                    Run
                                     <div id="csrf">{% csrf_token %}</div>
                                 </button>
                             </div>
@@ -259,7 +258,7 @@
                     {% endif %}
                     <div id="results">
                                 <b>
-                                    How are you feeling:
+                                    Represent your attitude towards code verification:
                                 </b>
                             </div>
                     <form id="smileys" style="text-align: center;">
