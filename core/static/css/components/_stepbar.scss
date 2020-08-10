@@ -26,15 +26,15 @@ $number-lessons: 5;
     width: 30px;
     height: 30px;
     line-height: 30px;
-    color: #3A4958;
-    background-color:  white;
+    color: #3a4958;
+    background-color: #fff;
     border-radius: 100%;
     transition: background-color 500ms;
 }
 
 
 .bullet.completed {
-    color: white;
+    color: #fff;
     background-color: #ff8c5f;
 }
 
