@@ -5,14 +5,12 @@
 form {
     &#smileys {
         input[type="radio"] {
-            -webkit-appearance: none;
             width: 60px;
             height: 60px;
-            border: none;
-            cursor: pointer;
-            transition: border .2s ease;
-            filter: grayscale(100%);
             margin: 5px 5px 5px;
+            cursor: pointer;
+            filter: grayscale(100%);
+            border: none;
             transition: all .2s ease;
 
             &:hover, &:checked {
