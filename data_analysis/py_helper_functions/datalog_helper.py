@@ -17,7 +17,6 @@ def log_data(request):
 
     Returns:
     """
-    print("logging")
     user = User.objects.get(email=request.user.email)
     user_info = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
     lesson_set = user_info.current_lesson_set
@@ -25,12 +24,13 @@ def log_data(request):
     lesson = Lesson.objects.get(lesson_name=set_array[user_info.current_lesson_index])
     code = json.loads(request.body.decode('utf-8'))['code']
     explanation = json.loads(request.body.decode('utf-8'))['explanation']
+    status = json.loads(request.body.decode('utf-8'))['status']
 
     data_to_log = DataLog.objects.create(user_key=user,
                                          time_stamp=timezone.now(),
                                          lesson_set_key=lesson_set,
                                          lesson_key=lesson,
-                                         status="test status",
+                                         status=status,
                                          code=code,
                                          explanation=explanation)
     data_to_log.save()

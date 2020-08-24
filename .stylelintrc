@@ -70,7 +70,6 @@
       "overflow-x",
       "overflow-y",
       "-webkit-overflow-scrolling",
-      "-webkit-appearance",
       "-ms-overflow-x",
       "-ms-overflow-y",
       "-ms-overflow-style",

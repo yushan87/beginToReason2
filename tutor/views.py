@@ -11,7 +11,7 @@ import json
 from django.http import JsonResponse
 from data_analysis.py_helper_functions.datalog_helper import log_data
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete
-from tutor.py_helper_functions.websocket_helper import verify_socket
+from tutor.py_helper_functions.websocket_helper import run_socket
 
 
 def catalog(request):
@@ -59,33 +59,24 @@ def tutor(request):
         if user_auth(request):
             submitted_json = json.loads(request.body.decode('utf-8'))
             log_data(request)
-            # hook up websocket and verify
             # if success, return next lesson
             # if fail, do something
             # Case 1aa: if the user has not completed set
-            if set_not_complete(request):
-                # print(submitted_json['code'])
-                print("before")
-                loop = asyncio.new_event_loop()
-                asyncio.set_event_loop(loop)
-                print("inside")
-                # event_loop = asyncio.new_event_loop()
-                # threading.Thread(target=lambda: run_loop(event_loop)).start()
-                # event_loop.call_soon_threadsafe(lambda: hello())
-                asyncio.get_event_loop().run_until_complete(verify_socket())
-                # event_loop.call_soon_threadsafe(event_loop.stop)
-
-                loop.close()
-                print("after")
-                return JsonResponse({'status': 'failure'})
-            # Case 1ab: if the user has not completed set
+            status = json.loads(request.body.decode('utf-8'))['status']
+            if status == "success":
+                if set_not_complete(request):
+                    return render(request, "tutor/tutor.html")
+                # Case 1ab: if the user has not completed set
+                else:
+                    # this would mean it was the last lesson in the set
+                    # remove lesson set from user in whatever relationship a user has with lesson sets TBD
+                    return redirect("accounts:profile")
             else:
-                # this would mean it was the last lesson in the set
-                # remove lesson set from user in whatever relationship a user has with lesson sets TBD
-                return redirect("accounts:profile")
+                return render(request, "tutor/tutor.html")
         # Case 1b: if the user doesnt exist
         else:
             return redirect("accounts:settings")
+
     # Case 2: We have received a GET request requesting code
     elif request.method == 'GET':
         # Ensure user exists
@@ -109,7 +100,10 @@ def tutor(request):
                                        'reason': current_lesson.reason.reasoning_question,
                                        'reason_type': current_lesson.reason.reasoning_type,
                                        'mc_set': current_lesson.reason.mc_set.all(),
-                                       'screen_record': current_lesson.screen_record})
+                                       'screen_record': current_lesson.screen_record,
+                                       'currLessonNum': current_user.current_lesson_index + 1,
+                                       'setLength': len(current_set),
+                                       'currSet': current_set})
                     # Case 2aaab: if question is of type Text
                     elif current_lesson.reason.reasoning_type == 'Text':
                         return render(request, "tutor/tutor.html",
@@ -120,7 +114,10 @@ def tutor(request):
                                        'referenceSet': current_lesson.reference_set.all(),
                                        'reason': current_lesson.reason.reasoning_question,
                                        'reason_type': current_lesson.reason.reasoning_type,
-                                       'screen_record': current_lesson.screen_record})
+                                       'screen_record': current_lesson.screen_record,
+                                       'currLessonNum': current_user.current_lesson_index + 1,
+                                       'setLength': len(current_set),
+                                       'currSet': current_set})
                     else:
                         # need something for if there is no question
                         return redirect("accounts:profile")

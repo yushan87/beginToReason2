@@ -18,20 +18,7 @@ let darkTheme = true;
 let prevAnswers = []; //add to this and check
 let name;
 let overlayOpen = false;
-
-
-///////////////////////////
-// Arrays in Place of DB //
-///////////////////////////
-let codeArray = ["Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n    Var I, J, K: Integer;\n\n    I := 2;\n    J := 3;\n\n    K := I;\n    If (J > I) then\n    K := J;\n    end;\n\n    Confirm K = /*expression*/;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
-let sucArray = ["Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n    Var I, J, K: Integer;\n\n    I := 2;\n    J := 3;\n\n    K := I;\n    If (J > I) then\n    K := J;\n    end;\n\n    Confirm K = 3;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I > #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I + 1;\n    end Main;\nend BeginToReason;"];
-let failArray = ["Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n    Var I, J, K: Integer;\n\n    I := 2;\n    J := 3;\n\n    K := I;\n    If (J > I) then\n    K := J;\n    end;\n\n    Confirm K = 2;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I < #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = #I;\n    end Main;\nend BeginToReason;"];
-let trivialArray = ["Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n    Var I, J, K: Integer;\n\n    I := 2;\n    J := 3;\n\n    K := I;\n    If (J > I) then\n    K := J;\n    end;\n\n    Confirm K = /*expression*/;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1; -- Assignment\n\n        Confirm I /*conditional*/ #I;\n    end Main;\nend BeginToReason;", "Facility BeginToReason;\n    uses Integer_Ext_Theory;\n\n    Operation Main();\n    Procedure\n        Var I: Integer;\n        Read(I);\n        Remember;\n\n        I := I + 1;\n\n        Confirm I = /*expression*/;\n    end Main;\nend BeginToReason;"];
-
-let codeCounter = 0;
-let sucCounter = 0;
-let failCounter = 0;
-let trivialCounter = 0;
+let allAnswers = "";
 
 
 ///////////////////////////////////////
@@ -203,7 +190,6 @@ function checkForTrivials(content) {
     for (var confirm of confirms) {
         delete confirm.text
     }
-
     return {confirms: confirms, overall: overall}
 }
 
@@ -290,66 +276,44 @@ $("#checkCorrectness").click(function () {
     } else {
         document.getElementById("resultCard").style.display = "block";let results = "";
         let code = aceEditor.session.getValue();
-        let data = {};
-        //data.module = currentLesson.module;
-        data.name = name;
-        //data.author = author;
-        //data.author = "user.googleId;"   //make userid
-        //data.milliseconds = getTime();
-        data.code = code;
-        data.explanation = document.forms["usrform"]["comment"].value;
 
         // Check for trivials
         let trivials = checkForTrivials(code);
         if (trivials.overall == "failure") {
-            document.getElementById("resultsHeader").innerHTML = "Trivial answer";
-            document.getElementById("resultDetails").innerHTML = "Try again!";
+            document.getElementById("resultsHeader").innerHTML = "<h3>Trivial answer</h3>";
+            document.getElementById("resultDetails").innerHTML = "Submission does not contain enough information. Try again!";
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-danger text-white");
             //add line errors
             //this will need to be fixed based on verifier return
             //log data
+
+            for (var i = 0; i < trivials.confirms.length; i++) {
+                aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
+                document.getElementById("answersCard").removeAttribute("hidden")
+                allAnswers = allAnswers + aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'')+ "<br>";
+                document.getElementById("pastAnswers").innerHTML = allAnswers;
+            }
+
+            // Unlock editor for further user edits
+            unlock();
         }
         else{
+            document.getElementById("resultsHeader").innerHTML = "<h3>Compiling code...</h3>";
+            document.getElementById("resultDetails").innerHTML = '<div class="sk-chase">\n' +
+                '  <div class="sk-chase-dot"></div>\n' +
+                '  <div class="sk-chase-dot"></div>\n' +
+                '  <div class="sk-chase-dot"></div>\n' +
+                '  <div class="sk-chase-dot"></div>\n' +
+                '  <div class="sk-chase-dot"></div>\n' +
+                '  <div class="sk-chase-dot"></div>\n' +
+                '</div>';
+            $("#resultCard").attr("class", "card text-light");
+            $("#resultCard").attr("style", "background: #4C6085");
 
-            $.postJSON("tutor", data, (results) => {
-                /*if (results.lines !== undefined) {
-                    addLines(results.lines);
-                }*/
-
-                if (results.status == "unparsable") {
-                    document.getElementById("resultsHeader").innerHTML = "Syntax error";
-                    document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
-                    $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                    $("#resultCard").attr("class", "card bg-danger text-white");
-                    //add line errors
-                    //this will need to be fixed based on verifier return
-                } else if (results.status == "failure") {
-                    document.getElementById("resultsHeader").innerHTML = "Wrong answer";
-                    document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>3. Do you understand the specification parameter modes (e.g. Updates)?";
-                    $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                    $("#resultCard").attr("class", "card bg-danger text-white");
-                    //add line errors
-                    //this will need to be fixed based on verifier return
-                } else if (results.status == "success") {
-                    document.getElementById("resultsHeader").innerHTML = "Correct!";
-                    document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
-                    $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                    $("#resultCard").attr("class", "card bg-success text-white");
-                    $("#next").removeAttr("disabled", "disabled");
-                    $("#checkCorrectness").attr("disabled", "disabled");
-                    // aceEditor.session.addGutterDecoration(need this from views/verifier, "ace_correct");
-                } else {
-                    document.getElementById("resultsHeader").innerHTML = "Something went wrong";
-                    document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
-                    $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                    $("#resultCard").attr("class", "card bg-danger text-white");
-                }
-            });
+            verify(code)
         }
     }
-    // Unlock editor for further user edits
-    unlock();
 });
 
 /*
@@ -360,11 +324,7 @@ $("#resetCode").click(function () {
     lock();
 
     // Put the cached content into the editor
-    aceEditor.session.setValue(editorContent);
-    if (hasFR) {
-        document.forms["usrform"]["comment"].value = "";
-        $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-    }
+    location.reload();
 
     // Unlock editor for further user edits
     unlock();
@@ -535,72 +495,10 @@ $("#next").click(function () {
         }
     });
 
-    //loadLesson()
+    location.reload();
     unlock();
 
 return;
-
-console.log("after return")
-
-    //take away line errors
-    if (codeCounter == 0) {
-        aceEditor.session.removeGutterDecoration(15, "ace_correct");
-    } else if (codeCounter == 1) {
-        aceEditor.session.removeGutterDecoration(11, "ace_correct");
-    } else if (codeCounter == 2) {
-        aceEditor.session.removeGutterDecoration(11, "ace_correct");
-    }
-
-    codeCounter++;
-    sucCounter++;
-    failCounter++;
-    trivialCounter++;
-    progressCounter++;
-
-    if (codeCounter < codeArray.length) {
-
-        if (codeCounter != 0) {
-            $("#prev").removeAttr("disabled", "disabled");
-        }
-
-        document.getElementById("resultCard").style.display = "none";
-        editorContent = codeArray[codeCounter];
-        aceEditor.session.setValue(editorContent);
-        if (hasFR){
-            document.forms["usrform"]["comment"].value = "";
-            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-        }
-        document.getElementById("resultsHeader").innerHTML = "";
-        document.getElementById("resultDetails").innerHTML = "";
-        $("#resultCard").attr("class", "card bg-light");
-        $("#next").attr("disabled", "disabled");
-        $("#checkCorrectness").removeAttr("disabled", "disabled");
-
-        //progress increaser
-        if (progressCounter == 1) {
-            $("#lesson1").attr("class", "active");
-        } else if (progressCounter == 2) {
-            $("#lesson2").attr("class", "active");
-        }
-    } else {
-        //add something in db for what was completed then you can go through them
-        document.getElementById("resultsHeader").innerHTML = "Congratulations";
-        document.getElementById("resultDetails").innerHTML = "You've completed all the activities";
-        $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-        $("#resultCard").attr("class", "card bg-dark text-white");
-        $("#next").attr("disabled", "disabled");
-        $("#checkCorrectness").removeAttr("disabled", "disabled");
-        editorContent = "No more activities";
-        aceEditor.session.setValue(editorContent);
-
-
-        if (progressCounter == 3) {
-            $("#lesson3").attr("class", "active");
-        }
-    }
-
-    unlock();
-    return false;
 });
 
 /*
@@ -609,39 +507,6 @@ console.log("after return")
 $("#prev").click(function () {
     lock();
 
-    //take away line errors
-    if (codeCounter == 0) {
-        aceEditor.session.removeGutterDecoration(15, "ace_correct");
-    } else if (codeCounter == 1) {
-        aceEditor.session.removeGutterDecoration(11, "ace_correct");
-    } else if (codeCounter == 2) {
-        aceEditor.session.removeGutterDecoration(11, "ace_correct");
-    }
-
-    codeCounter--;
-    sucCounter--;
-    failCounter--;
-    trivialCounter--;
-    progressCounter--;
-
-    if (codeCounter < codeArray.length) {
-
-        if (codeCounter == 0) {
-            $("#prev").attr("disabled", "disabled");
-        }
-        document.getElementById("resultCard").style.display = "none";
-        editorContent = codeArray[codeCounter];
-        aceEditor.session.setValue(editorContent);
-        if (hasFR) {
-            document.forms["usrform"]["comment"].value = "";
-            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-        }
-        document.getElementById("resultsHeader").innerHTML = "";
-        document.getElementById("resultDetails").innerHTML = "";
-        $("#resultCard").attr("class", "card bg-light");
-        $("#next").removeAttr("disabled", "disabled");
-
-    }
 
     unlock();
     return false;
@@ -679,3 +544,191 @@ $.postJSON = (url, data, callback) => {
         success: callback
     });
 };
+
+
+
+
+
+
+
+
+
+
+
+
+function mergeVCsAndLineNums(provedList, lineNums) {
+    var overall = 'success';
+    var lines = {};
+
+    for (var vc of lineNums) {
+        if (provedList[vc.vc] != 'success') {
+            overall = 'failure';
+        }
+
+        if (lines[vc.lineNum] != 'failure') {
+            lines[vc.lineNum] = provedList[vc.vc];
+        }
+    }
+
+    // Convert from hashtable to array
+    var lineArray = [];
+    for (var entry of Object.entries(lines)) {
+        lineArray.push({'lineNum': entry[0], 'status': entry[1]});
+    }
+
+    return {'overall': overall, 'lines': lineArray}
+}
+
+
+/*
+    Don't ask, just accept. This is how the Resolve Web API works at the
+    moment. If you want to fix this, PLEASE DO.
+*/
+function encode(data) {
+    var regex1 = new RegExp(" ", "g");
+    var regex2 = new RegExp("/+", "g");
+
+    var content = encodeURIComponent(data);
+    content = content.replace(regex1, "%20");
+    content = content.replace(regex2, "%2B");
+
+    var json = {};
+
+    json.name = "BeginToReason";
+    json.pkg = "User";
+    json.project = "Teaching_Project";
+    json.content = content;
+    json.parent = "undefined";
+    json.type = "f";
+
+    return JSON.stringify(json)
+}
+
+
+function decode(data) {
+    var regex1 = new RegExp("%20", "g");
+    var regex2 = new RegExp("%2B", "g");
+    var regex3 = new RegExp("<vcFile>(.*)</vcFile>", "g");
+    var regex4 = new RegExp("\n", "g");
+
+    var content = decodeURIComponent(data)
+    content = content.replace(regex1, " ");
+    content = content.replace(regex2, "+");
+    content = content.replace(regex3, "$1");
+    content = decodeURIComponent(content);
+    content = decodeURIComponent(content);
+    content = content.replace(regex4, "");
+
+    var obj = JSON.parse(content);
+
+    return obj;
+}
+
+function verify(code){
+    var vcs = {}
+    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project')
+
+    // Connection opened
+    ws.addEventListener('open', function (event) {
+        ws.send(encode(code));
+    });
+
+    // Listen for messages
+    ws.addEventListener('message', function (event) {
+        message = JSON.parse(event.data)
+        if (message.status == 'error' || message.status == '') {
+            unlock();
+            document.getElementById("resultsHeader").innerHTML = "<h3>Syntax error";
+            document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
+            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+            $("#resultCard").attr("class", "card bg-danger text-white");
+            //add line errors
+            //this will need to be fixed based on verifier return
+            for (var i = 0; i < message.errors[0].errors.length; i++) {
+                aceEditor.session.addGutterDecoration(message.errors[0].errors[i].error.ln - 1, "ace_error")
+                document.getElementById("answersCard").removeAttribute("hidden")
+                allAnswers = allAnswers + aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\t/g,'')+ "<br>";
+                document.getElementById("pastAnswers").innerHTML = allAnswers;
+            }
+
+            // Unlock editor for further user edits
+            ws.close()
+        }
+        else if (message.status == 'processing') {
+            var regex = new RegExp('^Proved')
+            if (regex.test(message.result.result)) {
+                vcs[message.result.id] = 'success'
+            } else {
+                vcs[message.result.id] = 'failure'
+            }
+        }
+        else if (message.status == 'complete') {
+            ws.close()
+
+            let lineNums = decode(message.result)
+            let lines = mergeVCsAndLineNums(vcs, lineNums.vcs)
+
+            let vcLine = parseInt(lineNums.vcs[0].lineNum, 10)
+
+            for (var i = 0; i < lines.lines.length; i++) {
+                if (lines.lines[i].status == "success") {
+                    aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_correct");
+                }
+                else {
+                    aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_error");
+                    document.getElementById("answersCard").removeAttribute("hidden")
+                    allAnswers = allAnswers + aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\t/g,'')+ "<br>";
+                    document.getElementById("pastAnswers").innerHTML = allAnswers;
+                }
+            }
+
+            /*
+            * posting data to back end to log
+            * */
+            let code = aceEditor.session.getValue();
+            let data = {};
+            //data.module = currentLesson.module;
+            data.name = name;
+            //data.author = author;
+            //data.author = "user.googleId;"   //make userid
+            //data.milliseconds = getTime();
+            data.code = code;
+            data.explanation = document.forms["usrform"]["comment"].value;
+            data.status = lines.overall;
+
+            $.postJSON("tutor", data, (results) => {});
+
+
+            if (lines.overall == "failure") {
+                document.getElementById("resultsHeader").innerHTML = "<h3>Incorrect answer</h3>";
+                document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>4. Do you understand the specification parameter modes (e.g. Updates)?";
+                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                $("#resultCard").attr("class", "card bg-danger text-white");
+                //add line errors
+                //this will need to be fixed based on verifier return
+
+                // Unlock editor for further user edits
+                unlock();
+            } else if (lines.overall == "success") {
+                document.getElementById("resultsHeader").innerHTML = "<h3>Correct!</h3>";
+                document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
+                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                $("#resultCard").attr("class", "card bg-success text-white");
+                $("#next").removeAttr("disabled", "disabled");
+                $("#checkCorrectness").attr("disabled", "disabled");
+                // aceEditor.session.addGutterDecoration(need this from views/verifier, "ace_correct");
+console.log(lineNums)
+                // Unlock editor for further user edits
+                unlock();
+            } else {
+                document.getElementById("resultsHeader").innerHTML = "<h3>Something went wrong</h3>";
+                document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
+                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                $("#resultCard").attr("class", "card bg-danger text-white");
+
+                // Unlock editor for further user edits
+                unlock();
+            }
+        }
+    });
+}

@@ -73,3 +73,38 @@ function decode(data) {
 
     return obj;
 }
+
+function verify(code){
+    var vcs = {}
+    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project')
+
+    //opening
+    ws.on('open', () => {
+        ws.send(encode(code))
+    })
+    console.log("sent")
+
+    ws.on('message', (message) => {
+        message = JSON.parse(message)
+        if (message.status == 'error' || message.status == '') {
+            console.log('unparsable')
+            ws.close()
+        }
+        else if (message.status == 'processing') {
+            var regex = new RegExp('^Proved')
+            if (regex.test(message.result.result)) {
+                vcs[message.result.id] = 'success'
+            } else {
+                vcs[message.result.id] = 'failure'
+            }
+        }
+        else if (message.status == 'complete') {
+            var lineNums = decode(message.result)
+            var lines = mergeVCsAndLineNums(vcs, lineNums.vcs)
+
+            console.log(lines.overall)
+            ws.close()
+
+        }
+    })
+}

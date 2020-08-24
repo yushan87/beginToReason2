@@ -1,5 +1,6 @@
 {% extends "core/base.html" %}
 {% load static compress %}
+{% load mathfilters %}
 
 {% block css %}
     {% compress css %}
@@ -45,7 +46,7 @@
 {% endblock %}
 
 {% block main_content %}
-    <div class="container-fluid">
+    <div class="container-fluid" id="main">
         <div class="row">
             <div class="col-3 p-0">
                 <div id="tutorialCol" class="d-flex flex-column">
@@ -64,6 +65,19 @@
                             {{ instruction|safe }}
                         </div>
                         <br>
+                        <div id="answersCard" hidden>
+                            <h3 class="mb-0 page-section-heading" id="">
+                                Past Answers
+                            </h3>
+                            <br>
+                            <div class="card bg-danger mb-3">
+                                <div class="card-body">
+                                    <div class="" id="pastAnswers" style="color: white">
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
                         <h3 class="mb-0 page-section-heading" id="">
                             Reference Material
                         </h3>
@@ -96,11 +110,9 @@
                 <a id="closeOverlay" class="closebtn">&times;</a>
                 <div class="overlay-content">
                     <ol>
-                        <li style="font-size: 150%; color: white"><a href="#">Using If Statements</a></li>
-                        <li style="font-size: 150%; color: white"><a href="#">Relating Values of Variables</a></li>
-                        <li style="font-size: 150%; color: white"><a href="#">Asserting Values of Variables</a></li>
-                        <li style="font-size: 150%; color: white"><a href="#">Lesson 4</a></li>
-                        <li style="font-size: 150%; color: white"><a href="#">Lesson 5</a></li>
+                        {% for obj in currSet %}
+                            <li style="font-size: 150%; color: white"><a href="#">{{ obj | safe }}</a></li>
+                        {% endfor %}
                     </ol>
                 </div>
             </div>
@@ -182,19 +194,35 @@
                             </div>
                             <div id="stepProgressBar">
                                 <div class="step">
-                                    <div class="bullet completed">1</div>
+                                    {% if currLessonNum <= 2 %}
+                                        <div class="bullet completed">-</div>
+                                    {% else %}
+                                        <div class="bullet completed">{{currLessonNum|sub:2}}</div>
+                                    {% endif %}
                                 </div>
                                 <div class="step">
-                                    <div class="bullet completed">2</div>
+                                    {% if currLessonNum == 1 %}
+                                        <div class="bullet completed">-</div>
+                                    {% else %}
+                                        <div class="bullet completed">{{currLessonNum|sub:1}}</div>
+                                    {% endif %}
                                 </div>
                                 <div class="step">
-                                    <div class="bullet">3</div>
+                                    <div class="bullet current">{{currLessonNum}}</div>
                                 </div>
                                 <div class="step">
-                                    <div class="bullet end">4</div>
+                                    {% if currLessonNum == setLength %}
+                                        <div class="bullet end">-</div>
+                                    {% else %}
+                                        <div class="bullet end">{{currLessonNum|add:1}}</div>
+                                    {% endif %}
                                 </div>
                                 <div class="step">
-                                    <div class="bullet end">5</div>
+                                    {% if currLessonNum|add:1 >= setLength %}
+                                        <div class="bullet end">-</div>
+                                    {% else %}
+                                        <div class="bullet end">{{currLessonNum|add:2}}</div>
+                                    {% endif %}
                                 </div>
                             </div>
                             <div>
@@ -210,7 +238,7 @@
             </div>
             <div class="col-3 p-0" id="right-col" style="background-color: #333;">
                 <div id="resultCard" class="card">
-                    <h5 class="card-header" id="resultsHeader"></h5>
+                    <h5 class="card-header text-center" id="resultsHeader"></h5>
                     <div class="card-body">
                         <p class="card-text" id="resultDetails"></p>
                     </div>
