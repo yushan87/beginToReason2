@@ -25,8 +25,7 @@
     <script type="application/javascript">
         $(document).ready(function () {
             //this will be done in a load lesson function call
-            createEditor("{{ code | safe }}", "{{ reason_type | safe }}", "{{ lessonName | safe }}");
-            $("#next").attr("disabled", "disabled");
+            createEditor("{{ code | safe }}", "{{ reason_type | safe }}", "{{ lessonName | safe }}", "{{ currLessonNum | safe }}", "{{ completedLessonNum | safe }}");
             $("#tutor").attr("class", "nav-item active");
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
 
@@ -111,7 +110,7 @@
                 <div class="overlay-content">
                     <ol>
                         {% for obj in currSet %}
-                            <li style="font-size: 150%; color: white"><a href="#">{{ obj | safe }}</a></li>
+                            <li id="lessonList" style="font-size: 150%; color: white"><a href="#">{{ obj | safe }}</a></li>
                         {% endfor %}
                     </ol>
                 </div>
@@ -187,10 +186,17 @@
                         </div>
                         <div id="directionButtons" class="d-flex">
                             <div class="mr-auto">
-                                <button id="prev" type="button" class="btn btn-light btn-md"
-                                        data-toggle="tooltip" data-placement="top"
-                                        title="Previous">Back
-                                </button>
+                                {% if currLessonNum == 1 %}
+                                    <button id="prev" type="button" class="btn btn-light btn-md"
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Previous" disabled>Back
+                                    </button>
+                                {% else %}
+                                    <button id="prev" type="button" class="btn btn-light btn-md"
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Previous">Back
+                                    </button>
+                                {% endif %}
                             </div>
                             <div id="stepProgressBar">
                                 <div class="step">
@@ -226,10 +232,17 @@
                                 </div>
                             </div>
                             <div>
-                                <button id="next" type="button" class="btn btn-light btn-md"
+                                {% if currLessonNum < completedLessonNum %}
+                                    <button id="next" type="button" class="btn btn-light btn-md"
                                         data-toggle="tooltip" data-placement="top"
                                         title="Next">Next
                                 </button>
+                                {% else %}
+                                    <button id="next" type="button" class="btn btn-light btn-md"
+                                        data-toggle="tooltip" data-placement="top"
+                                        title="Next" disabled>Next
+                                </button>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

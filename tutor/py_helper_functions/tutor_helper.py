@@ -3,7 +3,8 @@ This module contains our Django helper functions for the "tutor" application.
 """
 from django.contrib.auth.models import User
 from accounts.models import UserInformation
-from core.models import LessonSet
+from core.models import LessonSet, Lesson
+from data_analysis.models import DataLog
 
 
 def user_auth(request):
@@ -70,8 +71,12 @@ def set_not_complete(request):
         if request.method == 'POST':
             # need a variation of what to do if the last lesson was completed
             if current_user.current_lesson_index < len(current_set) - 1:
-                # increase index of lesson set
-                current_user.current_lesson_index = current_user.current_lesson_index + 1
+                # increase index of lesson set depending on if user is on a previously completed lesson
+                if current_user.current_lesson_index < current_user.completed_lesson_index:
+                    current_user.current_lesson_index = current_user.current_lesson_index + 1
+                else:
+                    current_user.completed_lesson_index = current_user.completed_lesson_index + 1
+                    current_user.current_lesson_index = current_user.current_lesson_index + 1
                 current_user.save()
                 return True
             else:

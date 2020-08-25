@@ -11,5 +11,6 @@ app_name = 'tutor'
 # URL patterns to be matched.
 urlpatterns = [
     path('catalog', views.catalog, name='catalog'),
-    path('tutor', views.tutor, name='tutor')
+    path('tutor', views.tutor, name='tutor'),
+    path('previous', views.previous, name='prev'),
 ]

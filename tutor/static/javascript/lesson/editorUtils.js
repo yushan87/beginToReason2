@@ -13,7 +13,6 @@ let fontSize; // The current font size
 let time = new Date();
 let hasFR;
 let hasMC;
-let progressCounter = 0;
 let darkTheme = true;
 let prevAnswers = []; //add to this and check
 let name;
@@ -28,7 +27,7 @@ let allAnswers = "";
 /*
  * Function for creating and embedding the ACE Editor into our page.
  */
-function createEditor(code, explain, lessonName) {
+function createEditor(code, explain, lessonName, currIndex, compIndex) {
     // RESOLVE mode
     let ResolveMode = ace.require("ace/mode/resolve").Mode;
     Range = ace.require("ace/range").Range;
@@ -43,7 +42,7 @@ function createEditor(code, explain, lessonName) {
     editorContent = code;
     name = lessonName;
     aceEditor.session.setValue(editorContent);
-    $("#prev").attr("disabled", "disabled");
+    //$("#prev").attr("disabled", "disabled");
     document.getElementById("resultCard").style.display = "none";
 
     //add a check for if need explaination and set hasFR
@@ -64,6 +63,12 @@ function createEditor(code, explain, lessonName) {
     else {
         hasFR = true;
         hasMC = true;
+    }
+
+    if (currIndex < compIndex){
+        aceEditor.setReadOnly(true)
+        $("#resetCode").attr("disabled", "disabled");
+        $("#checkCorrectness").attr("disabled", "disabled");
     }
 }
 
@@ -443,6 +448,13 @@ $("#fontDecrease").click(function () {
     return false;
 });
 
+
+$("#lessonList").click(function () {
+    console.log( this.innerHTML)
+
+});
+
+
 /*
  * Function for locking the check syntax and reset buttons.
  */
@@ -497,8 +509,6 @@ $("#next").click(function () {
 
     location.reload();
     unlock();
-
-return;
 });
 
 /*
@@ -507,9 +517,20 @@ return;
 $("#prev").click(function () {
     lock();
 
+    $.ajax({
+        url: 'previous',
+        datatype: 'json',
+        type: 'GET',
+        headers: {
+            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+        },
+        success: function(data) {
+            //loadLesson()
 
-    unlock();
-    return false;
+        }
+    });
+
+    location.reload();
 });
 
 /*
@@ -692,7 +713,7 @@ function verify(code){
             //data.author = author;
             //data.author = "user.googleId;"   //make userid
             //data.milliseconds = getTime();
-            data.code = code;
+            data.code = code.replace(/(?:\r\n|\r|\n)/g, '<br>');
             data.explanation = document.forms["usrform"]["comment"].value;
             data.status = lines.overall;
 
