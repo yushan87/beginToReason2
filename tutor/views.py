@@ -34,7 +34,6 @@ def catalog(request):
         else:
             return redirect("/accounts/settings")
     else:
-        print("calling catalog")
         return render(request, "tutor/catalog.html", {'LessonSet': LessonSet.objects.all()})
 
 
@@ -97,7 +96,7 @@ def tutor(request):
                                           {'lessonName': current_lesson.lesson_title,
                                            'concept': current_lesson.lesson_concept.all(),
                                            'instruction': current_lesson.instruction,
-                                           'code': log_item,
+                                           'code': current_lesson.code.lesson_code,
                                            'referenceSet': current_lesson.reference_set.all(),
                                            'reason': current_lesson.reason.reasoning_question,
                                            'reason_type': current_lesson.reason.reasoning_type,
@@ -113,7 +112,7 @@ def tutor(request):
                                           {'lessonName': current_lesson.lesson_title,
                                            'concept': current_lesson.lesson_concept.all(),
                                            'instruction': current_lesson.instruction,
-                                           'code': log_item,
+                                           'code': current_lesson.code.lesson_code,
                                            'referenceSet': current_lesson.reference_set.all(),
                                            'reason': current_lesson.reason.reasoning_question,
                                            'reason_type': current_lesson.reason.reasoning_type,
@@ -193,7 +192,7 @@ def previous(request):
                                       {'lessonName': current_lesson.lesson_title,
                                        'concept': current_lesson.lesson_concept.all(),
                                        'instruction': current_lesson.instruction,
-                                       'code': log_item,
+                                       'code': current_lesson.code.lesson_code,
                                        'referenceSet': current_lesson.reference_set.all(),
                                        'reason': current_lesson.reason.reasoning_question,
                                        'reason_type': current_lesson.reason.reasoning_type,
@@ -209,7 +208,7 @@ def previous(request):
                                       {'lessonName': current_lesson.lesson_title,
                                        'concept': current_lesson.lesson_concept.all(),
                                        'instruction': current_lesson.instruction,
-                                       'code': log_item,
+                                       'code': current_lesson.code.lesson_code,
                                        'referenceSet': current_lesson.reference_set.all(),
                                        'reason': current_lesson.reason.reasoning_question,
                                        'reason_type': current_lesson.reason.reasoning_type,
