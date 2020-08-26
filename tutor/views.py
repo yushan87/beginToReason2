@@ -70,6 +70,7 @@ def tutor(request):
                     # remove lesson set from user in whatever relationship a user has with lesson sets TBD
                     return redirect("accounts:profile")
             else:
+                # this is where we will check the answer for alternate lesson
                 return render(request, "tutor/tutor.html")
         # Case 1b: if the user doesnt exist
         else:

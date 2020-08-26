@@ -713,7 +713,7 @@ function verify(code){
             //data.author = author;
             //data.author = "user.googleId;"   //make userid
             //data.milliseconds = getTime();
-            data.code = code.replace(/(?:\r\n|\r|\n)/g, '<br>');
+            data.code = code;
             data.explanation = document.forms["usrform"]["comment"].value;
             data.status = lines.overall;
 

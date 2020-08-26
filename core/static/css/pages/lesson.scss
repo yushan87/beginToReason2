@@ -133,29 +133,29 @@
 }
 
 .sk-chase {
+    position: relative;
     width: 5vw;
     height: 5vw;
     margin: auto;
-    position: relative;
     animation: sk-chase 2.5s infinite linear both;
 }
 
 .sk-chase-dot {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
     animation: sk-chase-dot 2.0s infinite ease-in-out both;
 }
 
 .sk-chase-dot:before {
-    content: '';
     display: block;
     width: 25%;
     height: 25%;
     background-color: $coral;
     border-radius: 100%;
+    content: '';
     animation: sk-chase-dot-before 2.0s infinite ease-in-out both;
 }
 
