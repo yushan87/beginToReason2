@@ -227,3 +227,7 @@ def previous(request):
                     # Case 2aab: if the current lesson doesnt exist, this would mean set could be complete
             else:
                 return render(request, "tutor/tutor.html")
+        else:
+            return redirect("accounts:profile")
+    else:
+        return render(request, "tutor/tutor.html")
