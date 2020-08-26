@@ -23,11 +23,11 @@ class DataLog(models.Model):
     code = models.TextField(default="null")
     explanation = models.TextField()
 
-    def __unicode__(self):
+    def __str__(self):
         """
         function __str__ is called to display the user related to the log
 
         Returns:
             str: status
         """
-        return self.time_stamp
+        return self.status
