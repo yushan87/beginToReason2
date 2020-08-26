@@ -2,10 +2,10 @@
 This module contains model templates for the "data_analysis" application. When we create a new item in the database,
 a new instance of a model will be made.
 """
-from django.db import models
 from django.contrib.auth.models import User
 from core.models import Lesson, LessonSet
 from datetime import datetime
+from django.db import models
 
 
 class DataLog(models.Model):
