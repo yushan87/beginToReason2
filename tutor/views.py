@@ -1,14 +1,12 @@
 """
 This module contains our Django views for the "tutor" application.
 """
-import asyncio
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 import json
-from data_analysis.models import DataLog
 from data_analysis.py_helper_functions.datalog_helper import log_data
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete
 
@@ -55,7 +53,7 @@ def tutor(request):
         '''
         # Case 1a: if the user exists
         if user_auth(request):
-            submitted_json = json.loads(request.body.decode('utf-8'))
+            # submitted_json = json.loads(request.body.decode('utf-8'))
             log_data(request)
             # if success, return next lesson
             # if fail, do something
@@ -89,9 +87,9 @@ def tutor(request):
                 if Lesson.objects.filter(lesson_name=current_set[current_user.current_lesson_index]).exists():
                     current_lesson = Lesson.objects.get(lesson_name=current_set[current_user.current_lesson_index])
                     if current_user.current_lesson_index < current_user.completed_lesson_index:
-                        log_item = DataLog.objects.get(user_key=User.objects.get(email=request.user.email),
-                                                       status="success", lesson_key=Lesson.objects.get(
-                                lesson_name=current_set[current_user.current_lesson_index])).code
+                        # log_item = DataLog.objects.get(user_key=User.objects.get(email=request.user.email),
+                        # status="success", lesson_key=Lesson.objects.get(
+                        # lesson_name=current_set[current_user.current_lesson_index])).code
                         if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                             return render(request, "tutor/tutor.html",
                                           {'lessonName': current_lesson.lesson_title,
@@ -127,7 +125,8 @@ def tutor(request):
                             return redirect("accounts:profile")
                     else:
                         # Case 2aaaa: if the question is of type MC
-                        if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
+                        if current_lesson.reason.reasoning_type == 'MC' or \
+                                current_lesson.reason.reasoning_type == 'Both':
                             return render(request, "tutor/tutor.html",
                                           {'lessonName': current_lesson.lesson_title,
                                            'concept': current_lesson.lesson_concept.all(),
@@ -184,9 +183,9 @@ def previous(request):
                 current_user.save()
                 if Lesson.objects.filter(lesson_name=current_set[current_user.current_lesson_index]).exists():
                     current_lesson = Lesson.objects.get(lesson_name=current_set[current_user.current_lesson_index])
-                    log_item = DataLog.objects.get(user_key=User.objects.get(email=request.user.email),
-                                                   status="success", lesson_key=Lesson.objects.get(
-                            lesson_name=current_set[current_user.current_lesson_index])).code
+                    # log_item = DataLog.objects.get(user_key=User.objects.get(email=request.user.email),
+                    # status="success", lesson_key=Lesson.objects.get(
+                    # lesson_name=current_set[current_user.current_lesson_index])).code
                     # Case 2aaaa: if the question is of type MC
                     if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                         return render(request, "tutor/tutor.html",
