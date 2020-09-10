@@ -1,10 +1,10 @@
 """
 This module contains our Django helper functions for the "tutor" application.
 """
+import json
 from django.contrib.auth.models import User
 from accounts.models import UserInformation
 from core.models import LessonSet, Lesson
-from data_analysis.models import DataLog
 
 
 def user_auth(request):
@@ -87,3 +87,15 @@ def set_not_complete(request):
                 return True
             else:
                 return False
+
+
+def alternate_lesson_check(request):
+    """function set_not_complete This function handles the logic for a if a set has not been completed
+
+    Args:
+         request (HTTPRequest): A http request object created automatically by Django.
+
+    Returns:
+        String: name of lesson to redirect to
+    """
+    print(json.loads(request.body.decode('utf-8'))['answer'])
