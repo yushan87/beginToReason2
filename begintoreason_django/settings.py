@@ -55,7 +55,8 @@ INSTALLED_APPS = [
     'social_django',
     'django_ace',
     'compressor',
-    'crispy_forms'
+    'crispy_forms',
+    'mathfilters'
 ]
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
