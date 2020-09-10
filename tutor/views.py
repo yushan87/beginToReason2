@@ -112,7 +112,7 @@ def tutor(request):
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
                                        'currSet': current_set})
-        return redirect("accounts:profile")
+    return redirect("accounts:profile")
 
 
 @login_required(login_url='/accounts/login/')
