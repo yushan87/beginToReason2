@@ -1,5 +1,6 @@
 {% extends "core/base.html" %}
 {% load static compress %}
+{% load mathfilters %}
 
 {% block css %}
     {% compress css %}
@@ -23,20 +24,28 @@
 
     <script type="application/javascript">
         $(document).ready(function () {
-            createEditor();
-            $("#next").attr("disabled", "disabled");
+            //this will be done in a load lesson function call
+            createEditor("{{ code | safe }}", "{{ reason_type | safe }}", "{{ lessonName | safe }}", "{{ currLessonNum | safe }}", "{{ completedLessonNum | safe }}");
             $("#tutor").attr("class", "nav-item active");
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
 
             // session recording and transcribing
-            //setupRecording(); // for recording a session
-            //transcribeAudio(); // for transcribing audio
+            if ("{{screen_record}}" == true){
+                setupRecording(); // for recording a session
+                transcribeAudio(); // for transcribing audio
+            }
         });
+    </script>
+
+    <script>
+        //const INPUTS = document.querySelectorAll('#smileys input');
+        //const updateValue = e => document.querySelector('#result').innerHTML = e.target.value;
+        //INPUTS.forEach(el => el.addEventListener('click', e => updateValue(e)));
     </script>
 {% endblock %}
 
 {% block main_content %}
-    <div class="container-fluid">
+    <div class="container-fluid" id="main">
         <div class="row">
             <div class="col-3 p-0">
                 <div id="tutorialCol" class="d-flex flex-column">
@@ -55,6 +64,19 @@
                             {{ instruction|safe }}
                         </div>
                         <br>
+                        <div id="answersCard" hidden>
+                            <h3 class="mb-0 page-section-heading" id="">
+                                Past Answers
+                            </h3>
+                            <br>
+                            <div class="card bg-danger mb-3">
+                                <div class="card-body">
+                                    <div class="" id="pastAnswers" style="color: white">
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
                         <h3 class="mb-0 page-section-heading" id="">
                             Reference Material
                         </h3>
@@ -62,7 +84,9 @@
                         <div class="card bg-light mb-3" >
                             <div class="card-body">
                                 <div class="" id="referenceMaterial">
-                                    {{ referenceSet|safe }}
+                                    {% for obj in referenceSet %}
+                                        <p> {{ obj | safe}} </p>
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
@@ -71,27 +95,24 @@
                             Concepts
                         </h3>
                         <br>
-                        <span class="badge badge-info ml-2">
-                            {{concept}}
-                        </span>
+                        {% for obj in concept %}
+                            <span class="badge badge-info ml-2">
+                                {{ obj | safe}}
+                            </span>
+                        {% endfor %}
                     </div>
                 </div>
             </div>
 
             <!-- Progress Modal -->
-            <div class="modal fade" id="progress-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-                <div class="modal-dialog modal-xl" role="document">
-                    <div class="modal-nav-content">
-                        <div class="modal-nav-body bg-dark text-white">
-                            <div class="container" align="center">
-                                <ul class="progressbar">
-                                    <li id="lesson1"></li>
-                                    <li id="lesson2"></li>
-                                    <li id="lesson3"></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+            <div id="myNav" class="overlay">
+                <a id="closeOverlay" class="closebtn">&times;</a>
+                <div class="overlay-content">
+                    <ol>
+                        {% for obj in currSet %}
+                            <li id="lessonList" style="font-size: 150%; color: white"><a href="#">{{ obj | safe }}</a></li>
+                        {% endfor %}
+                    </ol>
                 </div>
             </div>
 
@@ -145,14 +166,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button class="btn btn-light" data-toggle="modal" data-target="#progress-modal"
-                                        aria-expanded="false" type="button" title="Progress">
-                                    <i class="fas fa-spinner"></i>
-                                    Progress
+                                <button id="toggleOverlay" class="btn btn-light" type="button">
+                                    <i class="fa fa-list" aria-hidden="true"></i> View Lessons
                                 </button>
                                 <button id="giveHint" class="btn btn-light" type="button" data-toggle="tooltip"
                                         data-placement="top" title="Get Help">
-                                    <i class="far fa-life-ring"></i> Get Help
+                                    <i class="far fa-life-ring"></i>
                                 </button>
                                 <button type="button" class="btn btn-danger" title="Reset" data-toggle="modal" data-target="#areYouSure">
                                   <i class="fa">&#xf021;</i>
@@ -161,21 +180,69 @@
                                         data-toggle="tooltip" data-placement="top" title="Check Correctness">
                                     <i class="fas fa-clipboard-check"></i>
                                     Run
+                                    <div id="csrf">{% csrf_token %}</div>
                                 </button>
                             </div>
                         </div>
                         <div id="directionButtons" class="d-flex">
                             <div class="mr-auto">
-                                <button id="prev" type="button" class="btn btn-light btn-md"
-                                        data-toggle="tooltip" data-placement="top"
-                                        title="Previous">Back
-                                </button>
+                                {% if currLessonNum == 1 %}
+                                    <button id="prev" type="button" class="btn btn-light btn-md"
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Previous" disabled>Back
+                                    </button>
+                                {% else %}
+                                    <button id="prev" type="button" class="btn btn-light btn-md"
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Previous">Back
+                                    </button>
+                                {% endif %}
+                            </div>
+                            <div id="stepProgressBar">
+                                <div class="step">
+                                    {% if currLessonNum <= 2 %}
+                                        <div class="bullet completed">-</div>
+                                    {% else %}
+                                        <div class="bullet completed">{{currLessonNum|sub:2}}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="step">
+                                    {% if currLessonNum == 1 %}
+                                        <div class="bullet completed">-</div>
+                                    {% else %}
+                                        <div class="bullet completed">{{currLessonNum|sub:1}}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="step">
+                                    <div class="bullet current">{{currLessonNum}}</div>
+                                </div>
+                                <div class="step">
+                                    {% if currLessonNum == setLength %}
+                                        <div class="bullet end">-</div>
+                                    {% else %}
+                                        <div class="bullet end">{{currLessonNum|add:1}}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="step">
+                                    {% if currLessonNum|add:1 >= setLength %}
+                                        <div class="bullet end">-</div>
+                                    {% else %}
+                                        <div class="bullet end">{{currLessonNum|add:2}}</div>
+                                    {% endif %}
+                                </div>
                             </div>
                             <div>
-                                <button id="next" type="button" class="btn btn-light btn-md"
+                                {% if currLessonNum < completedLessonNum %}
+                                    <button id="next" type="button" class="btn btn-light btn-md"
                                         data-toggle="tooltip" data-placement="top"
                                         title="Next">Next
                                 </button>
+                                {% else %}
+                                    <button id="next" type="button" class="btn btn-light btn-md"
+                                        data-toggle="tooltip" data-placement="top"
+                                        title="Next" disabled>Next
+                                </button>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -184,43 +251,66 @@
             </div>
             <div class="col-3 p-0" id="right-col" style="background-color: #333;">
                 <div id="resultCard" class="card">
-                    <div class="card-header">
-                        Results
-                    </div>
+                    <h5 class="card-header text-center" id="resultsHeader"></h5>
                     <div class="card-body">
-                        <h5 class="card-title" id="resultTitle"><br></h5>
                         <p class="card-text" id="resultDetails"></p>
                     </div>
                 </div>
-                <br>
                 <div id="explainCard" class="card" style="position: absolute; bottom: 0; width: 98%; margin: 5px 5px 5px 5px; background-color: #E0E0E0; color: #333;">
-
-                    <form id="usrform">
-                        <div id="results">
-                            <b>
-                                Explain your reasoning before attempting to Run:
-                            </b>
+                    {% if reason_type == 'Text' %}
+                        <form id="usrform">
+                            <div id="results">
+                                <b>
+                                    {{reason}}
+                                </b>
+                            </div>
+                            <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
+                        </form>
+                    {% elif reason_type == 'MC' %}
+                        <div class="form-check">
+                            {{reason}}
+                            {% for obj in mc_set %}
+                                <br>
+                                <input class="form-check-input" type="radio" name="selectExplain" id="select" value="{{ obj | safe}}">
+                                <label class="form-check-label" for="exampleRadios1" id="radio">
+                                    {{ obj | safe}}
+                                </label>
+                            {% endfor %}
                         </div>
-                        <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
+                    {% else %}
+                        <form id="usrform">
+                            <div id="results">
+                                <b>
+                                    {{reason}}
+                                </b>
+                            </div>
+                            <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
+                        </form>
+                        <div class="form-check">
+                            {{reason}}
+                            {% for obj in mc_set %}
+                                <br>
+                                <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option">
+                                <label class="form-check-label" for="exampleRadios1" id="radio">
+                                    {{ obj | safe}}
+                                </label>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div id="results">
+                                <b>
+                                    Represent your attitude towards code verification:
+                                </b>
+                            </div>
+                    <form id="smileys" style="text-align: center;">
+                        <input type="radio" name="smiley" value="upset" class="upset">
+                        <input type="radio" name="smiley" value="sad" class="sad">
+                        <input type="radio" name="smiley" value="neutral" class="neutral" checked="checked">
+                        <input type="radio" name="smiley" value="happy" class="happy">
+                        <input type="radio" name="smiley" value="excited" class="excited">
                     </form>
-                    <div class="form-check" hidden>
-                        Which of the following best describes your understanding of this concept? <br>
-                        <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option1">
-                        <label class="form-check-label" for="exampleRadios1" id="radio">
-                            First Option
-                        </label><br>
-                        <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option2">
-                        <label class="form-check-label" for="exampleRadios2" id="radio">
-                            Section Option
-                        </label><br>
-                        <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option3">
-                        <label class="form-check-label" for="exampleRadios3" id="radio">
-                            Third Option
-                        </label>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
-
 {% endblock %}

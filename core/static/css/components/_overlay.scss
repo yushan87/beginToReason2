@@ -1,0 +1,42 @@
+// _overlay.scss
+// Simple CSS3 Progress Overlay
+@import "../utils/variables";
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 0;
+    height: calc(100vh - #{$page-footer-height});
+    overflow-x: hidden;
+    background-color: rgba(255, 140, 95, 1);
+    transition: 0.5s;
+}
+
+.overlay-content {
+    position: relative;
+    top: 15%;
+    width: 100%;
+    margin-top: 30px;
+    text-align: left;
+}
+
+.overlay a {
+    padding: 8px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.overlay a:hover,
+.overlay a:focus {
+    color: rgb(58, 73, 88);
+}
+
+.overlay .closebtn {
+    position: absolute;
+    top: 50px;
+    right: 45px;
+    font-size: 60px;
+    cursor: pointer;
+}
