@@ -4,4 +4,3 @@ django-compressor==2.4
 django-libsass==0.8
 social-auth-app-django==4.0.0
 django-crispy-forms==1.9.2
-psycopg2==2.8.6
