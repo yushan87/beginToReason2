@@ -60,9 +60,13 @@ function createEditor(code, explain, lessonName, currIndex, compIndex) {
         hasFR = true;
         hasMC = false;
     }
-    else {
+    else if (explain == 'Both'){
         hasFR = true;
         hasMC = true;
+    }
+    else {
+        hasFR = false;
+        hasMC = false;
     }
 
     if (currIndex < compIndex){
@@ -271,53 +275,55 @@ $("#checkCorrectness").click(function () {
     lock();
 
     //is explaination long enough
-    let boxVal = document.forms["usrform"]["comment"].value;
-    if (hasFR && boxVal.length < 0) {
-        // Create the appropriate alert box
-        let msg = "You must fill in the your explanation to the right";
-        createAlertBox(true, msg);
-        $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
-
-    } else {
-        document.getElementById("resultCard").style.display = "block";let results = "";
-        let code = aceEditor.session.getValue();
-
-        // Check for trivials
-        let trivials = checkForTrivials(code);
-        if (trivials.overall == "failure") {
-            document.getElementById("resultsHeader").innerHTML = "<h3>Trivial answer</h3>";
-            document.getElementById("resultDetails").innerHTML = "Submission does not contain enough information. Try again!";
-            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-            $("#resultCard").attr("class", "card bg-danger text-white");
-            //add line errors
-            //this will need to be fixed based on verifier return
-            //log data
-
-            for (var i = 0; i < trivials.confirms.length; i++) {
-                aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
-                document.getElementById("answersCard").removeAttribute("hidden")
-                allAnswers = allAnswers + aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'')+ "<br>";
-                document.getElementById("pastAnswers").innerHTML = allAnswers;
-            }
-
-            // Unlock editor for further user edits
+    if (hasFR) {
+        let boxVal = document.forms["usrform"]["comment"].value;
+        if (boxVal.length < 50){
+            // Create the appropriate alert box
+            let msg = "You must fill in the your explanation to the right";
+            createAlertBox(true, msg);
+            $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
             unlock();
+            return;
         }
-        else{
-            document.getElementById("resultsHeader").innerHTML = "<h3>Compiling code...</h3>";
-            document.getElementById("resultDetails").innerHTML = '<div class="sk-chase">\n' +
-                '  <div class="sk-chase-dot"></div>\n' +
-                '  <div class="sk-chase-dot"></div>\n' +
-                '  <div class="sk-chase-dot"></div>\n' +
-                '  <div class="sk-chase-dot"></div>\n' +
-                '  <div class="sk-chase-dot"></div>\n' +
-                '  <div class="sk-chase-dot"></div>\n' +
-                '</div>';
-            $("#resultCard").attr("class", "card text-light");
-            $("#resultCard").attr("style", "background: #4C6085");
+    }
+    document.getElementById("resultCard").style.display = "block";let results = "";
+    let code = aceEditor.session.getValue();
 
-            verify(code)
+    // Check for trivials
+    let trivials = checkForTrivials(code);
+    if (trivials.overall == "failure") {
+        document.getElementById("resultsHeader").innerHTML = "<h3>Trivial answer</h3>";
+        document.getElementById("resultDetails").innerHTML = "Submission does not contain enough information. Try again!";
+        $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+        $("#resultCard").attr("class", "card bg-danger text-white");
+        //add line errors
+        //this will need to be fixed based on verifier return
+        //log data
+
+        for (var i = 0; i < trivials.confirms.length; i++) {
+            aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
+            document.getElementById("answersCard").removeAttribute("hidden")
+            allAnswers = allAnswers + aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'')+ "<br>";
+            document.getElementById("pastAnswers").innerHTML = allAnswers;
         }
+
+        // Unlock editor for further user edits
+        unlock();
+    }
+    else{
+        document.getElementById("resultsHeader").innerHTML = "<h3>Compiling code...</h3>";
+        document.getElementById("resultDetails").innerHTML = '<div class="sk-chase">\n' +
+            '  <div class="sk-chase-dot"></div>\n' +
+            '  <div class="sk-chase-dot"></div>\n' +
+            '  <div class="sk-chase-dot"></div>\n' +
+            '  <div class="sk-chase-dot"></div>\n' +
+            '  <div class="sk-chase-dot"></div>\n' +
+            '  <div class="sk-chase-dot"></div>\n' +
+            '</div>';
+        $("#resultCard").attr("class", "card text-light");
+        $("#resultCard").attr("style", "background: #4C6085");
+
+        verify(code)
     }
 });
 
@@ -673,28 +679,6 @@ function verify(code){
                 allAnswers = allAnswers + confirmLine + "<br>";
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
             }
-
-            /*
-            * posting data to back end to log
-            * */
-            //let code = aceEditor.session.getValue();
-            let data = {};
-            //data.module = currentLesson.module;
-            data.name = name;
-            //data.author = author;
-            //data.author = "user.googleId;"   //make userid
-            //data.milliseconds = getTime();
-            confirmLine = confirmLine.replace(/\s+/g, "")
-            confirmLine = confirmLine.replace(/Confirm/g, "")
-            data.answer = confirmLine;
-            data.code = code;
-            data.explanation = document.forms["usrform"]["comment"].value;
-            data.status = message.status;
-
-            $.postJSON("tutor", data, (results) => {});
-
-            // Unlock editor for further user edits
-            ws.close()
         }
         else if (message.status == 'processing') {
             var regex = new RegExp('^Proved')
@@ -709,7 +693,7 @@ function verify(code){
 
             let lineNums = decode(message.result)
             let lines = mergeVCsAndLineNums(vcs, lineNums.vcs)
-
+            var confirmLine
             let vcLine = parseInt(lineNums.vcs[0].lineNum, 10)
 
             for (var i = 0; i < lines.lines.length; i++) {
@@ -719,7 +703,7 @@ function verify(code){
                 else {
                     aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_error");
                     document.getElementById("answersCard").removeAttribute("hidden")
-                    var confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\t/g,'');
+                    confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\t/g,'');
                     allAnswers = allAnswers + confirmLine + "<br>";
                     document.getElementById("pastAnswers").innerHTML = allAnswers;
                 }
@@ -735,14 +719,12 @@ function verify(code){
             //data.author = author;
             //data.author = "user.googleId;"   //make userid
             //data.milliseconds = getTime();
-            confirmLine = confirmLine.replace(/\s+/g, "")
-            confirmLine = confirmLine.replace(/Confirm/g, "")
             data.answer = confirmLine;
             data.code = code;
-            data.explanation = document.forms["usrform"]["comment"].value;
+            if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
+            else if (!hasFR){data.explanation = "No Explaination Requested";}
             data.status = lines.overall;
-
-            $.postJSON("tutor", data, (results) => {});
+            $.postJSON("tutor", data, (results) => {console.log("back in js")});
 
 
             if (lines.overall == "failure") {
@@ -763,7 +745,6 @@ function verify(code){
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
                 // aceEditor.session.addGutterDecoration(need this from views/verifier, "ace_correct");
-console.log(lineNums)
                 // Unlock editor for further user edits
                 unlock();
             } else {

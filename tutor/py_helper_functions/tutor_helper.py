@@ -20,8 +20,7 @@ def user_auth(request):
         user = User.objects.get(email=request.user.email)
         if UserInformation.objects.filter(user=user).exists():
             return True
-        else:
-            return False
+    return False
 
 
 def lesson_set_auth(request):
@@ -40,8 +39,7 @@ def lesson_set_auth(request):
         current_user.save()
         if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
             return True
-        else:
-            return False
+    return False
 
 
 def lesson_auth(request):
@@ -85,8 +83,7 @@ def set_not_complete(request):
         elif request.method == 'GET':
             if current_user.current_lesson_index < len(current_set):
                 return True
-            else:
-                return False
+    return False
 
 
 def alternate_lesson_check(request):
@@ -99,3 +96,4 @@ def alternate_lesson_check(request):
         String: name of lesson to redirect to
     """
     print(json.loads(request.body.decode('utf-8'))['answer'])
+    return True
