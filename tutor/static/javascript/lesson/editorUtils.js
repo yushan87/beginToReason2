@@ -665,12 +665,33 @@ function verify(code){
             $("#resultCard").attr("class", "card bg-danger text-white");
             //add line errors
             //this will need to be fixed based on verifier return
+            console.log(message)
             for (var i = 0; i < message.errors[0].errors.length; i++) {
                 aceEditor.session.addGutterDecoration(message.errors[0].errors[i].error.ln - 1, "ace_error")
                 document.getElementById("answersCard").removeAttribute("hidden")
-                allAnswers = allAnswers + aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\t/g,'')+ "<br>";
+                var confirmLine = aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')
+                allAnswers = allAnswers + confirmLine + "<br>";
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
             }
+
+            /*
+            * posting data to back end to log
+            * */
+            //let code = aceEditor.session.getValue();
+            let data = {};
+            //data.module = currentLesson.module;
+            data.name = name;
+            //data.author = author;
+            //data.author = "user.googleId;"   //make userid
+            //data.milliseconds = getTime();
+            confirmLine = confirmLine.replace(/\s+/g, "")
+            confirmLine = confirmLine.replace(/Confirm/g, "")
+            data.answer = confirmLine;
+            data.code = code;
+            data.explanation = document.forms["usrform"]["comment"].value;
+            data.status = message.status;
+
+            $.postJSON("tutor", data, (results) => {});
 
             // Unlock editor for further user edits
             ws.close()
@@ -698,7 +719,8 @@ function verify(code){
                 else {
                     aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_error");
                     document.getElementById("answersCard").removeAttribute("hidden")
-                    allAnswers = allAnswers + aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\t/g,'')+ "<br>";
+                    var confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\t/g,'');
+                    allAnswers = allAnswers + confirmLine + "<br>";
                     document.getElementById("pastAnswers").innerHTML = allAnswers;
                 }
             }
@@ -706,13 +728,16 @@ function verify(code){
             /*
             * posting data to back end to log
             * */
-            let code = aceEditor.session.getValue();
+            //let code = aceEditor.session.getValue();
             let data = {};
             //data.module = currentLesson.module;
             data.name = name;
             //data.author = author;
             //data.author = "user.googleId;"   //make userid
             //data.milliseconds = getTime();
+            confirmLine = confirmLine.replace(/\s+/g, "")
+            confirmLine = confirmLine.replace(/Confirm/g, "")
+            data.answer = confirmLine;
             data.code = code;
             data.explanation = document.forms["usrform"]["comment"].value;
             data.status = lines.overall;

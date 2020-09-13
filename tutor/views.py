@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, alternate_lesson_check
 
 
 def catalog(request):
@@ -62,6 +62,7 @@ def tutor(request):
                 # Case 1ab: if the user has not completed set
             else:
                 # this is where we will check the answer for alternate lesson
+                alternate_lesson_check(request)
                 return render(request, "tutor/tutor.html")
         # Case 1b: if the user doesnt exist
         return redirect("accounts:settings")
@@ -111,7 +112,7 @@ def tutor(request):
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
                                        'currSet': current_set})
-        return redirect("accounts:profile")
+    return redirect("accounts:profile")
 
 
 @login_required(login_url='/accounts/login/')
