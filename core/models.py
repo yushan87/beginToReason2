@@ -87,7 +87,7 @@ class McChoice(models.Model):
     @param models.Model The base model
     """
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
+    choice_text = models.TextField(max_length=200)
 
     def __str__(self):
         """"
@@ -213,19 +213,21 @@ class Lesson(models.Model):
 
     sub_lessons_available = models.BooleanField(default= False)
 
+    incorrect_answers = models.ManyToManyField(Incorrect_Answer, blank=True)
+
     simplify = models.CharField(max_length=50, default='None')
-    simplify_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='simplify_answers')
+    #simplify_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='simplify_answers')
     self_reference = models.CharField(max_length=50, default='None')
-    self_reference_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='self_answers')
+    #self_reference_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='self_answers')
     use_of_concrete_values = models.CharField(max_length=50, default='None')
-    use_of_concrete_values_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='concrete_answers')
+    #use_of_concrete_values_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='concrete_answers')
     not_using_initial_value = models.CharField(max_length=50, default='None')
-    not_using_initial_value_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='initial_answers')
+    #not_using_initial_value_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='initial_answers')
     algebra = models.CharField(max_length=50, default='None')
-    algebra_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='algebra_answers')
+    #algebra_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='algebra_answers')
 
     variable = models.CharField(max_length=50, default='None')
-    variable_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='variable_answers')
+    #variable_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='variable_answers')
 
 
     # Tool already handles syntax,so I think this should be left out.
