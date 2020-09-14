@@ -703,7 +703,8 @@ function verify(code){
                 else {
                     aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_error");
                     document.getElementById("answersCard").removeAttribute("hidden")
-                    confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\t/g,'');
+                    confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\s/g,'');
+                    confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
                     allAnswers = allAnswers + confirmLine + "<br>";
                     document.getElementById("pastAnswers").innerHTML = allAnswers;
                 }
@@ -724,7 +725,17 @@ function verify(code){
             if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
             else if (!hasFR){data.explanation = "No Explaination Requested";}
             data.status = lines.overall;
-            $.postJSON("tutor", data, (results) => {console.log("back in js")});
+
+            const faces = document.querySelectorAll('input[name="smiley"]');
+            let selectedValue;
+            for (const x of faces) {
+                if (x.checked) {
+                    selectedValue = x.value;
+                    data.face = selectedValue
+                }
+            }
+
+            $.postJSON("tutor", data, (results) => {});
 
 
             if (lines.overall == "failure") {
@@ -756,6 +767,7 @@ function verify(code){
                 // Unlock editor for further user edits
                 unlock();
             }
+            setTimeout(function (){location.reload();}, 3000);
         }
     });
 }

@@ -25,6 +25,7 @@ def log_data(request):
     code = json.loads(request.body.decode('utf-8'))['code']
     explanation = json.loads(request.body.decode('utf-8'))['explanation']
     status = json.loads(request.body.decode('utf-8'))['status']
+    face = json.loads(request.body.decode('utf-8'))['face']
 
     data_to_log = DataLog.objects.create(user_key=user,
                                          time_stamp=timezone.now(),
@@ -32,5 +33,6 @@ def log_data(request):
                                          lesson_key=lesson,
                                          status=status,
                                          code=code,
-                                         explanation=explanation)
+                                         explanation=explanation,
+                                         face=face)
     data_to_log.save()

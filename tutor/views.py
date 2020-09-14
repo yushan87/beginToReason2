@@ -53,7 +53,6 @@ def tutor(request):
 
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
-        print("inside here")
         # Case 1a: if the user exists
         if user_auth(request):
             # submitted_json = json.loads(request.body.decode('utf-8'))
@@ -63,10 +62,17 @@ def tutor(request):
             # Case 1aa: if the user has not completed set
             status = json.loads(request.body.decode('utf-8'))['status']
             if status == "success":
-                print("in status")
-                if set_not_complete(request):
-                    reversed_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'], inverse_key)
-                    print(reversed_code)
+                # if set_not_complete(request):
+                    # reversed_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'], inverse_key)
+                current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+                current_user.completed_lesson_index = current_user.completed_lesson_index + 1
+                current_user.current_lesson_index = current_user.current_lesson_index + 1
+                if Lesson.objects.filter(lesson_name=current_user.current_lesson_name).exists():
+                    curr_lesson = Lesson.objects.filter(lesson_name=current_user.current_lesson_name)
+                    current_user.current_lesson_name = curr_lesson[0].correct
+                    current_user.save()
+                    return render(request, "tutor/tutor.html")
+                else:
                     return render(request, "tutor/tutor.html")
                 # Case 1ab: if the user has not completed set
             else:
@@ -86,19 +92,18 @@ def tutor(request):
                 current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
                 current_set = current_user.current_lesson_set.lessons.all()
                 # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
-                if Lesson.objects.filter(lesson_name=current_set[current_user.current_lesson_index]).exists():
-                    current_lesson = Lesson.objects.get(lesson_name=current_set[current_user.current_lesson_index])
+                if Lesson.objects.filter(lesson_name=current_user.current_lesson_name).exists():
+                    current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
                     # log_item = DataLog.objects.get(user_key=User.objects.get(email=request.user.email),
                     # status="success", lesson_key=Lesson.objects.get(
                     # lesson_name=current_set[current_user.current_lesson_index])).code
-                    mutated_code = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_key)
-                    print(mutated_code)
+                    # mutated_code = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_key)
                     if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                         return render(request, "tutor/tutor.html",
                                       {'lessonName': current_lesson.lesson_title,
                                        'concept': current_lesson.lesson_concept.all(),
                                        'instruction': current_lesson.instruction,
-                                       'code': mutated_code,
+                                       'code': current_lesson.code.lesson_code,
                                        'referenceSet': current_lesson.reference_set.all(),
                                        'reason': current_lesson.reason.reasoning_question,
                                        'reason_type': current_lesson.reason.reasoning_type,
@@ -114,7 +119,7 @@ def tutor(request):
                                       {'lessonName': current_lesson.lesson_title,
                                        'concept': current_lesson.lesson_concept.all(),
                                        'instruction': current_lesson.instruction,
-                                       'code': mutated_code,
+                                       'code': current_lesson.code.lesson_code,
                                        'referenceSet': current_lesson.reference_set.all(),
                                        'reason': current_lesson.reason.reasoning_question,
                                        'reason_type': current_lesson.reason.reasoning_type,
@@ -129,7 +134,7 @@ def tutor(request):
                                       {'lessonName': current_lesson.lesson_title,
                                        'concept': current_lesson.lesson_concept.all(),
                                        'instruction': current_lesson.instruction,
-                                       'code': mutated_code,
+                                       'code': current_lesson.code.lesson_code,
                                        'referenceSet': current_lesson.reference_set.all(),
                                        'reason_type': current_lesson.reason.reasoning_type,
                                        'screen_record': current_lesson.screen_record,
