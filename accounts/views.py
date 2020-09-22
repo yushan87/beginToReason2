@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
+from core.models import LessonSet
 from .models import UserInformation
 from .forms import UserInformationForm
 
@@ -57,7 +58,7 @@ def profile(request):
 
             # Case 1a: The user information model is valid, therefore we can render the profile page.
             request.session.set_expiry(0)
-            return render(request, "accounts/profile.html", {'name': user_info.user_nickname})
+            return render(request, "accounts/profile.html", {'name': user_info.user_nickname, 'LessonSet': LessonSet.objects.all()})
         except ValidationError:
             # Case 1b: The user information model is invalid,
             #           we redirect to the settings page

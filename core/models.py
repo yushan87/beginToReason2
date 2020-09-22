@@ -251,7 +251,7 @@ class Lesson(models.Model):
         Returns:
             str: lesson name
         """
-        return self.lesson_name
+        return self.lesson_title
 
 
 class LessonSet(models.Model):

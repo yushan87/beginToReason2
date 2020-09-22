@@ -47,9 +47,6 @@ def tutor(request):
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.
     """
-    letters = [['X', 'Y', 'Z'], ['P', 'S', 'Q'], ['L', 'M', 'N']]
-    variable_key = {}
-    inverse_key = {}
 
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
@@ -63,7 +60,8 @@ def tutor(request):
             status = json.loads(request.body.decode('utf-8'))['status']
             if status == "success":
                 # if set_not_complete(request):
-                    # reversed_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'], inverse_key)
+                # reversed_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
+                # print(reversed_code)
                 current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
                 current_user.completed_lesson_index = current_user.completed_lesson_index + 1
                 current_user.current_lesson_index = current_user.current_lesson_index + 1
@@ -71,12 +69,21 @@ def tutor(request):
                     curr_lesson = Lesson.objects.filter(lesson_name=current_user.current_lesson_name)
                     current_user.current_lesson_name = curr_lesson[0].correct
                     current_user.save()
+                    if current_user.current_lesson_name == "Done":
+                        current_user.completed_sets = current_user.current_lesson_set
+                        current_user.current_lesson_set = None
+                        current_user.save()
+                        print("in done: ", current_user.current_lesson_set)
+                        return render(request, "accounts/profile.html", {'name': current_user.user_nickname, 'LessonSet': LessonSet.objects.all()})
+                    print(current_user.mood)
                     return render(request, "tutor/tutor.html")
                 else:
                     return render(request, "tutor/tutor.html")
                 # Case 1ab: if the user has not completed set
             else:
                 # this is where we will check the answer for alternate lesson
+                # reversed_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
+                # print(reversed_code)
                 alternate_lesson_check(request)
                 return render(request, "tutor/tutor.html")
         # Case 1b: if the user doesnt exist
@@ -97,7 +104,7 @@ def tutor(request):
                     # log_item = DataLog.objects.get(user_key=User.objects.get(email=request.user.email),
                     # status="success", lesson_key=Lesson.objects.get(
                     # lesson_name=current_set[current_user.current_lesson_index])).code
-                    # mutated_code = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_key)
+                    mutated_code = mutate(current_lesson.code.lesson_code)
                     if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                         return render(request, "tutor/tutor.html",
                                       {'lessonName': current_lesson.lesson_title,
@@ -112,7 +119,8 @@ def tutor(request):
                                        'currLessonNum': current_user.current_lesson_index + 1,
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
-                                       'currSet': current_set})
+                                       'currSet': current_set,
+                                       'mood': current_user.mood})
                     # Case 2aaab: if question is of type Text
                     elif current_lesson.reason.reasoning_type == 'Text':
                         return render(request, "tutor/tutor.html",
@@ -127,7 +135,8 @@ def tutor(request):
                                        'currLessonNum': current_user.current_lesson_index + 1,
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
-                                       'currSet': current_set})
+                                       'currSet': current_set,
+                                       'mood': current_user.mood})
                         # Case 2aaac: if question is of type none
                     else:
                         return render(request, "tutor/tutor.html",
@@ -141,7 +150,8 @@ def tutor(request):
                                        'currLessonNum': current_user.current_lesson_index + 1,
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
-                                       'currSet': current_set})
+                                       'currSet': current_set,
+                                       'mood': current_user.mood})
     return redirect("accounts:profile")
 
 
@@ -183,7 +193,8 @@ def previous(request):
                                        'currLessonNum': current_user.current_lesson_index + 1,
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
-                                       'currSet': current_set})
+                                       'currSet': current_set,
+                                       'mood': current_user.mood})
                     # Case 2aaab: if question is of type Text
                     elif current_lesson.reason.reasoning_type == 'Text':
                         return render(request, "tutor/tutor.html",
@@ -198,5 +209,6 @@ def previous(request):
                                        'currLessonNum': current_user.current_lesson_index + 1,
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
-                                       'currSet': current_set})
+                                       'currSet': current_set,
+                                       'mood': current_user.mood})
     return redirect("accounts:profile")
