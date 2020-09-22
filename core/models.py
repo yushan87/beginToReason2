@@ -12,7 +12,7 @@ class Code(models.Model):
     @param models.Model The base model
     """
     code_name = models.CharField(max_length=30)
-    lesson_code = models.TextField(max_length=500)
+    lesson_code = models.TextField(max_length=750)
 
     def __str__(self):
         """
@@ -112,17 +112,19 @@ class Reasoning(models.Model):
     multiple = 'MC'
     text = 'Text'
     both = 'Both'
+    none = 'None'
 
     response_options = [
         (multiple, 'Multiple Choice'),
         (text, 'Free Response'),
-        (both, "Multiple Choice and Free Response")
+        (both, 'Multiple Choice and Free Response'),
+        (none, 'None')
     ]
 
     reasoning_type = models.CharField(
         max_length=4,
         choices=response_options,
-        default=multiple
+        default=none
     )
 
     # Free response has been removed, only because it does not serve a purpose. It belongs in the data collection
@@ -145,7 +147,7 @@ class Reasoning(models.Model):
 
 class Incorrect_Answer(models.Model):
     """
-    Contains a model of Multiple Choice Answers. Each choice is attached to one Question.
+    Contains a model of Incorrect Answers. Each choice is attached to one Question.
 
     @param models.Model The base model
     """
@@ -204,7 +206,7 @@ class Lesson(models.Model):
     lesson_name = models.CharField(max_length=50)
     lesson_title = models.CharField(max_length=50, default='default')
     lesson_concept = models.ManyToManyField(Concept, blank=True)
-    instruction = models.TextField()
+    instruction = models.TextField(default='Please complete the Confirm assertion(s) and check correctness.')
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
     reference_set = models.ManyToManyField(Reference, blank=True)
     reason = models.ForeignKey(Reasoning, on_delete=models.CASCADE, blank=True, null=True)

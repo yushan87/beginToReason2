@@ -277,7 +277,7 @@
                                 </label>
                             {% endfor %}
                         </div>
-                    {% else %}
+                    {% elif reason_type == 'Both' %}
                         <form id="usrform">
                             <div id="results">
                                 <b>
@@ -296,7 +296,9 @@
                                 </label>
                             {% endfor %}
                         </div>
+                    {% elif reason_type == 'None' %}
                     {% endif %}
+
                     <div id="results">
                                 <b>
                                     Represent your attitude towards code verification:
