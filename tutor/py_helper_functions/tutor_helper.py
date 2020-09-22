@@ -20,8 +20,7 @@ def user_auth(request):
         user = User.objects.get(email=request.user.email)
         if UserInformation.objects.filter(user=user).exists():
             return True
-        else:
-            return False
+    return False
 
 
 def lesson_set_auth(request):
@@ -37,11 +36,11 @@ def lesson_set_auth(request):
         current_set = LessonSet.objects.get(set_name=request.POST.get("set_name"))
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
         current_user.current_lesson_set = current_set
+        current_user.current_lesson_name = current_set.lessons.all()[0].lesson_name
         current_user.save()
         if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
             return True
-        else:
-            return False
+    return False
 
 
 def lesson_auth(request):
@@ -85,8 +84,7 @@ def set_not_complete(request):
         elif request.method == 'GET':
             if current_user.current_lesson_index < len(current_set):
                 return True
-            else:
-                return False
+    return False
 
 
 def alternate_lesson_check(request):
@@ -98,4 +96,39 @@ def alternate_lesson_check(request):
     Returns:
         String: name of lesson to redirect to
     """
-    print(json.loads(request.body.decode('utf-8'))['answer'])
+    submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
+    current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+    current_set = current_user.current_lesson_set.lessons.all()
+    if current_set.exists():
+        if Lesson.objects.filter(lesson_name=current_user.current_lesson_name).exists():
+            current_lesson = Lesson.objects.filter(lesson_name=current_user.current_lesson_name)[0]
+            if current_lesson.sub_lessons_available:
+                queried_set = current_lesson.incorrect_answers.all()
+                for incorrect in queried_set:
+                    if submitted_answer == incorrect.answer_text:
+                        print("taking to new lesson ", incorrect.answer_type)
+                        if incorrect.answer_type == 'SIM':
+                            print("sim")
+                            current_user.current_lesson_name = current_lesson.simplify
+                            current_user.save()
+                        elif incorrect.answer_type == 'SELF':
+                            print("self")
+                            current_user.current_lesson_name = current_lesson.self_reference
+                            current_user.save()
+                        elif incorrect.answer_type == 'NUM':
+                            print("num")
+                            current_user.current_lesson_name = current_lesson.use_of_concrete_values
+                            current_user.save()
+                        elif incorrect.answer_type == 'INIT':
+                            print("init")
+                            current_user.current_lesson_name = current_lesson.not_using_initial_value
+                            current_user.save()
+                        elif incorrect.answer_type == 'ALG':
+                            print("alg")
+                            current_user.current_lesson_name = current_lesson.algebra
+                            current_user.save()
+                        elif incorrect.answer_type == 'VAR':
+                            print("var")
+                            current_user.current_lesson_name = current_lesson.variable
+                            current_user.save()
+    return True

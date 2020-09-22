@@ -23,6 +23,7 @@ class UserInformation(models.Model):
     current_lesson_set = models.ForeignKey(LessonSet, blank=True, on_delete=models.CASCADE, null=True)
     current_lesson_index = models.IntegerField(default=0)
     completed_lesson_index = models.IntegerField(default=0)
+    current_lesson_name = models.CharField(max_length=200, default="None")
 
     def __str__(self):
         """function __str__ is used to create a string representation of this class

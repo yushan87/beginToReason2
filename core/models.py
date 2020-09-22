@@ -107,6 +107,33 @@ class Reasoning(models.Model):
     @param models.Model The base model
     """
     reasoning_name = models.CharField(max_length=30)
+
+    none = 'NONE'
+    start = 'START'
+    simplify = 'SIM'
+    self = 'SELF'
+    concrete = 'NUM'
+    initial = 'INIT'
+    algebra = 'ALG'
+    variable = 'VAR'
+
+    response_opt = [
+        (start, 'Start'),
+        (none, 'None'),
+        (simplify, 'Simplify'),
+        (self, 'Self Reference'),
+        (concrete, 'Used Concrete Value as Answer'),
+        (initial, 'Missing # Symbol'),
+        (algebra, 'Algebra'),
+        (variable, 'Variable')
+    ]
+
+    reason_occurrence = models.CharField(
+        max_length=5,
+        choices=response_opt,
+        default=none
+    )
+
     reasoning_question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
     multiple = 'MC'
@@ -142,12 +169,12 @@ class Reasoning(models.Model):
         Returns:
             str: reasoning name
         """
-        return self.reasoning_name
+        return self.reason_occurrence + ': ' + self.reasoning_name
 
 
 class Incorrect_Answer(models.Model):
     """
-    Contains a model of Incorrect Answers. Each choice is attached to one Question.
+    Contains a model of Multiple Choice Answers. Each choice is attached to one Question.
 
     @param models.Model The base model
     """
@@ -173,7 +200,7 @@ class Incorrect_Answer(models.Model):
     answer_type = models.CharField(
         max_length=4,
         choices=response_options,
-        default= simplify
+        default=simplify
     )
 
     answer_text = models.CharField(max_length=200)
@@ -185,9 +212,51 @@ class Incorrect_Answer(models.Model):
         Returns:
             str: choice text
         """
-        return (self.lesson_text + ': ' + self.answer_type + '-' + self.answer_text)
+        return self.lesson_text + ': ' + self.answer_type + '-' + self.answer_text
 
 
+class Feedback(models.Model):
+
+    headline = models.CharField(max_length=50, default='Try Again!')
+
+    default = 'DEF'
+    correct = 'COR'
+    simplify = 'SIM'
+    self = 'SELF'
+    concrete = 'NUM'
+    initial = 'INIT'
+    algebra = 'ALG'
+    variable = 'VAR'
+    sub_lesson = 'SUB'
+
+    feedback_options = [
+        (default, 'Default'),
+        (correct, 'Correct'),
+        (simplify, 'Simplify'),
+        (self, 'Self Reference'),
+        (concrete, 'Used Concrete Value as Answer'),
+        (initial, 'Missing # Symbol'),
+        (algebra, 'Algebra'),
+        (variable, 'Variable'),
+        (sub_lesson, 'Sub_Lesson')
+    ]
+
+    feedback_type = models.CharField(
+        max_length=4,
+        choices=feedback_options,
+        default=default
+    )
+
+    feedback_text = models.TextField(max_length=500)
+
+    def __str__(self):
+        """"
+        function __str__ is called to display the Feedback texts. Helps for admin usability.
+
+        Returns:
+            str: choice text
+        """
+        return self.feedback_type + ': ' + self.feedback_text
 
 
 class Lesson(models.Model):
@@ -209,32 +278,35 @@ class Lesson(models.Model):
     instruction = models.TextField(default='Please complete the Confirm assertion(s) and check correctness.')
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
     reference_set = models.ManyToManyField(Reference, blank=True)
-    reason = models.ForeignKey(Reasoning, on_delete=models.CASCADE, blank=True, null=True)
+    reason = models.ManyToManyField(Reasoning, blank=True)
+
+
+    incorrect_answers = models.ManyToManyField(Incorrect_Answer, blank=True)
+    feedback = models.ManyToManyField(Feedback, blank=True)
+
+    number_of_attempts = models.IntegerField(default=100)
 
     correct = models.CharField(max_length=50, default='Lesson To Go To')
 
-    sub_lessons_available = models.BooleanField(default= False)
-
-    incorrect_answers = models.ManyToManyField(Incorrect_Answer, blank=True)
+    sub_lessons_available = models.BooleanField(default=False)
 
     simplify = models.CharField(max_length=50, default='None')
-    #simplify_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='simplify_answers')
+    # simplify_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='simplify_answers')
     self_reference = models.CharField(max_length=50, default='None')
-    #self_reference_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='self_answers')
+    # self_reference_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='self_answers')
     use_of_concrete_values = models.CharField(max_length=50, default='None')
-    #use_of_concrete_values_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='concrete_answers')
+    # use_of_concrete_values_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='concrete_answers')
     not_using_initial_value = models.CharField(max_length=50, default='None')
-    #not_using_initial_value_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='initial_answers')
+    # not_using_initial_value_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='initial_answers')
     algebra = models.CharField(max_length=50, default='None')
-    #algebra_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='algebra_answers')
+    # algebra_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='algebra_answers')
 
     variable = models.CharField(max_length=50, default='None')
-    #variable_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='variable_answers')
-
+    # variable_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='variable_answers')
 
     # Tool already handles syntax,so I think this should be left out.
-    #syntax = models.CharField(max_length=50, default='Lesson To Go To')
-    #syntax_answers = models.ManyToManyField(Incorrect_Answer, blank=True)
+    # syntax = models.CharField(max_length=50, default='Lesson To Go To')
+    # syntax_answers = models.ManyToManyField(Incorrect_Answer, blank=True)
 
     screen_record = models.BooleanField()
 
