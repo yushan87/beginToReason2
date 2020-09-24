@@ -104,7 +104,7 @@ def tutor(request):
                     # log_item = DataLog.objects.get(user_key=User.objects.get(email=request.user.email),
                     # status="success", lesson_key=Lesson.objects.get(
                     # lesson_name=current_set[current_user.current_lesson_index])).code
-                    mutated_code = mutate(current_lesson.code.lesson_code)
+                    # mutated_code = mutate(current_lesson.code.lesson_code)
                     if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                         return render(request, "tutor/tutor.html",
                                       {'lessonName': current_lesson.lesson_title,
@@ -118,7 +118,7 @@ def tutor(request):
                                        'screen_record': current_lesson.screen_record,
                                        'currLessonNum': current_user.current_lesson_index + 1,
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
-                                       'setLength': len(current_set),
+                                       'setLength': 11,
                                        'currSet': current_set,
                                        'mood': current_user.mood})
                     # Case 2aaab: if question is of type Text
@@ -134,7 +134,7 @@ def tutor(request):
                                        'screen_record': current_lesson.screen_record,
                                        'currLessonNum': current_user.current_lesson_index + 1,
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
-                                       'setLength': len(current_set),
+                                       'setLength': 11,
                                        'currSet': current_set,
                                        'mood': current_user.mood})
                         # Case 2aaac: if question is of type none
@@ -149,7 +149,7 @@ def tutor(request):
                                        'screen_record': current_lesson.screen_record,
                                        'currLessonNum': current_user.current_lesson_index + 1,
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
-                                       'setLength': len(current_set),
+                                       'setLength': 11,
                                        'currSet': current_set,
                                        'mood': current_user.mood})
     return redirect("accounts:profile")
@@ -192,7 +192,7 @@ def previous(request):
                                        'screen_record': current_lesson.screen_record,
                                        'currLessonNum': current_user.current_lesson_index + 1,
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
-                                       'setLength': len(current_set),
+                                       'setLength': 11,
                                        'currSet': current_set,
                                        'mood': current_user.mood})
                     # Case 2aaab: if question is of type Text
@@ -208,7 +208,7 @@ def previous(request):
                                        'screen_record': current_lesson.screen_record,
                                        'currLessonNum': current_user.current_lesson_index + 1,
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
-                                       'setLength': len(current_set),
+                                       'setLength': 11,
                                        'currSet': current_set,
                                        'mood': current_user.mood})
     return redirect("accounts:profile")
