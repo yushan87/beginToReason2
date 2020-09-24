@@ -5,11 +5,14 @@ the model, the data will be accessible through Django's admin functionality.
 from django.contrib import admin
 from .models import Lesson, Reference, Concept, Reasoning, McChoice, Question, Code, LessonSet, Incorrect_Answer, Feedback
 
+
 # Register your models here.
 admin.site.register(LessonSet)
 admin.site.register(Lesson)
 admin.site.register(Incorrect_Answer)
+
 admin.site.register(Feedback)
+
 admin.site.register(Reference)
 admin.site.register(Concept)
 admin.site.register(Reasoning)

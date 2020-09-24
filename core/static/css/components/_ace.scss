@@ -10,11 +10,11 @@
 }
 
 .ace-chaos .ace_keyword.ace_operator {
-    color: $coral;
+    color: #4085B7;
 }
 
 .ace-chaos .ace_keyword {
-    color: #337ab7;
+    color: rgb(255, 249, 0);
 }
 
 .ace-chaos .ace_gutter {
@@ -41,7 +41,7 @@
 
 .ace-solarized-light .ace_gutter {
     color: $steel-blue;
-    background: #e0e0e0;
+    background-color: rgb(200, 200, 200);
 }
 
 .ace-solarized-light .ace_print-margin {
@@ -51,7 +51,7 @@
 
 .ace-solarized-light {
     color: $charcoal;
-    background-color: $white;
+    background-color: rgb(240, 240, 240);
 }
 
 .ace-solarized-light .ace_cursor {
@@ -80,7 +80,7 @@
 }
 
 .ace-solarized-light .ace_gutter-active-line {
-    background-color: #a0a0a0;
+    background-color: #bfbfbf;
 }
 
 .ace-solarized-light .ace_marker-layer .ace_selected-word {
@@ -95,7 +95,7 @@
 .ace-solarized-light .ace_meta,
 .ace-solarized-light .ace_support.ace_class,
 .ace-solarized-light .ace_support.ace_type {
-    color: #9f41a4;
+    color: #000bff;
 }
 
 .ace-solarized-light .ace_constant.ace_character,
@@ -104,11 +104,11 @@
 }
 
 .ace-solarized-light .ace_constant.ace_language {
-    color: #916a22;
+    color: #b33600;
 }
 
 .ace-solarized-light .ace_constant.ace_numeric {
-    color: #916a22;
+    color: #b33600;
 }
 
 .ace-solarized-light .ace_fold {
@@ -133,7 +133,7 @@
 }
 
 .ace-solarized-light .ace_string.ace_regexp {
-    color: $steel-blue;
+    color: #b33600;
 }
 
 .ace-solarized-light .ace_comment,

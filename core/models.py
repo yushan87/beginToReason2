@@ -259,6 +259,49 @@ class Feedback(models.Model):
         return self.feedback_type + ': ' + self.feedback_text
 
 
+class Incorrect_Answer(models.Model):
+    """
+    Contains a model of Multiple Choice Answers. Each choice is attached to one Question.
+
+    @param models.Model The base model
+    """
+
+    lesson_text = models.CharField(max_length=200, default='Lesson2')
+
+    simplify = 'SIM'
+    self = 'SELF'
+    concrete = 'NUM'
+    initial = 'INIT'
+    algebra = 'ALG'
+    variable = 'VAR'
+
+    response_options = [
+        (simplify, 'Simplify'),
+        (self, 'Self Reference'),
+        (concrete, 'Used Concrete Value as Answer'),
+        (initial, 'Missing # Symbol'),
+        (algebra, 'Algebra'),
+        (variable, 'Variable')
+    ]
+
+    answer_type = models.CharField(
+        max_length=4,
+        choices=response_options,
+        default=simplify
+    )
+
+    answer_text = models.CharField(max_length=200)
+
+    def __str__(self):
+        """"
+        function __str__ is called to display the multiple choice texts. Helps for admin usability.
+
+        Returns:
+            str: choice text
+        """
+        return self.lesson_text + ': ' + self.answer_type + '-' + self.answer_text
+
+
 class Lesson(models.Model):
     """
     Contains a model of a Lesson.
@@ -286,9 +329,11 @@ class Lesson(models.Model):
 
     number_of_attempts = models.IntegerField(default=100)
 
+
     correct = models.CharField(max_length=50, default='Lesson To Go To')
 
     sub_lessons_available = models.BooleanField(default=False)
+
 
     simplify = models.CharField(max_length=50, default='None')
     # simplify_answers = models.ManyToManyField(Incorrect_Answer, blank=True, related_name='simplify_answers')
@@ -326,7 +371,7 @@ class Lesson(models.Model):
         Returns:
             str: lesson name
         """
-        return self.lesson_name
+        return self.lesson_title
 
 
 class LessonSet(models.Model):

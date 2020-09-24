@@ -58,7 +58,11 @@
                 <div class="dropdown-menu dropdown-menu-left m-0" aria-labelledby="otherLinksDropdown">
                     <a class="dropdown-item" href="https://www.cs.clemson.edu/resolve/" target="_blank">RSRG Home</a>
                     <a class="dropdown-item" href="https://resolve.cs.clemson.edu/" target="_blank">WebIDE</a>
+                    <a class="dropdown-item" href="https://www.nsf.gov/" target="_blank">NSF.gov</a>
                 </div>
+            </li>
+            <li class="nav-item ml-3">
+                <img src="{% static 'images/nsf.png' %}" alt="Clemson RESOLVE Logo" width="40" height="40">
             </li>
         </ul>
         <ul class="navbar-nav flex-row my-3 ml-md-auto align-items-center text-center">
@@ -92,29 +96,6 @@
     {% block main_content %}
     {% endblock %}
 </main>
-
-<!-- Page Footer -->
-<footer id="page-footer" class="footer w-100 mt-auto py-2">
-    <div class="d-flex flex-column flex-md-row justify-content-md-around align-items-center"
-         style="background-color: inherit;">
-        <div class="d-flex flex-row align-items-center px-2">
-            <img src="{% static 'images/rsrg-logo4.svg' %}" width="60" height="60" class="d-none d-sm-inline-flex mr-2"
-                 alt="Clemson RSRG Logo 2">
-            <div class="d-flex flex-column">
-                <div id="copyright">Copyright &#9400; 2020 Clemson RSRG.
-                    <span class="d-none d-sm-inline-flex">(Created with <a class="footer-link"
-                                                                           href="https://www.djangoproject.com/"
-                                                                           target="_blank">&nbsp;Django</a>)</span>
-                </div>
-                <div id="grants-institutions" class="pt-1">
-                    This research is funded in part by NSF grants CCF-1161916,
-                    DUE-1022941, DUE-1611714, DUE-1915334, DUE-1914667, and DUE-1915088.<br/> This is a joint effort
-                    involving Clemson University, Florida Atlantic University and Rose-Hulman Institute of Technology.
-                </div>
-            </div>
-        </div>
-    </div>
-</footer>
 </body>
 
 </html>

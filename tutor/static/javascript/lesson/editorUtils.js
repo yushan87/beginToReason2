@@ -311,7 +311,9 @@ $("#checkCorrectness").click(function () {
         unlock();
     }
     else{
-        document.getElementById("resultsHeader").innerHTML = "<h3>Compiling code...</h3>";
+
+        document.getElementById("resultsHeader").innerHTML = "<h3>Checking Correctness...</h3>";
+
         document.getElementById("resultDetails").innerHTML = '<div class="sk-chase">\n' +
             '  <div class="sk-chase-dot"></div>\n' +
             '  <div class="sk-chase-dot"></div>\n' +
@@ -370,12 +372,12 @@ $("#changeMode").click(function () {
         darkTheme = false;
         $("#changeMode").attr("class", "btn btn-sm btn-dark");
         document.getElementById("changeMode").innerHTML = "<i class=\"fa fa-moon-o\" aria-hidden=\"true\"></i> Dark";
-        $("#right-col").attr("style", "background-color: #E0E0E0");
+        $("#right-col").attr("style", "background-color: #C8C8C8");
         $("#explainCard").attr("style", "position: absolute;\n" +
             "    bottom: 0;\n" +
             "    width: 98%;\n" +
             "    margin: 5px 5px 5px 5px;\n" +
-            "    background-color: #333;\n" +
+            "    background-color: #4C6085;\n" +
             "    color: #fff;");
     }
     else {
@@ -740,7 +742,7 @@ function verify(code){
 
             if (lines.overall == "failure") {
                 document.getElementById("resultsHeader").innerHTML = "<h3>Incorrect answer</h3>";
-                document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>4. Do you understand the specification parameter modes (e.g. Updates)?";
+                document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J?";
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
                 //add line errors
@@ -750,7 +752,7 @@ function verify(code){
                 unlock();
             } else if (lines.overall == "success") {
                 document.getElementById("resultsHeader").innerHTML = "<h3>Correct!</h3>";
-                document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
+                document.getElementById("resultDetails").innerHTML = "Please proceed to the next lesson.";
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-success text-white");
                 $("#next").removeAttr("disabled", "disabled");
@@ -758,6 +760,7 @@ function verify(code){
                 // aceEditor.session.addGutterDecoration(need this from views/verifier, "ace_correct");
                 // Unlock editor for further user edits
                 unlock();
+                setTimeout(function (){location.reload();}, 3000);
             } else {
                 document.getElementById("resultsHeader").innerHTML = "<h3>Something went wrong</h3>";
                 document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
@@ -767,7 +770,9 @@ function verify(code){
                 // Unlock editor for further user edits
                 unlock();
             }
+
             //setTimeout(function (){location.reload();}, 3000);
+
         }
     });
 }
