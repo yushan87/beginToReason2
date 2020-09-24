@@ -656,6 +656,7 @@ function decode(data) {
 function verify(code){
     var vcs = {}
     var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project')
+    var feedback = {}
 
     // Connection opened
     ws.addEventListener('open', function (event) {

@@ -37,12 +37,10 @@ def lesson_set_auth(request):
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
         current_user.current_lesson_set = current_set
         current_user.current_lesson_name = current_set.lessons.all()[0].lesson_name
-<<<<<<< HEAD
-=======
+
         current_user.current_lesson_index = 0
         current_user.completed_lesson_index = 0
         current_user.mood = "neutral"
->>>>>>> coworker/master
         current_user.save()
         if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
             return True

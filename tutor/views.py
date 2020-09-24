@@ -89,6 +89,7 @@ def tutor(request):
                 # this is where we will check the answer for alternate lesson
                 # reversed_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
                 # print(reversed_code)
+                print("Printing request: ", request.body.decode('utf-8'))
                 alternate_lesson_check(request)
                 return render(request, "tutor/tutor.html")
         # Case 1b: if the user doesnt exist
@@ -127,7 +128,8 @@ def tutor(request):
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
                                        'currSet': current_set,
-                                       'mood': current_user.mood})
+                                       'mood': current_user.mood,
+                                       'feedback': current_lesson.feedback.all()})
                     # Case 2aaab: if question is of type Text
                     elif current_lesson.reason.get().reasoning_type == 'Text':
                         return render(request, "tutor/tutor.html",
@@ -142,7 +144,9 @@ def tutor(request):
                                        'currLessonNum': current_user.current_lesson_index + 1,
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
-                                       'currSet': current_set})
+                                       'currSet': current_set,
+                                       'mood': current_user.mood,
+                                       'feedback': current_lesson.feedback.all()})
                         # Case 2aaac: if question is of type none
                     else:
                         return render(request, "tutor/tutor.html",
@@ -157,7 +161,8 @@ def tutor(request):
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
                                        'currSet': current_set,
-                                       'mood': current_user.mood})
+                                       'mood': current_user.mood,
+                                       'feedback': current_lesson.feedback.all()})
 
     return redirect("accounts:profile")
 
@@ -202,7 +207,8 @@ def previous(request):
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
                                        'currSet': current_set,
-                                       'mood': current_user.mood})
+                                       'mood': current_user.mood,
+                                       'feedback': current_lesson.feedback.all()})
                     # Case 2aaab: if question is of type Text
                     elif current_lesson.reason.get().reasoning_type == 'Text':
                         return render(request, "tutor/tutor.html",
@@ -218,5 +224,6 @@ def previous(request):
                                        'completedLessonNum': current_user.completed_lesson_index + 1,
                                        'setLength': len(current_set),
                                        'currSet': current_set,
-                                       'mood': current_user.mood})
+                                       'mood': current_user.mood,
+                                       'feedback': current_lesson.feedback.all()})
     return redirect("accounts:profile")
