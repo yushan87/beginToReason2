@@ -10,7 +10,7 @@
 
 /* Tutorial Layout-Related CSS */
 #page-content {
-    height: calc(100vh - #{$page-header-min-height + $page-footer-height});
+    height: calc(100vh - #{$page-header-min-height});
     overflow: hidden;
 
     // Use the jumbotron mixin to generate the necessary CSS code
@@ -18,7 +18,7 @@
 }
 
 #tutorialCol {
-    height: calc(100vh - #{$page-header-min-height + $page-footer-height});
+    height: calc(100vh - #{$page-header-min-height});
 }
 
 #tutorialContent {
