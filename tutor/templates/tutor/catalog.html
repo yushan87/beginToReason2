@@ -25,113 +25,60 @@
                     Available Lessons
                 </h1>
                 {% for obj in LessonSet %}
-                <div id="begin" class="card lesson-card">
-                    <div class="card-horizontal">
-                        <div class="img-square-wrapper">
-                            <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
-                        </div>
-                        <div class="card-body">
-                            <h5 class="card-title">{{obj}} <span class="badge recommended">Recommended</span></h5>
-                            <p class="card-text">{{obj.set_description}}</p>
-                            <form action="{% url 'tutor:catalog' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="set_name" value="{{ obj }}"/>
-                                <button class="btn select-btn" type="submit" aria-pressed="true">
-                                    Start Training
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+                    {% if user.is_authenticated %}
+                        {% if user.userinformation.current_lesson_set == obj %}
+                            <div id="begin" class="card lesson-card">
+                                <div class="card-horizontal">
+                                    <div class="img-square-wrapper">
+                                        <img class="" src="{% static 'images/logo4.png' %}" id="card-img" alt="Card image cap">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">No New Sets Available</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div id="begin" class="card lesson-card">
+                                <div class="card-horizontal">
+                                    <div class="img-square-wrapper">
+                                        <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{obj}} <span class="badge recommended">Recommended</span></h5>
+                                        <p class="card-text">{{obj.set_description}}</p>
+                                        <form action="{% url 'tutor:catalog' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="set_name" value="{{ obj }}"/>
+                                            <button class="btn select-btn" type="submit" aria-pressed="true">
+                                                Start Training
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                         <div id="begin" class="card lesson-card">
+                                <div class="card-horizontal">
+                                    <div class="img-square-wrapper">
+                                        <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{obj}} <span class="badge recommended">Recommended</span></h5>
+                                        <p class="card-text">{{obj.set_description}}</p>
+                                        <form action="{% url 'tutor:catalog' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="set_name" value="{{ obj }}"/>
+                                            <button class="btn select-btn" type="submit" aria-pressed="true">
+                                                Start Training
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                    {% endif %}
+
                 {% endfor %}
-                <h1 class="mb-0 page-section-heading">
-                    Verified Lessons
-                </h1>
-                <br>
-                <div id="verified">
-                    <div class="row">
-                    <div class="d-flex">
-                        <div id="1000" class="card flex-fill vertical-card">
-                            <div class="card-img-top">
-                                <img class="vertical-img" src="{% static 'images/verify.png' %}" alt="Card image cap">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">CS 1000</h5>
-                                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                <a href="" class="btn  select-btn" role="button"
-                                                aria-pressed="true">Start Training</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex">
-                        <div id="2000" class="card flex-fill vertical-card">
-                            <div class="card-img-top">
-                                <img class="vertical-img" src="{% static 'images/verify2.png' %}" alt="Card image cap">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">CS 2000</h5>
-                                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="" class="btn select-btn" role="button"
-                                                aria-pressed="true">Start Training</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex">
-                        <div id="4000" class="card flex-fill vertical-card">
-                            <div class="card-img-top">
-                                <img class="vertical-img" src="{% static 'images/verify3.png' %}" alt="Card image cap">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">CS 4000</h5>
-                                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="" class="btn select-btn" role="button"
-                                                aria-pressed="true">Start Training</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="d-flex">
-                        <div id="1000" class="card flex-fill vertical-card">
-                            <div class="card-img-top">
-                                <img class="vertical-img" src="{% static 'images/verify.png' %}" alt="Card image cap">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">CS 1000</h5>
-                                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                <a href="" class="btn select-btn" role="button"
-                                                aria-pressed="true">Start Training</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex">
-                        <div id="2000" class="card flex-fill vertical-card">
-                            <div class="card-img-top">
-                                <img class="vertical-img" src="{% static 'images/verify2.png' %}" alt="Card image cap">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">CS 2000</h5>
-                                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="" class="btn select-btn" role="button"
-                                                aria-pressed="true">Start Training</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="d-flex">
-                        <div id="4000" class="card flex-fill vertical-card">
-                            <div class="card-img-top">
-                                <img class="vertical-img" src="{% static 'images/verify3.png' %}" alt="Card image cap">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">CS 4000</h5>
-                                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                                 <a href="" class="btn select-btn" role="button"
-                                                aria-pressed="true">Start Training</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                </div>
             </div>
             <div class="col-1 p-0">
             </div>

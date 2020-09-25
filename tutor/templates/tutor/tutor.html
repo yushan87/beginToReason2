@@ -71,7 +71,7 @@
                             <br>
                             <div class="card bg-danger mb-3">
                                 <div class="card-body">
-                                    <div class="" id="pastAnswers" style="color: white">
+                                    <div class="" id="pastAnswers" style="color: white; font-family: 'Courier New', Courier, monospace; font-weight: bold;">
                                     </div>
                                 </div>
                             </div>
@@ -110,7 +110,11 @@
                 <div class="overlay-content">
                     <ol>
                         {% for obj in currSet %}
-                            <li id="lessonList" style="font-size: 150%; color: white"><a href="#">{{ obj | safe }}</a></li>
+                            {% if obj|safe == lessonName|safe%}
+                                <li id="lessonList" style="color: #3A4958"><a style="color: #3A4958">{{ obj | safe }}</a></li>
+                            {% else %}
+                                <li id="lessonList" style=" color: white"><a href="#">{{ obj | safe }}</a></li>
+                            {% endif %}
                         {% endfor %}
                     </ol>
                 </div>
@@ -149,18 +153,19 @@
                                     <div class="modal-dialog modal-dialog-centered modal-md" role="document">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title w-100 text-center" id="are-you-sure">
-                                                    Are you sure you want to reset back to the default code template? You will lose your current code.
-                                                </h5>
+                                                <h1 class="modal-title w-100 text-center" id="are-you-sure">
+                                                    Reset Code
+                                                </h1>
+                                            </div>
+                                            <div class="modal-title w-100 text-center" id="are-you-sure">
+                                                <h5>Are you sure you want to reset back to the default code template? You will lose your current code.</h5>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-block right-icon-holder" id="dont" data-dismiss="modal">
-                                                    Don't Reset
-                                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                                <button id="resetCode" class="btn btn-danger btn-inline" style="width: 225px" type="button" data-toggle="tooltip" data-placement="top" title="Reset">
+                                                    Reset
                                                 </button>
-                                                <button id="resetCode" class="btn btn-danger btn-block right-icon-holder" type="button" data-toggle="tooltip" data-placement="top" title="Reset">
-                                                    Confirm Reset
-                                                    <i class="fa fa-check" aria-hidden="true"></i>
+                                                <button type="button" class="btn btn-inline btn-outline-dark " style="width: 225px" data-dismiss="modal">
+                                                    Cancel
                                                 </button>
                                             </div>
                                         </div>
@@ -277,7 +282,7 @@
                                 </label>
                             {% endfor %}
                         </div>
-                    {% else %}
+                    {% elif reason_type == 'Both' %}
                         <form id="usrform">
                             <div id="results">
                                 <b>
@@ -296,6 +301,7 @@
                                 </label>
                             {% endfor %}
                         </div>
+                    {% elif reason_type == 'None' %}
                     {% endif %}
                     <div id="results">
                                 <b>
@@ -303,11 +309,37 @@
                                 </b>
                             </div>
                     <form id="smileys" style="text-align: center;">
-                        <input type="radio" name="smiley" value="upset" class="upset">
-                        <input type="radio" name="smiley" value="sad" class="sad">
-                        <input type="radio" name="smiley" value="neutral" class="neutral" checked="checked">
-                        <input type="radio" name="smiley" value="happy" class="happy">
-                        <input type="radio" name="smiley" value="excited" class="excited">
+                        {% if mood == "upset" %}
+                            <input type="radio" name="smiley" value="upset" class="upset" checked="checked">
+                            <input type="radio" name="smiley" value="sad" class="sad">
+                            <input type="radio" name="smiley" value="neutral" class="neutral">
+                            <input type="radio" name="smiley" value="happy" class="happy">
+                            <input type="radio" name="smiley" value="excited" class="excited">
+                        {% elif mood == "sad" %}
+                            <input type="radio" name="smiley" value="upset" class="upset">
+                            <input type="radio" name="smiley" value="sad" class="sad" checked="checked">
+                            <input type="radio" name="smiley" value="neutral" class="neutral">
+                            <input type="radio" name="smiley" value="happy" class="happy">
+                            <input type="radio" name="smiley" value="excited" class="excited">
+                        {% elif mood == "neutral" %}
+                            <input type="radio" name="smiley" value="upset" class="upset">
+                            <input type="radio" name="smiley" value="sad" class="sad">
+                            <input type="radio" name="smiley" value="neutral" class="neutral" checked="checked">
+                            <input type="radio" name="smiley" value="happy" class="happy">
+                            <input type="radio" name="smiley" value="excited" class="excited">
+                        {% elif mood == "happy" %}
+                            <input type="radio" name="smiley" value="upset" class="upset">
+                            <input type="radio" name="smiley" value="sad" class="sad">
+                            <input type="radio" name="smiley" value="neutral" class="neutral">
+                            <input type="radio" name="smiley" value="happy" class="happy" checked="checked">
+                            <input type="radio" name="smiley" value="excited" class="excited">
+                        {% elif mood == "excited" %}
+                            <input type="radio" name="smiley" value="upset" class="upset">
+                            <input type="radio" name="smiley" value="sad" class="sad">
+                            <input type="radio" name="smiley" value="neutral" class="neutral">
+                            <input type="radio" name="smiley" value="happy" class="happy">
+                            <input type="radio" name="smiley" value="excited" class="excited" checked="checked">
+                        {% endif %}
                     </form>
                 </div>
             </div>

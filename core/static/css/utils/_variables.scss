@@ -16,12 +16,13 @@ $coral: #ff8c5f !important;
 $gray-web: #86898c !important;
 $queen-blue: #4c6085 !important;
 $sage: #d4c99e !important;
-$steel-blue: #337ab7 !important;
+$steel-blue: #4085b7;
 $white: #fdfdfd !important;
 
 // Fonts
 $font-family-1: roboto, helvetica, arial, sans-serif;
 $font-family-2: oswald, helvetica, arial, sans-serif;
+$font-family-3: "Courier New", courier, monospace;
 
 /**
  *  This section contains the various SCSS variables we are going to use.
@@ -66,7 +67,6 @@ $page-content-border-color-dark: $black;
 $page-content-border-color-light: $white;
 
 // Page-Footer
-$page-footer-height: 90px;
 $page-footer-color: $white;
 $page-footer-bg-color: $gray-web;
 
