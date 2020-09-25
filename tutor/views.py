@@ -8,8 +8,8 @@ from django.contrib.auth.models import User
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data
-from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, alternate_lesson_check
+# from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
 
 def catalog(request):
