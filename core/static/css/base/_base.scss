@@ -75,21 +75,3 @@ body {
     font-size: 1.75rem;
     font-weight: 200 !important;
 }
-
-/* Footer-Related CSS */
-#page-footer {
-    height: $page-footer-height;
-    color: $page-footer-color;
-    background-color: $page-footer-bg-color;
-
-    // Footer Links
-    .footer-link {
-        font-size: 1rem;
-        color: $page-footer-navlink-color;
-        text-decoration: none;
-    }
-
-    .footer-link:hover {
-        color: $page-footer-navlink-hover-color;
-    }
-}

@@ -26,26 +26,7 @@ class UserInformation(models.Model):
     current_lesson_name = models.CharField(max_length=200, default="None")
 
     completed_sets = models.ForeignKey(LessonSet, on_delete=models.CASCADE, blank=True, related_name='sets_completed', null=True)
-
-    neutral = 'NEU'
-    happy = 'HAP'
-    excited = 'EXC'
-    upset = 'UPS'
-    sad = 'SAD'
-
-    response_options = [
-        (neutral, 'neutral'),
-        (happy, 'happy'),
-        (excited, 'excited'),
-        (upset, 'upset'),
-        (sad, 'sad')
-    ]
-
-    mood = models.CharField(
-        max_length=3,
-        choices=response_options,
-        default=neutral
-    )
+    mood = models.CharField(max_length=10, default="neutral")
 
 
     def __str__(self):
