@@ -202,6 +202,22 @@ function checkForTrivials(content) {
     return {confirms: confirms, overall: overall}
 }
 
+function check_feedback(answer) {
+    var simp = ["I+J=(#I+1)+(#J-1);", "I+J=#I+1+#J-1;"];
+    var self = ["I+J=I+J;", "I+J=J+I;", "I+J=(I+1)+(J-1);", "I+J=I+1+J-1;"];
+    var num = ["I+J=0;", "I+J=1;", "I+J=-1;", "I+J=2;", "I+J=3;", "I+J=4;"];
+    var algebra = ["I+J=#I+#J+2;", "I+J=#I;"];
+    var vari = ["I+J=(#I+1)+((#I+1)-1);"];
+
+    var new_answer = answer.replace(/\s/g,'')
+
+
+    console.log(new_answer)
+    console.log(self.includes(answer))
+
+
+}
+
 
 ////////////////////////////////////
 // Editor Alert-Related Functions //
@@ -291,9 +307,11 @@ $("#checkCorrectness").click(function () {
 
     // Check for trivials
     let trivials = checkForTrivials(code);
+
+
     if (trivials.overall == "failure") {
         document.getElementById("resultsHeader").innerHTML = "<h3>Trivial answer</h3>";
-        document.getElementById("resultDetails").innerHTML = "Submission does not contain enough information. Try again!";
+        document.getElementById("resultDetails").innerHTML = "Consider the example where J = J. \n\n It's the same thing as saying 1 = 1, which is always true! What would be a nontrivial answer to this problem?";
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         $("#resultCard").attr("class", "card bg-danger text-white");
         //add line errors
@@ -675,6 +693,7 @@ function verify(code){
             //add line errors
             //this will need to be fixed based on verifier return
             console.log(message)
+
             for (var i = 0; i < message.errors[0].errors.length; i++) {
                 aceEditor.session.addGutterDecoration(message.errors[0].errors[i].error.ln - 1, "ace_error")
                 document.getElementById("answersCard").removeAttribute("hidden")
@@ -742,10 +761,12 @@ function verify(code){
 
 
             if (lines.overall == "failure") {
-                document.getElementById("resultsHeader").innerHTML = "<h3>Incorrect answer</h3>";
+                console.log("TEST MESSAGE")
+                check_feedback(confirmLine)
+                /*document.getElementById("resultsHeader").innerHTML = "<h3>Incorrect answer</h3>";
                 document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J?";
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                $("#resultCard").attr("class", "card bg-danger text-white");
+                $("#resultCard").attr("class", "card bg-danger text-white");*/
                 //add line errors
                 //this will need to be fixed based on verifier return
 

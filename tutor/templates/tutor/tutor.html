@@ -263,6 +263,9 @@
                     <div class="card-body">
                         <p class="card-text" id="resultDetails"></p>
                     </div>
+                    {% if reason_type == 'Text' %}
+                        {{ reason }}
+                    {% endif %}
                 </div>
                 <div id="explainCard" class="card" style="position: absolute; bottom: 0; width: 98%; margin: 5px 5px 5px 5px; background-color: #E0E0E0; color: #333;">
                     {% if reason_type == 'Text' %}
