@@ -388,7 +388,7 @@ $("#resetCode").click(function () {
     lock();
 
     // Put the cached content into the editor
-    location.reload();
+    aceEditor.session.setValue(editorContent);
 
     // Unlock editor for further user edits
     unlock();
