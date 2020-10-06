@@ -21,6 +21,11 @@
     color: $white;
 }
 
+.ace-chaos .ace_comment,
+.ace-chaos .ace_entity.ace_other.ace_attribute-name {
+    color: #ff00e7;
+}
+
 /* ACE Editor-Related CSS */
 .ace_folding-enabled > .ace_gutter-cell {
     padding-right: 10px;

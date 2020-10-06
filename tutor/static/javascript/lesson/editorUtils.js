@@ -316,7 +316,7 @@ $("#checkCorrectness").click(function () {
         let boxVal = document.forms["usrform"]["comment"].value;
         if (boxVal.length < 50) {
             // Create the appropriate alert box
-            let msg = "You must fill in the your explanation to the right";
+            let msg = "You must fill a long enough explanation to the right";
             createAlertBox(true, msg);
             $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
             unlock();
@@ -345,7 +345,7 @@ $("#checkCorrectness").click(function () {
     // Check for trivials
     let trivials = checkForTrivials(code);
     if (trivials.overall == "failure") {
-        document.getElementById("resultsHeader").innerHTML = "<h3>Trivial answer</h3>";
+        document.getElementById("resultsHeader").innerHTML = "<h3>Try Again</h3>";
         document.getElementById("resultDetails").innerHTML = "Submission does not contain enough information. Try again!";
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         $("#resultCard").attr("class", "card bg-danger text-white");
