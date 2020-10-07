@@ -102,7 +102,7 @@
                                                         <p class="card-text"><small class="text-muted">Last attempted: {{ user.last_login }}</small></p>
                                                         <form action="{% url 'tutor:tutor' %}" method="GET">
                                                             {% csrf_token %}
-                                                            <button class="btn select-btn" type="submit" aria-pressed="true">
+                                                            <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
                                                                 Continue Training
                                                             </button>
                                                         </form>
@@ -115,7 +115,7 @@
                                     <div class="card mb-3">
                                     <img class="card-img-top" src="{% static 'images/none.png' %}" alt="Card image cap">
                                         <div class="card-body">
-                                            <a href="{% url 'tutor:catalog' %}" class="btn btn-lg select-btn btn-block" role="button" aria-pressed="true">Go To Activity Catalog</a>
+                                            <a href="{% url 'tutor:catalog' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To Activity Catalog</a>
                                         </div>
                                     </div>
                                 {% endif %}
