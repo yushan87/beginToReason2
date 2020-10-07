@@ -190,19 +190,6 @@
                             </div>
                         </div>
                         <div id="directionButtons" class="d-flex">
-                            <div class="mr-auto">
-                                {% if currLessonNum == 1 %}
-                                    <button id="prev" type="button" class="btn btn-light btn-md"
-                                            data-toggle="tooltip" data-placement="top"
-                                            title="Previous" disabled>Back
-                                    </button>
-                                {% else %}
-                                    <button id="prev" type="button" class="btn btn-light btn-md"
-                                            data-toggle="tooltip" data-placement="top"
-                                            title="Previous">Back
-                                    </button>
-                                {% endif %}
-                            </div>
                             <div id="stepProgressBar">
                                 <div class="step">
                                     {% if currLessonNum <= 2 %}
