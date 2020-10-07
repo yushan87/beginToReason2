@@ -124,7 +124,7 @@ def settings(request):
                                        initial={'user_email': request.user.email})
         # Case 2b: The user email doesn't exist in our user information table.
         else:
-            form = UserInformationForm(initial={'user_email': request.user.email, 'user_nickname': user.username})
+            form = UserInformationForm(initial={'user_email': request.user.email, 'user_nickname': user.first_name})
 
         request.session.set_expiry(0)
         return render(request, "accounts/settings.html", {'form': form})

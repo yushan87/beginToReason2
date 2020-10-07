@@ -49,7 +49,7 @@
                                         <form action="{% url 'tutor:catalog' %}" method="POST">
                                             {% csrf_token %}
                                             <input type="hidden" name="set_name" value="{{ obj }}"/>
-                                            <button class="btn select-btn" type="submit" aria-pressed="true">
+                                            <button class="btn select-btn btn-block btn-lg" type="submit" aria-pressed="true">
                                                 Start Training
                                             </button>
                                         </form>
@@ -69,7 +69,7 @@
                                         <form action="{% url 'tutor:catalog' %}" method="POST">
                                             {% csrf_token %}
                                             <input type="hidden" name="set_name" value="{{ obj }}"/>
-                                            <button class="btn select-btn" type="submit" aria-pressed="true">
+                                            <button class="btn select-btn btn-block btn-lg" type="submit" aria-pressed="true">
                                                 Start Training
                                             </button>
                                         </form>

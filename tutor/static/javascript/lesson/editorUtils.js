@@ -356,7 +356,10 @@ $("#checkCorrectness").click(function () {
         for (var i = 0; i < trivials.confirms.length; i++) {
             aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
             document.getElementById("answersCard").removeAttribute("hidden")
-            allAnswers = allAnswers + aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'')+ "<br>";
+            allAnswers = allAnswers + aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'') + "<br>";
+            if (i == trivials.confirms.length - 1){
+                allAnswers += "<br><br>";
+            }
             document.getElementById("pastAnswers").innerHTML = allAnswers;
         }
 
@@ -724,12 +727,14 @@ function verify(code){
             $("#resultCard").attr("class", "card bg-danger text-white");
             //add line errors
             //this will need to be fixed based on verifier return
-            console.log(message)
             for (var i = 0; i < message.errors[0].errors.length; i++) {
                 aceEditor.session.addGutterDecoration(message.errors[0].errors[i].error.ln - 1, "ace_error")
                 document.getElementById("answersCard").removeAttribute("hidden")
-                var confirmLine = aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')
-                allAnswers = allAnswers + confirmLine + "<br>";
+                var confirmLine = aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')  + "<br>";
+                allAnswers = allAnswers + confirmLine;
+                if (i == message.errors[0].errors.length - 1){
+                    allAnswers += "<br><br>";
+                }
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
             }
         }
@@ -758,7 +763,10 @@ function verify(code){
                     document.getElementById("answersCard").removeAttribute("hidden")
                     confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\s/g,'');
                     confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
-                    allAnswers = allAnswers + confirmLine + "<br>";
+                    allAnswers = allAnswers + confirmLine  + "<br>";
+                    if (i == lines.lines.length - 1){
+                    allAnswers += "<br><br>";
+                }
                     document.getElementById("pastAnswers").innerHTML = allAnswers;
                 }
             }

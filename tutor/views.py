@@ -8,8 +8,12 @@ from django.contrib.auth.models import User
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data
+from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, alternate_lesson_check
-# from tutor.py_helper_functions.mutation import mutate, reverse_mutate
+
+letters = [['X', 'Y', 'Z'], ['P', 'Q', 'R'], ['L', 'M', 'N'], ['I', 'J', 'K']]
+variable_key = {}
+inverse_variable_key = {}
 
 
 def catalog(request):
@@ -58,6 +62,8 @@ def tutor(request):
             # if fail, do something
             # Case 1aa: if the user has not completed set
             status = json.loads(request.body.decode('utf-8'))['status']
+            # rev_mutated = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'], inverse_variable_key)
+            # print(rev_mutated)
             if status == "success":
                 current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
                 current_user.completed_lesson_index = current_user.completed_lesson_index + 1
@@ -92,10 +98,8 @@ def tutor(request):
             # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
             if Lesson.objects.filter(lesson_name=current_user.current_lesson_name).exists():
                 current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
-                # log_item = DataLog.objects.get(user_key=User.objects.get(email=request.user.email),
-                # status="success", lesson_key=Lesson.objects.get(
-                # lesson_name=current_set[current_user.current_lesson_index])).code
-                # mutated_code = mutate(current_lesson.code.lesson_code)
+                # mutated_activity = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_variable_key)
+                # print(mutated_activity)
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,

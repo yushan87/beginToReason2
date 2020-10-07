@@ -112,7 +112,12 @@
                                         </div>
                                     </div>
                                 {% else %}
-
+                                    <div class="card mb-3">
+                                    <img class="card-img-top" src="{% static 'images/none.png' %}" alt="Card image cap">
+                                        <div class="card-body">
+                                            <a href="{% url 'tutor:catalog' %}" class="btn btn-lg select-btn btn-block" role="button" aria-pressed="true">Go To Activity Catalog</a>
+                                        </div>
+                                    </div>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}

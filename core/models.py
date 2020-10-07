@@ -213,6 +213,7 @@ class Lesson(models.Model):
 
     sub_lessons_available = models.BooleanField(default=False)
     is_alternate = models.BooleanField(default=False)
+    can_mutate = models.BooleanField(default=False)
 
     incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
 
