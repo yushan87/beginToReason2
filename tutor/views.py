@@ -86,7 +86,7 @@ def tutor(request):
                 # reversed_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
                 # print(reversed_code)
                 alternate_lesson_check(request)
-            return render(request, "tutor/tutor.html")
+            return redirect(request, "tutor/tutor.html")
 
     # Case 2: We have received a GET request requesting code
     elif request.method == 'GET':
