@@ -225,10 +225,6 @@
 }
 
 .collapsed {
-    display: none; /* hide it for small displays */
-}
-
-.collapsed {
     display: block;
     margin-left: -25%; /* same width as sidebar */
 }
