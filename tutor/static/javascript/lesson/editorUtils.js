@@ -794,7 +794,6 @@ function verify(code){
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
                 // aceEditor.session.addGutterDecoration(need this from views/verifier, "ace_correct");
-                console.log(lineNums)
                 // Unlock editor for further user edits
                 unlock();
             } else {
