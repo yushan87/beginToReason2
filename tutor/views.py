@@ -9,8 +9,8 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, alternate_lesson_check, check_feedback
-# from tutor.py_helper_functions.mutation import mutate, reverse_mutate
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, check_feedback
+#from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
 
 
@@ -88,19 +88,9 @@ def tutor(request):
                         current_user.current_lesson_set = None
                         current_user.save()
                         print("in done: ", current_user.current_lesson_set)
-                        return redirect("accounts:profile")
-                    return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
 
-                # Case 1ab: if the user has not completed set
-            elif status == 'failure':
+            return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
 
-                return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
-
-            else:
-                return JsonResponse({'resultsHeader': "<h3>Something went wrong</h3>",
-                                     'resultDetails': 'Try again or contact us.',
-                                     'reason': "no feedback",
-                                     'status': status})
 
     # Case 2: We have received a GET request requesting code
     elif request.method == 'GET':

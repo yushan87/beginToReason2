@@ -316,7 +316,7 @@ $("#checkCorrectness").click(function () {
     //is explaination long enough
     if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
-        if (boxVal.length < 50) {
+        if (boxVal.length < 10) {
             // Create the appropriate alert box
             let msg = "You must provide a long enough explanation to the right";
             createAlertBox(true, msg);

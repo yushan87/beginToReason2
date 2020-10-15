@@ -132,6 +132,7 @@ def alternate_lesson_check(request):
 
 
 def check_feedback(current_lesson, submitted_answer, status):
+
     all_answers = submitted_answer.split(";")
     type = 'None'
     if current_lesson.sub_lessons_available:
@@ -150,8 +151,12 @@ def check_feedback(current_lesson, submitted_answer, status):
     else:
         if status == 'success':
             type = 'COR'
-        else:
+        elif status == 'faliure':
             type = 'DEF'
+        else:
+            return{'resultsHeader': "<h3>Something went wrong</h3>",
+                   'resultDetails': 'Try again or contact us.',
+                   'status': status}
 
     print(type)
 
