@@ -61,7 +61,17 @@ $number-lessons: 5;
     bottom: 15px;
     width: 36vw / $number-lessons;
     content: "";
-    border-top: 5px dashed #fff;
+    border-top: 5px dotted #fff;
+}
+
+
+.bullet.last::before {
+    position: absolute;
+    right: 2vw;
+    bottom: 15px;
+    width: 40vw / $number-lessons;
+    content: "";
+    border-top: 5px solid #fff;
 }
 
 

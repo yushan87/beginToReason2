@@ -84,6 +84,14 @@
                     <div class="tab-pane fade show active" id="nav-courses" role="tabpanel"
                          aria-labelledby="nav-courses-tab">
                         <div class="page-section-heading my-3">
+                            <h3>Start New Set</h3>
+                        </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <a href="{% url 'tutor:catalog' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To Activity Catalog</a>
+                            </div>
+                        </div>
+                        <div class="page-section-heading my-3">
                             <h3>In Progress</h3>
                         </div>
                         {% for obj in LessonSet %}
@@ -102,7 +110,7 @@
                                                         <p class="card-text"><small class="text-muted">Last attempted: {{ user.last_login }}</small></p>
                                                         <form action="{% url 'tutor:tutor' %}" method="GET">
                                                             {% csrf_token %}
-                                                            <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
+                                                            <button class="inpro select-btn btn-block" type="submit" aria-pressed="true">
                                                                 Continue Training
                                                             </button>
                                                         </form>

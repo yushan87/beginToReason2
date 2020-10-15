@@ -223,3 +223,12 @@
         transform: scale(1);
     }
 }
+
+.collapsed {
+    display: block;
+    margin-left: -25%; /* same width as sidebar */
+}
+
+#row-main {
+    overflow-x: hidden; /* necessary to hide collapsed sidebar */
+}
