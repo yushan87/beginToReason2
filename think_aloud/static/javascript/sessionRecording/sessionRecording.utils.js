@@ -63,7 +63,6 @@ function partialUploadCallback(uploadSuccessful) {
 function onDataAvailable(blob) {
     blobCounter++;
     activeUploads.count++;
-    console.log('DEBUG: onDataAvailable currentSessionRecordingId is', currentSessionRecordingId + "-blob-" + blobCounter);
     // API request body
     const data = {
         ...(currentSessionRecordingId && {"uniqueID": currentSessionRecordingId + "-blob-" + blobCounter}), // eslint-disable-line
@@ -151,18 +150,13 @@ async function setupRecording(doAudio, doScreen, userId, lessonIndex, lessonName
     currentUserId = userId;
     currentSessionRecordingLessonIndex = lessonIndex;
     currentSessionRecordingLessonName = lessonName;
-    console.log('DEBUG: setup recording variables: doAudio: ', doAudio, ', doScreen: ', doScreen, ', userId: ', userId,
-        ', lessonIndex: ', lessonIndex, ', lessonName: ', lessonName);
-
-    console.log('DEBUG: current timestamp: ', Date.now());
     if (!navigator.mediaDevices) {
         console.log("ERROR: getUserMedia not supported in this browser.");
         return;
     }
 
-    console.log('setupRecording: doAudio is ', doAudio, ', doScreen is', doScreen);
     getMediaStream(doAudio, doScreen).then(stream => {
-        console.log('User permitted to share audio');
+        // console.log('User permitted to share audio');
 
         currentSessionRecordingId = generateSessionId(userId, lessonIndex, lessonName);
         startNewAttempt();
@@ -195,7 +189,6 @@ function stopRecording() {
     mediaRecorder.stop();
     // resetVariables();
     recordingState = false;
-    console.log('DEBUG: stopped recording');
 }
 
 /**

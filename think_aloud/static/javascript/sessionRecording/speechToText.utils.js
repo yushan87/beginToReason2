@@ -120,10 +120,8 @@ function onResult() {
         for (let i = event.resultIndex; i < event.results.length; ++i) {
             if (event.results[i].isFinal) {
                 updateSpeechRecognitionResult(event.results[i][0].transcript, true);
-                console.log('New final recognition result: ', event.results[i][0].transcript);
             } else {
                 updateSpeechRecognitionResult(event.results[i][0].transcript, false);
-                console.log('New tempt recognition result: ', event.results[i][0].transcript);
             }
         }
     };

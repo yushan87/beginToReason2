@@ -501,12 +501,9 @@ $("#next").click(function () {
     lock();
 
     if (activeUploads.count === 0) {
-        console.log('DEBUG: active counts is ', activeUploads.count);
         moveToNextExercise();
     } else {
-        console.log('DEBUG: the number of active counts', activeUploads.count);
         activeUploads.registerListener(function (count) {
-            console.log('DEBUG: updated count is ', count);
             if (count === 0) {
                 moveToNextExercise();
             }
@@ -694,7 +691,6 @@ function verify(code){
             for (var i = 0; i < message.errors[0].errors.length; i++) {
                 aceEditor.session.addGutterDecoration(message.errors[0].errors[i].error.ln - 1, "ace_error")
                 document.getElementById("answersCard").removeAttribute("hidden")
-                console.log('DEBUG: setting confirmLine in place 1');
                 var confirmLine = aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')
                 allAnswers = allAnswers + confirmLine + "<br>";
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
@@ -740,17 +736,13 @@ function verify(code){
 
             let vcLine = parseInt(lineNums.vcs[0].lineNum, 10)
 
-            console.log('DEBUG: lines in the verify function is ', lines);
             for (var i = 0; i < lines.lines.length; i++) {
                 if (lines.lines[i].status == "success") {
-                    console.log('DEBUG: line', i, 'is success');
                     aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_correct");
                 }
                 else {
-                    console.log('DEBUG: line', i, 'is something else:', lines.lines[i].state);
                     aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_error");
                     document.getElementById("answersCard").removeAttribute("hidden");
-                    console.log('DEBUG: setting confirmLine in place 2');
                     var confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\t/g,'');
                     allAnswers = allAnswers + confirmLine + "<br>";
                     document.getElementById("pastAnswers").innerHTML = allAnswers;
@@ -792,7 +784,6 @@ function verify(code){
                 // Unlock editor for further user edits
                 unlock();
             } else if (lines.overall == "success") {
-                console.log('DEBUG: success! the confirm line is ', confirmLine);
                 // Stop recognition if it's on
                 closeThinkAloudFunctions(true, 'correct solution', confirmLine, code); // for the think-aloud recording
 
