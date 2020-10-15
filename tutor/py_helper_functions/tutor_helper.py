@@ -151,7 +151,7 @@ def check_feedback(current_lesson, submitted_answer, status):
     else:
         if status == 'success':
             type = 'COR'
-        elif status == 'faliure':
+        elif status == 'failure':
             type = 'DEF'
         else:
             return{'resultsHeader': "<h3>Something went wrong</h3>",
