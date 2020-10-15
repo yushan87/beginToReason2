@@ -293,7 +293,7 @@ $("#checkCorrectness").click(function () {
     //is explaination long enough
     if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
-        if (boxVal.length < 50){
+        if (boxVal.length < 25){
             // Create the appropriate alert box
             let msg = "You must fill in the your explanation to the right";
             createAlertBox(true, msg);
@@ -302,7 +302,8 @@ $("#checkCorrectness").click(function () {
             return;
         }
     }
-    document.getElementById("resultCard").style.display = "block";let results = "";
+    document.getElementById("resultCard").style.display = "block";
+    let results = "";
     let code = aceEditor.session.getValue();
 
     // Check for trivials
@@ -792,6 +793,14 @@ function verify(code){
                 // Unlock editor for further user edits
                 unlock();
             }
+
+            document.getElementById("resultsHeader").innerHTML = "";
+
+            document.getElementById("resultDetails").innerHTML = '';
+            $("#resultCard").attr("class", "card text");
+            $("#resultCard").attr("style", "background: $charcoal");
+
+            document.getElementById("resultCard").style.display = "none"
 
             //setTimeout(function (){location.reload();}, 3000);
 
