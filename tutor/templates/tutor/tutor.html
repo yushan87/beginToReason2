@@ -46,8 +46,8 @@
 
 {% block main_content %}
     <div class="container-fluid" id="main">
-        <div class="row">
-            <div class="col-3 p-0">
+        <div class="row" id="row-main">
+            <div class="col-3 p-0" id="sidebar">
                 <div id="tutorialCol" class="d-flex flex-column">
                     <!-- Tutorial Content -->
                     <div class="jumbotron jumbotron-fluid py-4 mb-0">
@@ -120,7 +120,7 @@
                 </div>
             </div>
 
-            <div class="col-6 p-0">
+            <div class="col-6 p-0" id="content">
                 <div id="editorCol" class="d-flex flex-column h-100">
                     <!-- Ace Editor -->
                     <div id="editor" class="flex-grow-1 p-0"></div>
@@ -139,7 +139,7 @@
                                 <button id="fontDecrease" class="btn btn-sm btn-light mr-1" type="button">
                                     <i class="fas fa-minus fa-fw" aria-hidden="true" title="-"></i>
                                 </button>
-                                <button class="btn btn-sm btn-light" id="changeMode" type="button" title="Change Mode">
+                                <button class="btn btn-sm btn-light" id="changeMode" type="button" title="Change Mode" data-toggle="tooltip" data-placement="top" title="Change theme">
                                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-brightness-high-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
                                         <path fill-rule="evenodd" d="M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
@@ -171,6 +171,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <button id="toggleInstruct" type="button" class="btn btn-light toggle-sidebar">Hide Instructions</button>
                                 <button id="toggleOverlay" class="btn btn-light" type="button">
                                     <i class="fa fa-list" aria-hidden="true"></i> View Lessons
                                 </button>
@@ -202,24 +203,24 @@
                                     {% if currLessonNum == 1 %}
                                         <div class="bullet completed">-</div>
                                     {% else %}
-                                        <div class="bullet completed">{{currLessonNum|sub:1}}</div>
+                                        <div data-toggle="tooltip" title="The last lesson you completed" class="bullet completed">{{currLessonNum|sub:1}}</div>
                                     {% endif %}
                                 </div>
                                 <div class="step">
-                                    <div class="bullet current">{{currLessonNum}}</div>
+                                    <div data-toggle="tooltip" title="The lesson you are currently working on" class="bullet current">{{currLessonNum}}</div>
                                 </div>
                                 <div class="step">
                                     {% if currLessonNum == setLength %}
-                                        <div class="bullet end">-</div>
+                                        <div class="bullet last">-</div>
                                     {% else %}
-                                        <div class="bullet end">{{currLessonNum|add:1}}</div>
+                                        <div data-toggle="tooltip" title="The next lesson you will encounter" class="bullet last">{{currLessonNum|add:1}}</div>
                                     {% endif %}
                                 </div>
                                 <div class="step">
                                     {% if currLessonNum|add:1 >= setLength %}
                                         <div class="bullet end">-</div>
                                     {% else %}
-                                        <div class="bullet end">{{currLessonNum|add:2}}</div>
+                                        <div class="bullet end" data-toggle="tooltip" title="The last lesson in the set">{{setLength}}</div>
                                     {% endif %}
                                 </div>
                             </div>
@@ -238,10 +239,13 @@
                             </div>
                         </div>
                     </div>
+                <div class="progress">
+                    <div class="progress-bar bg-success" id="percent" role="progressbar" style="width: {{currLessonNum|sub:1|div:setLength|mul:100}}%;" aria-valuemin="0" aria-valuemax="100">{{currLessonNum|sub:1|div:setLength|mul:100|floatformat }}%</div>
+                </div>
                     <script src="{% static 'javascript/lesson/editorUtils.js' %}"></script>
                 </div>
             </div>
-            <div class="col-3 p-0" id="right-col" style="background-color: #333;">
+            <div class="col-3 resultPanel p-0" id="right-col" style="background-color: #333;">
                 <div id="resultCard" class="card">
                     <h5 class="card-header text-center" id="resultsHeader"></h5>
                     <div class="card-body">
@@ -293,10 +297,18 @@
                     {% elif lesson.reason.reasoning_type == 'None' %}
                     {% endif %}
                     <div id="results">
-                                <b>
-                                    Represent your attitude towards code verification:
-                                </b>
-                            </div>
+                        <b>
+                            Represent your attitude towards code verification:
+                        </b>
+                        <a href="#" data-toggle="tooltip" title="This is to help identify which topics you need more help with!">
+                            <i class="fa fa-question-circle" aria-hidden="true"></i>
+                        </a>
+                        <script>
+                            $(document).ready(function(){
+                                $('[data-toggle="tooltip"]').tooltip();
+                            });
+                        </script>
+                    </div>
                     <form id="smileys" style="text-align: center;">
                         {% if mood == "upset" %}
                             <input type="radio" name="smiley" value="upset" class="upset" checked="checked">

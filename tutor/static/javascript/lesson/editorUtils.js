@@ -20,6 +20,7 @@ let overlayOpen = false;
 let allAnswers = "";
 let multiAnswer;
 let submitAnswers="";
+let instructOpen = true;
 
 
 ///////////////////////////////////////
@@ -317,7 +318,7 @@ $("#checkCorrectness").click(function () {
         let boxVal = document.forms["usrform"]["comment"].value;
         if (boxVal.length < 50) {
             // Create the appropriate alert box
-            let msg = "You must fill a long enough explanation to the right";
+            let msg = "You must provide a long enough explanation to the right";
             createAlertBox(true, msg);
             $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
             unlock();
@@ -486,6 +487,22 @@ $("#toggleOverlay").click(function () {
     }
 });
 
+$(".toggle-sidebar").click(function () {
+    $("#sidebar").toggleClass("collapsed");
+    $("#content").toggleClass("col-md-6 col-md-8");
+    $("#right-col").toggleClass("col-md-3 col-md-4");
+    if(instructOpen){
+        document.getElementById("toggleInstruct").innerHTML = "Show Instructions";
+        instructOpen = false;
+    }
+    else{
+        document.getElementById("toggleInstruct").innerHTML = "Hide Instructions";
+        instructOpen = true;
+    }
+
+    return false;
+});
+
 
 /*
  * Function for x of overlay
@@ -595,6 +612,7 @@ $("#prev").click(function () {
 
     location.reload();
 });
+
 
 /*
 $.ajax({
