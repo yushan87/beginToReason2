@@ -190,6 +190,11 @@ class IncorrectAnswer(models.Model):
 
 
 class Feedback(models.Model):
+    """
+        Contains a model of Feedback for students.
+
+        @param models.Model The base model
+        """
 
     headline = models.CharField(max_length=50, default='Try Again!')
 
