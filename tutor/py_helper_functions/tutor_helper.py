@@ -132,9 +132,7 @@ def alternate_lesson_check(request):
 
 
 def check_feedback(current_lesson, submitted_answer, status):
-    print(submitted_answer)
     all_answers = submitted_answer.split(";")
-    print(all_answers)
     type = 'None'
     if current_lesson.sub_lessons_available:
         queried_set = current_lesson.incorrect_answers.all()

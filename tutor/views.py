@@ -90,14 +90,12 @@ def tutor(request):
                         current_user.current_lesson_set = None
                         current_user.save()
                         print("in done: ", current_user.current_lesson_set)
-                        print("FINISHED SET REDIRECT TO PROFILE")
-                        print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
                         return redirect("accounts:profile")
                     return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
 
                 # Case 1ab: if the user has not completed set
             elif status == 'failure':
-                print("FALSE ANSWER Attempting to use JsonResponse")
+
                 return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
 
             else:
@@ -155,9 +153,7 @@ def tutor(request):
                                    'setLength': 11,
                                    'currSet': current_set,
                                    'mood': current_user.mood})
-    print("REDIRECT HAPPENS HERE")
-    print(request.method)
-    print(datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3])
+
     return redirect("accounts:profile")
 
 
