@@ -59,6 +59,7 @@ def profile(request):
                       the user is authenticated.
     """
     # Query for user in the 'User' table
+    print("GET IN  ACCOUNTS PROFILE")
     user = User.objects.get(email=request.user.email)
 
     # Case 1: The user email exists in our user information table.
@@ -70,6 +71,8 @@ def profile(request):
 
             # Case 1a: The user information model is valid, therefore we can render the profile page.
             request.session.set_expiry(0)
+            print("USER EXISTS IN ACCOUNTS   ", request.method)
+            print(request)
             return render(request, "accounts/profile.html", {'name': user_info.user_nickname, 'LessonSet': LessonSet.objects.all()})
         except ValidationError:
             # Case 1b: The user information model is invalid,

@@ -188,6 +188,57 @@ class IncorrectAnswer(models.Model):
         return self.lesson_text + ': ' + self.answer_type + '-' + self.answer_text
 
 
+
+class Feedback(models.Model):
+    """
+        Contains a model of Feedback for students.
+
+        @param models.Model The base model
+        """
+
+    headline = models.CharField(max_length=50, default='Try Again!')
+
+    default = 'DEF'
+    correct = 'COR'
+    simplify = 'SIM'
+    self = 'SELF'
+    concrete = 'NUM'
+    initial = 'INIT'
+    algebra = 'ALG'
+    variable = 'VAR'
+    sub_lesson = 'SUB'
+
+    feedback_options = [
+        (default, 'Default'),
+        (correct, 'Correct'),
+        (simplify, 'Simplify'),
+        (self, 'Self Reference'),
+        (concrete, 'Used Concrete Value as Answer'),
+        (initial, 'Missing # Symbol'),
+        (algebra, 'Algebra'),
+        (variable, 'Variable'),
+        (sub_lesson, 'Sub_Lesson')
+    ]
+
+    feedback_type = models.CharField(
+        max_length=4,
+        choices=feedback_options,
+        default=default
+    )
+
+    feedback_text = models.TextField(max_length=500)
+
+    def __str__(self):
+        """"
+        function __str__ is called to display the Feedback texts. Helps for admin usability.
+
+        Returns:
+            str: choice text
+        """
+        return self.feedback_type + ': ' + self.feedback_text
+
+
+
 class Lesson(models.Model):
     """
     Contains a model of a Lesson.
@@ -211,11 +262,17 @@ class Lesson(models.Model):
 
     correct = models.CharField(max_length=50, default='Lesson To Go To')
 
-    sub_lessons_available = models.BooleanField(default=False)
     is_alternate = models.BooleanField(default=False)
     can_mutate = models.BooleanField(default=False)
 
+    sub_lessons_available = models.BooleanField(default=False)
     incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
+
+    has_feedback = models.BooleanField(default=False)
+    feedback = models.ManyToManyField(Feedback, blank=True)
+
+
+
 
     simplify = models.CharField(max_length=50, default='None')
     # simplify_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='simplify_answers')

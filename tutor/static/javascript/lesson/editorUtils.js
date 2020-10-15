@@ -19,6 +19,7 @@ let name;
 let overlayOpen = false;
 let allAnswers = "";
 let multiAnswer;
+let submitAnswers="";
 let instructOpen = true;
 
 
@@ -315,7 +316,7 @@ $("#checkCorrectness").click(function () {
     //is explaination long enough
     if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
-        if (boxVal.length < 50) {
+        if (boxVal.length < 10) {
             // Create the appropriate alert box
             let msg = "You must provide a long enough explanation to the right";
             createAlertBox(true, msg);
@@ -642,7 +643,28 @@ $.postJSON = (url, data, callback) => {
         headers: {
             'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
         },
-        success: callback
+        success: function(data){
+            document.getElementById("resultsHeader").innerHTML = data.resultsHeader;
+            document.getElementById("resultDetails").innerHTML = data.resultDetails;
+            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+
+            if (data.status == "success") {
+                $("#resultCard").attr("class", "card bg-success text-white");
+                $("#next").removeAttr("disabled", "disabled");
+                $("#checkCorrectness").attr("disabled", "disabled");
+                unlock();
+                setTimeout(function (){location.reload();}, 3000);
+            } else if (data.status == 'failure'){
+                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                $("#resultCard").attr("class", "card bg-danger text-white");
+                unlock();
+            } else {
+                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
+                $("#resultCard").attr("class", "card bg-danger text-white");
+                unlock();
+            }
+        }
+
     });
 };
 
@@ -775,6 +797,10 @@ function verify(code){
             for (var i = 0; i < lines.lines.length; i++) {
                 if (lines.lines[i].status == "success") {
                     aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_correct");
+                    confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\s/g,'');
+                    confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
+                    allAnswers = allAnswers + confirmLine  + "<br>";
+                    submitAnswers = submitAnswers + confirmLine;
                 }
                 else {
                     aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_error");
@@ -782,6 +808,7 @@ function verify(code){
                     confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\s/g,'');
                     confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
                     allAnswers = allAnswers + confirmLine  + "<br>";
+                    submitAnswers = submitAnswers + confirmLine;
                     if (i == lines.lines.length - 1){
                     allAnswers += "<br><br>";
                 }
@@ -799,7 +826,8 @@ function verify(code){
             //data.author = author;
             //data.author = "user.googleId;"   //make userid
             //data.milliseconds = getTime();
-            data.answer = confirmLine;
+            data.answer = submitAnswers;
+
             data.code = code;
             if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
             else if (hasMC){data.explanation = multiAnswer;}
@@ -815,10 +843,10 @@ function verify(code){
                 }
             }
 
-            $.postJSON("tutor", data, (results) => {});
 
 
-            if (lines.overall == "failure") {
+
+            /*if (lines.overall == "failure") {
                 document.getElementById("resultsHeader").innerHTML = "<h3>Incorrect answer</h3>";
                 document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J?";
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
@@ -828,27 +856,13 @@ function verify(code){
 
                 // Unlock editor for further user edits
                 unlock();
-            } else if (lines.overall == "success") {
-                document.getElementById("resultsHeader").innerHTML = "<h3>Correct!</h3>";
-                document.getElementById("resultDetails").innerHTML = "Please proceed to the next lesson.";
-                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                $("#resultCard").attr("class", "card bg-success text-white");
-                $("#next").removeAttr("disabled", "disabled");
-                $("#checkCorrectness").attr("disabled", "disabled");
-                // aceEditor.session.addGutterDecoration(need this from views/verifier, "ace_correct");
-                // Unlock editor for further user edits
-                unlock();
-                setTimeout(function (){location.reload();}, 3000);
-            } else {
-                document.getElementById("resultsHeader").innerHTML = "<h3>Something went wrong</h3>";
-                document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
-                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                $("#resultCard").attr("class", "card bg-danger text-white");
+                //setTimeout(function (){location.reload();}, 3000);
+                //Location.reload();*/
 
-                // Unlock editor for further user edits
-                unlock();
-            }
             // setTimeout(function (){location.reload();}, 3000);
+            $.postJSON("tutor", data, (results) => {});
+            submitAnswers = '';
+
         }
     });
 }

@@ -129,3 +129,37 @@ def alternate_lesson_check(request):
                         current_user.current_lesson_name = current_lesson.variable
                         current_user.save()
     return True
+
+
+def check_feedback(current_lesson, submitted_answer, status):
+
+    all_answers = submitted_answer.split(";")
+    type = 'None'
+    if current_lesson.sub_lessons_available:
+        queried_set = current_lesson.incorrect_answers.all()
+        for ans in all_answers:
+            search = ans + ';'
+            for each in queried_set:
+                if search == each.answer_text:
+                    type = each.answer_type
+                    print("each: ", each, ' answer_text: ', each.answer_text)
+                    print(type)
+                    break
+
+        if type == 'None':
+            type = 'DEF'
+    else:
+        if status == 'success':
+            type = 'COR'
+        elif status == 'faliure':
+            type = 'DEF'
+        else:
+            return{'resultsHeader': "<h3>Something went wrong</h3>",
+                   'resultDetails': 'Try again or contact us.',
+                   'status': status}
+
+    print(type)
+
+    return {'resultsHeader': current_lesson.feedback.get(feedback_type=type).headline,
+            'resultDetails': current_lesson.feedback.get(feedback_type=type).feedback_text,
+            'status': status}

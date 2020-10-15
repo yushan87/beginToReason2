@@ -5,11 +5,13 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, alternate_lesson_check
-# from tutor.py_helper_functions.mutation import mutate, reverse_mutate
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, check_feedback
+#from tutor.py_helper_functions.mutation import mutate, reverse_mutate
+
 
 
 letters = [['X', 'Y', 'Z'], ['P', 'Q', 'R'], ['L', 'M', 'N'], ['I', 'J', 'K']]
@@ -55,6 +57,7 @@ def tutor(request):
 
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
+
         # Case 1a: if the user exists
         if user_auth(request):
             # submitted_json = json.loads(request.body.decode('utf-8'))
@@ -62,9 +65,16 @@ def tutor(request):
             # if success, return next lesson
             # if fail, do something
             # Case 1aa: if the user has not completed set
-            status = json.loads(request.body.decode('utf-8'))['status']
+
             # rev_mutated = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'], inverse_variable_key)
             # print(rev_mutated)
+
+            current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+            current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
+            submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
+            status = json.loads(request.body.decode('utf-8'))['status']
+            print("status: ", status)
+
             if status == "success":
                 current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
                 current_user.completed_lesson_index = current_user.completed_lesson_index + 1
@@ -78,18 +88,13 @@ def tutor(request):
                         current_user.current_lesson_set = None
                         current_user.save()
                         print("in done: ", current_user.current_lesson_set)
-                        return render(request, "accounts/profile.html",
-                                      {'name': current_user.user_nickname, 'LessonSet': LessonSet.objects.all()})
-                # Case 1ab: if the user has not completed set
-            else:
-                # this is where we will check the answer for alternate lesson
-                # reversed_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
-                # print(reversed_code)
-                alternate_lesson_check(request)
-            return render(request, "tutor/tutor.html")
+
+            return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
+
 
     # Case 2: We have received a GET request requesting code
     elif request.method == 'GET':
+
         # Ensure user exists
         # Case 2a: if the user exists
         if user_auth(request) and set_not_complete(request):
@@ -136,7 +141,9 @@ def tutor(request):
                                    'setLength': 11,
                                    'currSet': current_set,
                                    'mood': current_user.mood})
+
     return redirect("accounts:profile")
+
 
 
 @login_required(login_url='/accounts/login/')

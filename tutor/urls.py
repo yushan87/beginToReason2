@@ -12,5 +12,5 @@ app_name = 'tutor'
 urlpatterns = [
     path('catalog', views.catalog, name='catalog'),
     path('tutor', views.tutor, name='tutor'),
-    path('previous', views.previous, name='prev'),
+    path('previous', views.previous, name='prev')
 ]
