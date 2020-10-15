@@ -11,7 +11,6 @@ def mutate(activity_string, letters, variable_key, inverse_variable_key):
          letters (2D array): array of groups of letters to use in exercise
          variable_key (dict): maps the original variables with the new ones
          inverse_variable_key (dict): maps the new variables to the old ones
-
     Returns:
         String: A string of the mutated activity
     """

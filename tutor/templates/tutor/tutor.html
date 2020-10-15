@@ -243,14 +243,9 @@
             </div>
             <div class="col-3 p-0" id="right-col" style="background-color: #333;">
                 <div id="resultCard" class="card">
-                    <h5 class="card-header text-center" id="resultsHeader">
-                        {% if feedback_header %}
-                            {{feedback_header}}
-                        {% endif %}
-                    </h5>
+                    <h5 class="card-header text-center" id="resultsHeader"></h5>
                     <div class="card-body">
                         <p class="card-text" id="resultDetails"></p>
-                            {{feedback_text}}
                     </div>
                 </div>
                 <div id="explainCard" class="card" style="position: absolute; bottom: 0; width: 98%; margin: 5px 5px 5px 5px; background-color: #E0E0E0; color: #333;">
@@ -299,7 +294,7 @@
                     {% endif %}
                     <div id="results">
                                 <b>
-                                    How do you feel about code reasoning?
+                                    Represent your attitude towards code verification:
                                 </b>
                             </div>
                     <form id="smileys" style="text-align: center;">

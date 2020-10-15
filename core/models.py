@@ -107,33 +107,6 @@ class Reasoning(models.Model):
     @param models.Model The base model
     """
     reasoning_name = models.CharField(max_length=30)
-
-    none = 'NONE'
-    start = 'START'
-    simplify = 'SIM'
-    self = 'SELF'
-    concrete = 'NUM'
-    initial = 'INIT'
-    algebra = 'ALG'
-    variable = 'VAR'
-
-    response_opt = [
-        (start, 'Start'),
-        (none, 'None'),
-        (simplify, 'Simplify'),
-        (self, 'Self Reference'),
-        (concrete, 'Used Concrete Value as Answer'),
-        (initial, 'Missing # Symbol'),
-        (algebra, 'Algebra'),
-        (variable, 'Variable')
-    ]
-
-    reason_occurrence = models.CharField(
-        max_length=5,
-        choices=response_opt,
-        default=none
-    )
-
     reasoning_question = models.ForeignKey(Question, on_delete=models.CASCADE)
 
     multiple = 'MC'
@@ -169,10 +142,10 @@ class Reasoning(models.Model):
         Returns:
             str: reasoning name
         """
-        return self.reason_occurrence + ': ' + self.reasoning_name
+        return self.reasoning_name
 
 
-class Incorrect_Answer(models.Model):
+class IncorrectAnswer(models.Model):
     """
     Contains a model of Multiple Choice Answers. Each choice is attached to one Question.
 
@@ -213,6 +186,7 @@ class Incorrect_Answer(models.Model):
             str: choice text
         """
         return self.lesson_text + ': ' + self.answer_type + '-' + self.answer_text
+
 
 
 class Feedback(models.Model):
@@ -260,7 +234,6 @@ class Feedback(models.Model):
 
 
 
-
 class Lesson(models.Model):
     """
     Contains a model of a Lesson.
@@ -280,20 +253,20 @@ class Lesson(models.Model):
     instruction = models.TextField(default='Please complete the Confirm assertion(s) and check correctness.')
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
     reference_set = models.ManyToManyField(Reference, blank=True)
-    reason = models.ManyToManyField(Reasoning, blank=True)
-
-
-    incorrect_answers = models.ManyToManyField(Incorrect_Answer, blank=True)
-    feedback = models.ManyToManyField(Feedback, blank=True)
-
-    number_of_attempts = models.IntegerField(default=100)
-
+    reason = models.ForeignKey(Reasoning, on_delete=models.CASCADE, blank=True, null=True)
 
     correct = models.CharField(max_length=50, default='Lesson To Go To')
 
-    sub_lessons_available = models.BooleanField(default=False)
     is_alternate = models.BooleanField(default=False)
     can_mutate = models.BooleanField(default=False)
+
+    sub_lessons_available = models.BooleanField(default=False)
+    incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
+
+    has_feedback = models.BooleanField(default=False)
+    feedback = models.ManyToManyField(Feedback, blank=True)
+
+
 
 
     simplify = models.CharField(max_length=50, default='None')

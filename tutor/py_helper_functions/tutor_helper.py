@@ -37,7 +37,6 @@ def lesson_set_auth(request):
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
         current_user.current_lesson_set = current_set
         current_user.current_lesson_name = current_set.lessons.all()[0].lesson_name
-
         current_user.current_lesson_index = 0
         current_user.completed_lesson_index = 0
         current_user.mood = "neutral"
@@ -132,19 +131,32 @@ def alternate_lesson_check(request):
     return True
 
 
-def select_feedback(request):
-    submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
-    current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-    current_set = current_user.current_lesson_set.lessons.all()
-    if current_set.exists() and Lesson.objects.filter(lesson_name=current_user.current_lesson_name).exists():
-        current_lesson = Lesson.objects.filter(lesson_name=current_user.current_lesson_name)[0]
+def check_feedback(current_lesson, submitted_answer, status):
+    print(submitted_answer)
+    all_answers = submitted_answer.split(";")
+    print(all_answers)
+    type = 'None'
+    if current_lesson.sub_lessons_available:
         queried_set = current_lesson.incorrect_answers.all()
-        feedback_set = current_lesson.feedback.all()
-        if not queried_set:
-            return feedback_set.get(feedback_type='DEF')
-        else:
+        for ans in all_answers:
+            search = ans + ';'
             for each in queried_set:
-                if submitted_answer == each.answer_text:
-                    return feedback_set.get(feedback_type=each.answer_type)
-        return feedback_set.get(feedback_type='COR')
-    return False
+                if search == each.answer_text:
+                    type = each.answer_type
+                    print("each: ", each, ' answer_text: ', each.answer_text)
+                    print(type)
+                    break
+
+        if type == 'None':
+            type = 'DEF'
+    else:
+        if status == 'success':
+            type = 'COR'
+        else:
+            type = 'DEF'
+
+    print(type)
+
+    return {'resultsHeader': current_lesson.feedback.get(feedback_type=type).headline,
+            'resultDetails': current_lesson.feedback.get(feedback_type=type).feedback_text,
+            'status': status}
