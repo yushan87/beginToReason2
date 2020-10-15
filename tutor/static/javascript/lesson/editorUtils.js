@@ -270,21 +270,27 @@ $("#checkCorrectness").click(function () {
 
     lock();
 
+    /*** Think-aloud: Handle an attempt end ***/
+
+
+
     //is explaination long enough
-    let boxVal = document.forms["usrform"]["comment"].value;
+
+   /* let boxVal = document.forms["usrform"]["comment"].value;
     if (hasFR && boxVal.length < 0) {
         // Create the appropriate alert box
         let msg = "You must fill in the your explanation to the right";
         createAlertBox(true, msg);
         $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
 
-    } else {
+    } else {*/
         document.getElementById("resultCard").style.display = "block";let results = "";
         let code = aceEditor.session.getValue();
 
         // Check for trivials
         let trivials = checkForTrivials(code);
         if (trivials.overall == "failure") {
+            closeThinkAloudFunctions(false, 'trivial', aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,''), code); // for the think-aloud recording
             document.getElementById("resultsHeader").innerHTML = "<h3>Trivial answer</h3>";
             document.getElementById("resultDetails").innerHTML = "Submission does not contain enough information. Try again!";
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
@@ -318,7 +324,7 @@ $("#checkCorrectness").click(function () {
 
             verify(code)
         }
-    }
+    // }
 });
 
 /*
@@ -494,7 +500,26 @@ function unlock() {
 $("#next").click(function () {
     lock();
 
-    $.ajax({
+    if (activeUploads.count === 0) {
+        console.log('DEBUG: active counts is ', activeUploads.count);
+        moveToNextExercise();
+    } else {
+        console.log('DEBUG: the number of active counts', activeUploads.count);
+        activeUploads.registerListener(function (count) {
+            console.log('DEBUG: updated count is ', count);
+            if (count === 0) {
+                moveToNextExercise();
+            }
+        });
+
+        setTimeout(function () {
+            moveToNextExercise();
+        }, 10000);
+    }
+});
+
+function moveToNextExercise() {
+     $.ajax({
         url: 'tutor',
         datatype: 'json',
         type: 'GET',
@@ -507,9 +532,9 @@ $("#next").click(function () {
         }
     });
 
-    location.reload();
-    unlock();
-});
+     location.reload();
+     unlock();
+}
 
 /*
  * Function for moving to prev lesson.
@@ -647,7 +672,7 @@ function decode(data) {
 
 function verify(code){
     var vcs = {}
-    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project')
+    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project');
 
     // Connection opened
     ws.addEventListener('open', function (event) {
@@ -669,6 +694,7 @@ function verify(code){
             for (var i = 0; i < message.errors[0].errors.length; i++) {
                 aceEditor.session.addGutterDecoration(message.errors[0].errors[i].error.ln - 1, "ace_error")
                 document.getElementById("answersCard").removeAttribute("hidden")
+                console.log('DEBUG: setting confirmLine in place 1');
                 var confirmLine = aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')
                 allAnswers = allAnswers + confirmLine + "<br>";
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
@@ -688,10 +714,12 @@ function verify(code){
             confirmLine = confirmLine.replace(/Confirm/g, "")
             data.answer = confirmLine;
             data.code = code;
-            data.explanation = document.forms["usrform"]["comment"].value;
+            // data.explanation = document.forms["usrform"]["comment"].value;
             data.status = message.status;
 
             $.postJSON("tutor", data, (results) => {});
+
+            closeThinkAloudFunctions(false, 'syntax', confirmLine, code); // for the think-aloud recording
 
             // Unlock editor for further user edits
             ws.close()
@@ -712,13 +740,17 @@ function verify(code){
 
             let vcLine = parseInt(lineNums.vcs[0].lineNum, 10)
 
+            console.log('DEBUG: lines in the verify function is ', lines);
             for (var i = 0; i < lines.lines.length; i++) {
                 if (lines.lines[i].status == "success") {
+                    console.log('DEBUG: line', i, 'is success');
                     aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_correct");
                 }
                 else {
+                    console.log('DEBUG: line', i, 'is something else:', lines.lines[i].state);
                     aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_error");
-                    document.getElementById("answersCard").removeAttribute("hidden")
+                    document.getElementById("answersCard").removeAttribute("hidden");
+                    console.log('DEBUG: setting confirmLine in place 2');
                     var confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\t/g,'');
                     allAnswers = allAnswers + confirmLine + "<br>";
                     document.getElementById("pastAnswers").innerHTML = allAnswers;
@@ -735,17 +767,19 @@ function verify(code){
             //data.author = author;
             //data.author = "user.googleId;"   //make userid
             //data.milliseconds = getTime();
-            confirmLine = confirmLine.replace(/\s+/g, "")
-            confirmLine = confirmLine.replace(/Confirm/g, "")
-            data.answer = confirmLine;
+            // confirmLine = confirmLine.replace(/\s+/g, "")
+            // confirmLine = confirmLine.replace(/Confirm/g, "")
+            data.answer = 'Answer confirmLine';
             data.code = code;
-            data.explanation = document.forms["usrform"]["comment"].value;
+            // data.explanation = document.forms["usrform"]["comment"].value;
+            data.explanation = 'comment explanation';
             data.status = lines.overall;
 
             $.postJSON("tutor", data, (results) => {});
 
 
             if (lines.overall == "failure") {
+
                 document.getElementById("resultsHeader").innerHTML = "<h3>Incorrect answer</h3>";
                 document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J? <br>3. Do you understand the distinction between J and &lt;J&gt;? <br>4. Do you understand the specification parameter modes (e.g. Updates)?";
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
@@ -753,9 +787,15 @@ function verify(code){
                 //add line errors
                 //this will need to be fixed based on verifier return
 
+                closeThinkAloudFunctions(false, 'incorrect solution', confirmLine, code); // for the think-aloud recording
+
                 // Unlock editor for further user edits
                 unlock();
             } else if (lines.overall == "success") {
+                console.log('DEBUG: success! the confirm line is ', confirmLine);
+                // Stop recognition if it's on
+                closeThinkAloudFunctions(true, 'correct solution', confirmLine, code); // for the think-aloud recording
+
                 document.getElementById("resultsHeader").innerHTML = "<h3>Correct!</h3>";
                 document.getElementById("resultDetails").innerHTML = "On to the next lesson.";
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
@@ -763,7 +803,7 @@ function verify(code){
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
                 // aceEditor.session.addGutterDecoration(need this from views/verifier, "ace_correct");
-console.log(lineNums)
+                console.log(lineNums)
                 // Unlock editor for further user edits
                 unlock();
             } else {
@@ -771,6 +811,8 @@ console.log(lineNums)
                 document.getElementById("resultDetails").innerHTML = "Try again or contact us.";
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
+
+                closeThinkAloudFunctions(false, 'something went wrong', confirmLine, code); // for the think-aloud recording
 
                 // Unlock editor for further user edits
                 unlock();

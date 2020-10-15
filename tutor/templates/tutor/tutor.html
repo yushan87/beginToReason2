@@ -30,10 +30,8 @@
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
 
             // session recording and transcribing
-            if ("{{screen_record}}" == true){
-                setupRecording(); // for recording a session
-                transcribeAudio(); // for transcribing audio
-            }
+            initThinkAloudFunctions("{{ audio_record }}" === 'True', "{{ screen_record }}" === 'True', "{{ audio_transcribe }}" === 'True',
+                "{{ user_email }}", "{{ currLessonNum }}", "{{ lessonName }}");
         });
     </script>
 
@@ -52,7 +50,7 @@
                     <!-- Tutorial Content -->
                     <div class="jumbotron jumbotron-fluid py-4 mb-0">
                         <div class="container text-center">
-                            <h1 id="lessonName">{{lessonName}}</h1>
+                            <h1 id="lessonName">{{ lessonName }}</h1>
                         </div>
                     </div>
                     <div id="tutorialContent" class="p-3">
@@ -81,11 +79,11 @@
                             Reference Material
                         </h3>
                         <br>
-                        <div class="card bg-light mb-3" >
+                        <div class="card bg-light mb-3">
                             <div class="card-body">
                                 <div class="" id="referenceMaterial">
                                     {% for obj in referenceSet %}
-                                        <p> {{ obj | safe}} </p>
+                                        <p> {{ obj | safe }} </p>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -97,7 +95,7 @@
                         <br>
                         {% for obj in concept %}
                             <span class="badge badge-info ml-2">
-                                {{ obj | safe}}
+                                {{ obj | safe }}
                             </span>
                         {% endfor %}
                     </div>
@@ -110,7 +108,8 @@
                 <div class="overlay-content">
                     <ol>
                         {% for obj in currSet %}
-                            <li id="lessonList" style="font-size: 150%; color: white"><a href="#">{{ obj | safe }}</a></li>
+                            <li id="lessonList" style="font-size: 150%; color: white"><a href="#">{{ obj | safe }}</a>
+                            </li>
                         {% endfor %}
                     </ol>
                 </div>
@@ -136,9 +135,11 @@
                                     <i class="fas fa-minus fa-fw" aria-hidden="true" title="-"></i>
                                 </button>
                                 <button class="btn btn-sm btn-light" id="changeMode" type="button" title="Change Mode">
-                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-brightness-high-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-brightness-high-fill"
+                                         fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
-                                        <path fill-rule="evenodd" d="M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                                        <path fill-rule="evenodd"
+                                              d="M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
                                     </svg>
                                     Light
                                 </button>
@@ -150,15 +151,19 @@
                                         <div class="modal-content">
                                             <div class="modal-header">
                                                 <h5 class="modal-title w-100 text-center" id="are-you-sure">
-                                                    Are you sure you want to reset back to the default code template? You will lose your current code.
+                                                    Are you sure you want to reset back to the default code template?
+                                                    You will lose your current code.
                                                 </h5>
                                             </div>
                                             <div class="modal-footer">
-                                                <button type="button" class="btn btn-block right-icon-holder" id="dont" data-dismiss="modal">
+                                                <button type="button" class="btn btn-block right-icon-holder" id="dont"
+                                                        data-dismiss="modal">
                                                     Don't Reset
                                                     <i class="fa fa-times" aria-hidden="true"></i>
                                                 </button>
-                                                <button id="resetCode" class="btn btn-danger btn-block right-icon-holder" type="button" data-toggle="tooltip" data-placement="top" title="Reset">
+                                                <button id="resetCode"
+                                                        class="btn btn-danger btn-block right-icon-holder" type="button"
+                                                        data-toggle="tooltip" data-placement="top" title="Reset">
                                                     Confirm Reset
                                                     <i class="fa fa-check" aria-hidden="true"></i>
                                                 </button>
@@ -173,8 +178,9 @@
                                         data-placement="top" title="Get Help">
                                     <i class="far fa-life-ring"></i>
                                 </button>
-                                <button type="button" class="btn btn-danger" title="Reset" data-toggle="modal" data-target="#areYouSure">
-                                  <i class="fa">&#xf021;</i>
+                                <button type="button" class="btn btn-danger" title="Reset" data-toggle="modal"
+                                        data-target="#areYouSure">
+                                    <i class="fa">&#xf021;</i>
                                 </button>
                                 <button id="checkCorrectness" class="btn btn-success" type="button"
                                         data-toggle="tooltip" data-placement="top" title="Check Correctness">
@@ -203,45 +209,45 @@
                                     {% if currLessonNum <= 2 %}
                                         <div class="bullet completed">-</div>
                                     {% else %}
-                                        <div class="bullet completed">{{currLessonNum|sub:2}}</div>
+                                        <div class="bullet completed">{{ currLessonNum|sub:2 }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="step">
                                     {% if currLessonNum == 1 %}
                                         <div class="bullet completed">-</div>
                                     {% else %}
-                                        <div class="bullet completed">{{currLessonNum|sub:1}}</div>
+                                        <div class="bullet completed">{{ currLessonNum|sub:1 }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="step">
-                                    <div class="bullet current">{{currLessonNum}}</div>
+                                    <div class="bullet current">{{ currLessonNum }}</div>
                                 </div>
                                 <div class="step">
                                     {% if currLessonNum == setLength %}
                                         <div class="bullet end">-</div>
                                     {% else %}
-                                        <div class="bullet end">{{currLessonNum|add:1}}</div>
+                                        <div class="bullet end">{{ currLessonNum|add:1 }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="step">
                                     {% if currLessonNum|add:1 >= setLength %}
                                         <div class="bullet end">-</div>
                                     {% else %}
-                                        <div class="bullet end">{{currLessonNum|add:2}}</div>
+                                        <div class="bullet end">{{ currLessonNum|add:2 }}</div>
                                     {% endif %}
                                 </div>
                             </div>
                             <div>
                                 {% if currLessonNum < completedLessonNum %}
                                     <button id="next" type="button" class="btn btn-light btn-md"
-                                        data-toggle="tooltip" data-placement="top"
-                                        title="Next">Next
-                                </button>
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Next">Next
+                                    </button>
                                 {% else %}
                                     <button id="next" type="button" class="btn btn-light btn-md"
-                                        data-toggle="tooltip" data-placement="top"
-                                        title="Next" disabled>Next
-                                </button>
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Next" disabled>Next
+                                    </button>
                                 {% endif %}
                             </div>
                         </div>
@@ -256,52 +262,58 @@
                         <p class="card-text" id="resultDetails"></p>
                     </div>
                 </div>
-                <div id="explainCard" class="card" style="position: absolute; bottom: 0; width: 98%; margin: 5px 5px 5px 5px; background-color: #E0E0E0; color: #333;">
+                <div id="explainCard" class="card"
+                     style="position: absolute; bottom: 0; width: 98%; margin: 5px 5px 5px 5px; background-color: #E0E0E0; color: #333;">
                     {% if reason_type == 'Text' %}
                         <form id="usrform">
                             <div id="results">
                                 <b>
-                                    {{reason}}
+                                    {{ reason }}
                                 </b>
                             </div>
-                            <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
+                            <textarea id="explainBox" rows="4" name="comment" form="usrform"
+                                      placeholder="Type answer here..." required></textarea>
                         </form>
                     {% elif reason_type == 'MC' %}
                         <div class="form-check">
-                            {{reason}}
+                            {{ reason }}
                             {% for obj in mc_set %}
                                 <br>
-                                <input class="form-check-input" type="radio" name="selectExplain" id="select" value="{{ obj | safe}}">
+                                <input class="form-check-input" type="radio" name="selectExplain" id="select"
+                                       value="{{ obj | safe }}">
                                 <label class="form-check-label" for="exampleRadios1" id="radio">
-                                    {{ obj | safe}}
+                                    {{ obj | safe }}
                                 </label>
                             {% endfor %}
                         </div>
-                    {% else %}
+                    {% elif reason_type == 'Both' %}
                         <form id="usrform">
                             <div id="results">
                                 <b>
-                                    {{reason}}
+                                    {{ reason }}
                                 </b>
                             </div>
-                            <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
+                            <textarea id="explainBox" rows="4" name="comment" form="usrform"
+                                      placeholder="Type answer here..." required></textarea>
                         </form>
                         <div class="form-check">
-                            {{reason}}
+                            {{ reason }}
                             {% for obj in mc_set %}
                                 <br>
-                                <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option">
+                                <input class="form-check-input" type="radio" name="selectExplain" id="select"
+                                       value="option">
                                 <label class="form-check-label" for="exampleRadios1" id="radio">
-                                    {{ obj | safe}}
+                                    {{ obj | safe }}
                                 </label>
                             {% endfor %}
                         </div>
+                    {% elif reason_type == 'None' %}
                     {% endif %}
                     <div id="results">
-                                <b>
-                                    Represent your attitude towards code verification:
-                                </b>
-                            </div>
+                        <b>
+                            Represent your attitude towards code verification:
+                        </b>
+                    </div>
                     <form id="smileys" style="text-align: center;">
                         <input type="radio" name="smiley" value="upset" class="upset">
                         <input type="radio" name="smiley" value="sad" class="sad">
