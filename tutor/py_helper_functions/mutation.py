@@ -4,63 +4,48 @@ This module contains our Django helper functions for the "mutate" application.
 import random
 
 
-__letters = [['X', 'Y', 'Z'], ['P', 'S', 'Q'], ['L', 'M', 'N']]
-__variable_key = {}
-__inverse_key = {}
-
-
-def mutate(activity_string):
+def mutate(activity_string, letters, variable_key, inverse_variable_key):
     """function mutate This function changes a random mixture of the letters, numbers, and symbols in the exercise
     Args:
          activity_string (string): string of activity to be mutated
-         __letters (2D array): array of groups of letters to use in exercise
-         __variable_key (dict): maps the original variables with the new ones
-         __inverse_key (dict): maps the new variables to the old oness
+         letters (2D array): array of groups of letters to use in exercise
+         variable_key (dict): maps the original variables with the new ones
+         inverse_variable_key (dict): maps the new variables to the old ones
+
     Returns:
         String: A string of the mutated activity
     """
-    # generate a random number to decide how many times to loop through and mutate things
-    random_num = random.randint(0, 2)
-    index = 0
 
-    while index < random_num:
-        # which_mutate decides which category to mutate each iteration of loop
-        which_mutate = random.randint(0, 2)
-        if which_mutate == 0:
+    #always mutate letters bc IJK is one of the letter sets, but only mutate numbers 1/2 times
+    if random.randint(0, 1) == 1:
+        mutate_numbers(activity_string, variable_key, inverse_variable_key)
 
-            mutate_vars(activity_string)
-        elif which_mutate == 1:
-            mutate_numbers(activity_string)
-        elif which_mutate == 2:
-            mutate_symbols()
 
-        index = index + 1
+    mutate_vars(activity_string, letters, variable_key, inverse_variable_key)
 
     # reset index and iterate through string
     index = 0
     while index < len(activity_string) - 1:
         character = activity_string[index]
 
-        for var in __variable_key:
+        for var in variable_key:
             if character == var:
                 # only if it is followed by certain things so we do not change Integer and If etc
                 if not activity_string[index + 1].isalpha():
-                    activity_string = activity_string[:index] + str(__variable_key[var]) + activity_string[index + 1:]
-
+                    activity_string = activity_string[:index] + str(variable_key[var]) + activity_string[index + 1:]
         index = index + 1
+
     return activity_string
 
 
-
-def mutate_vars(activity_string):
-
+def mutate_vars(activity_string, letters, variable_key, inverse_variable_key):
     """function mutate_vars This function stores the original variables in variable_key and inverse_variable_key
          with variables from the letters array to be later substituted in mutate
     Args:
          activity_string (string): string of activity to be mutated
-         __letters (2D array): array of groups of letters to use in exercise
-         __variable_key (dict): maps the original variables with the new ones
-         __inverse_key (dict): maps the new variables to the old ones
+         letters (2D array): array of groups of letters to use in exercise
+         variable_key (dict): maps the original variables with the new ones
+         inverse_variable_key (dict): maps the new variables to the old ones
     Returns:
         NULL
     """
@@ -79,80 +64,86 @@ def mutate_vars(activity_string):
         letter = activity_string[index]
 
     # need to pick a random number between 0 and 3 inclusive
-    random_num = int(random.uniform(0, len(__letters)))
+    random_num = int(random.uniform(0, len(letters)))
     i = 0
 
+    #maybe shuffle lists? maybe not
+    if random.randint(0, 1) == 1:
+        random.shuffle(letters[random_num])
     # list is now a list of the variables to find and switch
     # iterate through the list and assign each variable a new letter
     for var in variable_list:
+
         # assign each variable a new variable in the randomNum sub array
-        __variable_key[var] = __letters[random_num][i]
+        variable_key[var] = letters[random_num][i]
         # make an inverse map
-        __inverse_key[__letters[random_num][i]] = var
+        inverse_variable_key[letters[random_num][i]] = var
         i = i + 1
 
 
-def mutate_numbers(activity_string):
+def mutate_numbers(activity_string, variable_key, inverse_variable_key):
     """function mutate_numbers This function stores the original variables in variable_key and inverse_variable_key
-        with different random numbers 0-3
+        with either incremented or decremented values
     Args:
-         __activity_string (string): string of activity to be mutated
-         __variable_key (dict): maps the original variables with the new ones
-         __inverse_key (dict): maps the new variables to the old ones
+         activity_string (string): string of activity to be mutated
+         variable_key (dict): maps the original variables with the new ones
+         inverse_variable_key (dict): maps the new variables to the old ones
     Returns:
         NULL
     """
     index = 0
+    increment_value = 1
+    variable_list = []
     while index < len(activity_string) - 1:
         character = activity_string[index]
-        # if you character is a digit that we have not found before... put it in map and reverse map
-        if character.isdigit() and character not in __variable_key:
-            random_num = random.randint(0, 3)
-            while random_num in __inverse_key or random_num == character:
-                random_num = random.randint(0, 3)
-            __variable_key[character] = random_num
-            __inverse_key[random_num] = [character]
+        # if character is a digit that we have not found before... put it in variable list
+        if character.isdigit() and character not in variable_list:
+            variable_list.append(character)
         index = index + 1
+    for digit in variable_list:
+        if int(digit) == 3:
+            increment_value = -1
+
+    for digit in variable_list:
+        variable_key[digit] = str(int(digit) + increment_value)
+        inverse_variable_key[str(int(digit) + increment_value)] = digit
 
 
-def mutate_symbols():
+def mutate_symbols(variable_key, inverse_variable_key):
     """function mutate_symbols This function stores various symbols and their opposite symbol in the variable and inverse
         variable keys
     Args:
-         __variable_key (dict): maps the original variables with the new ones
-         __inverse_variable_key (dict): maps the new variables to the old ones
+         variable_key (dict): maps the original variables with the new ones
+         inverse_variable_key (dict): maps the new variables to the old ones
     Returns:
         NULL
     """
-    __variable_key['>'] = '<'
-    __variable_key['<'] = '>'
-    __variable_key['>='] = '<='
-    __variable_key['<='] = '>='
-    __inverse_key['>'] = '<'
-    __inverse_key['<'] = '>'
-    __inverse_key['>='] = '<='
-    __inverse_key['<='] = '>='
+    variable_key['>'] = '<'
+    variable_key['<'] = '>'
+    variable_key['>='] = '<='
+    variable_key['<='] = '>='
+    inverse_variable_key['>'] = '<'
+    inverse_variable_key['<'] = '>'
+    inverse_variable_key['>='] = '<='
+    inverse_variable_key['<='] = '>='
 
 
-def reverse_mutate(activity_string):
-
+def reverse_mutate(activity_string, inverse_variable_key):
     """function mutate_symbols This function uses the variables stored in inverse_variable_key to reverse the string to
             its original form
     Args:
         activity_string (string): string of activity to be mutated
-
-        __inverse_key (dict): maps the new variables to the old ones
+        inverse_variable_key (dict): maps the new variables to the old ones
     Returns:
         NULL
         """
     index = 0
     while index < len(activity_string) - 1:
         character = activity_string[index]
-
-        for var in __inverse_key:
+        for var in inverse_variable_key:
             if character == var:
                 # only if it is followed by certain things so we do not change Integer and If etc
                 if not activity_string[index + 1].isalpha():
-                    activity_string = activity_string[:index] + str(__inverse_key[var]) + activity_string[index + 1:]
+                    activity_string = activity_string[:index] + str(inverse_variable_key[var]) + activity_string[index + 1:]
         index = index + 1
     return activity_string

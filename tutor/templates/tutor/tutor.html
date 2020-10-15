@@ -25,12 +25,12 @@
     <script type="application/javascript">
         $(document).ready(function () {
             //this will be done in a load lesson function call
-            createEditor("{{ code | safe }}", "{{ reason_type | safe }}", "{{ lessonName | safe }}", "{{ currLessonNum | safe }}", "{{ completedLessonNum | safe }}");
+            createEditor("{{ lesson.code.lesson_code | safe }}", "{{ lesson.reason.reasoning_type | safe }}", "{{ lesson.lesson_title | safe }}", "{{ currLessonNum | safe }}", "{{ completedLessonNum | safe }}");
             $("#tutor").attr("class", "nav-item active");
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
 
             // session recording and transcribing
-            if ("{{screen_record}}" == true){
+            if ("{{lesson.screen_record}}" == true){
                 setupRecording(); // for recording a session
                 transcribeAudio(); // for transcribing audio
             }
@@ -52,7 +52,7 @@
                     <!-- Tutorial Content -->
                     <div class="jumbotron jumbotron-fluid py-4 mb-0">
                         <div class="container text-center">
-                            <h1 id="lessonName">{{lessonName}}</h1>
+                            <h1 id="lessonName">{{lesson.lesson_title}}</h1>
                         </div>
                     </div>
                     <div id="tutorialContent" class="p-3">
@@ -61,7 +61,7 @@
                         </h3>
                         <br>
                         <div class="" id="activity">
-                            {{ instruction|safe }}
+                            {{ lesson.instruction|safe }}
                         </div>
                         <br>
                         <div id="answersCard" hidden>
@@ -109,11 +109,11 @@
                 <a id="closeOverlay" class="closebtn">&times;</a>
                 <div class="overlay-content">
                     <ol>
-                        {% for obj in currSet %}
-                            {% if obj|safe == lessonName|safe%}
-                                <li id="lessonList" style="color: #3A4958"><a style="color: #3A4958">{{ obj | safe }}</a></li>
-                            {% else %}
-                                <li id="lessonList" style=" color: white"><a href="#">{{ obj | safe }}</a></li>
+                        {% for obj in currSet%}
+                            {% if obj|safe == lesson.lesson_title|safe and not obj.is_alternate%}
+                                <li id="lessonList" style="color: #3A4958"><a style="color: #3A4958; font-size: 125%">{{ obj | safe }}</a></li><br>
+                            {% elif not obj.is_alternate %}
+                                <li id="lessonList" style=" color: white"><a style="font-size: 125%">{{ obj | safe }}</a></li><br>
                             {% endif %}
                         {% endfor %}
                     </ol>
@@ -190,19 +190,6 @@
                             </div>
                         </div>
                         <div id="directionButtons" class="d-flex">
-                            <div class="mr-auto">
-                                {% if currLessonNum == 1 %}
-                                    <button id="prev" type="button" class="btn btn-light btn-md"
-                                            data-toggle="tooltip" data-placement="top"
-                                            title="Previous" disabled>Back
-                                    </button>
-                                {% else %}
-                                    <button id="prev" type="button" class="btn btn-light btn-md"
-                                            data-toggle="tooltip" data-placement="top"
-                                            title="Previous">Back
-                                    </button>
-                                {% endif %}
-                            </div>
                             <div id="stepProgressBar">
                                 <div class="step">
                                     {% if currLessonNum <= 2 %}
@@ -267,7 +254,7 @@
                     </div>
                 </div>
                 <div id="explainCard" class="card" style="position: absolute; bottom: 0; width: 98%; margin: 5px 5px 5px 5px; background-color: #E0E0E0; color: #333;">
-                    {% if reason_type == 'Text' %}
+                    {% if lesson.reason.reasoning_type == 'Text' %}
                         <form id="usrform">
                             <div id="results">
                                 <b>
@@ -276,18 +263,20 @@
                             </div>
                             <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
                         </form>
-                    {% elif reason_type == 'MC' %}
-                        <div class="form-check">
-                            {{reason}}
-                            {% for obj in mc_set %}
-                                <br>
-                                <input class="form-check-input" type="radio" name="selectExplain" id="select" value="{{ obj | safe}}">
-                                <label class="form-check-label" for="exampleRadios1" id="radio">
-                                    {{ obj | safe}}
-                                </label>
-                            {% endfor %}
-                        </div>
-                    {% elif reason_type == 'Both' %}
+                    {% elif lesson.reason.reasoning_type == 'MC' %}
+                        <form id="multiform">
+                            <div class="form-check">
+                                {{reason}}
+                                {% for obj in mc_set %}
+                                    <br>
+                                    <input class="form-check-input" type="radio" name="selectExplain" value="{{ obj | safe}}">
+                                    <label class="form-check-label" for="exampleRadios1" id="radio">
+                                        {{ obj | safe}}
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        </form>
+                    {% elif lesson.reason.reasoning_type == 'Both' %}
                         <form id="usrform">
                             <div id="results">
                                 <b>
@@ -306,7 +295,7 @@
                                 </label>
                             {% endfor %}
                         </div>
-                    {% elif reason_type == 'None' %}
+                    {% elif lesson.reason.reasoning_type == 'None' %}
                     {% endif %}
                     <div id="results">
                                 <b>

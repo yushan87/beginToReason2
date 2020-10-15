@@ -18,6 +18,7 @@ let prevAnswers = []; //add to this and check
 let name;
 let overlayOpen = false;
 let allAnswers = "";
+let multiAnswer;
 
 
 ///////////////////////////////////////
@@ -37,6 +38,7 @@ function createEditor(code, explain, lessonName, currIndex, compIndex) {
     aceEditor.setTheme("ace/theme/chaos"); //chaos or solarized_light
     fontSize = 20;
     aceEditor.setFontSize(fontSize);
+    aceEditor.on("change", checkEdit);
 
     // Store the content for future use
     editorContent = code;
@@ -74,6 +76,41 @@ function createEditor(code, explain, lessonName, currIndex, compIndex) {
         $("#resetCode").attr("disabled", "disabled");
         $("#checkCorrectness").attr("disabled", "disabled");
     }
+}
+
+/*
+* Function for locking all other lines besides confirm
+* */
+function checkEdit(change) {
+    var manager = aceEditor.getSession().getUndoManager();
+
+    // Must wait for the change to filter through the event system. There is
+    // probably a way to catch it, but I couldn't find it.
+    setTimeout(function () {
+        // If it is a multiline change, including removing or adding a line break
+        if (change.lines.length > 1) {
+            manager.undo(true);
+            return;
+        }
+
+        // If the line does not have "Confirm" in it somewhere
+        // or it's not configured in the "lines". (added by the FAU team)
+        if (typeof aceEditor.lines !== "undefined") {
+            var rowNum = change.start.row + 1;
+            if (!aceEditor.lines.includes(rowNum)) {
+                manager.undo(true);
+                return;
+            }
+        } else {
+            var line = aceEditor.getSession().getLine(change.start.row);
+            if (!line.includes("Confirm") && !line.includes("requires") && !line.includes("ensures")) {
+                manager.undo();
+                return;
+            }
+        }
+        // Make sure we do not collate undos. Downside: there is no real undo functionality
+        manager.reset();
+    }, 0);
 }
 
 
@@ -293,17 +330,34 @@ $("#checkCorrectness").click(function () {
     //is explaination long enough
     if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
-        if (boxVal.length < 25){
+        if (boxVal.length < 10){
             // Create the appropriate alert box
-            let msg = "You must fill in the your explanation to the right";
+            let msg = "You must fill a long enough explanation to the right";
             createAlertBox(true, msg);
             $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
             unlock();
             return;
         }
     }
-    document.getElementById("resultCard").style.display = "block";
-    let results = "";
+
+    let blank = true;
+    if (hasMC) {
+        let radios = document.getElementsByName('selectExplain');
+        for (let i = 0, length = radios.length; i < length; i++) {
+            if (radios[i].checked) {
+                blank = false;
+                multiAnswer = radios[i].value;
+            }
+        }
+        if (blank){
+            let msg = "You must choose an answer to the right";
+            createAlertBox(true, msg);
+            unlock();
+            return;
+        }
+    }
+    document.getElementById("resultCard").style.display = "block";let results = "";
+
     let code = aceEditor.session.getValue();
 
     // Check for trivials
@@ -311,8 +365,9 @@ $("#checkCorrectness").click(function () {
 
 
     if (trivials.overall == "failure") {
-        document.getElementById("resultsHeader").innerHTML = "<h3>Trivial answer</h3>";
-        document.getElementById("resultDetails").innerHTML = "Consider the example where J = J. \n\n It's the same thing as saying 1 = 1, which is always true! What would be a nontrivial answer to this problem?";
+
+        document.getElementById("resultsHeader").innerHTML = "<h3>Try Again</h3>";
+        document.getElementById("resultDetails").innerHTML = "Submission does not contain enough information. Try again!";
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         $("#resultCard").attr("class", "card bg-danger text-white");
         //add line errors
@@ -322,7 +377,10 @@ $("#checkCorrectness").click(function () {
         for (var i = 0; i < trivials.confirms.length; i++) {
             aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
             document.getElementById("answersCard").removeAttribute("hidden")
-            allAnswers = allAnswers + aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'')+ "<br>";
+            allAnswers = allAnswers + aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'') + "<br>";
+            if (i == trivials.confirms.length - 1){
+                allAnswers += "<br><br>";
+            }
             document.getElementById("pastAnswers").innerHTML = allAnswers;
         }
 
@@ -356,7 +414,7 @@ $("#resetCode").click(function () {
     lock();
 
     // Put the cached content into the editor
-    location.reload();
+    aceEditor.session.setValue(editorContent);
 
     // Unlock editor for further user edits
     unlock();
@@ -693,13 +751,15 @@ function verify(code){
             $("#resultCard").attr("class", "card bg-danger text-white");
             //add line errors
             //this will need to be fixed based on verifier return
-            console.log(message)
 
             for (var i = 0; i < message.errors[0].errors.length; i++) {
                 aceEditor.session.addGutterDecoration(message.errors[0].errors[i].error.ln - 1, "ace_error")
                 document.getElementById("answersCard").removeAttribute("hidden")
-                var confirmLine = aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')
-                allAnswers = allAnswers + confirmLine + "<br>";
+                var confirmLine = aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')  + "<br>";
+                allAnswers = allAnswers + confirmLine;
+                if (i == message.errors[0].errors.length - 1){
+                    allAnswers += "<br><br>";
+                }
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
             }
         }
@@ -728,7 +788,10 @@ function verify(code){
                     document.getElementById("answersCard").removeAttribute("hidden")
                     confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\s/g,'');
                     confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
-                    allAnswers = allAnswers + confirmLine + "<br>";
+                    allAnswers = allAnswers + confirmLine  + "<br>";
+                    if (i == lines.lines.length - 1){
+                    allAnswers += "<br><br>";
+                }
                     document.getElementById("pastAnswers").innerHTML = allAnswers;
                 }
             }
@@ -746,7 +809,8 @@ function verify(code){
             data.answer = confirmLine;
             data.code = code;
             if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
-            else if (!hasFR){data.explanation = "No Explaination Requested";}
+            else if (hasMC){data.explanation = multiAnswer;}
+            else {data.explanation = "No Explaination Requested";}
             data.status = lines.overall;
 
             const faces = document.querySelectorAll('input[name="smiley"]');

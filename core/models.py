@@ -292,6 +292,8 @@ class Lesson(models.Model):
     correct = models.CharField(max_length=50, default='Lesson To Go To')
 
     sub_lessons_available = models.BooleanField(default=False)
+    is_alternate = models.BooleanField(default=False)
+    can_mutate = models.BooleanField(default=False)
 
 
     simplify = models.CharField(max_length=50, default='None')
@@ -346,6 +348,7 @@ class LessonSet(models.Model):
     set_name = models.CharField(max_length=50)
     lessons = models.ManyToManyField(Lesson, blank=True)
     set_description = models.TextField(default="This set is designed to further your understanding")
+    # number_normal_lessons = models.IntegerField(default=0)
     # set_image = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=100)
 
     def __str__(self):
