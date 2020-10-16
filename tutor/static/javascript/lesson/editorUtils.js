@@ -489,6 +489,7 @@ $("#fontIncrease").click(function () {
  */
 $("#toggleOverlay").click(function () {
     if(overlayOpen){
+        console.log("toggle overlay is true, turning false")
         document.getElementById("myNav").style.width = "0%";
         overlayOpen = false;
         document.getElementById("toggleOverlay").innerHTML = "<i class=\"fa fa-list\" aria-hidden=\"true\"></i> View Lessons";
@@ -611,7 +612,7 @@ $("#prev").click(function () {
     lock();
 
     $.ajax({
-        url: 'previous',
+        url: 'completed',
         datatype: 'json',
         type: 'GET',
         headers: {

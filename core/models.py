@@ -255,6 +255,7 @@ class Lesson(models.Model):
     """
     lesson_name = models.CharField(max_length=50)
     lesson_title = models.CharField(max_length=50, default='default')
+    lesson_index = models.IntegerField(default=0)
     lesson_concept = models.ManyToManyField(Concept, blank=True)
     instruction = models.TextField(default='Please complete the Confirm assertion(s) and check correctness.')
     code = models.ForeignKey(Code, on_delete=models.CASCADE)

@@ -3,6 +3,7 @@ This module contains our Django helper functions for the "data analysis" applica
 """
 import json
 from django.utils import timezone
+from django.utils.encoding import smart_str
 from django.contrib.auth.models import User
 from accounts.models import UserInformation
 from core.models import LessonSet, Lesson
@@ -38,3 +39,14 @@ def log_data(request):
                                          explanation=explanation,
                                          face=face)
     data_to_log.save()
+
+def get_log_data(user, lesson_index):
+    user = User.objects.get(email=user)
+
+    get_user_successes = DataLog.objects.filter(user_key = user).filter(status='success')
+    print(get_user_successes)
+    print(get_user_successes.filter(lesson_key=lesson_index))
+    get_lesson = get_user_successes.filter(lesson_key=Lesson.objects.get(lesson_index=lesson_index)).order_by('-id')[0]
+
+    return repr(get_lesson.code), get_lesson.face
+
