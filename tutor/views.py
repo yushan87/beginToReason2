@@ -98,6 +98,7 @@ def tutor(request):
             feedback.update({'newLessonIndex': Lesson.objects.get(lesson_name=goto.lesson_name).lesson_index})
             print("Lesson to go to: ", goto.lesson_name)
             print("new lesson index: ", feedback['newLessonIndex'])
+            print(feedback)
 
             return JsonResponse(feedback)
 

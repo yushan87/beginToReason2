@@ -862,16 +862,8 @@ function verify(code){
             * */
             let data = {};
             data.name = name;
-<<<<<<< HEAD
             data.answer = submitAnswers;
             data.allAnswers = allAnswers;
-=======
-            //data.author = author;
-            //data.author = "user.googleId;"   //make userid
-            //data.milliseconds = getTime();
-
-            data.answer = submitAnswers;
->>>>>>> 1eea109291dd4770bee903802d86a6d4398ea249
             data.code = code;
             if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
             else if (hasMC){data.explanation = multiAnswer;}
@@ -886,11 +878,7 @@ function verify(code){
                     data.face = selectedValue
                 }
             }
-<<<<<<< HEAD
 
-=======
-          
->>>>>>> 1eea109291dd4770bee903802d86a6d4398ea249
             $.postJSON("tutor", data, (results) => {});
             submitAnswers = '';
 

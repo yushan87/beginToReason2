@@ -294,9 +294,9 @@ class Lesson(models.Model):
     # syntax = models.CharField(max_length=50, default='Lesson To Go To')
     # syntax_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
 
-    screen_record = models.BooleanField()
-    audio_record = models.BooleanField()
-    audio_transcribe = models.BooleanField()
+    screen_record = models.BooleanField(default=False)
+    audio_record = models.BooleanField(default=False)
+    audio_transcribe = models.BooleanField(default=False)
 
     # 0 correct
     # 1 correct simplify
