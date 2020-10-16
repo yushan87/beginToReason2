@@ -248,7 +248,9 @@ class Lesson(models.Model):
     Code - The code activities that student will be interacting with. Will pull from the Code model.
     Reference Set - May contain multiple references, or no references at all.
     Reason - There is only one reasoning activity allowed per Lesson. May contain mc, fr, or both.
-    Screen_Record - Boolean for whether or not to record the activity.
+    Screen_Record - Boolean for whether or not to record user's screen for the activity.
+    Audio_Record - Boolean for whether or not to record user's audio for the activity.
+    Audio_Transcribe - Boolean for whether or not to transcribe user's audio.
 
     @param models.Model The base model
     """
@@ -293,6 +295,8 @@ class Lesson(models.Model):
     # syntax_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
 
     screen_record = models.BooleanField()
+    audio_record = models.BooleanField()
+    audio_transcribe = models.BooleanField()
 
     # 0 correct
     # 1 correct simplify

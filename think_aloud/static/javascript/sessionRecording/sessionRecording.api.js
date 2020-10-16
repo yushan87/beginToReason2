@@ -1,8 +1,8 @@
-const DEV_API_ENDPOINT = "https://d2lztt9qntb11c.cloudfront.net"; // Stores the development API endpoint
-const PROD_API_ENDPOINT = "https://dpkdm7220g9r9.cloudfront.net"; // Stores the production API endpoint
-const API_ENDPOINT = DEV_API_ENDPOINT; // Stores the current configuration of API
+const API_ENDPOINT = "https://d2lztt9qntb11c.cloudfront.net"; // Stores the current configuration of API
+// const API_ENDPOINT = 'http://socratiusapi-dev.us-west-2.elasticbeanstalk.com/';
 const SAVE_PARTIAL_RECORDING_API = "/think-aloud-session/save-partial-recording"; // Stores partial recording upload path in API
 const SAVE_PARTIAL_TRANSCRIPT_API = "/begin-to-reason-functions/save-partial-transcript"; // Stores partial transcript upload path in API
+const SAVE_PER_ATTEMPT_DATA_API = "/think-aloud-session/save-attempt-data"; // Stores per attempt data
 
 /**
  * Uploads a recording fragment by first requesting an signed upload to S3 request from API and then calling an upload function.
@@ -68,6 +68,27 @@ function uploadFile(file, s3fields, s3url, callback) {
         }
     };
     xhr.send(postData);
+}
+
+/**
+ * Uploads an attempt related data
+ * @param {string}  sessionId
+ * @param {string}  userId
+ * @param {boolean} attemptIsSuccessful
+ * @param {number}  attemptCount
+ * @param {string}  errorReason
+ * @param {string}  solutionEntered
+ * @param {string}  code
+ * @param {number}  lessonIndex
+ * @param {string}  lessonName
+ * @param {number}  startTimestamp
+ * @param {number}  endTimestamp
+ */
+function postPerAttemptData(sessionId, userId, attemptIsSuccessful, attemptCount, errorReason, solutionEntered, code, lessonIndex, lessonName, startTimestamp, endTimestamp) {
+    return postRequest(API_ENDPOINT + SAVE_PER_ATTEMPT_DATA_API,
+        {
+            sessionId, userId, attemptIsSuccessful, attemptCount, errorReason, solutionEntered, code, lessonIndex, lessonName, startTimestamp, endTimestamp
+        });
 }
 
 /**

@@ -313,6 +313,10 @@ $("#checkCorrectness").click(function () {
 
     lock();
 
+    /*** Think-aloud: Handle an attempt end ***/
+
+
+
     //is explaination long enough
     if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
@@ -574,7 +578,23 @@ function unlock() {
 $("#next").click(function () {
     lock();
 
-    $.ajax({
+    if (activeUploads.count === 0) {
+        moveToNextExercise();
+    } else {
+        activeUploads.registerListener(function (count) {
+            if (count === 0) {
+                moveToNextExercise();
+            }
+        });
+
+        setTimeout(function () {
+            moveToNextExercise();
+        }, 10000);
+    }
+});
+
+function moveToNextExercise() {
+     $.ajax({
         url: 'tutor',
         datatype: 'json',
         type: 'GET',
@@ -587,9 +607,9 @@ $("#next").click(function () {
         }
     });
 
-    location.reload();
-    unlock();
-});
+     location.reload();
+     unlock();
+}
 
 /*
  * Function for moving to prev lesson.
@@ -749,7 +769,7 @@ function decode(data) {
 
 function verify(code){
     var vcs = {}
-    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project')
+    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project');
 
     // Connection opened
     ws.addEventListener('open', function (event) {
@@ -826,8 +846,8 @@ function verify(code){
             //data.author = author;
             //data.author = "user.googleId;"   //make userid
             //data.milliseconds = getTime();
-            data.answer = submitAnswers;
 
+            data.answer = submitAnswers;
             data.code = code;
             if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
             else if (hasMC){data.explanation = multiAnswer;}
@@ -842,24 +862,7 @@ function verify(code){
                     data.face = selectedValue
                 }
             }
-
-
-
-
-            /*if (lines.overall == "failure") {
-                document.getElementById("resultsHeader").innerHTML = "<h3>Incorrect answer</h3>";
-                document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J?";
-                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                $("#resultCard").attr("class", "card bg-danger text-white");
-                //add line errors
-                //this will need to be fixed based on verifier return
-
-                // Unlock editor for further user edits
-                unlock();
-                //setTimeout(function (){location.reload();}, 3000);
-                //Location.reload();*/
-
-            // setTimeout(function (){location.reload();}, 3000);
+          
             $.postJSON("tutor", data, (results) => {});
             submitAnswers = '';
 
