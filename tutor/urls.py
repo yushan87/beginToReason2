@@ -12,5 +12,5 @@ app_name = 'tutor'
 urlpatterns = [
     path('catalog', views.catalog, name='catalog'),
     path('tutor', views.tutor, name='tutor'),
-    path('completed/<int:lesson_index>', views.completed, name='completed')
+    path('completed/<int:lessonIndex>', views.completed, name='completed')
 ]

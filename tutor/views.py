@@ -150,17 +150,17 @@ def tutor(request):
                                    'mood': current_user.mood,
                                    'review': 'none'})
 
-        print('Is this being hit?')
         return redirect("accounts:profile")
 
 
 
 @login_required(login_url='/accounts/login/')
-def completed(request, lesson_index):
+def completed(request, lessonIndex):
     """function previous This function handles retrieving the prev lesson.
 
         Args:
             request (HTTPRequest): A http request object created automatically by Django.
+            lessonIndex: The index of the lesson to retrieve
 
         Returns:
             HttpResponse: A generated http response object to the request depending on whether or not
@@ -170,11 +170,11 @@ def completed(request, lesson_index):
         if user_auth(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_set = current_user.current_lesson_set.lessons.all()
-            current_lesson = Lesson.objects.get(lesson_index=lesson_index)
+            current_lesson = Lesson.objects.get(lesson_index=lessonIndex)
 
-            if lesson_index <= current_user.completed_lesson_index:
-                lesson_info = get_log_data(current_user, lesson_index)
-                print("lesson info: ", lesson_index)
+            if lessonIndex <= current_user.completed_lesson_index:
+                lesson_info = get_log_data(current_user, lessonIndex)
+                print("lesson info: ", lessonIndex)
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
                                'lesson_code': lesson_info[0],
