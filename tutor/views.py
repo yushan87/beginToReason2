@@ -46,10 +46,8 @@ def catalog(request):
 @login_required(login_url='/accounts/login/')
 def tutor(request):
     """function tutor This function handles the view for the tutor page of the application.
-
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
-
     Returns:
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.
@@ -57,7 +55,6 @@ def tutor(request):
 
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
-
         # Case 1a: if the user exists
         if user_auth(request):
             # submitted_json = json.loads(request.body.decode('utf-8'))
@@ -121,7 +118,11 @@ def tutor(request):
                                    'setLength': 11,
                                    'currSet': current_set,
                                    'mood': current_user.mood,
-                                   'review': 'none'})
+                                   'review': 'none',
+                                   'screen_record': current_lesson.screen_record,
+                                   'audio_record': current_lesson.audio_record,
+                                   'audio_transcribe': current_lesson.audio_transcribe,
+                                   'user_email': request.user.email})
                 # Case 2aaab: if question is of type Text
                 elif current_lesson.reason.reasoning_type == 'Text':
                     return render(request, "tutor/tutor.html",
@@ -135,7 +136,11 @@ def tutor(request):
                                    'setLength': 11,
                                    'currSet': current_set,
                                    'mood': current_user.mood,
-                                   'review': 'none'})
+                                   'review': 'none',
+                                   'screen_record': current_lesson.screen_record,
+                                   'audio_record': current_lesson.audio_record,
+                                   'audio_transcribe': current_lesson.audio_transcribe,
+                                   'user_email': request.user.email})
                     # Case 2aaac: if question is of type none
                 else:
                     return render(request, "tutor/tutor.html",
@@ -148,8 +153,11 @@ def tutor(request):
                                    'setLength': 11,
                                    'currSet': current_set,
                                    'mood': current_user.mood,
-                                   'review': 'none'})
-
+                                   'review': 'none',
+                                   'screen_record': current_lesson.screen_record,
+                                   'audio_record': current_lesson.audio_record,
+                                   'audio_transcribe': current_lesson.audio_transcribe,
+                                   'user_email': request.user.email})
     return redirect("accounts:profile")
 
 

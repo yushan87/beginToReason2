@@ -331,6 +331,10 @@ $("#checkCorrectness").click(function () {
 
     lock();
 
+    /*** Think-aloud: Handle an attempt end ***/
+
+
+
     //is explaination long enough
     if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
@@ -602,7 +606,23 @@ function unlock() {
 $("#next").click(function () {
     lock();
 
-    $.ajax({
+    if (activeUploads.count === 0) {
+        moveToNextExercise();
+    } else {
+        activeUploads.registerListener(function (count) {
+            if (count === 0) {
+                moveToNextExercise();
+            }
+        });
+
+        setTimeout(function () {
+            moveToNextExercise();
+        }, 10000);
+    }
+});
+
+function moveToNextExercise() {
+     $.ajax({
         url: 'tutor',
         datatype: 'json',
         type: 'GET',
@@ -615,9 +635,9 @@ $("#next").click(function () {
         }
     });
 
-    location.reload();
-    unlock();
-});
+     location.reload();
+     unlock();
+}
 
 /*
  * Function for moving to prev lesson.
@@ -771,7 +791,7 @@ function decode(data) {
 
 function verify(code){
     var vcs = {}
-    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project')
+    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project');
 
     // Connection opened
     ws.addEventListener('open', function (event) {
@@ -859,7 +879,7 @@ function verify(code){
                     data.face = selectedValue
                 }
             }
-
+          
             $.postJSON("tutor", data, (results) => {});
             submitAnswers = '';
 
