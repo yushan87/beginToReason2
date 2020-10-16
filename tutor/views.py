@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, check_feedback
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, check_feedback, alternate_lesson_check, check_type
 #from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
 
@@ -49,6 +49,7 @@ def tutor(request):
 
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
+
 
     Returns:
         HttpResponse: A generated http response object to the request depending on whether or not
@@ -92,7 +93,17 @@ def tutor(request):
                         current_user.save()
                         print("in done: ", current_user.current_lesson_set)
 
-            return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
+
+
+
+            feedback = check_feedback(current_lesson, submitted_answer, status)
+            print(feedback['type'])
+            goto = alternate_lesson_check(current_lesson, feedback['type'])
+            feedback.update({'newLessonIndex': Lesson.objects.get(lesson_name=goto.lesson_name).lesson_index})
+            print("Lesson to go to: ", goto.lesson_name)
+            print("new lesson index: ", feedback['newLessonIndex'])
+
+            return JsonResponse(feedback)
 
 
     # Case 2: We have received a GET request requesting code

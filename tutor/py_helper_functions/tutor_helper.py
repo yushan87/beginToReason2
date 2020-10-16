@@ -93,7 +93,7 @@ def set_not_complete(request):
     return False
 
 
-def alternate_lesson_check(request):
+def alternate_lesson_check(current_lesson, type):
     """function set_not_complete This function handles the logic for a if a set has not been completed
 
     Args:
@@ -102,55 +102,49 @@ def alternate_lesson_check(request):
     Returns:
         String: name of lesson to redirect to
     """
-    submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
-    current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-    current_set = current_user.current_lesson_set.lessons.all()
-    if current_set.exists() and Lesson.objects.filter(lesson_name=current_user.current_lesson_name).exists():
-        current_lesson = Lesson.objects.filter(lesson_name=current_user.current_lesson_name)[0]
-        if current_lesson.sub_lessons_available:
-            queried_set = current_lesson.incorrect_answers.all()
-            for incorrect in queried_set:
-                if submitted_answer == incorrect.answer_text:
-                    if incorrect.answer_type == 'SIM':
-                        current_user.current_lesson_name = current_lesson.simplify
-                        current_user.save()
-                    elif incorrect.answer_type == 'SELF':
-                        current_user.current_lesson_name = current_lesson.self_reference
-                        current_user.save()
-                    elif incorrect.answer_type == 'NUM':
-                        current_user.current_lesson_name = current_lesson.use_of_concrete_values
-                        current_user.save()
-                    elif incorrect.answer_type == 'INIT':
-                        current_user.current_lesson_name = current_lesson.not_using_initial_value
-                        current_user.save()
-                    elif incorrect.answer_type == 'ALG':
-                        current_user.current_lesson_name = current_lesson.algebra
-                        current_user.save()
-                    elif incorrect.answer_type == 'VAR':
-                        current_user.current_lesson_name = current_lesson.variable
-                        current_user.save()
-    return True
+
+    dict = { 'NUM' : current_lesson.use_of_concrete_values,
+             'INIT': current_lesson.not_using_initial_value,
+             'SIM' : current_lesson.simplify,
+             'SELF': current_lesson.self_reference,
+             'ALG' : current_lesson.algebra,
+             'VAR' : current_lesson.variable,
+             'DEF' : current_lesson.lesson_name
+    }
+
+    if current_lesson.sub_lessons_available:
+        return Lesson.objects.get(lesson_name=dict[type])
+
+    return current_lesson
+
+
+
+def check_type(current_lesson, submitted_answer, status):
+    all_answers = submitted_answer.split(";")
+    type = 'None'
+
+    queried_set = current_lesson.incorrect_answers.all()
+    for ans in all_answers:
+        search = ans + ';'
+        for each in queried_set:
+            if search == each.answer_text:
+                print(search)
+                type = each.answer_type
+                break
+
+    if type == 'None' and status == 'failure':
+        type = 'DEF'
+    elif type == 'None':
+        type = 'COR'
+
+    return type
 
 
 def check_feedback(current_lesson, submitted_answer, status):
 
-    all_answers = submitted_answer.split(";")
-    type = 'None'
-
     if current_lesson.sub_lessons_available:
-        queried_set = current_lesson.incorrect_answers.all()
-        for ans in all_answers:
-            search = ans + ';'
-            for each in queried_set:
-                if search == each.answer_text:
-                    print(search)
-                    type = each.answer_type
-                    break
 
-        if type == 'None' and status == 'failure':
-            type = 'DEF'
-        elif type == 'None':
-            type = 'COR'
+        type = check_type(current_lesson, submitted_answer, status)
 
         headline = current_lesson.feedback.get(feedback_type=type).headline
         text = current_lesson.feedback.get(feedback_type=type).feedback_text
@@ -169,4 +163,6 @@ def check_feedback(current_lesson, submitted_answer, status):
 
     return {'resultsHeader': headline,
             'resultDetails': text,
-            'status': status}
+            'status': status,
+            'sub': current_lesson.sub_lessons_available,
+            'type': type}

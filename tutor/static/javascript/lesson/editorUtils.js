@@ -691,14 +691,14 @@ $.postJSON = (url, data, callback) => {
                 $("#resultCard").attr("class", "card bg-danger text-white");
                 unlock();
             }
+            if(data.sub){
+                data.
+                //loadLesson(data.newLessonIndex, explain, lessonName)
+            }
         }
 
     });
 };
-
-
-
-
 
 
 function mergeVCsAndLineNums(provedList, lineNums) {
