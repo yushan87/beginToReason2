@@ -7,7 +7,7 @@
 
 /* Main Layout-Related CSS */
 #page-content {
-    min-height: calc(100vh - #{$page-header-min-height + $page-footer-height});
+    min-height: calc(100vh - #{$page-header-min-height});
     color: $page-content-text-color-dark;
 
     // Links
@@ -88,7 +88,26 @@
     }
 }
 
+.lesson-card {
+    margin: 50px 50px 50px 50px;
+}
+
+#card-img {
+    width: 300px;
+    height: 180px;
+}
+
+.recommended {
+    color: $white;
+    background-color: $coral;
+}
+
 .select-btn {
     color: $white;
     background-color: $queen-blue;
+}
+
+.select-btn:hover {
+    color: $white;
+    background-color: $charcoal;
 }

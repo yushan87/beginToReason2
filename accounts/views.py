@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
+from core.models import LessonSet
 from .models import UserInformation
 from .forms import UserInformationForm
 
@@ -34,6 +35,18 @@ def logout(request):
     return redirect("/")
 
 
+def privacy(request):
+    """function login This function handles the view for the privacy page of the application.
+
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+
+    Returns:
+        HttpResponse: A generated http response object to the request.
+    """
+    return render(request, "accounts/privacy.html")
+
+
 @login_required(login_url='/accounts/login/')
 def profile(request):
     """function profile This function handles the view for the profile page of the application.
@@ -46,6 +59,7 @@ def profile(request):
                       the user is authenticated.
     """
     # Query for user in the 'User' table
+    print("GET IN  ACCOUNTS PROFILE")
     user = User.objects.get(email=request.user.email)
 
     # Case 1: The user email exists in our user information table.
@@ -57,7 +71,9 @@ def profile(request):
 
             # Case 1a: The user information model is valid, therefore we can render the profile page.
             request.session.set_expiry(0)
-            return render(request, "accounts/profile.html", {'name': user_info.user_nickname})
+            print("USER EXISTS IN ACCOUNTS   ", request.method)
+            print(request)
+            return render(request, "accounts/profile.html", {'name': user_info.user_nickname, 'LessonSet': LessonSet.objects.all()})
         except ValidationError:
             # Case 1b: The user information model is invalid,
             #           we redirect to the settings page
@@ -111,7 +127,7 @@ def settings(request):
                                        initial={'user_email': request.user.email})
         # Case 2b: The user email doesn't exist in our user information table.
         else:
-            form = UserInformationForm(initial={'user_email': request.user.email, 'user_nickname': user.username})
+            form = UserInformationForm(initial={'user_email': request.user.email, 'user_nickname': user.first_name})
 
         request.session.set_expiry(0)
         return render(request, "accounts/settings.html", {'form': form})

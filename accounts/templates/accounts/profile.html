@@ -51,7 +51,14 @@
                             <span class="text-white-50">Lessons Completed:</span> 0
                         </p>
                         <p class="card-text m-0 text-white">
-                            <span class="text-white-50">Sets Completed:</span> 0
+                            <span class="text-white-50">Sets Completed:</span>
+                            {% if user.is_authenticated %}
+                                {% if user.userinformation.completed_sets == None %}
+                                    0
+                                {% else %}
+                                    1
+                                {% endif %}
+                            {% endif %}
                         </p>
                         <p class="card-text m-0 text-white">
                             <span class="text-white-50">Current Daily Streak:</span> 0
@@ -77,100 +84,94 @@
                     <div class="tab-pane fade show active" id="nav-courses" role="tabpanel"
                          aria-labelledby="nav-courses-tab">
                         <div class="page-section-heading my-3">
-                            <h3>In Progress</h3>
+                            <h3>Start New Set</h3>
                         </div>
-                        <div class="my-4">
-                            <div class="card" style="background-color: inherit;">
-                                <div class="row no-gutters">
-                                    <div class="col-md-4">
-                                        <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
-                                    </div>
-                                    <div class="col-md-8 align-self-center">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Lesson Plan Title</h5>
-                                            <p class="card-text">Some description of the lesson</p>
-                                            <p class="card-text"><small class="text-muted">Last attempted: 3 mins
-                                                ago</small></p>
-                                            <a href="#" class="btn select-btn" role="button" aria-pressed="true">Continue</a>
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <a href="{% url 'tutor:catalog' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To Activity Catalog</a>
                             </div>
                         </div>
                         <div class="page-section-heading my-3">
+                            <h3>In Progress</h3>
+                        </div>
+                        {% for obj in LessonSet %}
+                            {% if user.is_authenticated %}
+                                {% if user.userinformation.current_lesson_set == obj %}
+                                    <div class="my-4">
+                                        <div class="card" style="background-color: inherit;">
+                                            <div class="row no-gutters">
+                                                <div class="col-md-4">
+                                                    <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
+                                                </div>
+                                                <div class="col-md-8 align-self-center">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">{{obj}} <span class="badge recommended">In Progress</span></h5>
+                                                        <p class="card-text">{{obj.set_description}}</p>
+                                                        <p class="card-text"><small class="text-muted">Last attempted: {{ user.last_login }}</small></p>
+                                                        <form action="{% url 'tutor:tutor' %}" method="GET">
+                                                            {% csrf_token %}
+                                                            <button class="inpro select-btn btn-block" type="submit" aria-pressed="true">
+                                                                Continue Training
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="card mb-3">
+                                    <img class="card-img-top" src="{% static 'images/none.png' %}" alt="Card image cap">
+                                        <div class="card-body">
+                                            <a href="{% url 'tutor:catalog' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To Activity Catalog</a>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        <div class="page-section-heading my-3">
                             <h3>Completed</h3>
                         </div>
-                        <div class="my-4">
-                            <div class="card mb-3" style="background-color: inherit;">
-                                <div class="row no-gutters">
-                                    <div class="col-md-4">
-                                        <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
-                                    </div>
-                                    <div class="col-md-8 align-self-center">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Lesson Plan Title</h5>
-                                            <p class="card-text">Some description of the lesson</p>
-                                            <p class="card-text">
-                                                <small class="text-muted">Completed: 3 mins ago</small>
-                                            </p>
-                                            <a href="#" class="btn select-btn" role="button"
-                                               aria-pressed="true">View</a>
+                        {% if user.is_authenticated %}
+                            {% if user.userinformation.completed_sets == None %}
+
+                            {% else %}
+                                <div class="my-4">
+                                    <div class="card" style="background-color: inherit;">
+                                        <div class="row no-gutters">
+                                            <div class="col-md-4">
+                                                <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
+                                            </div>
+                                            <div class="col-md-8 align-self-center">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">{{user.userinformation.completed_sets}} <span class="badge recommended">Completed</span></h5>
+                                                    <h5 class="card-title"><span class="badge badge-success">Author ID: 869134018</span></h5>
+                                                    <p class="card-text">{{user.userinformation.completed_sets.set_description}}</p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="card mb-3" style="background-color: inherit;">
-                                <div class="row no-gutters">
-                                    <div class="col-md-4">
-                                        <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
-                                    </div>
-                                    <div class="col-md-8 align-self-center">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Lesson Plan Title</h5>
-                                            <p class="card-text">Some description of the lesson</p>
-                                            <p class="card-text">
-                                                <small class="text-muted">Completed: 3 mins ago</small>
-                                            </p>
-                                            <a href="#" class="btn select-btn" role="button"
-                                               aria-pressed="true">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card mb-3" style="background-color: inherit;">
-                                <div class="row no-gutters">
-                                    <div class="col-md-4">
-                                        <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
-                                    </div>
-                                    <div class="col-md-8 align-self-center">
-                                        <div class="card-body">
-                                            <h5 class="card-title">Lesson Plan Title</h5>
-                                            <p class="card-text">Some description of the lesson</p>
-                                            <p class="card-text">
-                                                <small class="text-muted">Completed: 3 mins ago</small>
-                                            </p>
-                                            <a href="#" class="btn select-btn" role="button"
-                                               aria-pressed="true">View</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            {% endif %}
+                        {% endif %}
                     </div>
                     <div class="tab-pane fade" id="nav-badges" role="tabpanel" aria-labelledby="nav-badges-tab">
                         <div class="card-deck">
-                            <div class="card">
-                                <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top"
-                                     alt="Card image">
-                            </div>
-                            <div class="card">
-                                <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top"
-                                     alt="Card image">
-                            </div>
-                            <div class="card">
-                                <img src="{% static 'other_images/placeholder.png' %}" class="card-img-top"
-                                     alt="Card image">
-                            </div>
+                            {% if user.is_authenticated %}
+                                {% if user.userinformation.completed_sets == None %}
+
+                                {% else %}
+                                    <div class="my-4">
+                                        <div class="card" style="background-color: inherit;">
+                                            <div class="row no-gutters">
+                                                <div class="col-md-4">
+                                                    <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endif %}
                         </div>
                     </div>
                 </div>

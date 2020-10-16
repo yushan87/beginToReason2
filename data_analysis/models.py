@@ -22,6 +22,7 @@ class DataLog(models.Model):
     status = models.CharField(max_length=50)
     code = models.TextField(default="null")
     explanation = models.TextField()
+    face = models.TextField(default="null")
 
     def __str__(self):
         """

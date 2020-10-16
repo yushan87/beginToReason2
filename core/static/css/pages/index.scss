@@ -6,7 +6,7 @@
 
 /* Main Layout-Related CSS */
 #page-content {
-    min-height: calc(100vh - #{$page-header-min-height + $page-footer-height});
+    min-height: calc(100vh - #{$page-header-min-height});
     color: $page-content-text-color-dark;
 
     // Links

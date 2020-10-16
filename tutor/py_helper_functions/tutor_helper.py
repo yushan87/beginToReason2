@@ -20,8 +20,7 @@ def user_auth(request):
         user = User.objects.get(email=request.user.email)
         if UserInformation.objects.filter(user=user).exists():
             return True
-        else:
-            return False
+    return False
 
 
 def lesson_set_auth(request):
@@ -37,11 +36,14 @@ def lesson_set_auth(request):
         current_set = LessonSet.objects.get(set_name=request.POST.get("set_name"))
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
         current_user.current_lesson_set = current_set
+        current_user.current_lesson_name = current_set.lessons.all()[0].lesson_name
+        current_user.current_lesson_index = 0
+        current_user.completed_lesson_index = 0
+        current_user.mood = "neutral"
         current_user.save()
         if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
             return True
-        else:
-            return False
+    return False
 
 
 def lesson_auth(request):
@@ -65,6 +67,8 @@ def set_not_complete(request):
         Boolean: A boolean to signal if the set has been completed
     """
     current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+    if current_user.current_lesson_set is None:
+        return False
     current_set = current_user.current_lesson_set.lessons.all()
     if current_set.exists():
         current_set = current_user.current_lesson_set.lessons.all()
@@ -85,8 +89,7 @@ def set_not_complete(request):
         elif request.method == 'GET':
             if current_user.current_lesson_index < len(current_set):
                 return True
-            else:
-                return False
+    return False
 
 
 def alternate_lesson_check(request):
@@ -98,4 +101,65 @@ def alternate_lesson_check(request):
     Returns:
         String: name of lesson to redirect to
     """
-    print(json.loads(request.body.decode('utf-8'))['answer'])
+    submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
+    current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+    current_set = current_user.current_lesson_set.lessons.all()
+    if current_set.exists() and Lesson.objects.filter(lesson_name=current_user.current_lesson_name).exists():
+        current_lesson = Lesson.objects.filter(lesson_name=current_user.current_lesson_name)[0]
+        if current_lesson.sub_lessons_available:
+            queried_set = current_lesson.incorrect_answers.all()
+            for incorrect in queried_set:
+                if submitted_answer == incorrect.answer_text:
+                    if incorrect.answer_type == 'SIM':
+                        current_user.current_lesson_name = current_lesson.simplify
+                        current_user.save()
+                    elif incorrect.answer_type == 'SELF':
+                        current_user.current_lesson_name = current_lesson.self_reference
+                        current_user.save()
+                    elif incorrect.answer_type == 'NUM':
+                        current_user.current_lesson_name = current_lesson.use_of_concrete_values
+                        current_user.save()
+                    elif incorrect.answer_type == 'INIT':
+                        current_user.current_lesson_name = current_lesson.not_using_initial_value
+                        current_user.save()
+                    elif incorrect.answer_type == 'ALG':
+                        current_user.current_lesson_name = current_lesson.algebra
+                        current_user.save()
+                    elif incorrect.answer_type == 'VAR':
+                        current_user.current_lesson_name = current_lesson.variable
+                        current_user.save()
+    return True
+
+
+def check_feedback(current_lesson, submitted_answer, status):
+
+    all_answers = submitted_answer.split(";")
+    type = 'None'
+    if current_lesson.sub_lessons_available:
+        queried_set = current_lesson.incorrect_answers.all()
+        for ans in all_answers:
+            search = ans + ';'
+            for each in queried_set:
+                if search == each.answer_text:
+                    type = each.answer_type
+                    print("each: ", each, ' answer_text: ', each.answer_text)
+                    print(type)
+                    break
+
+        if type == 'None':
+            type = 'DEF'
+    else:
+        if status == 'success':
+            type = 'COR'
+        elif status == 'failure':
+            type = 'DEF'
+        else:
+            return{'resultsHeader': "<h3>Something went wrong</h3>",
+                   'resultDetails': 'Try again or contact us.',
+                   'status': status}
+
+    print(type)
+
+    return {'resultsHeader': current_lesson.feedback.get(feedback_type=type).headline,
+            'resultDetails': current_lesson.feedback.get(feedback_type=type).feedback_text,
+            'status': status}
