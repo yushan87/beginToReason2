@@ -21,6 +21,7 @@ class Code(models.Model):
         Returns:
             str: code name
         """
+
         return self.code_name
 
 
@@ -261,6 +262,8 @@ class Lesson(models.Model):
     reason = models.ForeignKey(Reasoning, on_delete=models.CASCADE, blank=True, null=True)
 
     correct = models.CharField(max_length=50, default='Lesson To Go To')
+    correct_feedback = models.TextField(default='Proceeding to the next lesson.')
+    feedback = models.ManyToManyField(Feedback, blank=True)
 
     is_alternate = models.BooleanField(default=False)
     can_mutate = models.BooleanField(default=False)
@@ -268,8 +271,7 @@ class Lesson(models.Model):
     sub_lessons_available = models.BooleanField(default=False)
     incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
 
-    correct_feedback = models.TextField(default='Proceeding to the next lesson.')
-    feedback = models.ManyToManyField(Feedback, blank=True)
+
 
 
 

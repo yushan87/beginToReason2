@@ -133,6 +133,7 @@ def alternate_lesson_check(request):
 
 
 def check_feedback(current_lesson, submitted_answer, status):
+    print(status)
 
     all_answers = submitted_answer.split(";")
     type = 'None'
@@ -162,8 +163,6 @@ def check_feedback(current_lesson, submitted_answer, status):
             return{'resultsHeader': "<h3>Something went wrong</h3>",
                    'resultDetails': 'Try again or contact us.',
                    'status': status}
-
-    print(type)
 
     return {'resultsHeader': headline,
             'resultDetails': text,

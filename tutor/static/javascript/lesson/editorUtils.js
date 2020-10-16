@@ -151,6 +151,7 @@ function checkForTrivials(content) {
     var overall = 'success';
     var regex;
     var i;
+    var missing = false;
 
     // Find all the confirm or ensures statements, with their line numbers
     regex = new RegExp("Confirm [^;]*;|ensures [^;]*;", "mg");
@@ -213,6 +214,8 @@ function checkForTrivials(content) {
         // Find the variables used on the left side. If there are none, mark it correct.
         var left = parts[0];
         var right = parts[1];
+        console.log("left " + left)
+        console.log("right " + right)
         regex = new RegExp("[a-np-zA-QS-Z]", "g") // Temporary fix to allow Reverse(#S) o #T on section2, lesson6
         var variables = left.match(regex);
         if (variables === null) {
@@ -229,6 +232,7 @@ function checkForTrivials(content) {
             if (right.search(regex) > -1) {
                 overall = 'failure';
                 confirms[i].status = "failure";
+                missing = true;
                 continue
             }
         }
@@ -238,7 +242,7 @@ function checkForTrivials(content) {
     for (var confirm of confirms) {
         delete confirm.text
     }
-    return {confirms: confirms, overall: overall}
+    return {confirms: confirms, overall: overall, missing: missing}
 }
 
 
@@ -347,8 +351,17 @@ $("#checkCorrectness").click(function () {
     // Check for trivials
     let trivials = checkForTrivials(code);
     if (trivials.overall == "failure") {
-        document.getElementById("resultsHeader").innerHTML = "<h3>Try Again</h3>";
-        document.getElementById("resultDetails").innerHTML = "Submission does not contain enough information. Try again!";
+        console.log("trivial: " + trivials.trivial )
+        if(trivials.missing){
+            document.getElementById("resultsHeader").innerHTML = "<h3>Try again</h3>";
+            document.getElementById("resultDetails").innerHTML = "Think about the variables in terms of initial values";
+
+        }
+        else{
+            document.getElementById("resultsHeader").innerHTML = "<h3>Syntax error</h3>";
+            document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
+
+        }
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         $("#resultCard").attr("class", "card bg-danger text-white");
         //add line errors
@@ -673,12 +686,6 @@ $.postJSON = (url, data, callback) => {
 
 
 
-
-
-
-
-
-
 function mergeVCsAndLineNums(provedList, lineNums) {
     var overall = 'success';
     var lines = {};
@@ -819,13 +826,8 @@ function verify(code){
             /*
             * posting data to back end to log
             * */
-            //let code = aceEditor.session.getValue();
             let data = {};
-            //data.module = currentLesson.module;
             data.name = name;
-            //data.author = author;
-            //data.author = "user.googleId;"   //make userid
-            //data.milliseconds = getTime();
             data.answer = submitAnswers;
 
             data.code = code;
