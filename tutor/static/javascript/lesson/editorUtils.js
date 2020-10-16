@@ -331,6 +331,10 @@ $("#checkCorrectness").click(function () {
 
     lock();
 
+    /*** Think-aloud: Handle an attempt end ***/
+
+
+
     //is explaination long enough
     if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
@@ -602,7 +606,23 @@ function unlock() {
 $("#next").click(function () {
     lock();
 
-    $.ajax({
+    if (activeUploads.count === 0) {
+        moveToNextExercise();
+    } else {
+        activeUploads.registerListener(function (count) {
+            if (count === 0) {
+                moveToNextExercise();
+            }
+        });
+
+        setTimeout(function () {
+            moveToNextExercise();
+        }, 10000);
+    }
+});
+
+function moveToNextExercise() {
+     $.ajax({
         url: 'tutor',
         datatype: 'json',
         type: 'GET',
@@ -615,9 +635,9 @@ $("#next").click(function () {
         }
     });
 
-    location.reload();
-    unlock();
-});
+     location.reload();
+     unlock();
+}
 
 /*
  * Function for moving to prev lesson.
@@ -692,7 +712,6 @@ $.postJSON = (url, data, callback) => {
                 unlock();
             }
             if(data.sub){
-                data.
                 //loadLesson(data.newLessonIndex, explain, lessonName)
             }
         }
@@ -771,7 +790,7 @@ function decode(data) {
 
 function verify(code){
     var vcs = {}
-    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project')
+    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project');
 
     // Connection opened
     ws.addEventListener('open', function (event) {
@@ -843,8 +862,16 @@ function verify(code){
             * */
             let data = {};
             data.name = name;
+<<<<<<< HEAD
             data.answer = submitAnswers;
             data.allAnswers = allAnswers;
+=======
+            //data.author = author;
+            //data.author = "user.googleId;"   //make userid
+            //data.milliseconds = getTime();
+
+            data.answer = submitAnswers;
+>>>>>>> 1eea109291dd4770bee903802d86a6d4398ea249
             data.code = code;
             if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
             else if (hasMC){data.explanation = multiAnswer;}
@@ -859,7 +886,11 @@ function verify(code){
                     data.face = selectedValue
                 }
             }
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> 1eea109291dd4770bee903802d86a6d4398ea249
             $.postJSON("tutor", data, (results) => {});
             submitAnswers = '';
 
