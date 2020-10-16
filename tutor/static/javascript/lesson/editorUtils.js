@@ -30,7 +30,7 @@ let instructOpen = true;
 /*
  * Function for creating and embedding the ACE Editor into our page.
  */
-function createEditor(code, explain, lessonName, currIndex, compIndex) {
+function createEditor(code, explain, lessonName, currIndex, compIndex, review, past) {
     // RESOLVE mode
     let ResolveMode = ace.require("ace/mode/resolve").Mode;
     Range = ace.require("ace/range").Range;
@@ -47,7 +47,21 @@ function createEditor(code, explain, lessonName, currIndex, compIndex) {
     name = lessonName;
     aceEditor.session.setValue(editorContent);
     //$("#prev").attr("disabled", "disabled");
-    document.getElementById("resultCard").style.display = "none";
+    if(review == 'none') {
+        document.getElementById("resultCard").style.display = "none";
+    }
+    else {
+        document.getElementById("resultCard").style.display = "block";
+        document.getElementById("resultsHeader").innerHTML = "Correct!";
+        document.getElementById("resultDetails").innerHTML = review;
+        $("#resultCard").attr("class", "card bg-success text-white");
+
+        document.getElementById("answersCard").removeAttribute("hidden")
+        document.getElementById("pastAnswers").innerHTML = past;
+
+        $("#resetCode").attr("disabled", "disabled");
+        $("#checkCorrectness").attr("disabled", "disabled");
+    }
 
     //add a check for if need explaination and set hasFR
     //hide or unhide explaination box
@@ -151,6 +165,7 @@ function checkForTrivials(content) {
     var overall = 'success';
     var regex;
     var i;
+    var missing = false;
 
     // Find all the confirm or ensures statements, with their line numbers
     regex = new RegExp("Confirm [^;]*;|ensures [^;]*;", "mg");
@@ -213,6 +228,8 @@ function checkForTrivials(content) {
         // Find the variables used on the left side. If there are none, mark it correct.
         var left = parts[0];
         var right = parts[1];
+        console.log("left " + left)
+        console.log("right " + right)
         regex = new RegExp("[a-np-zA-QS-Z]", "g") // Temporary fix to allow Reverse(#S) o #T on section2, lesson6
         var variables = left.match(regex);
         if (variables === null) {
@@ -229,6 +246,7 @@ function checkForTrivials(content) {
             if (right.search(regex) > -1) {
                 overall = 'failure';
                 confirms[i].status = "failure";
+                missing = true;
                 continue
             }
         }
@@ -238,7 +256,7 @@ function checkForTrivials(content) {
     for (var confirm of confirms) {
         delete confirm.text
     }
-    return {confirms: confirms, overall: overall}
+    return {confirms: confirms, overall: overall, missing: missing}
 }
 
 
@@ -351,8 +369,17 @@ $("#checkCorrectness").click(function () {
     // Check for trivials
     let trivials = checkForTrivials(code);
     if (trivials.overall == "failure") {
-        document.getElementById("resultsHeader").innerHTML = "<h3>Try Again</h3>";
-        document.getElementById("resultDetails").innerHTML = "Submission does not contain enough information. Try again!";
+        console.log("trivial: " + trivials.trivial )
+        if(trivials.missing){
+            document.getElementById("resultsHeader").innerHTML = "<h3>Try again</h3>";
+            document.getElementById("resultDetails").innerHTML = "Think about the variables in terms of initial values";
+
+        }
+        else{
+            document.getElementById("resultsHeader").innerHTML = "<h3>Syntax error</h3>";
+            document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
+
+        }
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         $("#resultCard").attr("class", "card bg-danger text-white");
         //add line errors
@@ -484,6 +511,7 @@ $("#fontIncrease").click(function () {
  */
 $("#toggleOverlay").click(function () {
     if(overlayOpen){
+        console.log("toggle overlay is true, turning false")
         document.getElementById("myNav").style.width = "0%";
         overlayOpen = false;
         document.getElementById("toggleOverlay").innerHTML = "<i class=\"fa fa-list\" aria-hidden=\"true\"></i> View Lessons";
@@ -622,7 +650,7 @@ $("#prev").click(function () {
     lock();
 
     $.ajax({
-        url: 'previous',
+        url: 'completed',
         datatype: 'json',
         type: 'GET',
         headers: {
@@ -694,12 +722,6 @@ $.postJSON = (url, data, callback) => {
 
     });
 };
-
-
-
-
-
-
 
 
 
@@ -853,15 +875,10 @@ function verify(code){
             /*
             * posting data to back end to log
             * */
-            //let code = aceEditor.session.getValue();
             let data = {};
-            //data.module = currentLesson.module;
             data.name = name;
-            //data.author = author;
-            //data.author = "user.googleId;"   //make userid
-            //data.milliseconds = getTime();
-
             data.answer = submitAnswers;
+            data.allAnswers = allAnswers;
             data.code = code;
             if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
             else if (hasMC){data.explanation = multiAnswer;}

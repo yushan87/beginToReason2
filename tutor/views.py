@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
-from data_analysis.py_helper_functions.datalog_helper import log_data
+from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, check_feedback
 #from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
@@ -68,17 +68,20 @@ def tutor(request):
 
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
+            print('current_lesson: ', current_lesson)
             submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
             status = json.loads(request.body.decode('utf-8'))['status']
             print("status: ", status)
 
             if status == "success":
-                current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-                current_user.completed_lesson_index = current_user.completed_lesson_index + 1
-                current_user.current_lesson_index = current_user.current_lesson_index + 1
-                if Lesson.objects.filter(lesson_name=current_user.current_lesson_name).exists():
-                    curr_lesson = Lesson.objects.filter(lesson_name=current_user.current_lesson_name)
-                    current_user.current_lesson_name = curr_lesson[0].correct
+                current_user.completed_lesson_index = current_lesson.lesson_index
+                current_user.current_lesson_index = Lesson.objects.get(lesson_name=current_lesson.correct).lesson_index
+                print("completed index: ", current_user.completed_lesson_index)
+                print("current index: ", current_user.current_lesson_index)
+                if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
+                    curr_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
+                    print('curr_lesson: ', current_lesson)
+                    current_user.current_lesson_name = curr_lesson.lesson_name
                     current_user.save()
                     if current_user.current_lesson_name == "Done":
                         current_user.completed_sets = current_user.current_lesson_set
@@ -91,7 +94,6 @@ def tutor(request):
 
     # Case 2: We have received a GET request requesting code
     elif request.method == 'GET':
-
         # Ensure user exists
         # Case 2a: if the user exists
         if user_auth(request) and set_not_complete(request):
@@ -99,22 +101,24 @@ def tutor(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_set = current_user.current_lesson_set.lessons.all()
             # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
-            if Lesson.objects.filter(lesson_name=current_user.current_lesson_name).exists():
-                current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
+            if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
+                current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
                 # mutated_activity = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_variable_key)
                 # print(mutated_activity)
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
+                                   'lesson_code': current_lesson.code.lesson_code,
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
                                    'reason': current_lesson.reason.reasoning_question,
                                    'mc_set': current_lesson.reason.mc_set.all(),
-                                   'currLessonNum': current_user.current_lesson_index + 1,
-                                   'completedLessonNum': current_user.completed_lesson_index + 1,
+                                   'currLessonNum': current_user.current_lesson_index,
+                                   'completedLessonNum': current_user.completed_lesson_index,
                                    'setLength': 11,
                                    'currSet': current_set,
                                    'mood': current_user.mood,
+                                   'review': 'none',
                                    'screen_record': current_lesson.screen_record,
                                    'audio_record': current_lesson.audio_record,
                                    'audio_transcribe': current_lesson.audio_transcribe,
@@ -123,14 +127,16 @@ def tutor(request):
                 elif current_lesson.reason.reasoning_type == 'Text':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
+                                   'lesson_code': current_lesson.code.lesson_code,
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
                                    'reason': current_lesson.reason.reasoning_question,
-                                   'currLessonNum': current_user.current_lesson_index + 1,
-                                   'completedLessonNum': current_user.completed_lesson_index + 1,
+                                   'currLessonNum': current_user.current_lesson_index,
+                                   'completedLessonNum': current_user.completed_lesson_index,
                                    'setLength': 11,
                                    'currSet': current_set,
                                    'mood': current_user.mood,
+                                   'review': 'none',
                                    'screen_record': current_lesson.screen_record,
                                    'audio_record': current_lesson.audio_record,
                                    'audio_transcribe': current_lesson.audio_transcribe,
@@ -139,13 +145,15 @@ def tutor(request):
                 else:
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
+                                   'lesson_code': current_lesson.code.lesson_code,
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
-                                   'currLessonNum': current_user.current_lesson_index + 1,
-                                   'completedLessonNum': current_user.completed_lesson_index + 1,
+                                   'currLessonNum': current_user.current_lesson_index,
+                                   'completedLessonNum': current_user.completed_lesson_index,
                                    'setLength': 11,
                                    'currSet': current_set,
                                    'mood': current_user.mood,
+                                   'review': 'none',
                                    'screen_record': current_lesson.screen_record,
                                    'audio_record': current_lesson.audio_record,
                                    'audio_transcribe': current_lesson.audio_transcribe,
@@ -155,11 +163,12 @@ def tutor(request):
 
 
 @login_required(login_url='/accounts/login/')
-def previous(request):
+def completed(request, index):
     """function previous This function handles retrieving the prev lesson.
 
         Args:
             request (HTTPRequest): A http request object created automatically by Django.
+            index (int): The index of the lesson to retrieve
 
         Returns:
             HttpResponse: A generated http response object to the request depending on whether or not
@@ -169,48 +178,24 @@ def previous(request):
         if user_auth(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_set = current_user.current_lesson_set.lessons.all()
-            if current_user.current_lesson_index != 0:
-                current_user.current_lesson_index = current_user.current_lesson_index - 1
-                current_user.save()
-                if Lesson.objects.filter(lesson_name=current_set[current_user.current_lesson_index]).exists():
-                    current_lesson = Lesson.objects.get(lesson_name=current_set[current_user.current_lesson_index])
-                    # log_item = DataLog.objects.get(user_key=User.objects.get(email=request.user.email),
-                    # status="success", lesson_key=Lesson.objects.get(
-                    # lesson_name=current_set[current_user.current_lesson_index])).code
-                    # Case 2aaaa: if the question is of type MC
-                    if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
-                        return render(request, "tutor/tutor.html",
-                                      {'lesson': current_lesson,
-                                       'concept': current_lesson.lesson_concept.all(),
-                                       'referenceSet': current_lesson.reference_set.all(),
-                                       'reason': current_lesson.reason.reasoning_question,
-                                       'mc_set': current_lesson.reason.mc_set.all(),
-                                       'currLessonNum': current_user.current_lesson_index + 1,
-                                       'completedLessonNum': current_user.completed_lesson_index + 1,
-                                       'setLength': 11,
-                                       'currSet': current_set,
-                                       'mood': current_user.mood})
-                    # Case 2aaab: if question is of type Text
-                    elif current_lesson.reason.reasoning_type == 'Text':
-                        return render(request, "tutor/tutor.html",
-                                      {'lesson': current_lesson,
-                                       'concept': current_lesson.lesson_concept.all(),
-                                       'referenceSet': current_lesson.reference_set.all(),
-                                       'reason': current_lesson.reason.reasoning_question,
-                                       'mc_set': current_lesson.reason.mc_set.all(),
-                                       'currLessonNum': current_user.current_lesson_index + 1,
-                                       'completedLessonNum': current_user.completed_lesson_index + 1,
-                                       'setLength': 11,
-                                       'currSet': current_set,
-                                       'mood': current_user.mood})
-                    else:
-                        return render(request, "tutor/tutor.html",
-                                      {'lesson': current_lesson,
-                                       'concept': current_lesson.lesson_concept.all(),
-                                       'referenceSet': current_lesson.reference_set.all(),
-                                       'currLessonNum': current_user.current_lesson_index + 1,
-                                       'completedLessonNum': current_user.completed_lesson_index + 1,
-                                       'setLength': 11,
-                                       'currSet': current_set,
-                                       'mood': current_user.mood})
+            current_lesson = Lesson.objects.get(lesson_index=index)
+
+            if index <= current_user.completed_lesson_index:
+                lesson_info = get_log_data(current_user, index)
+                print("lesson info: ", index)
+                return render(request, "tutor/tutor.html",
+                              {'lesson': current_lesson,
+                               'lesson_code': lesson_info[0],
+                               'concept': current_lesson.lesson_concept.all(),
+                               'referenceSet': current_lesson.reference_set.all(),
+                               'currLessonNum': current_user.current_lesson_index,
+                               'setLength': 11,
+                               'currSet': current_set,
+                               'mood': lesson_info[1],
+                               'past': lesson_info[2],
+                               'completedLessonNum': current_user.completed_lesson_index,
+                               'review': current_lesson.correct_feedback})
+            else:
+                return redirect("tutor:tutor")
+
     return redirect("accounts:profile")
