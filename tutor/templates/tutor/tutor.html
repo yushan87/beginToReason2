@@ -25,7 +25,7 @@
     <script type="application/javascript">
         $(document).ready(function () {
             //this will be done in a load lesson function call
-            createEditor("{{ lesson_code | safe }}", "{{ lesson.reason.reasoning_type | safe }}", "{{ lesson.lesson_title | safe }}", "{{ currLessonNum | safe }}", "{{ completedLessonNum | safe }}");
+            createEditor("{{ lesson_code | safe }}", "{{ lesson.reason.reasoning_type | safe }}", "{{ lesson.lesson_title | safe }}", "{{ currLessonNum | safe }}", "{{ completedLessonNum | safe }}", "{{ review | safe }}", "{{ past | safe }}");
             $("#tutor").attr("class", "nav-item active");
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
 
@@ -109,12 +109,11 @@
                 <a id="closeOverlay" class="closebtn">&times;</a>
                 <div class="overlay-content">
                     <ol>
-                        <!--<a class="nav-link pb-0" href="{% url 'tutor:catalog' %}">Catalog</a>-->
                         {% for obj in currSet%}
-                            {% if obj|safe == lesson.lesson_title|safe and not obj.is_alternate%}
+                            {% if obj.lesson_index == lesson.lesson_index and not obj.is_alternate%}
                                 <li id="lessonList" style=" color: white"><a style="color: #3A4958; font-size: 125%">{{ obj | safe }}</a></li><br>
                             {% elif not obj.is_alternate %}
-                                {% if obj.lesson_index < completedLessonNum %}
+                                {% if obj.lesson_index <= completedLessonNum %}
                                     <li id="lessonList" style="color: #3A4958"><a class = "nav-link" href="{% url 'tutor:completed' obj.lesson_index %}" style="font-size: 125%">{{ obj | safe }}</a></li><br>
                                 {% elif obj.lesson_index == currLessonNum %}
                                     <li id="lessonList" style="color: #3A4958"><a class = "nav-link" href="{% url 'tutor:tutor' %}" style="font-size: 125%">{{ obj | safe }}</a></li><br>
@@ -254,22 +253,9 @@
             </div>
             <div class="col-3 resultPanel p-0" id="right-col" style="background-color: #333;">
                 <div id="resultCard" class="card">
-                {% if feedback %}
-                    <script>
-                        $("#resultCard").attr("class", "card bg-success text-white");
-                    </script>
-                {% endif %}
-                    <h5 class="card-header text-center" id="resultsHeader">
-                        {% if feedback %}
-                            Correct!
-                        {% endif %}
-                    </h5>
+                    <h5 class="card-header text-center" id="resultsHeader"></h5>
                     <div class="card-body">
-                        <p class="card-text" id="resultDetails">
-                            {% if feedback %}
-                            {{ feedback }}
-                            {% endif %}
-                        </p>
+                        <p class="card-text" id="resultDetails"></p>
                     </div>
                 </div>
                 <div id="explainCard" class="card" style="position: absolute; bottom: 0; width: 98%; margin: 5px 5px 5px 5px; background-color: #E0E0E0; color: #333;">

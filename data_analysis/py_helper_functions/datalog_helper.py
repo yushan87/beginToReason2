@@ -3,7 +3,6 @@ This module contains our Django helper functions for the "data analysis" applica
 """
 import json
 from django.utils import timezone
-from django.utils.encoding import smart_str
 from django.contrib.auth.models import User
 from accounts.models import UserInformation
 from core.models import LessonSet, Lesson
@@ -25,6 +24,7 @@ def log_data(request):
     lesson = Lesson.objects.get(lesson_name=set_array[user_info.current_lesson_index].lesson_name)
     code = json.loads(request.body.decode('utf-8'))['code']
     explanation = json.loads(request.body.decode('utf-8'))['explanation']
+    past_answers = json.loads(request.body.decode('utf-8'))['allAnswers']
     status = json.loads(request.body.decode('utf-8'))['status']
     face = json.loads(request.body.decode('utf-8'))['face']
     user_info.mood = face
@@ -37,6 +37,7 @@ def log_data(request):
                                          status=status,
                                          code=code,
                                          explanation=explanation,
+                                         past_answers = past_answers,
                                          face=face)
     data_to_log.save()
 
@@ -44,9 +45,7 @@ def get_log_data(user, lesson_index):
     user = User.objects.get(email=user)
 
     get_user_successes = DataLog.objects.filter(user_key = user).filter(status='success')
-    print(get_user_successes)
-    print(get_user_successes.filter(lesson_key=lesson_index))
     get_lesson = get_user_successes.filter(lesson_key=Lesson.objects.get(lesson_index=lesson_index)).order_by('-id')[0]
 
-    return repr(get_lesson.code), get_lesson.face
+    return repr(get_lesson.code).replace("'",''), get_lesson.face, get_lesson.past_answers
 

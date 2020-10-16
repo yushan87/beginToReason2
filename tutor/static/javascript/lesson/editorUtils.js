@@ -30,7 +30,7 @@ let instructOpen = true;
 /*
  * Function for creating and embedding the ACE Editor into our page.
  */
-function createEditor(code, explain, lessonName, currIndex, compIndex) {
+function createEditor(code, explain, lessonName, currIndex, compIndex, review, past) {
     // RESOLVE mode
     let ResolveMode = ace.require("ace/mode/resolve").Mode;
     Range = ace.require("ace/range").Range;
@@ -47,7 +47,21 @@ function createEditor(code, explain, lessonName, currIndex, compIndex) {
     name = lessonName;
     aceEditor.session.setValue(editorContent);
     //$("#prev").attr("disabled", "disabled");
-    document.getElementById("resultCard").style.display = "none";
+    if(review == 'none') {
+        document.getElementById("resultCard").style.display = "none";
+    }
+    else {
+        document.getElementById("resultCard").style.display = "block";
+        document.getElementById("resultsHeader").innerHTML = "Correct!";
+        document.getElementById("resultDetails").innerHTML = review;
+        $("#resultCard").attr("class", "card bg-success text-white");
+
+        document.getElementById("answersCard").removeAttribute("hidden")
+        document.getElementById("pastAnswers").innerHTML = past;
+
+        $("#resetCode").attr("disabled", "disabled");
+        $("#checkCorrectness").attr("disabled", "disabled");
+    }
 
     //add a check for if need explaination and set hasFR
     //hide or unhide explaination box
@@ -830,7 +844,7 @@ function verify(code){
             let data = {};
             data.name = name;
             data.answer = submitAnswers;
-
+            data.allAnswers = allAnswers;
             data.code = code;
             if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
             else if (hasMC){data.explanation = multiAnswer;}

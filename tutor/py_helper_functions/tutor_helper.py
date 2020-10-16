@@ -67,7 +67,7 @@ def set_not_complete(request):
         Boolean: A boolean to signal if the set has been completed
     """
     current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-    print(request)
+    print("Set not complete: ", request)
     if current_user.current_lesson_set is None:
         return False
     current_set = current_user.current_lesson_set.lessons.all()
@@ -133,21 +133,24 @@ def alternate_lesson_check(request):
 
 
 def check_feedback(current_lesson, submitted_answer, status):
-    print(status)
 
     all_answers = submitted_answer.split(";")
     type = 'None'
+
     if current_lesson.sub_lessons_available:
         queried_set = current_lesson.incorrect_answers.all()
         for ans in all_answers:
             search = ans + ';'
             for each in queried_set:
                 if search == each.answer_text:
+                    print(search)
                     type = each.answer_type
                     break
 
-        if type == 'None':
+        if type == 'None' and status == 'failure':
             type = 'DEF'
+        elif type == 'None':
+            type = 'COR'
 
         headline = current_lesson.feedback.get(feedback_type=type).headline
         text = current_lesson.feedback.get(feedback_type=type).feedback_text
