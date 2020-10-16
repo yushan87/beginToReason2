@@ -150,7 +150,7 @@ def tutor(request):
                                    'mood': current_user.mood,
                                    'review': 'none'})
 
-        return redirect("accounts:profile")
+    return redirect("accounts:profile")
 
 
 
