@@ -268,7 +268,7 @@ class Lesson(models.Model):
     sub_lessons_available = models.BooleanField(default=False)
     incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
 
-    has_feedback = models.BooleanField(default=False)
+    correct_feedback = models.TextField(default='Proceeding to the next lesson.')
     feedback = models.ManyToManyField(Feedback, blank=True)
 
 

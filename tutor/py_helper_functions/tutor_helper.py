@@ -67,6 +67,7 @@ def set_not_complete(request):
         Boolean: A boolean to signal if the set has been completed
     """
     current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+    print(request)
     if current_user.current_lesson_set is None:
         return False
     current_set = current_user.current_lesson_set.lessons.all()
@@ -142,17 +143,21 @@ def check_feedback(current_lesson, submitted_answer, status):
             for each in queried_set:
                 if search == each.answer_text:
                     type = each.answer_type
-                    print("each: ", each, ' answer_text: ', each.answer_text)
-                    print(type)
                     break
 
         if type == 'None':
             type = 'DEF'
+
+        headline = current_lesson.feedback.get(feedback_type=type).headline
+        text = current_lesson.feedback.get(feedback_type=type).feedback_text
     else:
         if status == 'success':
-            type = 'COR'
+            headline = 'Correct'
+            text = current_lesson.correct_feedback
+
         elif status == 'failure':
-            type = 'DEF'
+            headline = current_lesson.feedback.get(feedback_type='DEF').headline
+            text = current_lesson.feedback.get(feedback_type='DEF').feedback_text
         else:
             return{'resultsHeader': "<h3>Something went wrong</h3>",
                    'resultDetails': 'Try again or contact us.',
@@ -160,6 +165,6 @@ def check_feedback(current_lesson, submitted_answer, status):
 
     print(type)
 
-    return {'resultsHeader': current_lesson.feedback.get(feedback_type=type).headline,
-            'resultDetails': current_lesson.feedback.get(feedback_type=type).feedback_text,
+    return {'resultsHeader': headline,
+            'resultDetails': text,
             'status': status}

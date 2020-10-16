@@ -843,23 +843,6 @@ function verify(code){
                 }
             }
 
-
-
-
-            /*if (lines.overall == "failure") {
-                document.getElementById("resultsHeader").innerHTML = "<h3>Incorrect answer</h3>";
-                document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J?";
-                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                $("#resultCard").attr("class", "card bg-danger text-white");
-                //add line errors
-                //this will need to be fixed based on verifier return
-
-                // Unlock editor for further user edits
-                unlock();
-                //setTimeout(function (){location.reload();}, 3000);
-                //Location.reload();*/
-
-            // setTimeout(function (){location.reload();}, 3000);
             $.postJSON("tutor", data, (results) => {});
             submitAnswers = '';
 

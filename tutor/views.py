@@ -94,16 +94,19 @@ def tutor(request):
 
     # Case 2: We have received a GET request requesting code
     elif request.method == 'GET':
-
+        print("Call for Continue Lesson")
         # Ensure user exists
         # Case 2a: if the user exists
         if user_auth(request) and set_not_complete(request):
+            print("is set complete?")
             # Case 2aa: if the user has a current set
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_set = current_user.current_lesson_set.lessons.all()
+            print( "current user: ", current_user, " current set: ", current_set)
             # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
             if Lesson.objects.filter(lesson_name=current_user.current_lesson_name).exists():
                 current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
+                print('current lesson: ', current_lesson)
                 # mutated_activity = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_variable_key)
                 # print(mutated_activity)
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
@@ -142,7 +145,8 @@ def tutor(request):
                                    'currSet': current_set,
                                    'mood': current_user.mood})
 
-    return redirect("accounts:profile")
+        print('Is this being hit?')
+        return redirect("accounts:profile")
 
 
 
