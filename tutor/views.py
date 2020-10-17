@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, check_feedback
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback
 #from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
 
@@ -17,6 +17,8 @@ from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, s
 letters = [['X', 'Y', 'Z'], ['P', 'Q', 'R'], ['L', 'M', 'N'], ['I', 'J', 'K']]
 variable_key = {}
 inverse_variable_key = {}
+
+
 
 
 def catalog(request):
@@ -54,6 +56,7 @@ def tutor(request):
     """
 
     end_of_set = False
+
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
         # Case 1a: if the user exists
@@ -223,7 +226,6 @@ def completed(request, index):
                                'past': lesson_info[2],
                                'completedLessonNum': current_user.completed_lesson_index,
                                'review': current_lesson.correct_feedback})
-            else:
-                return redirect("tutor:tutor")
+            return redirect("tutor:tutor")
 
     return redirect("accounts:profile")
