@@ -165,25 +165,24 @@ def tutor(request):
                                    'audio_record': current_lesson.audio_record,
                                    'audio_transcribe': current_lesson.audio_transcribe,
                                    'user_email': request.user.email})
-                    # Case 2aaac: if question is of type none
-                else:
-                    print("Lesson with none reasoning")
-                    return render(request, "tutor/tutor.html",
-                                  {'lesson': current_lesson,
-                                   'lesson_code': current_lesson.code.lesson_code,
-                                   'concept': current_lesson.lesson_concept.all(),
-                                   'referenceSet': current_lesson.reference_set.all(),
-                                   'currLessonNum': current_user.current_lesson_index,
-                                   'completedLessonNum': current_user.completed_lesson_index,
-                                   'setLength': set_len,
-                                   'finished_count': num_done,
-                                   'currSet': current_set,
-                                   'mood': current_user.mood,
-                                   'review': 'none',
-                                   'screen_record': current_lesson.screen_record,
-                                   'audio_record': current_lesson.audio_record,
-                                   'audio_transcribe': current_lesson.audio_transcribe,
-                                   'user_email': request.user.email})
+                # Case 2aaac: if question is of type none
+
+                return render(request, "tutor/tutor.html",
+                              {'lesson': current_lesson,
+                               'lesson_code': current_lesson.code.lesson_code,
+                               'concept': current_lesson.lesson_concept.all(),
+                               'referenceSet': current_lesson.reference_set.all(),
+                               'currLessonNum': current_user.current_lesson_index,
+                               'completedLessonNum': current_user.completed_lesson_index,
+                               'setLength': set_len,
+                               'finished_count': num_done,
+                               'currSet': current_set,
+                               'mood': current_user.mood,
+                               'review': 'none',
+                               'screen_record': current_lesson.screen_record,
+                               'audio_record': current_lesson.audio_record,
+                               'audio_transcribe': current_lesson.audio_transcribe,
+                               'user_email': request.user.email})
     return redirect("accounts:profile")
 
 
