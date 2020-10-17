@@ -53,6 +53,7 @@ def tutor(request):
                       the user is authenticated.
     """
 
+    end_of_set = False
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
         # Case 1a: if the user exists
@@ -75,15 +76,20 @@ def tutor(request):
 
             if status == "success":
                 current_user.completed_lesson_index = current_lesson.lesson_index
-                current_user.current_lesson_index = Lesson.objects.get(lesson_name=current_lesson.correct).lesson_index
+                try:
+                    current_user.current_lesson_index = Lesson.objects.get(lesson_name=current_lesson.correct).lesson_index
+                except:
+                    end_of_set = True
+
                 print("completed index: ", current_user.completed_lesson_index)
                 print("current index: ", current_user.current_lesson_index)
+
                 if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
                     curr_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
                     print('curr_lesson: ', current_lesson)
                     current_user.current_lesson_name = curr_lesson.lesson_name
                     current_user.save()
-                    if current_user.current_lesson_name == "Done":
+                    if end_of_set:
                         current_user.completed_sets = current_user.current_lesson_set
                         current_user.current_lesson_set = None
                         current_user.save()

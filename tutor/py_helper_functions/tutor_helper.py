@@ -70,10 +70,12 @@ def set_not_complete(request):
     print("Set not complete: ", request)
     if current_user.current_lesson_set is None:
         return False
+
     current_set = current_user.current_lesson_set.lessons.all()
     if current_set.exists():
-        current_set = current_user.current_lesson_set.lessons.all()
+
         if request.method == 'POST':
+            print("Not complete call from POST")
             # need a variation of what to do if the last lesson was completed
             if current_user.current_lesson_index < len(current_set) - 1:
                 # increase index of lesson set depending on if user is on a previously completed lesson
@@ -88,7 +90,9 @@ def set_not_complete(request):
                 # remove set from current set
                 return False
         elif request.method == 'GET':
+            print("Not complete call from GET")
             if current_user.current_lesson_index < len(current_set):
+                print("TEST PRINT")
                 return True
     return False
 
