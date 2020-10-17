@@ -141,6 +141,7 @@ def check_type(current_lesson, submitted_answer, status):
 
 
 def check_feedback(current_lesson, submitted_answer, status):
+    type = 'DEF'
 
     if current_lesson.sub_lessons_available:
 
@@ -152,10 +153,12 @@ def check_feedback(current_lesson, submitted_answer, status):
         if status == 'success':
             headline = 'Correct'
             text = current_lesson.correct_feedback
+            type = 'COR'
 
         elif status == 'failure':
             headline = current_lesson.feedback.get(feedback_type='DEF').headline
             text = current_lesson.feedback.get(feedback_type='DEF').feedback_text
+            type = 'DEF'
         else:
             return{'resultsHeader': "<h3>Something went wrong</h3>",
                    'resultDetails': 'Try again or contact us.',

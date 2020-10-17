@@ -711,9 +711,11 @@ $.postJSON = (url, data, callback) => {
                 $("#resultCard").attr("class", "card bg-danger text-white");
                 unlock();
             }
-            if(data.sub){
-                //loadLesson(data.newLessonIndex, explain, lessonName)
-            }
+                if(data.sub){
+                    console.log(data.newLessonIndex)
+                    console.log(data.newLessonCode)
+                    loadLesson(data.newLessonCode, 'None',data.newLessonName)
+                }
         }
 
     });

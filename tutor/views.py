@@ -95,9 +95,10 @@ def tutor(request):
             feedback = check_feedback(current_lesson, submitted_answer, status)
             print(feedback['type'])
             goto = alternate_lesson_check(current_lesson, feedback['type'])
-            feedback.update({'newLessonIndex': Lesson.objects.get(lesson_name=goto.lesson_name).lesson_index})
-            print("Lesson to go to: ", goto.lesson_name)
-            print("new lesson index: ", feedback['newLessonIndex'])
+            feedback.update({'newLessonIndex': str(Lesson.objects.get(lesson_name=goto.lesson_name).lesson_index)})
+            feedback.update({'newLessonCode': Lesson.objects.get(lesson_name=goto.lesson_name).code.lesson_code})
+            feedback.update({'newLessonEx': Lesson.objects.get(lesson_name=goto.lesson_name).reason.reasoning_type})
+
             print(feedback)
 
             return JsonResponse(feedback)
