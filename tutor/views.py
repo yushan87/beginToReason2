@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, check_feedback
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback
 #from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
 
@@ -17,6 +17,8 @@ from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, s
 letters = [['X', 'Y', 'Z'], ['P', 'Q', 'R'], ['L', 'M', 'N'], ['I', 'J', 'K']]
 variable_key = {}
 inverse_variable_key = {}
+
+
 
 
 def catalog(request):
@@ -53,6 +55,8 @@ def tutor(request):
                       the user is authenticated.
     """
 
+    end_of_set = False
+
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
         # Case 1a: if the user exists
@@ -75,15 +79,22 @@ def tutor(request):
 
             if status == "success":
                 current_user.completed_lesson_index = current_lesson.lesson_index
-                current_user.current_lesson_index = Lesson.objects.get(lesson_name=current_lesson.correct).lesson_index
+
+                if Lesson.objects.filter(lesson_name=current_lesson.correct).exists():
+                    current_user.current_lesson_index = Lesson.objects.get(
+                        lesson_name=current_lesson.correct).lesson_index
+                else:
+                    end_of_set = True
+
                 print("completed index: ", current_user.completed_lesson_index)
                 print("current index: ", current_user.current_lesson_index)
+
                 if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
                     curr_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
                     print('curr_lesson: ', current_lesson)
                     current_user.current_lesson_name = curr_lesson.lesson_name
                     current_user.save()
-                    if current_user.current_lesson_name == "Done":
+                    if end_of_set:
                         current_user.completed_sets = current_user.current_lesson_set
                         current_user.current_lesson_set = None
                         current_user.save()
@@ -104,7 +115,7 @@ def tutor(request):
     elif request.method == 'GET':
         # Ensure user exists
         # Case 2a: if the user exists
-        if user_auth(request) and set_not_complete(request):
+        if user_auth(request) and not end_of_set:
             # Case 2aa: if the user has a current set
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_set = current_user.current_lesson_set.lessons.all()
@@ -154,24 +165,24 @@ def tutor(request):
                                    'audio_record': current_lesson.audio_record,
                                    'audio_transcribe': current_lesson.audio_transcribe,
                                    'user_email': request.user.email})
-                    # Case 2aaac: if question is of type none
-                else:
-                    return render(request, "tutor/tutor.html",
-                                  {'lesson': current_lesson,
-                                   'lesson_code': current_lesson.code.lesson_code,
-                                   'concept': current_lesson.lesson_concept.all(),
-                                   'referenceSet': current_lesson.reference_set.all(),
-                                   'currLessonNum': current_user.current_lesson_index,
-                                   'completedLessonNum': current_user.completed_lesson_index,
-                                   'setLength': set_len,
-                                   'finished_count': num_done,
-                                   'currSet': current_set,
-                                   'mood': current_user.mood,
-                                   'review': 'none',
-                                   'screen_record': current_lesson.screen_record,
-                                   'audio_record': current_lesson.audio_record,
-                                   'audio_transcribe': current_lesson.audio_transcribe,
-                                   'user_email': request.user.email})
+                # Case 2aaac: if question is of type none
+
+                return render(request, "tutor/tutor.html",
+                              {'lesson': current_lesson,
+                               'lesson_code': current_lesson.code.lesson_code,
+                               'concept': current_lesson.lesson_concept.all(),
+                               'referenceSet': current_lesson.reference_set.all(),
+                               'currLessonNum': current_user.current_lesson_index,
+                               'completedLessonNum': current_user.completed_lesson_index,
+                               'setLength': set_len,
+                               'finished_count': num_done,
+                               'currSet': current_set,
+                               'mood': current_user.mood,
+                               'review': 'none',
+                               'screen_record': current_lesson.screen_record,
+                               'audio_record': current_lesson.audio_record,
+                               'audio_transcribe': current_lesson.audio_transcribe,
+                               'user_email': request.user.email})
     return redirect("accounts:profile")
 
 
@@ -214,7 +225,6 @@ def completed(request, index):
                                'past': lesson_info[2],
                                'completedLessonNum': current_user.completed_lesson_index,
                                'review': current_lesson.correct_feedback})
-            else:
-                return redirect("tutor:tutor")
+            return redirect("tutor:tutor")
 
     return redirect("accounts:profile")
