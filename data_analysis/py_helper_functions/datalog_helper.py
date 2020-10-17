@@ -18,10 +18,9 @@ def log_data(request):
     Returns:
     """
     user = User.objects.get(email=request.user.email)
-    user_info = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+    user_info = UserInformation.objects.get(user=user)
     lesson_set = user_info.current_lesson_set
-    set_array = lesson_set.lessons.all()
-    lesson = Lesson.objects.get(lesson_name=set_array[user_info.current_lesson_index].lesson_name)
+    lesson = Lesson.objects.get(lesson_index=user_info.current_lesson_index)
     code = json.loads(request.body.decode('utf-8'))['code']
     explanation = json.loads(request.body.decode('utf-8'))['explanation']
     past_answers = json.loads(request.body.decode('utf-8'))['allAnswers']
@@ -29,6 +28,8 @@ def log_data(request):
     face = json.loads(request.body.decode('utf-8'))['face']
     user_info.mood = face
     user_info.save()
+
+    print("data_logged")
 
     data_to_log = DataLog.objects.create(user_key=user,
                                          time_stamp=timezone.now(),
