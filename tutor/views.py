@@ -76,9 +76,11 @@ def tutor(request):
 
             if status == "success":
                 current_user.completed_lesson_index = current_lesson.lesson_index
-                try:
-                    current_user.current_lesson_index = Lesson.objects.get(lesson_name=current_lesson.correct).lesson_index
-                except:
+
+                if Lesson.objects.filter(lesson_name=current_lesson.correct).exists():
+                    current_user.current_lesson_index = Lesson.objects.get(
+                        lesson_name=current_lesson.correct).lesson_index
+                else:
                     end_of_set = True
 
                 print("completed index: ", current_user.completed_lesson_index)
@@ -162,6 +164,7 @@ def tutor(request):
                                    'user_email': request.user.email})
                     # Case 2aaac: if question is of type none
                 else:
+                    print("Lesson with none reasoning")
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
                                    'lesson_code': current_lesson.code.lesson_code,
