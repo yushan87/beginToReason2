@@ -32,4 +32,4 @@ class DataLog(models.Model):
         Returns:
             str: status
         """
-        return self.user_key + ": " + self.status
+        return str(self.user_key) + ": " + self.status + " - "+ str(self.lesson_key)
