@@ -398,7 +398,7 @@ $("#checkCorrectness").click(function () {
             document.getElementById("pastAnswers").innerHTML = allAnswers;
         }
 
-        closeThinkAloudFunctions(false, 'trivial', currentAttemptAnswers, code); // for the think-aloud recording
+        //closeThinkAloudFunctions(false, 'trivial', currentAttemptAnswers, code); // for the think-aloud recording
 
         // Unlock editor for further user edits
         unlock();
@@ -704,28 +704,32 @@ $.postJSON = (url, data, callback) => {
                 $("#resultCard").attr("class", "card bg-success text-white");
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
-                closeThinkAloudFunctions(true, 'correct solution', data.answer, data.code); // for the think-aloud recording
+                //closeThinkAloudFunctions(true, 'correct solution', data.answer, data.code); // for the think-aloud recording
                 unlock();
                 setTimeout(function (){location.reload();}, 3000);
             } else if (response.status == 'failure'){
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
-                closeThinkAloudFunctions(false, 'incorrect solution', data.answer, data.code); // for the think-aloud recording
+                //closeThinkAloudFunctions(false, 'incorrect solution', data.answer, data.code); // for the think-aloud recording
                 unlock();
             } else {
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
-                closeThinkAloudFunctions(false, 'something went wrong',  data.answer, data.code); // for the think-aloud recording
+                //closeThinkAloudFunctions(false, 'something went wrong',  data.answer, data.code); // for the think-aloud recording
                 unlock();
             }
+            /*
+            if(data.sub){
+                console.log(data.newLessonIndex)
+                console.log(data.newLessonCode)
+                loadLesson(data.newLessonCode, 'None',data.newLessonName)
+            }
+
+             */
         }
 
     });
 };
-
-
-
-
 
 
 function mergeVCsAndLineNums(provedList, lineNums) {
@@ -829,7 +833,7 @@ function verify(code){
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
             }
 
-            closeThinkAloudFunctions(false, 'syntax', currentAttemptAnswers, code); // for the think-aloud recording
+            //closeThinkAloudFunctions(false, 'syntax', currentAttemptAnswers, code); // for the think-aloud recording
         }
         else if (message.status == 'processing') {
             var regex = new RegExp('^Proved')
@@ -893,7 +897,7 @@ function verify(code){
                     data.face = selectedValue
                 }
             }
-          
+
             $.postJSON("tutor", data, (results) => {});
             submitAnswers = '';
 

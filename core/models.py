@@ -275,10 +275,6 @@ class Lesson(models.Model):
     incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
 
 
-
-
-
-
     simplify = models.CharField(max_length=50, default='None')
     # simplify_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='simplify_answers')
     self_reference = models.CharField(max_length=50, default='None')
@@ -293,13 +289,14 @@ class Lesson(models.Model):
     variable = models.CharField(max_length=50, default='None')
     # variable_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='variable_answers')
 
+
     # Tool already handles syntax,so I think this should be left out.
     # syntax = models.CharField(max_length=50, default='Lesson To Go To')
     # syntax_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
 
-    screen_record = models.BooleanField()
-    audio_record = models.BooleanField()
-    audio_transcribe = models.BooleanField()
+    screen_record = models.BooleanField(default=False)
+    audio_record = models.BooleanField(default=False)
+    audio_transcribe = models.BooleanField(default=False)
 
     # 0 correct
     # 1 correct simplify

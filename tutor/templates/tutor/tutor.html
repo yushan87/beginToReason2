@@ -30,9 +30,8 @@
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
 
             // session recording and transcribing
-
-            initThinkAloudFunctions("{{ audio_record }}" === 'True', "{{ screen_record }}" === 'True', "{{ audio_transcribe }}" === 'True',
-                "{{ user_email }}", "{{ currLessonNum }}", "{{ lessonName }}");
+            /*initThinkAloudFunctions("{{ audio_record }}" === 'True', "{{ screen_record }}" === 'True', "{{ audio_transcribe }}" === 'True',
+                "{{ user_email }}", "{{ currLessonNum }}", "{{ lessonName }}");*/
         });
     </script>
 
@@ -181,7 +180,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button id="toggleInstruct" type="button" class="btn btn-light toggle-sidebar">Hide Instructions</button>
+                                <!--<button id="toggleInstruct" type="button" class="btn btn-light toggle-sidebar">Hide Instructions</button>-->
                                 <button id="toggleOverlay" class="btn btn-light" type="button">
                                     <i class="fa fa-list" aria-hidden="true"></i> View Lessons
                                 </button>
@@ -197,6 +196,7 @@
                                         data-toggle="tooltip" data-placement="top" title="Check Correctness">
                                     <i class="fas fa-clipboard-check"></i>
                                     Run
+                                    <div id="getIndex"></div>
                                     <div id="csrf">{% csrf_token %}</div>
                                 </button>
                             </div>
@@ -204,14 +204,14 @@
                         <div id="directionButtons" class="d-flex">
                             <div id="stepProgressBar">
                                 <div class="step">
-                                    {% if currLessonNum <= 2 %}
+                                    {% if currLessonNum <= 1 %}
                                         <div class="bullet completed">-</div>
                                     {% else %}
                                         <div class="bullet completed">{{ currLessonNum|sub:2 }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="step">
-                                    {% if currLessonNum == 1 %}
+                                    {% if currLessonNum == 0 %}
                                         <div class="bullet completed">-</div>
                                     {% else %}
                                         <div data-toggle="tooltip" title="The last lesson you completed" class="bullet completed">{{currLessonNum|sub:1}}</div>
@@ -231,7 +231,7 @@
                                     {% if currLessonNum|add:1 >= setLength %}
                                         <div class="bullet end">-</div>
                                     {% else %}
-                                        <div class="bullet end" data-toggle="tooltip" title="The last lesson in the set">{{setLength}}</div>
+                                        <div class="bullet end" data-toggle="tooltip" title="The last lesson in the set">{{setLength|sub:1}}</div>
                                     {% endif %}
                                 </div>
                             </div>
@@ -251,7 +251,7 @@
                         </div>
                     </div>
                 <div class="progress">
-                    <div class="progress-bar bg-success" id="percent" role="progressbar" style="width: {{currLessonNum|sub:1|div:setLength|mul:100}}%;" aria-valuemin="0" aria-valuemax="100">{{currLessonNum|sub:1|div:setLength|mul:100|floatformat }}%</div>
+                    <div class="progress-bar bg-success" id="percent" role="progressbar" style="width: {{finished_count|div:setLength|mul:100}}%;" aria-valuemin="0" aria-valuemax="100">{{finished_count|div:setLength|mul:100|floatformat }}%</div>
                 </div>
                     <script src="{% static 'javascript/lesson/editorUtils.js' %}"></script>
                 </div>
