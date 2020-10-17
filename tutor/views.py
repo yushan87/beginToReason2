@@ -112,7 +112,7 @@ def tutor(request):
     elif request.method == 'GET':
         # Ensure user exists
         # Case 2a: if the user exists
-        if user_auth(request) and set_not_complete(request):
+        if user_auth(request) and not end_of_set:
             # Case 2aa: if the user has a current set
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_set = current_user.current_lesson_set.lessons.all()

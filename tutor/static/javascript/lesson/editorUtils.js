@@ -87,7 +87,9 @@ function createEditor(code, explain, lessonName, currIndex, compIndex, review, p
         hasMC = false;
     }
 
-    if (currIndex < compIndex){
+    if (parseInt(currIndex) < parseInt(compIndex)){
+        console.log("HIT")
+        console.log("currIndex: " + currIndex + " compIndex: " + compIndex)
         aceEditor.setReadOnly(true)
         $("#resetCode").attr("disabled", "disabled");
         $("#checkCorrectness").attr("disabled", "disabled");
