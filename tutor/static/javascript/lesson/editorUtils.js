@@ -398,7 +398,7 @@ $("#checkCorrectness").click(function () {
             document.getElementById("pastAnswers").innerHTML = allAnswers;
         }
 
-        closeThinkAloudFunctions(false, 'trivial', currentAttemptAnswers, code); // for the think-aloud recording
+        //closeThinkAloudFunctions(false, 'trivial', currentAttemptAnswers, code); // for the think-aloud recording
 
         // Unlock editor for further user edits
         unlock();
@@ -724,6 +724,7 @@ $.postJSON = (url, data, callback) => {
                 console.log(data.newLessonCode)
                 loadLesson(data.newLessonCode, 'None',data.newLessonName)
             }
+
              */
         }
 
@@ -832,7 +833,7 @@ function verify(code){
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
             }
 
-            closeThinkAloudFunctions(false, 'syntax', currentAttemptAnswers, code); // for the think-aloud recording
+            //closeThinkAloudFunctions(false, 'syntax', currentAttemptAnswers, code); // for the think-aloud recording
         }
         else if (message.status == 'processing') {
             var regex = new RegExp('^Proved')
