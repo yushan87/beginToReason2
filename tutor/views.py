@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, check_feedback, alternate_lesson_check, check_type
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, check_feedback
 #from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
 
@@ -89,13 +89,13 @@ def tutor(request):
                         current_user.save()
                         print("in done: ", current_user.current_lesson_set)
 
-            '''
+            """
             print(feedback['type'])
             goto = alternate_lesson_check(current_lesson, feedback['type'])
             feedback.update({'newLessonIndex': str(Lesson.objects.get(lesson_name=goto.lesson_name).lesson_index)})
             feedback.update({'newLessonCode': Lesson.objects.get(lesson_name=goto.lesson_name).code.lesson_code})
             feedback.update({'newLessonEx': Lesson.objects.get(lesson_name=goto.lesson_name).reason.reasoning_type})
-            '''
+            """
 
             return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
 
