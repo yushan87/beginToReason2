@@ -704,25 +704,27 @@ $.postJSON = (url, data, callback) => {
                 $("#resultCard").attr("class", "card bg-success text-white");
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
-                closeThinkAloudFunctions(true, 'correct solution', data.answer, data.code); // for the think-aloud recording
+                //closeThinkAloudFunctions(true, 'correct solution', data.answer, data.code); // for the think-aloud recording
                 unlock();
                 setTimeout(function (){location.reload();}, 3000);
             } else if (response.status == 'failure'){
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
-                closeThinkAloudFunctions(false, 'incorrect solution', data.answer, data.code); // for the think-aloud recording
+                //closeThinkAloudFunctions(false, 'incorrect solution', data.answer, data.code); // for the think-aloud recording
                 unlock();
             } else {
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
-                closeThinkAloudFunctions(false, 'something went wrong',  data.answer, data.code); // for the think-aloud recording
+                //closeThinkAloudFunctions(false, 'something went wrong',  data.answer, data.code); // for the think-aloud recording
                 unlock();
             }
-                if(data.sub){
-                    console.log(data.newLessonIndex)
-                    console.log(data.newLessonCode)
-                    loadLesson(data.newLessonCode, 'None',data.newLessonName)
-                }
+            /*
+            if(data.sub){
+                console.log(data.newLessonIndex)
+                console.log(data.newLessonCode)
+                loadLesson(data.newLessonCode, 'None',data.newLessonName)
+            }
+             */
         }
 
     });

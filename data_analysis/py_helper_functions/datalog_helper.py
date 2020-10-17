@@ -49,3 +49,11 @@ def get_log_data(user, lesson_index):
 
     return repr(get_lesson.code).replace("'",''), get_lesson.face, get_lesson.past_answers
 
+def finished_lesson_count(user):
+    user = User.objects.get(email=user)
+
+    get_user_successes = DataLog.objects.filter(user_key=user).filter(status='success')
+    print(get_user_successes.count())
+
+    return get_user_successes.count()
+

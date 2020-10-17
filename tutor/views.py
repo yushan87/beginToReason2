@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
-from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data
+from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, set_not_complete, check_feedback, alternate_lesson_check, check_type
 #from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
@@ -89,19 +89,15 @@ def tutor(request):
                         current_user.save()
                         print("in done: ", current_user.current_lesson_set)
 
-
-
-
-            feedback = check_feedback(current_lesson, submitted_answer, status)
+            '''
             print(feedback['type'])
             goto = alternate_lesson_check(current_lesson, feedback['type'])
             feedback.update({'newLessonIndex': str(Lesson.objects.get(lesson_name=goto.lesson_name).lesson_index)})
             feedback.update({'newLessonCode': Lesson.objects.get(lesson_name=goto.lesson_name).code.lesson_code})
             feedback.update({'newLessonEx': Lesson.objects.get(lesson_name=goto.lesson_name).reason.reasoning_type})
+            '''
 
-            print(feedback)
-
-            return JsonResponse(feedback)
+            return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
 
 
     # Case 2: We have received a GET request requesting code
@@ -112,6 +108,9 @@ def tutor(request):
             # Case 2aa: if the user has a current set
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_set = current_user.current_lesson_set.lessons.all()
+            set_len = current_set.filter(is_alternate=False).count()
+            print(set_len)
+            num_done = finished_lesson_count(current_user)
             # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
             if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
                 current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
@@ -127,7 +126,8 @@ def tutor(request):
                                    'mc_set': current_lesson.reason.mc_set.all(),
                                    'currLessonNum': current_user.current_lesson_index,
                                    'completedLessonNum': current_user.completed_lesson_index,
-                                   'setLength': 11,
+                                   'setLength': set_len,
+                                   'finished_count': num_done,
                                    'currSet': current_set,
                                    'mood': current_user.mood,
                                    'review': 'none',
@@ -145,7 +145,8 @@ def tutor(request):
                                    'reason': current_lesson.reason.reasoning_question,
                                    'currLessonNum': current_user.current_lesson_index,
                                    'completedLessonNum': current_user.completed_lesson_index,
-                                   'setLength': 11,
+                                   'setLength': set_len,
+                                   'finished_count': num_done,
                                    'currSet': current_set,
                                    'mood': current_user.mood,
                                    'review': 'none',
@@ -162,7 +163,8 @@ def tutor(request):
                                    'referenceSet': current_lesson.reference_set.all(),
                                    'currLessonNum': current_user.current_lesson_index,
                                    'completedLessonNum': current_user.completed_lesson_index,
-                                   'setLength': 11,
+                                   'setLength': set_len,
+                                   'finished_count': num_done,
                                    'currSet': current_set,
                                    'mood': current_user.mood,
                                    'review': 'none',
@@ -192,6 +194,10 @@ def completed(request, index):
             current_set = current_user.current_lesson_set.lessons.all()
             current_lesson = Lesson.objects.get(lesson_index=index)
 
+            set_len = current_set.filter(is_alternate=False).count()
+            print(set_len)
+            num_done = finished_lesson_count(current_user)
+
             if index <= current_user.completed_lesson_index:
                 lesson_info = get_log_data(current_user, index)
                 print("lesson info: ", index)
@@ -201,7 +207,8 @@ def completed(request, index):
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'currLessonNum': current_user.current_lesson_index,
-                               'setLength': 11,
+                               'setLength': set_len,
+                               'finished_count': num_done,
                                'currSet': current_set,
                                'mood': lesson_info[1],
                                'past': lesson_info[2],

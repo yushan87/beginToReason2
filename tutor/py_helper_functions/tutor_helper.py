@@ -147,8 +147,14 @@ def check_feedback(current_lesson, submitted_answer, status):
 
         type = check_type(current_lesson, submitted_answer, status)
 
-        headline = current_lesson.feedback.get(feedback_type=type).headline
-        text = current_lesson.feedback.get(feedback_type=type).feedback_text
+        try:
+            headline = current_lesson.feedback.get(feedback_type=type).headline
+            text = current_lesson.feedback.get(feedback_type=type).feedback_text
+        except:
+            type = 'DEF'
+        finally:
+            headline = current_lesson.feedback.get(feedback_type=type).headline
+            text = current_lesson.feedback.get(feedback_type=type).feedback_text
     else:
         if status == 'success':
             headline = 'Correct'
