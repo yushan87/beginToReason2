@@ -89,13 +89,13 @@ def tutor(request):
                         current_user.save()
                         print("in done: ", current_user.current_lesson_set)
 
-            """
-            print(feedback['type'])
-            goto = alternate_lesson_check(current_lesson, feedback['type'])
-            feedback.update({'newLessonIndex': str(Lesson.objects.get(lesson_name=goto.lesson_name).lesson_index)})
-            feedback.update({'newLessonCode': Lesson.objects.get(lesson_name=goto.lesson_name).code.lesson_code})
-            feedback.update({'newLessonEx': Lesson.objects.get(lesson_name=goto.lesson_name).reason.reasoning_type})
-            """
+
+            #print(feedback['type'])
+            #goto = alternate_lesson_check(current_lesson, feedback['type'])
+            #feedback.update({'newLessonIndex': str(Lesson.objects.get(lesson_name=goto.lesson_name).lesson_index)})
+            #feedback.update({'newLessonCode': Lesson.objects.get(lesson_name=goto.lesson_name).code.lesson_code})
+            #feedback.update({'newLessonEx': Lesson.objects.get(lesson_name=goto.lesson_name).reason.reasoning_type})
+
 
             return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
 
