@@ -22,6 +22,7 @@ class DataLog(models.Model):
     status = models.CharField(max_length=50)
     code = models.TextField(default="null")
     explanation = models.TextField()
+    past_answers = models.TextField(default="null")
     face = models.TextField(default="null")
 
     def __str__(self):
@@ -31,4 +32,4 @@ class DataLog(models.Model):
         Returns:
             str: status
         """
-        return self.status
+        return str(self.user_key) + ": " + self.status + " - "+ str(self.lesson_key)

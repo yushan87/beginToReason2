@@ -21,6 +21,7 @@ class Code(models.Model):
         Returns:
             str: code name
         """
+
         return self.code_name
 
 
@@ -248,12 +249,15 @@ class Lesson(models.Model):
     Code - The code activities that student will be interacting with. Will pull from the Code model.
     Reference Set - May contain multiple references, or no references at all.
     Reason - There is only one reasoning activity allowed per Lesson. May contain mc, fr, or both.
-    Screen_Record - Boolean for whether or not to record the activity.
+    Screen_Record - Boolean for whether or not to record user's screen for the activity.
+    Audio_Record - Boolean for whether or not to record user's audio for the activity.
+    Audio_Transcribe - Boolean for whether or not to transcribe user's audio.
 
     @param models.Model The base model
     """
     lesson_name = models.CharField(max_length=50)
     lesson_title = models.CharField(max_length=50, default='default')
+    lesson_index = models.IntegerField(default=0)
     lesson_concept = models.ManyToManyField(Concept, blank=True)
     instruction = models.TextField(default='Please complete the Confirm assertion(s) and check correctness.')
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
@@ -261,17 +265,14 @@ class Lesson(models.Model):
     reason = models.ForeignKey(Reasoning, on_delete=models.CASCADE, blank=True, null=True)
 
     correct = models.CharField(max_length=50, default='Lesson To Go To')
+    correct_feedback = models.TextField(default='Proceeding to the next lesson.')
+    feedback = models.ManyToManyField(Feedback, blank=True)
 
     is_alternate = models.BooleanField(default=False)
     can_mutate = models.BooleanField(default=False)
 
     sub_lessons_available = models.BooleanField(default=False)
     incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
-
-    has_feedback = models.BooleanField(default=False)
-    feedback = models.ManyToManyField(Feedback, blank=True)
-
-
 
 
     simplify = models.CharField(max_length=50, default='None')
@@ -288,11 +289,14 @@ class Lesson(models.Model):
     variable = models.CharField(max_length=50, default='None')
     # variable_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='variable_answers')
 
+
     # Tool already handles syntax,so I think this should be left out.
     # syntax = models.CharField(max_length=50, default='Lesson To Go To')
     # syntax_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
 
-    screen_record = models.BooleanField()
+    screen_record = models.BooleanField(default=False)
+    audio_record = models.BooleanField(default=False)
+    audio_transcribe = models.BooleanField(default=False)
 
     # 0 correct
     # 1 correct simplify

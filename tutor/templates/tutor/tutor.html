@@ -25,15 +25,13 @@
     <script type="application/javascript">
         $(document).ready(function () {
             //this will be done in a load lesson function call
-            createEditor("{{ lesson.code.lesson_code | safe }}", "{{ lesson.reason.reasoning_type | safe }}", "{{ lesson.lesson_title | safe }}", "{{ currLessonNum | safe }}", "{{ completedLessonNum | safe }}");
+            createEditor("{{ lesson_code | safe }}", "{{ lesson.reason.reasoning_type | safe }}", "{{ lesson.lesson_title | safe }}", "{{ currLessonNum | safe }}", "{{ completedLessonNum | safe }}", "{{ review | safe }}", "{{ past | safe }}");
             $("#tutor").attr("class", "nav-item active");
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
 
             // session recording and transcribing
-            if ("{{lesson.screen_record}}" == true){
-                setupRecording(); // for recording a session
-                transcribeAudio(); // for transcribing audio
-            }
+            /*initThinkAloudFunctions("{{ audio_record }}" === 'True', "{{ screen_record }}" === 'True', "{{ audio_transcribe }}" === 'True',
+                "{{ user_email }}", "{{ currLessonNum }}", "{{ lessonName }}");*/
         });
     </script>
 
@@ -81,11 +79,11 @@
                             Reference Material
                         </h3>
                         <br>
-                        <div class="card bg-light mb-3" >
+                        <div class="card bg-light mb-3">
                             <div class="card-body">
                                 <div class="" id="referenceMaterial">
                                     {% for obj in referenceSet %}
-                                        <p> {{ obj | safe}} </p>
+                                        <p> {{ obj | safe }} </p>
                                     {% endfor %}
                                 </div>
                             </div>
@@ -97,7 +95,7 @@
                         <br>
                         {% for obj in concept %}
                             <span class="badge badge-info ml-2">
-                                {{ obj | safe}}
+                                {{ obj | safe }}
                             </span>
                         {% endfor %}
                     </div>
@@ -110,10 +108,20 @@
                 <div class="overlay-content">
                     <ol>
                         {% for obj in currSet%}
-                            {% if obj|safe == lesson.lesson_title|safe and not obj.is_alternate%}
-                                <li id="lessonList" style="color: #3A4958"><a style="color: #3A4958; font-size: 125%">{{ obj | safe }}</a></li><br>
+                            {% if obj.lesson_index == lesson.lesson_index and not obj.is_alternate%}
+                                {% if obj.lesson_index == currLessonNum %}
+                                    <li id="lessonList" style=" color: white"><a style="color: #3A4958; font-size: 150%"><b>{{ obj | safe }}</b></a></li><br>
+                                {% else %}
+                                    <li id="lessonList" style=" color: white"><a style="color: #3A4958; font-size: 125%">{{ obj | safe }}</a></li><br>
+                                {% endif %}
                             {% elif not obj.is_alternate %}
-                                <li id="lessonList" style=" color: white"><a style="font-size: 125%">{{ obj | safe }}</a></li><br>
+                                {% if obj.lesson_index <= completedLessonNum %}
+                                    <li id="lessonList" style="color: #3A4958"><a class = "nav-link" href="{% url 'tutor:completed' obj.lesson_index %}" style="font-size: 125%">{{ obj | safe }}</a></li><br>
+                                {% elif obj.lesson_index == currLessonNum %}
+                                    <li id="lessonList" style="color: #3A4958"><a class = "nav-link" href="{% url 'tutor:tutor' %}" style="font-size: 150%"><b>{{ obj | safe }}</b></a></li><br>
+                                {% else %}
+                                    <li id="lessonList" style="color: #3A4958"><a style="color: rgba(208, 206, 206, 0.5);font-size: 125%">{{ obj | safe }}</a></li><br>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     </ol>
@@ -142,7 +150,8 @@
                                 <button class="btn btn-sm btn-light" id="changeMode" type="button" title="Change Mode" data-toggle="tooltip" data-placement="top" title="Change theme">
                                     <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-brightness-high-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
-                                        <path fill-rule="evenodd" d="M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+                                        <path fill-rule="evenodd"
+                                              d="M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
                                     </svg>
                                     Light
                                 </button>
@@ -171,6 +180,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!--<button id="toggleInstruct" type="button" class="btn btn-light toggle-sidebar">Hide Instructions</button>-->
                                 <button id="toggleOverlay" class="btn btn-light" type="button">
                                     <i class="fa fa-list" aria-hidden="true"></i> View Lessons
                                 </button>
@@ -178,13 +188,15 @@
                                         data-placement="top" title="Get Help">
                                     <i class="far fa-life-ring"></i>
                                 </button>
-                                <button type="button" class="btn btn-danger" title="Reset" data-toggle="modal" data-target="#areYouSure">
-                                  <i class="fa">&#xf021;</i>
+                                <button type="button" class="btn btn-danger" title="Reset" data-toggle="modal"
+                                        data-target="#areYouSure">
+                                    <i class="fa">&#xf021;</i>
                                 </button>
                                 <button id="checkCorrectness" class="btn btn-success" type="button"
                                         data-toggle="tooltip" data-placement="top" title="Check Correctness">
                                     <i class="fas fa-clipboard-check"></i>
-                                    Run
+                                    Verify
+                                    <div id="getIndex"></div>
                                     <div id="csrf">{% csrf_token %}</div>
                                 </button>
                             </div>
@@ -192,14 +204,14 @@
                         <div id="directionButtons" class="d-flex">
                             <div id="stepProgressBar">
                                 <div class="step">
-                                    {% if currLessonNum <= 2 %}
+                                    {% if currLessonNum <= 1 %}
                                         <div class="bullet completed">-</div>
                                     {% else %}
-                                        <div class="bullet completed">{{currLessonNum|sub:2}}</div>
+                                        <div class="bullet completed">{{ currLessonNum|sub:2 }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="step">
-                                    {% if currLessonNum == 1 %}
+                                    {% if currLessonNum == 0 %}
                                         <div class="bullet completed">-</div>
                                     {% else %}
                                         <div data-toggle="tooltip" title="The last lesson you completed" class="bullet completed">{{currLessonNum|sub:1}}</div>
@@ -219,27 +231,27 @@
                                     {% if currLessonNum|add:1 >= setLength %}
                                         <div class="bullet end">-</div>
                                     {% else %}
-                                        <div class="bullet end" data-toggle="tooltip" title="The last lesson in the set">{{setLength}}</div>
+                                        <div class="bullet end" data-toggle="tooltip" title="The last lesson in the set">{{setLength|sub:1}}</div>
                                     {% endif %}
                                 </div>
                             </div>
                             <div>
                                 {% if currLessonNum < completedLessonNum %}
                                     <button id="next" type="button" class="btn btn-light btn-md"
-                                        data-toggle="tooltip" data-placement="top"
-                                        title="Next">Next
-                                </button>
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Next">Next
+                                    </button>
                                 {% else %}
                                     <button id="next" type="button" class="btn btn-light btn-md"
-                                        data-toggle="tooltip" data-placement="top"
-                                        title="Next" disabled>Next
-                                </button>
+                                            data-toggle="tooltip" data-placement="top"
+                                            title="Next" disabled>Next
+                                    </button>
                                 {% endif %}
                             </div>
                         </div>
                     </div>
                 <div class="progress">
-                    <div class="progress-bar bg-success" id="percent" role="progressbar" style="width: {{currLessonNum|sub:1|div:setLength|mul:100}}%;" aria-valuemin="0" aria-valuemax="100">{{currLessonNum|sub:1|div:setLength|mul:100|floatformat }}%</div>
+                    <div class="progress-bar bg-success" id="percent" role="progressbar" style="width: {{finished_count|div:setLength|mul:100}}%;" aria-valuemin="0" aria-valuemax="100">{{finished_count|div:setLength|mul:100|floatformat }}%</div>
                 </div>
                     <script src="{% static 'javascript/lesson/editorUtils.js' %}"></script>
                 </div>
@@ -256,10 +268,11 @@
                         <form id="usrform">
                             <div id="results">
                                 <b>
-                                    {{reason}}
+                                    {{ reason }}
                                 </b>
                             </div>
-                            <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
+                            <textarea id="explainBox" rows="4" name="comment" form="usrform"
+                                      placeholder="Type answer here..." required></textarea>
                         </form>
                     {% elif lesson.reason.reasoning_type == 'MC' %}
                         <form id="multiform">
@@ -278,18 +291,20 @@
                         <form id="usrform">
                             <div id="results">
                                 <b>
-                                    {{reason}}
+                                    {{ reason }}
                                 </b>
                             </div>
-                            <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
+                            <textarea id="explainBox" rows="4" name="comment" form="usrform"
+                                      placeholder="Type answer here..." required></textarea>
                         </form>
                         <div class="form-check">
-                            {{reason}}
+                            {{ reason }}
                             {% for obj in mc_set %}
                                 <br>
-                                <input class="form-check-input" type="radio" name="selectExplain" id="select" value="option">
+                                <input class="form-check-input" type="radio" name="selectExplain" id="select"
+                                       value="option">
                                 <label class="form-check-label" for="exampleRadios1" id="radio">
-                                    {{ obj | safe}}
+                                    {{ obj | safe }}
                                 </label>
                             {% endfor %}
                         </div>

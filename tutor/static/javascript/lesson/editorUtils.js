@@ -30,7 +30,7 @@ let instructOpen = true;
 /*
  * Function for creating and embedding the ACE Editor into our page.
  */
-function createEditor(code, explain, lessonName, currIndex, compIndex) {
+function createEditor(code, explain, lessonName, currIndex, compIndex, review, past) {
     // RESOLVE mode
     let ResolveMode = ace.require("ace/mode/resolve").Mode;
     Range = ace.require("ace/range").Range;
@@ -47,7 +47,21 @@ function createEditor(code, explain, lessonName, currIndex, compIndex) {
     name = lessonName;
     aceEditor.session.setValue(editorContent);
     //$("#prev").attr("disabled", "disabled");
-    document.getElementById("resultCard").style.display = "none";
+    if(review == 'none') {
+        document.getElementById("resultCard").style.display = "none";
+    }
+    else {
+        document.getElementById("resultCard").style.display = "block";
+        document.getElementById("resultsHeader").innerHTML = "Correct!";
+        document.getElementById("resultDetails").innerHTML = review;
+        $("#resultCard").attr("class", "card bg-success text-white");
+
+        document.getElementById("answersCard").removeAttribute("hidden")
+        document.getElementById("pastAnswers").innerHTML = past;
+
+        $("#resetCode").attr("disabled", "disabled");
+        $("#checkCorrectness").attr("disabled", "disabled");
+    }
 
     //add a check for if need explaination and set hasFR
     //hide or unhide explaination box
@@ -73,7 +87,9 @@ function createEditor(code, explain, lessonName, currIndex, compIndex) {
         hasMC = false;
     }
 
-    if (currIndex < compIndex){
+    if (parseInt(currIndex) < parseInt(compIndex)){
+        console.log("HIT")
+        console.log("currIndex: " + currIndex + " compIndex: " + compIndex)
         aceEditor.setReadOnly(true)
         $("#resetCode").attr("disabled", "disabled");
         $("#checkCorrectness").attr("disabled", "disabled");
@@ -151,6 +167,7 @@ function checkForTrivials(content) {
     var overall = 'success';
     var regex;
     var i;
+    var missing = false;
 
     // Find all the confirm or ensures statements, with their line numbers
     regex = new RegExp("Confirm [^;]*;|ensures [^;]*;", "mg");
@@ -213,6 +230,8 @@ function checkForTrivials(content) {
         // Find the variables used on the left side. If there are none, mark it correct.
         var left = parts[0];
         var right = parts[1];
+        console.log("left " + left)
+        console.log("right " + right)
         regex = new RegExp("[a-np-zA-QS-Z]", "g") // Temporary fix to allow Reverse(#S) o #T on section2, lesson6
         var variables = left.match(regex);
         if (variables === null) {
@@ -229,6 +248,7 @@ function checkForTrivials(content) {
             if (right.search(regex) > -1) {
                 overall = 'failure';
                 confirms[i].status = "failure";
+                missing = true;
                 continue
             }
         }
@@ -238,7 +258,7 @@ function checkForTrivials(content) {
     for (var confirm of confirms) {
         delete confirm.text
     }
-    return {confirms: confirms, overall: overall}
+    return {confirms: confirms, overall: overall, missing: missing}
 }
 
 
@@ -313,6 +333,10 @@ $("#checkCorrectness").click(function () {
 
     lock();
 
+    /*** Think-aloud: Handle an attempt end ***/
+
+
+
     //is explaination long enough
     if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
@@ -347,23 +371,36 @@ $("#checkCorrectness").click(function () {
     // Check for trivials
     let trivials = checkForTrivials(code);
     if (trivials.overall == "failure") {
-        document.getElementById("resultsHeader").innerHTML = "<h3>Try Again</h3>";
-        document.getElementById("resultDetails").innerHTML = "Submission does not contain enough information. Try again!";
+        console.log("trivial: " + trivials.trivial )
+        if(trivials.missing){
+            document.getElementById("resultsHeader").innerHTML = "<h3>Try again</h3>";
+            document.getElementById("resultDetails").innerHTML = "Think about the variables in terms of initial values";
+
+        }
+        else{
+            document.getElementById("resultsHeader").innerHTML = "<h3>Syntax error</h3>";
+            document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
+
+        }
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         $("#resultCard").attr("class", "card bg-danger text-white");
         //add line errors
         //this will need to be fixed based on verifier return
         //log data
 
+        let currentAttemptAnswers = '';
         for (var i = 0; i < trivials.confirms.length; i++) {
             aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
             document.getElementById("answersCard").removeAttribute("hidden")
             allAnswers = allAnswers + aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'') + "<br>";
+            currentAttemptAnswers += aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'') + '\n';
             if (i == trivials.confirms.length - 1){
                 allAnswers += "<br><br>";
             }
             document.getElementById("pastAnswers").innerHTML = allAnswers;
         }
+
+        //closeThinkAloudFunctions(false, 'trivial', currentAttemptAnswers, code); // for the think-aloud recording
 
         // Unlock editor for further user edits
         unlock();
@@ -476,6 +513,7 @@ $("#fontIncrease").click(function () {
  */
 $("#toggleOverlay").click(function () {
     if(overlayOpen){
+        console.log("toggle overlay is true, turning false")
         document.getElementById("myNav").style.width = "0%";
         overlayOpen = false;
         document.getElementById("toggleOverlay").innerHTML = "<i class=\"fa fa-list\" aria-hidden=\"true\"></i> View Lessons";
@@ -574,7 +612,23 @@ function unlock() {
 $("#next").click(function () {
     lock();
 
-    $.ajax({
+    if (activeUploads.count === 0) {
+        moveToNextExercise();
+    } else {
+        activeUploads.registerListener(function (count) {
+            if (count === 0) {
+                moveToNextExercise();
+            }
+        });
+
+        setTimeout(function () {
+            moveToNextExercise();
+        }, 10000);
+    }
+});
+
+function moveToNextExercise() {
+     $.ajax({
         url: 'tutor',
         datatype: 'json',
         type: 'GET',
@@ -587,9 +641,9 @@ $("#next").click(function () {
         }
     });
 
-    location.reload();
-    unlock();
-});
+     location.reload();
+     unlock();
+}
 
 /*
  * Function for moving to prev lesson.
@@ -598,7 +652,7 @@ $("#prev").click(function () {
     lock();
 
     $.ajax({
-        url: 'previous',
+        url: 'completed',
         datatype: 'json',
         type: 'GET',
         headers: {
@@ -643,40 +697,41 @@ $.postJSON = (url, data, callback) => {
         headers: {
             'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
         },
-        success: function(data){
-            document.getElementById("resultsHeader").innerHTML = data.resultsHeader;
-            document.getElementById("resultDetails").innerHTML = data.resultDetails;
+        success: function(response){
+            document.getElementById("resultsHeader").innerHTML = response.resultsHeader;
+            document.getElementById("resultDetails").innerHTML = response.resultDetails;
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
 
-            if (data.status == "success") {
+            if (response.status == "success") {
                 $("#resultCard").attr("class", "card bg-success text-white");
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
+                //closeThinkAloudFunctions(true, 'correct solution', data.answer, data.code); // for the think-aloud recording
                 unlock();
                 setTimeout(function (){location.reload();}, 3000);
-            } else if (data.status == 'failure'){
+            } else if (response.status == 'failure'){
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
+                //closeThinkAloudFunctions(false, 'incorrect solution', data.answer, data.code); // for the think-aloud recording
                 unlock();
             } else {
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
+                //closeThinkAloudFunctions(false, 'something went wrong',  data.answer, data.code); // for the think-aloud recording
                 unlock();
             }
+            /*
+            if(data.sub){
+                console.log(data.newLessonIndex)
+                console.log(data.newLessonCode)
+                loadLesson(data.newLessonCode, 'None',data.newLessonName)
+            }
+
+             */
         }
 
     });
 };
-
-
-
-
-
-
-
-
-
-
 
 
 function mergeVCsAndLineNums(provedList, lineNums) {
@@ -749,7 +804,7 @@ function decode(data) {
 
 function verify(code){
     var vcs = {}
-    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project')
+    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project');
 
     // Connection opened
     ws.addEventListener('open', function (event) {
@@ -765,11 +820,13 @@ function verify(code){
             document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
             $("#resultCard").attr("class", "card bg-danger text-white");
+            let currentAttemptAnswers = '';
             //add line errors
             //this will need to be fixed based on verifier return
             for (var i = 0; i < message.errors[0].errors.length; i++) {
                 aceEditor.session.addGutterDecoration(message.errors[0].errors[i].error.ln - 1, "ace_error")
                 document.getElementById("answersCard").removeAttribute("hidden")
+                currentAttemptAnswers += aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')  + "\n";
                 var confirmLine = aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')  + "<br>";
                 allAnswers = allAnswers + confirmLine;
                 if (i == message.errors[0].errors.length - 1){
@@ -777,6 +834,8 @@ function verify(code){
                 }
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
             }
+
+            //closeThinkAloudFunctions(false, 'syntax', currentAttemptAnswers, code); // for the think-aloud recording
         }
         else if (message.status == 'processing') {
             var regex = new RegExp('^Proved')
@@ -794,6 +853,7 @@ function verify(code){
             var confirmLine
             let vcLine = parseInt(lineNums.vcs[0].lineNum, 10)
 
+            let currentAttemptAnswers = '';
             for (var i = 0; i < lines.lines.length; i++) {
                 if (lines.lines[i].status == "success") {
                     aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_correct");
@@ -801,6 +861,7 @@ function verify(code){
                     confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
                     allAnswers = allAnswers + confirmLine  + "<br>";
                     submitAnswers = submitAnswers + confirmLine;
+                    currentAttemptAnswers += confirmLine + '\n'
                 }
                 else {
                     aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_error");
@@ -811,6 +872,7 @@ function verify(code){
                     submitAnswers = submitAnswers + confirmLine;
                     if (i == lines.lines.length - 1){
                     allAnswers += "<br><br>";
+                    currentAttemptAnswers += confirmLine + '\n'
                 }
                     document.getElementById("pastAnswers").innerHTML = allAnswers;
                 }
@@ -819,15 +881,10 @@ function verify(code){
             /*
             * posting data to back end to log
             * */
-            //let code = aceEditor.session.getValue();
             let data = {};
-            //data.module = currentLesson.module;
             data.name = name;
-            //data.author = author;
-            //data.author = "user.googleId;"   //make userid
-            //data.milliseconds = getTime();
             data.answer = submitAnswers;
-
+            data.allAnswers = allAnswers;
             data.code = code;
             if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
             else if (hasMC){data.explanation = multiAnswer;}
@@ -843,23 +900,6 @@ function verify(code){
                 }
             }
 
-
-
-
-            /*if (lines.overall == "failure") {
-                document.getElementById("resultsHeader").innerHTML = "<h3>Incorrect answer</h3>";
-                document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you read the reference material? <br>2. Do you understand the distinction between #J and J?";
-                $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-                $("#resultCard").attr("class", "card bg-danger text-white");
-                //add line errors
-                //this will need to be fixed based on verifier return
-
-                // Unlock editor for further user edits
-                unlock();
-                //setTimeout(function (){location.reload();}, 3000);
-                //Location.reload();*/
-
-            // setTimeout(function (){location.reload();}, 3000);
             $.postJSON("tutor", data, (results) => {});
             submitAnswers = '';
 

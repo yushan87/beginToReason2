@@ -1,21 +1,22 @@
-/* global sessionId */
+/* global speechRecognitionUniqueId */
 /* global postPartialTranscript */
 /*eslint no-empty-function: "error"*/
-let recognition = null; // Stores the recognition object
+let recognitionObject = null; // Stores the recognition object
 let currentTranscript = ""; // Stores the transcribed text starting from the last upload to server
 let tempTranscript = ""; // Stores the transcript that is being uploaded to the server
 let recognitionCapable = false; // Indicates whether user's browser supports webkitSpeechRecognition
 let recognitionOn = false; // Indicates whether recognition is "supposed" to be on or off
-
+let speechRecognitionUniqueId = '';
 /**
  * The main function for setting and running everything related to SpeechToText
  */
-function transcribeAudio() {
+function transcribeAudio(userId, lessonNumber, lessonName) {
     if (!("webkitSpeechRecognition" in window)) {
         setBrowserCompatibility(false);
         return;
     }
     setBrowserCompatibility(true);
+    speechRecognitionUniqueId = generateSessionId(userId, lessonNumber, lessonName);
     setupRecognition();
     startRecognition();
     setupTranscriptUploading();
@@ -27,12 +28,14 @@ function transcribeAudio() {
 function setupTranscriptUploading() {
     // upload transcript every 30 seconds
     setInterval(function () {
-        if (sessionId) {
+        if (speechRecognitionUniqueId) {
             tempTranscript = currentTranscript;
             currentTranscript = "";
-            handlePostPartialTranscript(sessionId, tempTranscript);
+            handlePostPartialTranscript(speechRecognitionUniqueId, tempTranscript);
+        } else {
+
         }
-    }, 30000);
+    }, 10000);
 }
 
 /**
@@ -58,7 +61,7 @@ function handlePostPartialTranscript(id, transcript) {
  * Starts recognition and set flags
  */
 function startRecognition() {
-    recognition.start();
+    recognitionObject.start();
     recognitionOn = true;
 }
 
@@ -66,7 +69,7 @@ function startRecognition() {
  * Stops recognition and sets all the flags
  */
 function stopRecognition() {
-    recognition.stop();
+    recognitionObject.stop();
     recognitionOn = false;
 }
 
@@ -74,12 +77,13 @@ function stopRecognition() {
  * Creates and configures the recognition object
  */
 function setupRecognition() {
-    let SpeechRecognition = SpeechRecognition || window.webkitSpeechRecognition;
-    recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = false;
-    recognition.lang = "en-US";
-    recognition.maxAlternatives = 1; // TODO: test other values
+    // let SpeechRecognitionType = SpeechRecognition || window.webkitSpeechRecognition;
+    let SpeechRecognitionType = window.webkitSpeechRecognition;
+    recognitionObject = new SpeechRecognitionType();
+    recognitionObject.continuous = true;
+    recognitionObject.interimResults = false;
+    recognitionObject.lang = "en-US";
+    recognitionObject.maxAlternatives = 1; // TODO: test other values
     onStart();
     onResult();
     onEnd();
@@ -109,7 +113,7 @@ function updateSpeechRecognitionResult(transcript, isFinal) {
  * Sets the function that will run in "onresult" event of recognition
  */
 function onResult() {
-    recognition.onresult = function (event) {
+    recognitionObject.onresult = function (event) {
         if (!event.results) {
             return;
         }
@@ -127,9 +131,9 @@ function onResult() {
  * Sets the function that will run in "onresult" event of recognition
  */
 function onEnd() {
-    recognition.onend = function () {
+    recognitionObject.onend = function () {
         if (recognitionOn) {
-            recognition.start();
+            recognitionObject.start();
         }
     };
 }
@@ -139,7 +143,7 @@ function onEnd() {
  */
 function onStart() {
     /* eslint-disable */
-    recognition.onstart = function () {
+    recognitionObject.onstart = function () {
     };
     /* eslint-enable */
 }
@@ -149,7 +153,7 @@ function onStart() {
  */
 function onError() {
     /* eslint-disable */
-    recognition.onerror = function (event) {
+    recognitionObject.onerror = function (event) {
     };
     /* eslint-enable */
 }
