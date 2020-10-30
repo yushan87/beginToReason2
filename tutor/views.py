@@ -10,7 +10,7 @@ from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, set_not_complete
-#from tutor.py_helper_functions.mutation import mutate, reverse_mutate
+from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
 
 
@@ -60,18 +60,19 @@ def tutor(request):
         # Case 1a: if the user exists
         if user_auth(request):
             # submitted_json = json.loads(request.body.decode('utf-8'))
-            log_data(request)
             # if success, return next lesson
             # if fail, do something
             # Case 1aa: if the user has not completed set
 
-            # rev_mutated = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'], inverse_variable_key)
-            # print(rev_mutated)
-
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
             print('current_lesson: ', current_lesson)
-            submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
+            submitted_answer = reverse_mutate(json.loads(request.body.decode('utf-8'))['answer'].replace(" ", ""), inverse_variable_key)
+            print('submitted answer: ' + submitted_answer)
+            #Need to include submitted_answer in log data because it has the original variables
+
+            log_data(request, submitted_answer)
+
             status = json.loads(request.body.decode('utf-8'))['status']
             print("status: ", status)
 
@@ -123,8 +124,12 @@ def tutor(request):
             # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
             if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
                 current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
-                # mutated_activity = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_variable_key)
-                # print(mutated_activity)
+
+                #check if mutatable then mutate:
+                if current_lesson.can_mutate:
+                    mutated_lesson = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_variable_key)
+                    current_lesson.code.lesson_code = mutated_lesson
+
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,

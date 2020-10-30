@@ -11,11 +11,9 @@ from data_analysis.models import DataLog
 
 def log_data(request, reverseMutatedCode):
     """function log_data This function handles the logic for logging data
-
     Args:
          request (HTTPRequest): A http request object created automatically by Django.
          reverseMutatedCode: this is a string that has been changed back to the oringinal code
-
     Returns:
     """
     user = User.objects.get(email=request.user.email)
@@ -29,6 +27,8 @@ def log_data(request, reverseMutatedCode):
     user_info.mood = face
     user_info.save()
 
+    print("data_logged")
+
     data_to_log = DataLog.objects.create(user_key=user,
                                          time_stamp=timezone.now(),
                                          lesson_set_key=lesson_set,
@@ -36,10 +36,9 @@ def log_data(request, reverseMutatedCode):
                                          status=status,
                                          code=reverseMutatedCode,
                                          explanation=explanation,
-                                         past_answers=past_answers,
+                                         past_answers = past_answers,
                                          face=face)
     data_to_log.save()
-
 
 def get_log_data(user, lesson_index):
     user = User.objects.get(email=user)
@@ -56,4 +55,3 @@ def finished_lesson_count(user):
     print(get_user_successes.count())
 
     return get_user_successes.count()
-
