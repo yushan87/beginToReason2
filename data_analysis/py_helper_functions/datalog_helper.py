@@ -29,8 +29,6 @@ def log_data(request, reverseMutatedCode):
     user_info.mood = face
     user_info.save()
 
-    print("data_logged")
-
     data_to_log = DataLog.objects.create(user_key=user,
                                          time_stamp=timezone.now(),
                                          lesson_set_key=lesson_set,
