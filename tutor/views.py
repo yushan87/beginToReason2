@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, set_not_complete
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete
 #from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
 
@@ -17,8 +17,6 @@ from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, c
 letters = [['X', 'Y', 'Z'], ['P', 'Q', 'R'], ['L', 'M', 'N'], ['I', 'J', 'K']]
 variable_key = {}
 inverse_variable_key = {}
-
-
 
 
 def catalog(request):
@@ -55,7 +53,7 @@ def tutor(request):
                       the user is authenticated.
     """
 
-    end_of_set = False
+    print(request)
 
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
@@ -71,6 +69,7 @@ def tutor(request):
             # print(rev_mutated)
 
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+            print(current_user.current_lesson_name)
             current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
             print('current_lesson: ', current_lesson)
             submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
@@ -84,7 +83,7 @@ def tutor(request):
                     current_user.current_lesson_index = Lesson.objects.get(
                         lesson_name=current_lesson.correct).lesson_index
                 else:
-                    end_of_set = True
+                    print("Lesson does not exist")
 
                 print("completed index: ", current_user.completed_lesson_index)
                 print("current index: ", current_user.current_lesson_index)
@@ -94,7 +93,7 @@ def tutor(request):
                     print('curr_lesson: ', current_lesson)
                     current_user.current_lesson_name = curr_lesson.lesson_name
                     current_user.save()
-                    if end_of_set:
+                    if current_user.completed_lesson_index == current_user.current_lesson_index:
                         current_user.completed_sets = current_user.current_lesson_set
                         current_user.current_lesson_set = None
                         current_user.save()
@@ -115,7 +114,8 @@ def tutor(request):
     elif request.method == 'GET':
         # Ensure user exists
         # Case 2a: if the user exists
-        if user_auth(request) and set_not_complete(request):
+        print(not_complete(request))
+        if user_auth(request) and not_complete(request):
             # Case 2aa: if the user has a current set
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_set = current_user.current_lesson_set.lessons.all()
@@ -202,7 +202,10 @@ def completed(request, index):
     if request.method == 'GET':
         if user_auth(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-            current_set = current_user.current_lesson_set.lessons.all()
+            if not not_complete(request):
+                current_set = current_user.completed_sets.lessons.all()
+            else:
+                current_set = current_user.current_lesson_set.lessons.all()
             current_lesson = Lesson.objects.get(lesson_index=index)
 
             set_len = current_set.filter(is_alternate=False).count()
