@@ -162,7 +162,7 @@ def can_mutate(request):
             request to get the user information
         Returns:
             mutated_code the code string whether it has been mutated or not
-            """
+    """
     current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
     if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
         current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
@@ -171,3 +171,13 @@ def can_mutate(request):
     if current_lesson.can_mutate:
         mutated_code = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_variable_key)
     return mutated_code
+
+
+def get_inv_key():
+    """function get_inv_key returns the inv key
+        Args:
+            NULL
+        Returns:
+            inverse_variable_key the key string
+    """
+    return inverse_variable_key

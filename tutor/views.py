@@ -10,7 +10,7 @@ from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete
-from tutor.py_helper_functions.mutation import mutate, reverse_mutate, can_mutate
+from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate, get_inv_key
 
 
 def catalog(request):
@@ -60,7 +60,7 @@ def tutor(request):
             print(current_user.current_lesson_name)
             current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
             print('current_lesson: ', current_lesson)
-            submitted_answer = reverse_mutate(json.loads(request.body.decode('utf-8'))['answer'].replace(" ", ""), inverse_variable_key)
+            submitted_answer = reverse_mutate(json.loads(request.body.decode('utf-8'))['answer'].replace(" ", ""), get_inv_key())
             print('submitted answer: ' + submitted_answer)
             #Need to include submitted_answer in log data because it has the original variables
 
