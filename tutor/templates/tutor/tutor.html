@@ -207,31 +207,31 @@
                                     {% if currLessonNum <= 1 %}
                                         <div class="bullet completed">-</div>
                                     {% else %}
-                                        <div class="bullet completed">{{ currLessonNum|sub:2 }}</div>
+                                        <div class="bullet completed">{{ currLessonNum|sub:1 }}</div>
                                     {% endif %}
                                 </div>
                                 <div class="step">
                                     {% if currLessonNum == 0 %}
                                         <div class="bullet completed">-</div>
                                     {% else %}
-                                        <div data-toggle="tooltip" title="The last lesson you completed" class="bullet completed">{{currLessonNum|sub:1}}</div>
+                                        <div data-toggle="tooltip" title="The last lesson you completed" class="bullet completed">{{currLessonNum}}</div>
                                     {% endif %}
                                 </div>
                                 <div class="step">
-                                    <div data-toggle="tooltip" title="The lesson you are currently working on" class="bullet current">{{currLessonNum}}</div>
+                                    <div data-toggle="tooltip" title="The lesson you are currently working on" class="bullet current">{{currLessonNum|add:1}}</div>
                                 </div>
                                 <div class="step">
-                                    {% if currLessonNum == setLength %}
+                                    {% if currLessonNum == setLength or currLessonNum == setLength|sub:1 %}
                                         <div class="bullet last">-</div>
                                     {% else %}
-                                        <div data-toggle="tooltip" title="The next lesson you will encounter" class="bullet last">{{currLessonNum|add:1}}</div>
+                                        <div data-toggle="tooltip" title="The next lesson you will encounter" class="bullet last">{{currLessonNum|add:2}}</div>
                                     {% endif %}
                                 </div>
                                 <div class="step">
-                                    {% if currLessonNum|add:1 >= setLength %}
+                                    {% if currLessonNum|add:2 >= setLength  %}
                                         <div class="bullet end">-</div>
                                     {% else %}
-                                        <div class="bullet end" data-toggle="tooltip" title="The last lesson in the set">{{setLength|sub:1}}</div>
+                                        <div class="bullet end" data-toggle="tooltip" title="The last lesson in the set">{{setLength}}</div>
                                     {% endif %}
                                 </div>
                             </div>
