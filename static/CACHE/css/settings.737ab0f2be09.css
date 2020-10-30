@@ -1,0 +1,99 @@
+@import url("https://fonts.googleapis.com/css?family=Oswald");
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+/** This section defines the various fonts and colors */
+/**
+ *  This section contains the various SCSS variables we are going to use.
+ *  Note that this section will use the font and color variables we have defined
+ *  in the previous section.
+ */
+/* General CSS */
+@import url("https://fonts.googleapis.com/css?family=Oswald");
+@import url("https://fonts.googleapis.com/css?family=Roboto");
+/* line 9, core/static/css/base/_base.scss */
+html {
+  position: relative;
+  min-height: 100%; }
+
+/* line 14, core/static/css/base/_base.scss */
+body {
+  font-family: roboto, helvetica, arial, sans-serif; }
+
+/* Header-Related CSS */
+/* line 19, core/static/css/base/_base.scss */
+#page-header {
+  position: sticky;
+  top: 0;
+  z-index: 1071;
+  min-height: 70px;
+  background-color: #3a4958 !important; }
+  /* line 27, core/static/css/base/_base.scss */
+  #page-header .nav-link {
+    font-size: 1rem;
+    color: #d4c99e !important; }
+  /* line 32, core/static/css/base/_base.scss */
+  #page-header .nav-link:hover {
+    color: #4085b7; }
+  /* line 37, core/static/css/base/_base.scss */
+  #page-header .navbar-brand {
+    color: #fdfdfd !important; }
+  /* line 41, core/static/css/base/_base.scss */
+  #page-header .navbar-brand:hover {
+    color: #4085b7; }
+  /* line 46, core/static/css/base/_base.scss */
+  #page-header .dropdown-menu {
+    min-width: 0; }
+  /* line 50, core/static/css/base/_base.scss */
+  #page-header .dropdown-item {
+    color: #4085b7; }
+  /* line 54, core/static/css/base/_base.scss */
+  #page-header .dropdown-item:hover {
+    color: #fdfdfd !important;
+    background-color: #3a4958 !important;
+    opacity: 0.15; }
+  /* line 61, core/static/css/base/_base.scss */
+  #page-header .btn-auth {
+    color: #d4c99e !important;
+    border-color: #d4c99e !important; }
+  /* line 66, core/static/css/base/_base.scss */
+  #page-header .btn-auth:hover {
+    color: #4085b7;
+    background-color: #d4c99e !important;
+    border-color: #d4c99e !important; }
+
+/* line 73, core/static/css/base/_base.scss */
+#site-title {
+  font-family: oswald, helvetica, arial, sans-serif;
+  font-size: 1.75rem;
+  font-weight: 200 !important; }
+
+/** This section defines the various fonts and colors */
+/**
+ *  This section contains the various SCSS variables we are going to use.
+ *  Note that this section will use the font and color variables we have defined
+ *  in the previous section.
+ */
+/* Main Layout-Related CSS */
+/* line 8, core/static/css/pages/settings.scss */
+#page-content {
+  min-height: calc(100vh - 70px);
+  color: #000 !important; }
+  /* line 13, core/static/css/pages/settings.scss */
+  #page-content a {
+    text-decoration: none; }
+  /* line 6, core/static/css/components/_jumbotron.scss */
+  #page-content .jumbotron {
+    color: #fdfdfd !important;
+    background-color: #4c6085 !important; }
+  /* line 11, core/static/css/components/_jumbotron.scss */
+  #page-content .btn-jumbotron {
+    color: #d4c99e !important;
+    border-color: #d4c99e !important; }
+  /* line 16, core/static/css/components/_jumbotron.scss */
+  #page-content .btn-jumbotron:hover {
+    color: #fdfdfd !important;
+    background-color: #d4c99e !important;
+    border-color: #d4c99e !important; }
+  /* line 21, core/static/css/pages/settings.scss */
+  #page-content .page-section-heading {
+    color: #3a4958 !important;
+    border-bottom: 5px solid #4c6085 !important; }
