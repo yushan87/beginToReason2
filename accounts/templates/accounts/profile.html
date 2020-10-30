@@ -147,6 +147,7 @@
                                                     <h5 class="card-title">{{user.userinformation.completed_sets}} <span class="badge recommended">Completed</span></h5>
                                                     <h5 class="card-title"><span class="badge badge-success">Author ID: 869134018</span></h5>
                                                     <p class="card-text">{{user.userinformation.completed_sets.set_description}}</p>
+                                                    <a href="{% url 'tutor:completed' 0 %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Review Activity</a>
                                                 </div>
                                             </div>
                                         </div>

@@ -97,6 +97,18 @@ def set_not_complete(request):
     return False
 
 
+def not_complete(request):
+    if user_auth(request):
+        user = User.objects.get(email=request.user.email)
+        print(user)
+        current_user = UserInformation.objects.get(user=user)
+        print(current_user)
+        print(current_user.completed_sets)
+        if current_user.completed_sets == None:
+            print("not complete")
+            return True
+    return False
+
 def alternate_lesson_check(current_lesson, type):
     """function set_not_complete This function handles the logic for a if a set has not been completed
 
@@ -144,38 +156,46 @@ def check_type(current_lesson, submitted_answer, status):
     return type
 
 
+def check_status(status):
+    if status == 'success':
+        return True
+    return False
+
+
 def check_feedback(current_lesson, submitted_answer, status):
     type = 'DEF'
 
-    if current_lesson.sub_lessons_available:
-
-        type = check_type(current_lesson, submitted_answer, status)
-
-        try:
-            headline = current_lesson.feedback.get(feedback_type=type).headline
-            text = current_lesson.feedback.get(feedback_type=type).feedback_text
-        except:
-            type = 'DEF'
-        finally:
-            headline = current_lesson.feedback.get(feedback_type=type).headline
-            text = current_lesson.feedback.get(feedback_type=type).feedback_text
+    if status == 'success':
+        headline = 'Correct'
+        text = current_lesson.correct_feedback
+        type = 'COR'
     else:
-        if status == 'success':
-            headline = 'Correct'
-            text = current_lesson.correct_feedback
-            type = 'COR'
+        if current_lesson.sub_lessons_available:
 
-        elif status == 'failure':
-            headline = current_lesson.feedback.get(feedback_type='DEF').headline
-            text = current_lesson.feedback.get(feedback_type='DEF').feedback_text
-            type = 'DEF'
+            type = check_type(current_lesson, submitted_answer, status)
+
+            try:
+                headline = current_lesson.feedback.get(feedback_type=type).headline
+                text = current_lesson.feedback.get(feedback_type=type).feedback_text
+            except:
+                type = 'DEF'
+            finally:
+                headline = current_lesson.feedback.get(feedback_type=type).headline
+                text = current_lesson.feedback.get(feedback_type=type).feedback_text
         else:
-            return{'resultsHeader': "<h3>Something went wrong</h3>",
-                   'resultDetails': 'Try again or contact us.',
-                   'status': status}
+            if status == 'failure':
+                headline = current_lesson.feedback.get(feedback_type='DEF').headline
+                text = current_lesson.feedback.get(feedback_type='DEF').feedback_text
+                type = 'DEF'
+            else:
+                return{'resultsHeader': "<h3>Something went wrong</h3>",
+                       'resultDetails': 'Try again or contact us.',
+                       'status': status}
 
     return {'resultsHeader': headline,
             'resultDetails': text,
             'status': status,
             'sub': current_lesson.sub_lessons_available,
-            'type': type}
+            'type': type,
+            }
+
