@@ -99,16 +99,13 @@ def tutor(request):
                         current_user.save()
                         print("in done: ", current_user.current_lesson_set)
 
-
-            #print(feedback['type'])
-            #goto = alternate_lesson_check(current_lesson, feedback['type'])
-            #feedback.update({'newLessonIndex': str(Lesson.objects.get(lesson_name=goto.lesson_name).lesson_index)})
-            #feedback.update({'newLessonCode': Lesson.objects.get(lesson_name=goto.lesson_name).code.lesson_code})
-            #feedback.update({'newLessonEx': Lesson.objects.get(lesson_name=goto.lesson_name).reason.reasoning_type})
-
+            # print(feedback['type'])
+            # goto = alternate_lesson_check(current_lesson, feedback['type'])
+            # feedback.update({'newLessonIndex': str(Lesson.objects.get(lesson_name=goto.lesson_name).lesson_index)})
+            # feedback.update({'newLessonCode': Lesson.objects.get(lesson_name=goto.lesson_name).code.lesson_code})
+            # feedback.update({'newLessonEx': Lesson.objects.get(lesson_name=goto.lesson_name).reason.reasoning_type})
 
             return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
-
 
     # Case 2: We have received a GET request requesting code
     elif request.method == 'GET':
@@ -125,7 +122,7 @@ def tutor(request):
             if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
                 current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
 
-                #check if mutatable then mutate:
+                # check if mutatable then mutate:
                 if current_lesson.can_mutate:
                     mutated_lesson = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_variable_key)
                     current_lesson.code.lesson_code = mutated_lesson
