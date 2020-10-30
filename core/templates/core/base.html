@@ -1,0 +1,104 @@
+{% load static compress %}
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <!-- Meta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>BeginToReason</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/logo3.png' %}">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    {% block css %}
+    {% endblock %}
+
+    <!-- JavaScript -->
+    <script src="https://kit.fontawesome.com/d50a2fb57f.js"></script>
+    {% block head_js %}
+    {% endblock %}
+</head>
+<body>
+<!-- JavaScript Libraries -->
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+  integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+  crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+{% block body_js %}
+{% endblock %}
+
+<!-- Page Header -->
+<header id="page-header" class="d-flex flex-column">
+    <nav class="navbar navbar-expand-md navbar-dark flex-column flex-md-row py-0" role="navigation">
+        <a class="navbar-brand" href="{% url 'index' %}">
+            <img src="{% static 'images/logo3.png' %}" alt="Clemson RESOLVE Logo" width="40" height="40">
+            <span id="site-title" class="pl-1 text-center align-bottom">BeginToReason</span>
+        </a>
+        <ul class="navbar-nav flex-row align-items-center text-center">
+            <li class="nav-item ml-3">
+                <a class="nav-link pb-0" href="{% url 'tutor:catalog' %}">Catalog</a>
+            </li>
+            <li class="nav-item ml-3">
+                <a class="nav-link pb-0" href="{% url 'accounts:privacy' %}">Privacy Policy</a>
+            </li>
+            {% block header_navigation_links %}
+            {% endblock %}
+
+            <li class="nav-item dropdown ml-3">
+                <a id="otherLinksDropdown" class="nav-link dropdown-toggle pb-0" href="#" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">External Links</a>
+                <div class="dropdown-menu dropdown-menu-left m-0" aria-labelledby="otherLinksDropdown">
+                    <a class="dropdown-item" href="https://www.cs.clemson.edu/resolve/" target="_blank">RSRG Home</a>
+                    <a class="dropdown-item" href="https://resolve.cs.clemson.edu/" target="_blank">WebIDE</a>
+                    <a class="dropdown-item" href="https://www.nsf.gov/" target="_blank">NSF.gov</a>
+                </div>
+            </li>
+            <li class="nav-item ml-3">
+                <img src="{% static 'images/nsf.png' %}" alt="Clemson RESOLVE Logo" width="40" height="40">
+            </li>
+        </ul>
+        <ul class="navbar-nav flex-row my-3 ml-md-auto align-items-center text-center">
+            {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <button class="btn btn-auth dropdown-toggle" type="button" id="accountDropdownButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="far fa-user-circle"></i>
+                        <span class="d-none d-sm-inline-flex">&nbsp; </span>{% if user.userinformation.user_nickname %}{{ user.userinformation.user_nickname }}{% else %}{{ user.username }}{% endif %}
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-right m-0" aria-labelledby="accountDropdownButton">
+                        <a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a>
+                        <a class="dropdown-item" href="{% url 'accounts:settings' %}">Settings</a>
+                        <a class="dropdown-item" href="{% url 'accounts:logout' %}">Log out</a>
+                    </div>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="btn btn-auth" href="{% url 'accounts:login' %}" role="button">
+                        <i class="fas fa-sign-in-alt"></i>
+                        <span class="d-none d-sm-inline-flex">&nbsp; </span>Log in
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+
+<!-- Main Content Block -->
+<main id="page-content" class="flex-shrink-0" role="main">
+    {% block main_content %}
+    {% endblock %}
+</main>
+</body>
+
+</html>

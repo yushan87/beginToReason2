@@ -1,0 +1,80 @@
+// _stepbar.scss
+// This file extends _base to generate all the CSS required to render the lesson page
+@import "../utils/variables";
+// $lesson-width: 90px; for size of each indiv bar
+// number of lessons also needed
+$number-lessons: 5;
+// 42vw / $number-lessons = vw per lesson
+
+#stepProgressBar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 40vw;
+    margin: 0 auto;
+}
+
+
+.step {
+    text-align: center;
+}
+
+
+.bullet {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    color: #3a4958;
+    background-color: #fff;
+    border-radius: 100%;
+    transition: background-color 500ms;
+}
+
+
+.bullet.current {
+    line-height: 30px;
+    border: 5px solid $coral;
+}
+
+
+.bullet.completed {
+    color: #fff;
+    background-color: $coral;
+}
+
+
+.bullet.completed::after {
+    position: absolute;
+    bottom: 15px;
+    width: 45vw / $number-lessons;
+    height: 5px;
+    content: "";
+    background-color: $coral;
+}
+
+
+.bullet.end::before {
+    position: absolute;
+    right: 2vw;
+    bottom: 15px;
+    width: 36vw / $number-lessons;
+    content: "";
+    border-top: 5px dotted #fff;
+}
+
+
+.bullet.last::before {
+    position: absolute;
+    right: 2vw;
+    bottom: 15px;
+    width: 40vw / $number-lessons;
+    content: "";
+    border-top: 5px solid #fff;
+}
+
+
+.text-center {
+    text-align: center;
+}

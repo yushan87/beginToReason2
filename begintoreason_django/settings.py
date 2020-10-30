@@ -27,19 +27,41 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# client keys and secret for google auth
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '440772211828-t27jfq6nq5sa75aueb7e4uknd67lhrin.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'QitezbEq7hPQWRUod9-Tg90G'
 
 # Application definition
 
 INSTALLED_APPS = [
-    'app.apps.BegintoreasonConfig',
-    'django_ace',
+    # Django Applications
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+
+    # Our own applications
+    'accounts',
+    'core',
+    'data_analysis',
+    'educator',
+    'think_aloud',
+    'tutor',
+
+    # External Plugins
+    'social_django',
+    'django_ace',
+    'compressor',
+    'crispy_forms',
+    'mathfilters'
 ]
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -82,6 +104,14 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin
+    'django.contrib.auth.backends.ModelBackend',
+
+    # google oauth2
+    'social_core.backends.google.GoogleOAuth2',
+]
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
@@ -120,3 +150,33 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# django-compressor
+# https://django-compressor.readthedocs.io/en/stable/
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+
+    # other finders..
+    'compressor.finders.CompressorFinder'
+]
+
+# django-libsass
+# https://github.com/torchbox/django-libsass
+
+COMPRESS_PRECOMPILERS = [
+    ('text/x-scss', 'django_libsass.SassCompiler')
+]
+
+# Python Social Auth
+# https://python-social-auth.readthedocs.io/en/latest/
+
+LOGIN_URL = '/auth/login/google-oauth2/'
+
+LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/'
+
+SOCIAL_AUTH_URL_NAMESPACE = 'social'

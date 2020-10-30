@@ -1,0 +1,38 @@
+{% extends "core/base.html" %}
+{% load static compress %}
+
+{% block css %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/index.scss' %}" media="screen">
+    {% endcompress %}
+{% endblock %}
+
+{% block main_content %}
+    <!--- Jumbotron -->
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1>Learn to reason through code using our interactive tutor</h1>
+            <p>Not sure where to begin?</p>
+            <a href="{% url 'tutor:catalog' %}" class="btn btn-lg btn-jumbotron" role="button"
+               aria-pressed="true">Get Started</a>
+        </div>
+    </div>
+
+    <!-- Introduction to BeginToReason -->
+    <div class="container">
+        <h2>What is BeginToReason?</h2>
+        This is an interactive tutoring system to help students better understand code reasoning.
+        Students will develop skills to be able to think about variable values abstractly, and
+        learn to reason for all input values.<br><br>
+
+        This is a joint effort involving Clemson University, Florida Atlantic University and Rose-Hulman Institute of Technology.<br/>
+        This research is funded in part by NSF grants CCF-1161916,
+        DUE-1022941, DUE-1611714, DUE-1915334, DUE-1914667, and DUE-1915088.<br/>
+
+        <div id="copyright">Copyright &#9400; 2020 Clemson RSRG.
+                    <span class="d-none d-sm-inline-flex">(Created with <a class="footer-link"
+                                                                           href="https://www.djangoproject.com/"
+                                                                           target="_blank">&nbsp;Django</a>)</span>
+        </div>
+    </div>
+{% endblock %}

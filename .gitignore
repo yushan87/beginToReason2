@@ -64,6 +64,7 @@ local_settings.py
 .env
 db.sqlite3
 
+static/CACHE/
 
 ################
 # Custom Files #
@@ -138,3 +139,11 @@ developer.properties
 Icon?
 ehthumbs.db
 Thumbs.db
+
+
+######################
+# Node.js            #
+######################
+node_modules
+package-lock.json
+package.json

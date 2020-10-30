@@ -1,10 +1,12 @@
 {
   "extends": ["stylelint-config-standard"],
   "plugins": [
+    "stylelint-scss",
     "stylelint-order"
   ],
   "rules": {
     "at-rule-name-space-after": "always",
+    "at-rule-no-unknown": null,
     "at-rule-no-vendor-prefix": true,
     "at-rule-semicolon-space-before": "never",
     "color-named": "never",
@@ -212,6 +214,8 @@
       "animation-direction"
     ],
     "property-no-vendor-prefix": true,
+    "scss/at-rule-no-unknown": true,
+	"scss/selector-no-redundant-nesting-selector": true,
     "selector-attribute-quotes": "always",
     "selector-list-comma-newline-after": "always",
     "selector-list-comma-newline-before": "never-multi-line",
@@ -224,7 +228,7 @@
     "selector-max-specificity": null,
     "selector-max-type": 2,
     "selector-max-universal": 1,
-    "selector-no-qualifying-type": true,
+    "selector-no-qualifying-type": null,
     "selector-no-vendor-prefix": true,
     "string-quotes": "double",
     "value-keyword-case": "lower",
