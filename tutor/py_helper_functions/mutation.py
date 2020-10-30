@@ -3,6 +3,14 @@ This module contains our Django helper functions for the "mutate" application.
 """
 import random
 
+from django.contrib.auth.models import User
+from accounts.models import UserInformation
+from core.models import Lesson
+
+letters = [['X', 'Y', 'Z'], ['P', 'Q', 'R'], ['L', 'M', 'N'], ['I', 'J', 'K']]
+variable_key = {}
+inverse_variable_key = {}
+
 
 def mutate(activity_string, letters, variable_key, inverse_variable_key):
     """function mutate This function changes a random mixture of the letters, numbers, and symbols in the exercise
@@ -146,3 +154,20 @@ def reverse_mutate(activity_string, inverse_variable_key):
                     activity_string = activity_string[:index] + str(inverse_variable_key[var]) + activity_string[index + 1:]
         index = index + 1
     return activity_string
+
+
+def can_mutate(request):
+    """function can_mutate this function checks if you can mutate and returns the code
+        Args:
+            request to get the user information
+        Returns:
+            mutated_code the code string whether it has been mutated or not
+            """
+    current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+    if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
+        current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
+    # check if can
+    mutated_code = current_lesson.code.lesson_code
+    if current_lesson.can_mutate:
+        mutated_code = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_variable_key)
+    return mutated_code

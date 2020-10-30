@@ -9,14 +9,8 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, set_not_complete
-from tutor.py_helper_functions.mutation import mutate, reverse_mutate
-
-
-
-letters = [['X', 'Y', 'Z'], ['P', 'Q', 'R'], ['L', 'M', 'N'], ['I', 'J', 'K']]
-variable_key = {}
-inverse_variable_key = {}
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete
+from tutor.py_helper_functions.mutation import mutate, reverse_mutate, can_mutate
 
 
 def catalog(request):
@@ -123,14 +117,12 @@ def tutor(request):
                 current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
 
                 # check if mutatable then mutate:
-                if current_lesson.can_mutate:
-                    mutated_lesson = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_variable_key)
-                    current_lesson.code.lesson_code = mutated_lesson
+                code_after_mutate = can_mutate(request)
 
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
-                                   'lesson_code': current_lesson.code.lesson_code,
+                                   'lesson_code': code_after_mutate,
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
                                    'reason': current_lesson.reason.reasoning_question,
@@ -150,7 +142,7 @@ def tutor(request):
                 elif current_lesson.reason.reasoning_type == 'Text':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
-                                   'lesson_code': current_lesson.code.lesson_code,
+                                   'lesson_code': code_after_mutate,
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
                                    'reason': current_lesson.reason.reasoning_question,
@@ -169,7 +161,7 @@ def tutor(request):
 
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
-                               'lesson_code': current_lesson.code.lesson_code,
+                               'lesson_code': code_after_mutate,
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'currLessonNum': current_user.current_lesson_index,
