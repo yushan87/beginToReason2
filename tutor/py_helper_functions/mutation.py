@@ -15,11 +15,7 @@ def mutate(activity_string, letters, variable_key, inverse_variable_key):
         String: A string of the mutated activity
     """
 
-    #always mutate letters bc IJK is one of the letter sets, but only mutate numbers 1/2 times
-    if random.randint(0, 1) == 1:
-        mutate_numbers(activity_string, variable_key, inverse_variable_key)
-
-
+    mutate_numbers(activity_string, variable_key, inverse_variable_key)
     mutate_vars(activity_string, letters, variable_key, inverse_variable_key)
 
     # reset index and iterate through string
@@ -62,7 +58,7 @@ def mutate_vars(activity_string, letters, variable_key, inverse_variable_key):
         index = index + 1
         letter = activity_string[index]
 
-    # need to pick a random number between 0 and 3 inclusive
+    # need to pick a random number between 0 and len of letters inclusive
     random_num = int(random.uniform(0, len(letters)))
     i = 0
 
@@ -91,7 +87,6 @@ def mutate_numbers(activity_string, variable_key, inverse_variable_key):
         NULL
     """
     index = 0
-    increment_value = 1
     variable_list = []
     while index < len(activity_string) - 1:
         character = activity_string[index]
@@ -99,18 +94,16 @@ def mutate_numbers(activity_string, variable_key, inverse_variable_key):
         if character.isdigit() and character not in variable_list:
             variable_list.append(character)
         index = index + 1
-    for digit in variable_list:
-        if int(digit) == 3:
-            increment_value = -1
 
     for digit in variable_list:
-        variable_key[digit] = str(int(digit) + increment_value)
-        inverse_variable_key[str(int(digit) + increment_value)] = digit
+        rand_int = str(int(random.uniform(1,3)))
+        variable_key[digit] = rand_int
+        inverse_variable_key[rand_int] = digit
 
 
 def mutate_symbols(variable_key, inverse_variable_key):
     """function mutate_symbols This function stores various symbols and their opposite symbol in the variable and inverse
-        variable keys
+        variable keys, not currently used in mutate
     Args:
          variable_key (dict): maps the original variables with the new ones
          inverse_variable_key (dict): maps the new variables to the old ones
