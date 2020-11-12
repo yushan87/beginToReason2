@@ -11,6 +11,7 @@ let speechRecognitionUniqueId = '';
  * The main function for setting and running everything related to SpeechToText
  */
 function transcribeAudio(userId, lessonNumber, lessonName) {
+    console.log('Transcribing audio');
     if (!("webkitSpeechRecognition" in window)) {
         setBrowserCompatibility(false);
         return;
@@ -26,7 +27,7 @@ function transcribeAudio(userId, lessonNumber, lessonName) {
  * Sets an interval of 30 seconds to upload transcribed text.
  */
 function setupTranscriptUploading() {
-    // upload transcript every 30 seconds
+    // upload transcript every 10 seconds
     setInterval(function () {
         if (speechRecognitionUniqueId) {
             tempTranscript = currentTranscript;
