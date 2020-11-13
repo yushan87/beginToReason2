@@ -162,6 +162,7 @@ async function setupRecording(doAudio, doScreen, userId, lessonIndex, lessonName
         startNewAttempt();
 
         mediaRecorder = new MediaRecorder(stream);
+
         mediaRecorder.start(VIDEO_FRAGMENT_LENGTH);
         recordingState = true;
 
@@ -252,6 +253,8 @@ function startNewAttempt() {
  * @param endTimestamp
  */
 function handlePostPerAtteptDataRequest(sessionId, userId, attemptIsSuccessful, attemptCount, errorReason, solutionEntered, code, lessonIndex, lessonName, startTimestamp, endTimestamp) {
+    startTimestamp = Math.floor(startTimestamp/1000);
+    endTimestamp = Math.floor(endTimestamp/1000);
     postPerAttemptData(sessionId, userId, attemptIsSuccessful, attemptCount, errorReason, solutionEntered, code, lessonIndex, lessonName, startTimestamp, endTimestamp).then(
         function (response) {
             if (response.status === "Success") {
