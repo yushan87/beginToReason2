@@ -61,6 +61,7 @@ function createEditor(code, explain, lessonName, currIndex, compIndex, review, p
 
         $("#resetCode").attr("disabled", "disabled");
         $("#checkCorrectness").attr("disabled", "disabled");
+        $("#explainCard").attr("disabled", "disabled");
     }
 
     //add a check for if need explaination and set hasFR
