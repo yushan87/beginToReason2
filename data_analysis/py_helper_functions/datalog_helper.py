@@ -10,7 +10,6 @@ from data_analysis.models import DataLog
 from tutor.py_helper_functions.mutation import reverse_mutate
 
 
-
 def log_data(request):
     """function log_data This function handles the logic for logging data
     Args:
