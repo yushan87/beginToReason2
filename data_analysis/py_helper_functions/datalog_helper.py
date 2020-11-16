@@ -11,11 +11,10 @@ from tutor.py_helper_functions.mutation import reverse_mutate
 
 
 
-def log_data(request, reverseMutatedCode):
+def log_data(request):
     """function log_data This function handles the logic for logging data
     Args:
          request (HTTPRequest): A http request object created automatically by Django.
-         reverseMutatedCode: this is a string that has been changed back to the oringinal code
     Returns:
     """
     user = User.objects.get(email=request.user.email)
