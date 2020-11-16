@@ -215,4 +215,3 @@ def completed(request, index):
             return redirect("tutor:tutor")
 
     return redirect("accounts:profile")
-
