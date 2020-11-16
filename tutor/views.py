@@ -65,8 +65,7 @@ def tutor(request):
             print("status: ", status)
             submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
 
-            if current_lesson.can_mutate:
-                submitted_answer = reverse_mutate(submitted_answer)
+            submitted_answer = reverse_mutate(submitted_answer)
 
             log_data(request)
 
