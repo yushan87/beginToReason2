@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from accounts.models import UserInformation
 from core.models import LessonSet, Lesson
 from data_analysis.models import DataLog
+from tutor.py_helper_functions.mutation import reverse_mutate
+
 
 
 def log_data(request):
@@ -21,7 +23,10 @@ def log_data(request):
     user_info = UserInformation.objects.get(user=user)
     lesson_set = user_info.current_lesson_set
     lesson = Lesson.objects.get(lesson_index=user_info.current_lesson_index)
-    code = json.loads(request.body.decode('utf-8'))['code']
+    if lesson.can_mutate:
+        code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
+    else:
+        code = json.loads(request.body.decode('utf-8'))['code']
     explanation = json.loads(request.body.decode('utf-8'))['explanation']
     past_answers = json.loads(request.body.decode('utf-8'))['allAnswers']
     status = json.loads(request.body.decode('utf-8'))['status']

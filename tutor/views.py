@@ -10,23 +10,13 @@ from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, set_not_complete
-#from tutor.py_helper_functions.mutation import mutate, reverse_mutate
-
-
-
-letters = [['X', 'Y', 'Z'], ['P', 'Q', 'R'], ['L', 'M', 'N'], ['I', 'J', 'K']]
-variable_key = {}
-inverse_variable_key = {}
-
-
+from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
 
 def catalog(request):
     """function catalog This function handles the view for the catalog page of the application.
-
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
-
     Returns:
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.
@@ -62,20 +52,23 @@ def tutor(request):
         # Case 1a: if the user exists
         if user_auth(request):
             # submitted_json = json.loads(request.body.decode('utf-8'))
-            log_data(request)
+
             # if success, return next lesson
             # if fail, do something
             # Case 1aa: if the user has not completed set
 
-            # rev_mutated = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'], inverse_variable_key)
-            # print(rev_mutated)
-
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
             print('current_lesson: ', current_lesson)
-            submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
+
             status = json.loads(request.body.decode('utf-8'))['status']
             print("status: ", status)
+            submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
+
+            if current_lesson.can_mutate:
+                submitted_answer = reverse_mutate(submitted_answer)
+
+            log_data(request)
 
             if status == "success":
                 current_user.completed_lesson_index = current_lesson.lesson_index
@@ -107,7 +100,6 @@ def tutor(request):
             #feedback.update({'newLessonCode': Lesson.objects.get(lesson_name=goto.lesson_name).code.lesson_code})
             #feedback.update({'newLessonEx': Lesson.objects.get(lesson_name=goto.lesson_name).reason.reasoning_type})
 
-
             return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
 
 
@@ -125,8 +117,10 @@ def tutor(request):
             # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
             if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
                 current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
-                # mutated_activity = mutate(current_lesson.code.lesson_code, letters, variable_key, inverse_variable_key)
-                # print(mutated_activity)
+
+                if current_lesson.can_mutate:
+                    current_lesson.code.lesson_code = mutate(current_lesson.code.lesson_code)
+
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
@@ -190,11 +184,9 @@ def tutor(request):
 @login_required(login_url='/accounts/login/')
 def completed(request, index):
     """function previous This function handles retrieving the prev lesson.
-
         Args:
             request (HTTPRequest): A http request object created automatically by Django.
             index (int): The index of the lesson to retrieve
-
         Returns:
             HttpResponse: A generated http response object to the request depending on whether or not
                           the user is authenticated.

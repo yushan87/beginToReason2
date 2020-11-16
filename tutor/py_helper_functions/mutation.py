@@ -3,8 +3,12 @@ This module contains our Django helper functions for the "mutate" application.
 """
 import random
 
+letters = [['X', 'Y', 'Z'], ['L', 'M', 'N'], ['I', 'J', 'K'], ['E', 'F', 'G']]
+variable_key = {}
+inverse_variable_key = {}
 
-def mutate(activity_string, letters, variable_key, inverse_variable_key):
+
+def mutate(activity_string):
     """function mutate This function changes a random mixture of the letters, numbers, and symbols in the exercise
     Args:
          activity_string (string): string of activity to be mutated
@@ -14,9 +18,8 @@ def mutate(activity_string, letters, variable_key, inverse_variable_key):
     Returns:
         String: A string of the mutated activity
     """
-
-    mutate_numbers(activity_string, variable_key, inverse_variable_key)
-    mutate_vars(activity_string, letters, variable_key, inverse_variable_key)
+    mutate_vars(activity_string)
+    mutate_numbers(activity_string)
 
     # reset index and iterate through string
     index = 0
@@ -33,7 +36,7 @@ def mutate(activity_string, letters, variable_key, inverse_variable_key):
     return activity_string
 
 
-def mutate_vars(activity_string, letters, variable_key, inverse_variable_key):
+def mutate_vars(activity_string):
     """function mutate_vars This function stores the original variables in variable_key and inverse_variable_key
          with variables from the letters array to be later substituted in mutate
     Args:
@@ -76,7 +79,7 @@ def mutate_vars(activity_string, letters, variable_key, inverse_variable_key):
         i = i + 1
 
 
-def mutate_numbers(activity_string, variable_key, inverse_variable_key):
+def mutate_numbers(activity_string):
     """function mutate_numbers This function stores the original variables in variable_key and inverse_variable_key
         with either incremented or decremented values
     Args:
@@ -87,21 +90,28 @@ def mutate_numbers(activity_string, variable_key, inverse_variable_key):
         NULL
     """
     index = 0
+    increment_value = 1
     variable_list = []
-    while index < len(activity_string) - 1:
-        character = activity_string[index]
-        # if character is a digit that we have not found before... put it in variable list
-        if character.isdigit() and character not in variable_list:
-            variable_list.append(character)
-        index = index + 1
 
-    for digit in variable_list:
-        rand_int = str(int(random.uniform(1,3)))
-        variable_key[digit] = rand_int
-        inverse_variable_key[rand_int] = digit
+    rand_num = random.randint(1, 2)
+    if rand_num == 1:
+        while index < len(activity_string) - 1:
+            character = activity_string[index]
+            # if character is a digit that we have not found before... put it in variable list
+            if character.isdigit() and character not in variable_list:
+                variable_list.append(character)
+            index = index + 1
+
+        for digit in variable_list:
+            if int(digit) == 3:
+                increment_value = -1
+
+        for digit in variable_list:
+            variable_key[digit] = str(int(digit) + increment_value)
+            inverse_variable_key[str(int(digit) + increment_value)] = digit
 
 
-def mutate_symbols(variable_key, inverse_variable_key):
+def mutate_symbols():
     """function mutate_symbols This function stores various symbols and their opposite symbol in the variable and inverse
         variable keys, not currently used in mutate
     Args:
@@ -120,7 +130,7 @@ def mutate_symbols(variable_key, inverse_variable_key):
     inverse_variable_key['<='] = '>='
 
 
-def reverse_mutate(activity_string, inverse_variable_key):
+def reverse_mutate(activity_string):
     """function mutate_symbols This function uses the variables stored in inverse_variable_key to reverse the string to
             its original form
     Args:
