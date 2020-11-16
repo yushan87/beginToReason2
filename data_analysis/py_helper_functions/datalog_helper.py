@@ -11,12 +11,11 @@ from tutor.py_helper_functions.mutation import reverse_mutate
 
 
 
-def log_data(request):
+def log_data(request, reverseMutatedCode):
     """function log_data This function handles the logic for logging data
-
     Args:
          request (HTTPRequest): A http request object created automatically by Django.
-
+         reverseMutatedCode: this is a string that has been changed back to the oringinal code
     Returns:
     """
     user = User.objects.get(email=request.user.email)
@@ -41,7 +40,7 @@ def log_data(request):
                                          lesson_set_key=lesson_set,
                                          lesson_key=lesson,
                                          status=status,
-                                         code=code,
+                                         code=reverseMutatedCode,
                                          explanation=explanation,
                                          past_answers = past_answers,
                                          face=face)
@@ -49,11 +48,14 @@ def log_data(request):
 
 def get_log_data(user, lesson_index):
     user = User.objects.get(email=user)
+    print(user)
+    get_user_successes = DataLog.objects.filter(user_key=user)
 
-    get_user_successes = DataLog.objects.filter(user_key = user).filter(status='success')
+    print(get_user_successes.filter(lesson_key=Lesson.objects.get(lesson_index=lesson_index)))
     get_lesson = get_user_successes.filter(lesson_key=Lesson.objects.get(lesson_index=lesson_index)).order_by('-id')[0]
 
-    return repr(get_lesson.code).replace("'",''), get_lesson.face, get_lesson.past_answers
+    print(get_lesson)
+    return repr(get_lesson.code).replace("'",''), get_lesson.face, get_lesson.past_answers, get_lesson.explanation
 
 def finished_lesson_count(user):
     user = User.objects.get(email=user)
@@ -62,4 +64,3 @@ def finished_lesson_count(user):
     print(get_user_successes.count())
 
     return get_user_successes.count()
-

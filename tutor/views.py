@@ -45,19 +45,19 @@ def tutor(request):
                       the user is authenticated.
     """
 
-    end_of_set = False
+    print(request)
 
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
         # Case 1a: if the user exists
         if user_auth(request):
             # submitted_json = json.loads(request.body.decode('utf-8'))
-
             # if success, return next lesson
             # if fail, do something
             # Case 1aa: if the user has not completed set
 
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+            print(current_user.current_lesson_name)
             current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
             print('current_lesson: ', current_lesson)
 
@@ -77,7 +77,7 @@ def tutor(request):
                     current_user.current_lesson_index = Lesson.objects.get(
                         lesson_name=current_lesson.correct).lesson_index
                 else:
-                    end_of_set = True
+                    print("Lesson does not exist")
 
                 print("completed index: ", current_user.completed_lesson_index)
                 print("current index: ", current_user.current_lesson_index)
@@ -87,27 +87,20 @@ def tutor(request):
                     print('curr_lesson: ', current_lesson)
                     current_user.current_lesson_name = curr_lesson.lesson_name
                     current_user.save()
-                    if end_of_set:
+                    if current_user.completed_lesson_index == current_user.current_lesson_index:
                         current_user.completed_sets = current_user.current_lesson_set
                         current_user.current_lesson_set = None
                         current_user.save()
                         print("in done: ", current_user.current_lesson_set)
 
-
-            #print(feedback['type'])
-            #goto = alternate_lesson_check(current_lesson, feedback['type'])
-            #feedback.update({'newLessonIndex': str(Lesson.objects.get(lesson_name=goto.lesson_name).lesson_index)})
-            #feedback.update({'newLessonCode': Lesson.objects.get(lesson_name=goto.lesson_name).code.lesson_code})
-            #feedback.update({'newLessonEx': Lesson.objects.get(lesson_name=goto.lesson_name).reason.reasoning_type})
-
             return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
-
 
     # Case 2: We have received a GET request requesting code
     elif request.method == 'GET':
         # Ensure user exists
         # Case 2a: if the user exists
-        if user_auth(request) and set_not_complete(request):
+        print(not_complete(request))
+        if user_auth(request) and not_complete(request):
             # Case 2aa: if the user has a current set
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_set = current_user.current_lesson_set.lessons.all()
@@ -124,7 +117,7 @@ def tutor(request):
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
-                                   'lesson_code': current_lesson.code.lesson_code,
+                                   'lesson_code': code_after_mutate,
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
                                    'reason': current_lesson.reason.reasoning_question,
@@ -144,7 +137,7 @@ def tutor(request):
                 elif current_lesson.reason.reasoning_type == 'Text':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
-                                   'lesson_code': current_lesson.code.lesson_code,
+                                   'lesson_code': code_after_mutate,
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
                                    'reason': current_lesson.reason.reasoning_question,
@@ -163,7 +156,7 @@ def tutor(request):
 
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
-                               'lesson_code': current_lesson.code.lesson_code,
+                               'lesson_code': code_after_mutate,
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'currLessonNum': current_user.current_lesson_index,
@@ -180,7 +173,6 @@ def tutor(request):
     return redirect("accounts:profile")
 
 
-
 @login_required(login_url='/accounts/login/')
 def completed(request, index):
     """function previous This function handles retrieving the prev lesson.
@@ -194,7 +186,10 @@ def completed(request, index):
     if request.method == 'GET':
         if user_auth(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-            current_set = current_user.current_lesson_set.lessons.all()
+            if not not_complete(request):
+                current_set = current_user.completed_sets.lessons.all()
+            else:
+                current_set = current_user.current_lesson_set.lessons.all()
             current_lesson = Lesson.objects.get(lesson_index=index)
 
             set_len = current_set.filter(is_alternate=False).count()

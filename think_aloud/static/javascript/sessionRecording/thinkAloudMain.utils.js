@@ -1,4 +1,7 @@
+/* global initThinkAloudFunctions closeThinkAloudFunctions */
+
 function initThinkAloudFunctions(doAudio, doScreen, doTranscription, userId, lessonNumber, lessonName) {
+
     if (doAudio || doScreen) {
         setupRecording(doAudio, doScreen, userId, lessonNumber , lessonName); // for recording a session
     }
