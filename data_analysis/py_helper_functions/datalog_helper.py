@@ -40,7 +40,7 @@ def log_data(request, reverseMutatedCode):
                                          lesson_set_key=lesson_set,
                                          lesson_key=lesson,
                                          status=status,
-                                         code=reverseMutatedCode,
+                                         code=code,
                                          explanation=explanation,
                                          past_answers = past_answers,
                                          face=face)
