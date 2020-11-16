@@ -10,7 +10,7 @@ from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete
-from tutor.py_helper_functions.mutation import mutate, reverse_mutate
+from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
 
 
 def catalog(request):
@@ -111,8 +111,7 @@ def tutor(request):
             if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
                 current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
 
-                if current_lesson.can_mutate:
-                    current_lesson.code.lesson_code = mutate(current_lesson.code.lesson_code)
+                current_lesson.code.lesson_code = can_mutate(current_lesson)
 
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
