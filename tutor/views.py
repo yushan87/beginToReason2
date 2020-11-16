@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, set_not_complete
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete
 from tutor.py_helper_functions.mutation import mutate, reverse_mutate
 
 
@@ -117,7 +117,7 @@ def tutor(request):
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
-                                   'lesson_code': code_after_mutate,
+                                   'lesson_code': current_lesson.code.lesson_code,
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
                                    'reason': current_lesson.reason.reasoning_question,
@@ -137,7 +137,7 @@ def tutor(request):
                 elif current_lesson.reason.reasoning_type == 'Text':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
-                                   'lesson_code': code_after_mutate,
+                                   'lesson_code': current_lesson.code.lesson_code,
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
                                    'reason': current_lesson.reason.reasoning_question,
@@ -156,7 +156,7 @@ def tutor(request):
 
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
-                               'lesson_code': code_after_mutate,
+                               'lesson_code': current_lesson.code.lesson_code,
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'currLessonNum': current_user.current_lesson_index,
