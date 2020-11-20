@@ -21,9 +21,11 @@ def log_data(request):
     lesson_set = user_info.current_lesson_set
     lesson = Lesson.objects.get(lesson_index=user_info.current_lesson_index)
     if lesson.can_mutate:
-        code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
+        original_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
     else:
-        code = json.loads(request.body.decode('utf-8'))['code']
+        original_code = json.loads(request.body.decode('utf-8'))['code']
+
+    code = json.loads(request.body.decode('utf-8'))['code']
     explanation = json.loads(request.body.decode('utf-8'))['explanation']
     past_answers = json.loads(request.body.decode('utf-8'))['allAnswers']
     status = json.loads(request.body.decode('utf-8'))['status']
@@ -41,7 +43,8 @@ def log_data(request):
                                          code=code,
                                          explanation=explanation,
                                          past_answers = past_answers,
-                                         face=face)
+                                         face=face,
+                                         original_code=original_code)
     data_to_log.save()
 
 def get_log_data(user, lesson_index):
