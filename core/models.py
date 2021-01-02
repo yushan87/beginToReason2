@@ -332,6 +332,7 @@ class LessonSet(models.Model):
     set_description = models.TextField(default="This set is designed to further your understanding")
     # number_normal_lessons = models.IntegerField(default=0)
     # set_image = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=100)
+    show = models.BooleanField(default=False)
 
     def __str__(self):
         """"

@@ -23,6 +23,7 @@ def catalog(request):
     """
     # get all lesson sets, display
     if request.method == 'POST':
+
         if user_auth(request):
             # search for lesson set
             if lesson_set_auth(request):
@@ -32,6 +33,7 @@ def catalog(request):
         else:
             return redirect("/accounts/settings")
     else:
+
         return render(request, "tutor/catalog.html", {'LessonSet': LessonSet.objects.all()})
 
 
