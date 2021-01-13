@@ -22,6 +22,7 @@ class UserInformation(models.Model):
     user_race = models.CharField("Race", max_length=50, validators=[MinLengthValidator(1)])  # Race field
     current_lesson_set = models.ForeignKey(LessonSet, blank=True, on_delete=models.CASCADE, null=True)
     current_lesson_index = models.IntegerField(default=0)
+    in_progress_sets = models.ManyToManyField(LessonSet, blank=True, related_name='current_set')
     completed_lesson_index = models.IntegerField(default=0)
     current_lesson_name = models.CharField(max_length=200, default="None")
     completed_sets = models.ManyToManyField(LessonSet, blank=True, related_name='new_set')

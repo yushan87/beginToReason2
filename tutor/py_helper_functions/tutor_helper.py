@@ -98,13 +98,16 @@ def set_not_complete(request):
 
 
 def not_complete(request):
+    print("not_complete method in tutor_helper.py")
     if user_auth(request):
         user = User.objects.get(email=request.user.email)
-        print(user)
+        print("\t", user)
         current_user = UserInformation.objects.get(user=user)
-        print(current_user)
-        print(current_user.completed_sets)
-        if current_user.completed_sets == None:
+        print("\t", current_user)
+        print("\tCurrent Lesson Set: ", current_user.current_lesson_set )
+        print("\tCompleted Lesson Sest: ", current_user.completed_sets.all())
+
+        if current_user.current_lesson_set not in current_user.completed_sets.all():
             print("not complete")
             return True
     return False
