@@ -100,7 +100,6 @@ def tutor(request):
     elif request.method == 'GET':
         # Ensure user exists
         # Case 2a: if the user exists
-        print(not_complete(request))
         if user_auth(request) and not_complete(request):
             # Case 2aa: if the user has a current set
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
