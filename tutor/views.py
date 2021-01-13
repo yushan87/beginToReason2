@@ -186,6 +186,7 @@ def completed(request, index):
     if request.method == 'GET':
         if user_auth(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+            print(request.POST['lesson'])
             if not not_complete(request):
                 current_set = current_user.completed_sets.lessons.all()
             else:

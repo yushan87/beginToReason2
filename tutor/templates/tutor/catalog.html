@@ -33,7 +33,7 @@
                                         <img class="" src="{% static 'images/logo4.png' %}" id="card-img" alt="Card image cap">
                                     </div>
                                     <div class="card-body text-center">
-                                        <h5 class="card-title">{{obj}} <span class="badge recommended">In Progress</span></h5>
+                                        <h5 class="card-title">{{obj}} <span class="badge badge-success">In Progress</span></h5>
                                         <p class="card-text">{{obj.set_description}}</p>
                                         <p class="card-text"><small class="text-muted">Last attempted: {{ user.last_login }}</small></p>
                                         <form action="{% url 'tutor:tutor' %}" method="GET">
@@ -103,7 +103,7 @@
                                         <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
                                     </div>
                                     <div class="card-body">
-                                        <h5 class="card-title">{{user.userinformation.completed_sets}} <span class="badge recommended">Completed</span></h5>
+                                        <h5 class="card-title">{{obj}} <span class="badge recommended">Completed</span></h5>
                                         <h5 class="card-title"><span class="badge badge-success">Author ID: 869134018</span></h5>
                                         <p class="card-text">{{user.userinformation.completed_sets.set_description}}</p>
                                         <a href="{% url 'tutor:completed' 0 %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Review Activity</a>
