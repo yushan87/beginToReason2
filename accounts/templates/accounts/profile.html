@@ -91,10 +91,11 @@
                                 <a href="{% url 'tutor:catalog' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To Activity Catalog</a>
                             </div>
                         </div>
-                        <div class="page-section-heading my-3">
-                            <h3>In Progress</h3>
-                        </div>
+
                         {% if user.userinformation.current_lesson_set %}
+                            <div class="page-section-heading my-3">
+                                <h3>In Progress</h3>
+                            </div>
 
                             {% for obj in LessonSet %}
                                 {% if user.is_authenticated %}
@@ -125,12 +126,7 @@
                                 {% endif %}
                             {% endfor %}
                         {% else  %}
-                            <div class="card mb-3">
-                            <img class="card-img-top" src="{% static 'images/none.png' %}" alt="Card image cap">
-                                <div class="card-body">
-                                    <a href="{% url 'tutor:catalog' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To Activity Catalog</a>
-                                </div>
-                            </div>
+
                         {% endif %}
                         <div class="page-section-heading my-3">
                             <h3>Completed</h3>
