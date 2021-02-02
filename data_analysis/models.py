@@ -24,6 +24,7 @@ class DataLog(models.Model):
     explanation = models.TextField()
     past_answers = models.TextField(default="null")
     face = models.TextField(default="null")
+    original_code = models.TextField(default="null")
 
     def __str__(self):
         """
