@@ -2,9 +2,11 @@
 This module contains our Django helper functions for the "tutor" application.
 """
 import json
+from django.utils import timezone
 from django.contrib.auth.models import User
 from accounts.models import UserInformation
 from core.models import LessonSet, Lesson
+from tutor.models import LessonLog
 
 
 def user_auth(request):
@@ -33,16 +35,31 @@ def lesson_set_auth(request):
         Boolean: A boolean to signal if the lessonSet has been found in our database
     """
     if LessonSet.objects.filter(set_name=request.POST.get("set_name")).exists():
-        current_set = LessonSet.objects.get(set_name=request.POST.get("set_name"))
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-        current_user.current_lesson_set = current_set
-        current_user.current_lesson_name = current_set.lessons.all()[0].lesson_name
-        current_user.current_lesson_index = 0
-        current_user.completed_lesson_index = 0
-        current_user.mood = "neutral"
-        current_user.save()
-        if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
-            return True
+        if LessonLog.objects.filter(user=current_user.user).exists():
+            print("checking for lesson log")
+            log = LessonLog.objects.filter(user=current_user.user)
+            print(log[0])
+            current_set = LessonSet.objects.get(set_name=log[0].lesson_set_key.set_name)
+            current_user.current_lesson_set = current_set
+            current_user.current_lesson_name = log[0].lesson_key.correct
+            current_user.current_lesson_index = log[0].lesson_index + 1
+            current_user.completed_lesson_index = log[0].lesson_index + 1
+            current_user.mood = "neutral"
+            current_user.save()
+            if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
+                return True
+        else:
+            current_set = LessonSet.objects.get(set_name=request.POST.get("set_name"))
+            current_user.current_lesson_set = current_set
+            print(current_set.lessons.all())
+            current_user.current_lesson_name = current_set.first_in_set.lesson_name
+            current_user.current_lesson_index = 0
+            current_user.completed_lesson_index = 0
+            current_user.mood = "neutral"
+            current_user.save()
+            if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
+                return True
     return False
 
 
@@ -109,6 +126,7 @@ def not_complete(request):
             return True
     return False
 
+
 def alternate_lesson_check(current_lesson, type):
     """function set_not_complete This function handles the logic for a if a set has not been completed
 
@@ -132,7 +150,6 @@ def alternate_lesson_check(current_lesson, type):
         return Lesson.objects.get(lesson_name=dict[type])
 
     return current_lesson
-
 
 
 def check_type(current_lesson, submitted_answer, status):
@@ -164,7 +181,6 @@ def check_status(status):
 
 def check_feedback(current_lesson, submitted_answer, status):
     type = 'DEF'
-
     if status == 'success':
         headline = 'Correct'
         text = current_lesson.correct_feedback
@@ -173,7 +189,6 @@ def check_feedback(current_lesson, submitted_answer, status):
         if current_lesson.sub_lessons_available:
 
             type = check_type(current_lesson, submitted_answer, status)
-
             try:
                 headline = current_lesson.feedback.get(feedback_type=type).headline
                 text = current_lesson.feedback.get(feedback_type=type).feedback_text
@@ -199,3 +214,23 @@ def check_feedback(current_lesson, submitted_answer, status):
             'type': type,
             }
 
+
+def log_lesson(request):
+    """function log_lesson This function handles the logic for logging lessons
+    Args:
+         request (HTTPRequest): A http request object created automatically by Django.
+    Returns:
+    """
+    user = User.objects.get(email=request.user.email)
+    user_info = UserInformation.objects.get(user=user)
+    lesson_set = user_info.current_lesson_set
+    lesson = Lesson.objects.get(lesson_index=user_info.current_lesson_index)
+
+    print("lesson_logged")
+
+    lesson_to_log = LessonLog.objects.create(user=user,
+                                           time_stamp=timezone.now(),
+                                           lesson_set_key=lesson_set,
+                                           lesson_key=lesson,
+                                           lesson_index=lesson.lesson_index)
+    lesson_to_log.save()

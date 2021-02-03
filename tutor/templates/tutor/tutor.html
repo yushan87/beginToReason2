@@ -108,7 +108,7 @@
                 <a id="closeOverlay" class="closebtn">&times;</a>
                 <div class="overlay-content">
                     <ol>
-                        {% for obj in currSet%}
+                        {% for obj in orderedSet%}
                             {% if obj.lesson_index == lesson.lesson_index and not obj.is_alternate%}
                                 {% if obj.lesson_index == currLessonNum %}
                                     <li id="lessonList" style=" color: white"><a style="color: #3A4958; font-size: 150%"><b>{{ obj | safe }}</b></a></li><br>

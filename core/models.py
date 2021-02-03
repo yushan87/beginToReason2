@@ -268,6 +268,7 @@ class Lesson(models.Model):
     correct_feedback = models.TextField(default='Proceeding to the next lesson.')
     feedback = models.ManyToManyField(Feedback, blank=True)
 
+    is_walkthrough = models.BooleanField(default=False)
     is_alternate = models.BooleanField(default=False)
     can_mutate = models.BooleanField(default=False)
 
@@ -329,9 +330,10 @@ class LessonSet(models.Model):
     """
     set_name = models.CharField(max_length=50)
     lessons = models.ManyToManyField(Lesson, blank=True)
+    first_in_set = models.ForeignKey(Lesson, related_name='first_in_set', on_delete=models.CASCADE, blank=True, null=True)
     set_description = models.TextField(default="This set is designed to further your understanding")
     # number_normal_lessons = models.IntegerField(default=0)
-    # set_image = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=100)
+    set_image = models.ImageField(upload_to=None, height_field=None, width_field=None, default='begin.png')
 
     def __str__(self):
         """"

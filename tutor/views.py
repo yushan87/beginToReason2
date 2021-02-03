@@ -9,7 +9,7 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete, log_lesson
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
 
 
@@ -70,6 +70,7 @@ def tutor(request):
             log_data(request)
 
             if status == "success":
+                log_lesson(request)
                 current_user.completed_lesson_index = current_lesson.lesson_index
 
                 if Lesson.objects.filter(lesson_name=current_lesson.correct).exists():
@@ -111,6 +112,10 @@ def tutor(request):
                 current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
 
                 current_lesson.code.lesson_code = can_mutate(current_lesson)
+                # create an ordered set
+                ordered_set = []
+                for count in range(set_len):
+                    ordered_set.append(Lesson.objects.get(lesson_index=count))
 
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
@@ -124,7 +129,7 @@ def tutor(request):
                                    'completedLessonNum': current_user.completed_lesson_index,
                                    'setLength': set_len,
                                    'finished_count': num_done,
-                                   'currSet': current_set,
+                                   'orderedSet': ordered_set,
                                    'mood': current_user.mood,
                                    'review': 'none',
                                    'screen_record': current_lesson.screen_record,
@@ -143,7 +148,7 @@ def tutor(request):
                                    'completedLessonNum': current_user.completed_lesson_index,
                                    'setLength': set_len,
                                    'finished_count': num_done,
-                                   'currSet': current_set,
+                                   'orderedSet': ordered_set,
                                    'mood': current_user.mood,
                                    'review': 'none',
                                    'screen_record': current_lesson.screen_record,
@@ -161,7 +166,7 @@ def tutor(request):
                                'completedLessonNum': current_user.completed_lesson_index,
                                'setLength': set_len,
                                'finished_count': num_done,
-                               'currSet': current_set,
+                               'orderedSet': ordered_set,
                                'mood': current_user.mood,
                                'review': 'none',
                                'screen_record': current_lesson.screen_record,
@@ -194,6 +199,11 @@ def completed(request, index):
             print(set_len)
             num_done = finished_lesson_count(current_user)
 
+            # create an ordered set
+            ordered_set = []
+            for count in range(set_len):
+                ordered_set.append(Lesson.objects.get(lesson_index=count))
+
             if index <= current_user.completed_lesson_index:
                 lesson_info = get_log_data(current_user, index)
                 print("lesson info: ", index)
@@ -205,7 +215,7 @@ def completed(request, index):
                                'currLessonNum': current_user.current_lesson_index,
                                'setLength': set_len,
                                'finished_count': num_done,
-                               'currSet': current_set,
+                               'orderedSet': ordered_set,
                                'mood': lesson_info[1],
                                'past': lesson_info[2],
                                'completedLessonNum': current_user.completed_lesson_index,
