@@ -1,13 +1,13 @@
 """
 Main file for displaying graphs.
 """
-from node import Node
+from data_analysis.py_helper_functions.graph_viewer.node import Node
 from plantuml import deflate_and_encode
 from data_analysis.models import DataLog
 
 
 def read_lesson(lesson_key):
-    query = DataLog.objects.filter(lesson_key=[lesson_key]).order_by('user_key', 'time_stamp')
+    query = DataLog.objects.filter(lesson_key=lesson_key).order_by('user_key', 'time_stamp')
     nodes_in_chain = []
     start_node = Node(Node.START_NAME, False)
     end_node = Node(Node.GAVE_UP_NAME, False)
