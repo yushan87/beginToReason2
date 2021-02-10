@@ -16,6 +16,8 @@ def read_lesson(lesson_key):
     nodes_in_chain.append(prev_node)
     prev_student = query[0].user_key
     for log in query:
+        print(log.user_key_id)
+        #Take only the (first) code between Confirm and ;
         log.code = log.code.split("Confirm")[1].split("\r")[0].strip().strip(";")
         prev_node.add_appearance()
         # Is this kid same as the last one?
@@ -121,7 +123,7 @@ def find_optimal_min(node_list):
         appearances.append(node.appearances)
     appearances.sort()
     # 12 or less nodes will be allowed in graph
-    maxNodes = 12
+    maxNodes = 100
     if len(appearances) > maxNodes:
         return appearances[len(appearances) - maxNodes - 1] + 1
     # Just in case it's a teeny tiny lesson with < 11 nodes

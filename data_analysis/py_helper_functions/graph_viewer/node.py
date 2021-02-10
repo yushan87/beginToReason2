@@ -9,7 +9,7 @@ class Node:
     CORRECT_COLOR_CODE = "#b3ffb0"
     CORRECT_ARROW_COLOR_CODE = "#08d100"
     MINIMUM_TO_BE_ANNOTATED = 10
-    DEGENERATE_CODE = "degenerate"
+    DEGENERATE_CODE = "No completions"
     DECIMAL_PRECISION = 2
     START_NAME = "Start"
     GAVE_UP_NAME = "GaveUp"
@@ -90,7 +90,7 @@ class Node:
                     output.append("[thickness=10")
                 if node.is_correct:
                     output.append("," + self.CORRECT_ARROW_COLOR_CODE)
-                output.append("]-|> " + str(node.get_hash_code()))
+                output.append("]-o " + str(node.get_hash_code()))
                 if self.node_list.get(node) >= self.MINIMUM_TO_BE_ANNOTATED:
                     output.append(": " + str(self.node_list.get(node)))
                 output.append("\n")
@@ -108,7 +108,8 @@ class Node:
 
     def find_node(self, attempt):
         for node in self.return_family():
-            if node.attempt == attempt:
+            #Take away spaces for slight formatting differences
+            if node.attempt.replace(" ", "") == attempt.replace(" ", ""):
                 return node
         return None
 
