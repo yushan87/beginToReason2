@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from core.models import Lesson, LessonSet
+from core.models import Lesson, LessonSet, MainSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete, log_lesson
@@ -32,7 +32,7 @@ def catalog(request):
         else:
             return redirect("/accounts/settings")
     else:
-        return render(request, "tutor/catalog.html", {'LessonSet': LessonSet.objects.all()})
+        return render(request, "tutor/catalog.html", {'LessonSet': MainSet.objects.all()})
 
 
 @login_required(login_url='/accounts/login/')
@@ -57,9 +57,7 @@ def tutor(request):
             # Case 1aa: if the user has not completed set
 
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-            print(current_user.current_lesson_name)
             current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
-            print('current_lesson: ', current_lesson)
 
             status = json.loads(request.body.decode('utf-8'))['status']
             print("status: ", status)
@@ -71,27 +69,26 @@ def tutor(request):
 
             if status == "success":
                 log_lesson(request)
-                current_user.completed_lesson_index = current_lesson.lesson_index
+                main_set = MainSet.objects.filter(set_name=current_user.current_main_set)[0]
+                print(main_set)
 
-                if Lesson.objects.filter(lesson_name=current_lesson.correct).exists():
-                    current_user.current_lesson_index = Lesson.objects.get(
-                        lesson_name=current_lesson.correct).lesson_index
-                else:
-                    print("Lesson does not exist")
-
-                print("completed index: ", current_user.completed_lesson_index)
-                print("current index: ", current_user.current_lesson_index)
-
-                if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
-                    curr_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
-                    print('curr_lesson: ', current_lesson)
-                    current_user.current_lesson_name = curr_lesson.lesson_name
+                # find the index of the next lesson set by enumerating query set of all sets
+                for index, item in enumerate(main_set.lessons.all()):
+                    if item == current_user.current_lesson_set:
+                        break
+                # return if last set to go through
+                if index + 1 >= len(main_set.lessons.all()):
+                    current_user.completed_sets = current_user.current_main_set
+                    current_user.current_lesson_set = None
+                    current_user.current_main_set = None
                     current_user.save()
-                    if current_user.completed_lesson_index == current_user.current_lesson_index:
-                        current_user.completed_sets = current_user.current_lesson_set
-                        current_user.current_lesson_set = None
-                        current_user.save()
-                        print("in done: ", current_user.current_lesson_set)
+                    print("in done: ", current_user.current_lesson_set)
+                    return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
+
+                next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[index+1])
+                current_user.current_lesson_set = next_set
+                current_user.current_lesson_name = next_set.first_in_set.lesson_name
+                current_user.save()
 
             return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
 

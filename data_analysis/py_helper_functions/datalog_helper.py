@@ -44,6 +44,7 @@ def log_data(request):
                                          face=face)
     data_to_log.save()
 
+
 def get_log_data(user, lesson_index):
     user = User.objects.get(email=user)
     print(user)
@@ -54,6 +55,7 @@ def get_log_data(user, lesson_index):
 
     print(get_lesson)
     return repr(get_lesson.code).replace("'",''), get_lesson.face, get_lesson.past_answers, get_lesson.explanation
+
 
 def finished_lesson_count(user):
     user = User.objects.get(email=user)

@@ -343,3 +343,27 @@ class LessonSet(models.Model):
             str: lesson name
         """
         return self.set_name
+
+
+class MainSet(models.Model):
+    """
+    Contains a model of a main set
+    Name - For identifying purposes.
+    Lessons - The linked lessons for the model
+    Concepts - could be used to filter lesson sets
+    Description - To display on the catalog
+
+    @param models.Model The base model
+    """
+    set_name = models.CharField(max_length=50)
+    lessons = models.ManyToManyField(LessonSet, blank=True)
+    set_description = models.TextField(default="This set is designed to further your understanding")
+
+    def __str__(self):
+        """"
+        function __str__ is called to display the Lesson name. This will be useful for admin/educators when
+        building the Lesson Plan
+        Returns:
+            str: lesson name
+        """
+        return self.set_name

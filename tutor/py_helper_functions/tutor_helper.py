@@ -5,7 +5,7 @@ import json
 from django.utils import timezone
 from django.contrib.auth.models import User
 from accounts.models import UserInformation
-from core.models import LessonSet, Lesson
+from core.models import LessonSet, Lesson, MainSet
 from tutor.models import LessonLog
 
 
@@ -34,23 +34,29 @@ def lesson_set_auth(request):
     Returns:
         Boolean: A boolean to signal if the lessonSet has been found in our database
     """
-    if LessonSet.objects.filter(set_name=request.POST.get("set_name")).exists():
+    if MainSet.objects.filter(set_name=request.POST.get("set_name")).exists():
+        main_set = MainSet.objects.filter(set_name=request.POST.get("set_name"))[0]
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
         if LessonLog.objects.filter(user=current_user.user).exists():
             print("checking for lesson log")
             log = LessonLog.objects.filter(user=current_user.user)
-            print(log[0])
-            current_set = LessonSet.objects.get(set_name=log[0].lesson_set_key.set_name)
-            current_user.current_lesson_set = current_set
-            current_user.current_lesson_name = log[0].lesson_key.correct
-            current_user.current_lesson_index = log[0].lesson_index + 1
-            current_user.completed_lesson_index = log[0].lesson_index + 1
-            current_user.mood = "neutral"
-            current_user.save()
-            if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
-                return True
+            if log.filter(main_set_key=main_set).exists():
+                lesson_logs = log.filter(main_set_key=main_set)
+                print(lesson_logs[0])
+                current_user.current_main_set = main_set
+                current_set = LessonSet.objects.get(set_name=lesson_logs[0].lesson_set_key.set_name)
+                current_user.current_lesson_set = current_set
+                current_user.current_lesson_name = lesson_logs[0].lesson_key.correct
+                current_user.current_lesson_index = lesson_logs[0].lesson_index + 1
+                current_user.completed_lesson_index = lesson_logs[0].lesson_index + 1
+                current_user.mood = "neutral"
+                current_user.save()
+                if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
+                    return True
         else:
-            current_set = LessonSet.objects.get(set_name=request.POST.get("set_name"))
+            current_user.current_main_set = main_set
+            print(main_set.lessons.all()[0])
+            current_set = LessonSet.objects.get(set_name=main_set.lessons.all()[0])
             current_user.current_lesson_set = current_set
             print(current_set.lessons.all())
             current_user.current_lesson_name = current_set.first_in_set.lesson_name
