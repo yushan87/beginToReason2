@@ -2,20 +2,16 @@
 {% load static compress %}
 
 {% block css %}
-    {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/catalog.scss' %}" media="screen">
-        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
-    {% endcompress %}
+{% compress css %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/catalog.scss' %}" media="screen">
+<link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
+{% endcompress %}
 {% endblock %}
 
 {% block main_content %}
-    <div class="jumbotron jumbotron-fluid">
-        <div class="container">
-            <h1 class="font-weight-bold" id="jumbo-title">
-                    Full Catalog
-            </h1>
-            <img src={{imgSrc}}>
-        </div>
+<div class="jumbotron jumbotron-fluid">
+    <div class="container" style="background-color: white">
+        <img src={{imgSrc}}>
     </div>
+</div>
 {% endblock %}
-

@@ -8,7 +8,7 @@ class Node:
     GAVE_UP_COLOR_CODE = "#f58787"
     CORRECT_COLOR_CODE = "#b3ffb0"
     CORRECT_ARROW_COLOR_CODE = "#08d100"
-    MINIMUM_TO_BE_ANNOTATED = 5
+    MINIMUM_TO_BE_ANNOTATED = 10
     DEGENERATE_CODE = "degenerate"
     DECIMAL_PRECISION = 2
     START_NAME = "Start"
@@ -44,27 +44,31 @@ class Node:
     def print_declaration(self, minimum_appearances):
         if (self.appearances < minimum_appearances) & (self.attempt != self.GAVE_UP_NAME):
             return ""
-        output = ["object \"" + str(self.attempt) + "\" as " + str(self.get_hash_code())]
+        output = ["object \"" + str(self.attempt) +
+                  "\" as " + str(self.get_hash_code())]
         if self.attempt == self.START_NAME:
             output.append(" " + self.START_COLOR_CODE)
         elif self.attempt == self.GAVE_UP_NAME:
             output.append(" " + self.GAVE_UP_COLOR_CODE)
         elif self.is_correct:
             output.append(" " + self.CORRECT_COLOR_CODE)
-        output.append("\n" + str(self.get_hash_code()) + " : appearances: " + str(self.appearances) + "\n")
+        output.append("\n" + str(self.get_hash_code()) +
+                      " : appearances: " + str(self.appearances) + "\n")
         # distance
         if (not self.is_correct) & (self.attempt != self.GAVE_UP_NAME):
             if self.successful_appearances > 0:
                 distance = str(self.distance_sum / self.successful_appearances)
                 if len(distance) > 2 + self.DECIMAL_PRECISION:
                     distance = distance[0: 2 + self.DECIMAL_PRECISION]
-                output.append(str(self.get_hash_code()) + " : distance: " + distance + "\n")
+                output.append(str(self.get_hash_code()) +
+                              " : distance: " + distance + "\n")
             else:
-                output.append(str(self.get_hash_code()) + " : distance: " + str(self.DEGENERATE_CODE) + "\n")
+                output.append(str(self.get_hash_code()) +
+                              " : distance: " + str(self.DEGENERATE_CODE) + "\n")
         goodness = self.calculate_goodness()
         if (goodness <= 1) & (goodness >= 0):
             output.append(str(self.get_hash_code()) + " : score: " +
-                      str(goodness + 0.5 * 10 ** -self.DECIMAL_PRECISION)[0: 2+self.DECIMAL_PRECISION] + "\n")
+                          str(goodness + 0.5 * 10 ** -self.DECIMAL_PRECISION)[0: 2+self.DECIMAL_PRECISION] + "\n")
         return "".join(output)
 
     # prints the connections of the node in plantUML code
@@ -76,15 +80,19 @@ class Node:
             if (node.appearances >= minimum_appearances) | (node.attempt == self.GAVE_UP_NAME):
                 output.append(str(self.get_hash_code()) + " -")
                 if self.better_than(node):
-                    output.append("down")
-                else:
                     output.append("up")
-                output.append("[thickness=" + str(self.node_list.get(node)))
+                else:
+                    output.append("down")
+                thickness = self.node_list.get(node)
+                if thickness < 10:
+                    output.append("[thickness=" + str(thickness))
+                else:
+                    output.append("[thickness=10")
                 if node.is_correct:
                     output.append("," + self.CORRECT_ARROW_COLOR_CODE)
-                output.append("]-> " + str(node.get_hash_code()))
+                output.append("]-|> " + str(node.get_hash_code()))
                 if self.node_list.get(node) >= self.MINIMUM_TO_BE_ANNOTATED:
-                    output.append(": " + self.node_list.get(node))
+                    output.append(": " + str(self.node_list.get(node)))
                 output.append("\n")
         return "".join(output)
 

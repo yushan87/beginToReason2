@@ -7,7 +7,8 @@ from data_analysis.models import DataLog
 
 
 def read_lesson(lesson_key):
-    query = DataLog.objects.filter(lesson_key=lesson_key).order_by('user_key', 'time_stamp')
+    query = DataLog.objects.filter(
+        lesson_key=lesson_key).order_by('user_key', 'time_stamp')
     nodes_in_chain = []
     start_node = Node(Node.START_NAME, False)
     end_node = Node(Node.GAVE_UP_NAME, False)
@@ -15,6 +16,7 @@ def read_lesson(lesson_key):
     nodes_in_chain.append(prev_node)
     prev_student = query[0].user_key
     for log in query:
+        log.code = log.code.split("Confirm")[1].split("\r")[0].strip().strip(";")
         prev_node.add_appearance()
         # Is this kid same as the last one?
         if log.user_key != prev_student:
@@ -67,7 +69,8 @@ def read_lesson(lesson_key):
             node.add_distance(chain_length)
             node.add_successful_appearance()
     # Tell the external package to encode make_uml's source code
-    return "plantuml.com/plantuml/svg/" + deflate_and_encode(make_uml(start_node, lesson_key, -1))
+    # print(make_uml(start_node, lesson_key, -1))
+    return "https://www.plantuml.com/plantuml/svg/" + deflate_and_encode(make_uml(start_node, lesson_key, -1))
 
 
 def make_uml(root, title, minimum_appearances):
@@ -83,19 +86,23 @@ def make_uml(root, title, minimum_appearances):
     else:
         gave_up_count = 0
     attempt_count -= root.appearances + gave_up_count
-    output = ["@startuml\nscale max 1920*930\nTitle " + title + ": " + str(root.appearances)
-              + " students, " + str(attempt_count) + " attempts, and " + str(root.appearances - gave_up_count)
+    output = ["@startuml\nscale max 1920*930\nskinparam roundcorner 20\nskinparam object {\nBorderColor Black\n}\nTitle " + str(title) + ": " + str(root.appearances)
+              + " students, " +
+              str(attempt_count) + " attempts, and " +
+              str(root.appearances - gave_up_count)
               + " successful students\\nFiltered to a minimum of " + str(minimum_appearances) + " occurrences\n"]
     if minimum_appearances > 1:
         # Make the filtered note
-        filtered = []
+        filtered = [0] * (minimum_appearances - 1)
         for node in node_list:
             if node.appearances < minimum_appearances:
                 filtered[node.appearances - 1] += 1
         output.append("note \"Filtered:")
-        output.append("\\n" + filtered[0] + " input(s) with 1 occurrence each")
+        output.append(
+            "\\n" + str(filtered[0]) + " input(s) with 1 occurrence each")
         for i in range(2, minimum_appearances):
-            output.append("\\n" + filtered[i - 1] + " input(s) with " + str(i) + " occurrences each")
+            output.append(
+                "\\n" + str(filtered[i - 1]) + " input(s) with " + str(i) + " occurrences each")
         output.append("\" as n1\n")
     # Make declarations
     for node in node_list:
@@ -113,8 +120,9 @@ def find_optimal_min(node_list):
     for node in node_list:
         appearances.append(node.appearances)
     appearances.sort()
-    # 11 here means that 12 or less nodes will be allowed in graph
-    if len(appearances) >= 11:
-        return appearances[len(appearances) - 11] + 1
+    # 12 or less nodes will be allowed in graph
+    maxNodes = 12
+    if len(appearances) > maxNodes:
+        return appearances[len(appearances) - maxNodes - 1] + 1
     # Just in case it's a teeny tiny lesson with < 11 nodes
     return 0
