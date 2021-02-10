@@ -5,7 +5,7 @@ a new instance of a model will be made.
 from datetime import datetime
 from django.db import models
 from django.contrib.auth.models import User
-from core.models import Lesson, LessonSet
+from core.models import Lesson, LessonSet, MainSet
 
 
 class DataLog(models.Model):
@@ -19,6 +19,7 @@ class DataLog(models.Model):
     time_stamp = models.DateTimeField(default=datetime.now, blank=True)
     lesson_key = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True)
     lesson_set_key = models.ForeignKey(LessonSet, on_delete=models.CASCADE, blank=True)
+    main_set_key = models.ForeignKey(MainSet, blank=True, on_delete=models.CASCADE, null=True)
     status = models.CharField(max_length=50)
     code = models.TextField(default="null")
     explanation = models.TextField()

@@ -52,6 +52,7 @@ def lesson_set_auth(request):
                 current_user.mood = "neutral"
                 current_user.save()
                 if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
+                    print("found in logs")
                     return True
         else:
             current_user.current_main_set = main_set
@@ -65,6 +66,7 @@ def lesson_set_auth(request):
             current_user.mood = "neutral"
             current_user.save()
             if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
+                print("starting new set")
                 return True
     return False
 
@@ -187,13 +189,14 @@ def check_status(status):
 
 def check_feedback(current_lesson, submitted_answer, status):
     type = 'DEF'
+    reload = 'false'
     if status == 'success':
         headline = 'Correct'
         text = current_lesson.correct_feedback
         type = 'COR'
     else:
         if current_lesson.sub_lessons_available:
-
+            reload = 'true'
             type = check_type(current_lesson, submitted_answer, status)
             try:
                 headline = current_lesson.feedback.get(feedback_type=type).headline
@@ -218,6 +221,7 @@ def check_feedback(current_lesson, submitted_answer, status):
             'status': status,
             'sub': current_lesson.sub_lessons_available,
             'type': type,
+            'reload': reload
             }
 
 
@@ -231,12 +235,14 @@ def log_lesson(request):
     user_info = UserInformation.objects.get(user=user)
     lesson_set = user_info.current_lesson_set
     lesson = Lesson.objects.get(lesson_index=user_info.current_lesson_index)
+    main_set = user_info.current_main_set
 
     print("lesson_logged")
 
     lesson_to_log = LessonLog.objects.create(user=user,
-                                           time_stamp=timezone.now(),
-                                           lesson_set_key=lesson_set,
-                                           lesson_key=lesson,
-                                           lesson_index=lesson.lesson_index)
+                                             time_stamp=timezone.now(),
+                                             lesson_set_key=lesson_set,
+                                             lesson_key=lesson,
+                                             lesson_index=lesson.lesson_index,
+                                             main_set_key=main_set)
     lesson_to_log.save()

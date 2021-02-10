@@ -9,7 +9,8 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet, MainSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete, log_lesson
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete, log_lesson, \
+    check_type, alternate_lesson_check
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
 
 
@@ -28,6 +29,7 @@ def catalog(request):
             if lesson_set_auth(request):
                 return redirect("/tutor/tutor")
             else:
+                print("lesson set auth returned false")
                 return redirect("accounts:profile")
         else:
             return redirect("/accounts/settings")
@@ -89,7 +91,18 @@ def tutor(request):
                 current_user.current_lesson_set = next_set
                 current_user.current_lesson_name = next_set.first_in_set.lesson_name
                 current_user.save()
-
+            # if a user is not successful and there are alternates available
+            if status != "success" and current_lesson.sub_lessons_available:
+                type = check_type(current_lesson, submitted_answer, status)
+                alt_lesson = alternate_lesson_check(current_lesson, type)  # how to set this and render new page
+                print(Lesson.objects.get(lesson_title=alt_lesson).lesson_name)
+                current_user.current_lesson_name = Lesson.objects.get(lesson_title=alt_lesson).lesson_name
+                for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
+                    if item == alt_lesson:
+                        break
+                current_user.current_lesson_index = index
+                current_user.save()
+                print("******* ", alt_lesson, " ", index)
             return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
 
     # Case 2: We have received a GET request requesting code
@@ -101,18 +114,19 @@ def tutor(request):
             # Case 2aa: if the user has a current set
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             current_set = current_user.current_lesson_set.lessons.all()
-            set_len = current_set.filter(is_alternate=False).count()
+            set_len = len(current_user.current_main_set.lessons.all())
             print(set_len)
             num_done = finished_lesson_count(current_user)
             # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
-            if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
-                current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
-
+            if Lesson.objects.filter(lesson_title=current_set[current_user.current_lesson_index]).exists():
+                current_lesson = Lesson.objects.get(lesson_title=current_set[current_user.current_lesson_index])
+                print("in if 1")
                 current_lesson.code.lesson_code = can_mutate(current_lesson)
                 # create an ordered set
-                ordered_set = []
-                for count in range(set_len):
-                    ordered_set.append(Lesson.objects.get(lesson_index=count))
+                ordered_set = current_user.current_main_set.lessons.all()
+                for index, item in enumerate(current_user.current_main_set.lessons.all()):
+                    if item == current_user.current_lesson_set:
+                        break
 
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
@@ -132,7 +146,8 @@ def tutor(request):
                                    'screen_record': current_lesson.screen_record,
                                    'audio_record': current_lesson.audio_record,
                                    'audio_transcribe': current_lesson.audio_transcribe,
-                                   'user_email': request.user.email})
+                                   'user_email': request.user.email,
+                                   'index': index})
                 # Case 2aaab: if question is of type Text
                 elif current_lesson.reason.reasoning_type == 'Text':
                     return render(request, "tutor/tutor.html",
@@ -151,7 +166,8 @@ def tutor(request):
                                    'screen_record': current_lesson.screen_record,
                                    'audio_record': current_lesson.audio_record,
                                    'audio_transcribe': current_lesson.audio_transcribe,
-                                   'user_email': request.user.email})
+                                   'user_email': request.user.email,
+                                   'index': index})
                 # Case 2aaac: if question is of type none
 
                 return render(request, "tutor/tutor.html",
@@ -169,7 +185,8 @@ def tutor(request):
                                'screen_record': current_lesson.screen_record,
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
-                               'user_email': request.user.email})
+                               'user_email': request.user.email,
+                               'index': index})
     return redirect("accounts:profile")
 
 
