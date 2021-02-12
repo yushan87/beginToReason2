@@ -1,14 +1,16 @@
 """
 Main file for displaying graphs.
 """
+import json
 from data_analysis.py_helper_functions.graph_viewer.node import Node
 from plantuml import deflate_and_encode
 from data_analysis.models import DataLog
 
 
-def read_lesson(lesson_key):
+# Takes a lesson index and returns the START node of its graph representation
+def lesson_to_graph(lesson_index):
     query = DataLog.objects.filter(
-        lesson_key=lesson_key).order_by('user_key', 'time_stamp')
+        lesson_key=lesson_index).order_by('user_key', 'time_stamp')
     nodes_in_chain = []
     start_node = Node(Node.START_NAME, False)
     end_node = Node(Node.GAVE_UP_NAME, False)
@@ -16,8 +18,9 @@ def read_lesson(lesson_key):
     nodes_in_chain.append(prev_node)
     prev_student = query[0].user_key
     for log in query:
-        #Take only the (first) code between Confirm and ;
-        log.code = log.code.split("Confirm")[1].split("\r")[0].strip().strip(";")
+        # Take only the (first) code between Confirm and ;
+        log.code = log.code.split("Confirm")[1].split("\r")[
+            0].strip().strip(";")
         prev_node.add_appearance()
         # Is this kid same as the last one?
         if log.user_key != prev_student:
@@ -69,11 +72,29 @@ def read_lesson(lesson_key):
             chain_length -= 1
             node.add_distance(chain_length)
             node.add_successful_appearance()
+    return start_node
+
+
+# Takes a specific lesson's key and outputs a URL for an SVG of the graph. Does NOT support multiple confirm statements - will output invalid data
+def read_lesson(lesson_index):
     # Tell the external package to encode make_uml's source code
     # print(make_uml(start_node, lesson_key, -1))
-    return "https://www.plantuml.com/plantuml/svg/" + deflate_and_encode(make_uml(start_node, lesson_key, -1))
+    return "https://www.plantuml.com/plantuml/svg/" + deflate_and_encode(make_uml(lesson_to_graph(lesson_index), lesson_index, -1))
 
 
+# Takes a lesson index and returns a JSON representation fit for D3
+def lesson_to_json(lesson_index):
+    root = lesson_to_graph(lesson_index)
+    nodes = []
+    edges = []
+    for node in root.return_family():
+        nodes.append(node.to_dict())
+        for edge in node.edge_dict():
+            edges.append(edge)
+    return json.dumps({"nodes": nodes, "links": edges})
+
+
+# Takes the START node of a graph and returns the PlantUML source code for it
 def make_uml(root, title, minimum_appearances):
     node_list = root.return_family()
     if minimum_appearances < 0:
@@ -122,8 +143,8 @@ def find_optimal_min(node_list):
         appearances.append(node.appearances)
     appearances.sort()
     # 15 or less nodes will be allowed in graph
-    maxNodes = 15
-    if len(appearances) > maxNodes:
-        return appearances[len(appearances) - maxNodes - 1] + 1
-    # Just in case it's a teeny tiny lesson with < 11 nodes
+    max_nodes = 15
+    if len(appearances) > max_nodes:
+        return appearances[len(appearances) - max_nodes - 1] + 1
+    # Just in case it's a teeny tiny lesson with a small amount of nodes
     return 0

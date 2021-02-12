@@ -1,0 +1,23 @@
+{% extends "core/base.html" %}
+{% load static compress %}
+
+{% block css %}
+{% compress css %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/catalog.scss' %}" media="screen">
+<link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
+{% endcompress %}
+{% endblock %}
+
+{% block main_content %}
+<div id="graphDisplay"></div>
+<div class="container" style="background-color: white">
+
+</div>
+<script>
+    var graph = graph || {}
+    graph.data = {{graphData|safe}}
+</script>
+<script src="{% static 'javascript/d3graph/d3.v4.js' %}"></script>
+<script src="{% static 'javascript/d3graph/d3graph.js' %}"></script>
+{% endblock %}
+

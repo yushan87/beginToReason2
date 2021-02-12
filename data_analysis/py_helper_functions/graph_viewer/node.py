@@ -38,7 +38,7 @@ class Node:
             total += self.node_list[node]
             if node.is_correct:
                 correct += self.node_list[node]
-        return correct / total
+        return float(str((correct / total) + 0.5 * 10 ** -self.DECIMAL_PRECISION)[0: 2+self.DECIMAL_PRECISION])
 
     # Declaration of the node in plantUML code
     def print_declaration(self, minimum_appearances):
@@ -56,20 +56,23 @@ class Node:
                       " : appearances: " + str(self.appearances) + "\n")
         # distance
         if (not self.is_correct) & (self.attempt != self.GAVE_UP_NAME):
-            if self.successful_appearances > 0:
-                distance = str(self.distance_sum / self.successful_appearances)
-                if len(distance) > 2 + self.DECIMAL_PRECISION:
-                    distance = distance[0: 2 + self.DECIMAL_PRECISION]
-                output.append(str(self.get_hash_code()) +
-                              " : distance: " + distance + "\n")
-            else:
-                output.append(str(self.get_hash_code()) +
-                              " : distance: " + str(self.DEGENERATE_CODE) + "\n")
+            output.append(str(self.get_hash_code()) +
+                          " : distance: " + self.distance() + "\n")
+        # score
         goodness = self.calculate_goodness()
         if (goodness <= 1) & (goodness >= 0):
-            output.append(str(self.get_hash_code()) + " : score: " +
-                          str(goodness + 0.5 * 10 ** -self.DECIMAL_PRECISION)[0: 2+self.DECIMAL_PRECISION] + "\n")
+            output.append(str(self.get_hash_code()) +
+                          " : score: " + str(goodness) + "\n")
         return "".join(output)
+
+    def distance(self):
+        if self.successful_appearances > 0:
+            distance = str(self.distance_sum / self.successful_appearances)
+            if len(distance) > 2 + self.DECIMAL_PRECISION:
+                return distance[0: 2 + self.DECIMAL_PRECISION]
+            return distance
+        else:
+            return self.DEGENERATE_CODE
 
     # prints the connections of the node in plantUML code
     def print_connections(self, minimum_appearances):
@@ -108,7 +111,7 @@ class Node:
 
     def find_node(self, attempt):
         for node in self.return_family():
-            #Take away spaces for slight formatting differences
+            # Take away spaces for slight formatting differences
             if node.attempt.replace(" ", "") == attempt.replace(" ", ""):
                 return node
         return None
@@ -121,6 +124,17 @@ class Node:
 
     def add_distance(self, distance):
         self.distance_sum += distance
+
+    def to_dict(self):
+        return {"id": self.get_hash_code(),
+                "name": self.attempt, "distance": self.distance(), "score": self.calculate_goodness(), "appearances": self.appearances}
+
+    def edge_dict(self):
+        edges = []
+        for dest in self.node_list.keys():
+            edges.append({"source": self.get_hash_code(
+            ), "target": dest.get_hash_code(), "size": self.node_list.get(dest)})
+        return edges
 
     def get_hash_code(self):
         return id(self)
