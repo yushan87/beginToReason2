@@ -74,6 +74,18 @@ def tutor(request):
                 main_set = MainSet.objects.filter(set_name=current_user.current_main_set)[0]
                 print(main_set)
 
+                # if they are correct in a alt lesson, find correct to send to
+                if current_lesson.is_alternate and current_user.current_lesson_index is not 0:
+                    print(current_lesson.correct, "%%%%%%%%%%")
+                    current_user.current_lesson_name = Lesson.objects.get(lesson_name=current_lesson.correct).lesson_name
+                    for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
+                        print(index, "&&&&&&&&&", item.lesson_name)
+                        if item.lesson_name == current_lesson.correct:
+                            break
+                    current_user.current_lesson_index = index
+                    current_user.save()
+                    return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
+
                 # find the index of the next lesson set by enumerating query set of all sets
                 for index, item in enumerate(main_set.lessons.all()):
                     if item == current_user.current_lesson_set:
@@ -117,6 +129,7 @@ def tutor(request):
             set_len = len(current_user.current_main_set.lessons.all())
             print(set_len)
             num_done = finished_lesson_count(current_user)
+            print("===============", num_done)
             # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
             if Lesson.objects.filter(lesson_title=current_set[current_user.current_lesson_index]).exists():
                 current_lesson = Lesson.objects.get(lesson_title=current_set[current_user.current_lesson_index])
@@ -127,7 +140,7 @@ def tutor(request):
                 for index, item in enumerate(current_user.current_main_set.lessons.all()):
                     if item == current_user.current_lesson_set:
                         break
-
+                print("index: ", index)
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
@@ -206,19 +219,26 @@ def completed(request, index):
             if not not_complete(request):
                 current_set = current_user.completed_sets.lessons.all()
             else:
-                current_set = current_user.current_lesson_set.lessons.all()
-            current_lesson = Lesson.objects.get(lesson_index=index)
+                main_set = MainSet.objects.filter(set_name=current_user.current_main_set)[0]
+                current_set = main_set.lessons.all()
 
-            set_len = current_set.filter(is_alternate=False).count()
-            print(set_len)
+            for count, item in enumerate(main_set.lessons.all()):
+                if count == index:
+                    break
+
+            current_lesson = Lesson.objects.get(lesson_title=item.first_in_set)
+
+            set_len = len(current_user.current_main_set.lessons.all())
+            print("set len: ", set_len)
             num_done = finished_lesson_count(current_user)
 
             # create an ordered set
-            ordered_set = []
-            for count in range(set_len):
-                ordered_set.append(Lesson.objects.get(lesson_index=count))
+            ordered_set = current_user.current_main_set.lessons.all()
+            for count2, item in enumerate(current_user.current_main_set.lessons.all()):
+                if item == current_user.current_lesson_set:
+                    break
 
-            if index <= current_user.completed_lesson_index:
+            if index <= count2:
                 lesson_info = get_log_data(current_user, index)
                 print("lesson info: ", index)
                 return render(request, "tutor/tutor.html",
@@ -232,8 +252,9 @@ def completed(request, index):
                                'orderedSet': ordered_set,
                                'mood': lesson_info[1],
                                'past': lesson_info[2],
-                               'completedLessonNum': current_user.completed_lesson_index,
-                               'review': current_lesson.correct_feedback})
+                               'completedLessonNum': count2,
+                               'review': current_lesson.correct_feedback,
+                               'index': index})
             return redirect("tutor:tutor")
 
     return redirect("accounts:profile")
