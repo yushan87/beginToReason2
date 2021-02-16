@@ -8,7 +8,31 @@ function boundingBox() {
   }
 }
 
+function setClick(obj, d) {
+  obj.onclick = () => console.log(d);
+}
+
+function radius(d) {
+  return d.appearances ** 0.7 + 4
+}
+
+function color(d) {
+  if (d.name == "GaveUp") {
+    return "#ff00ff"
+  }
+  if (d.distance == "No completions") {
+    return "#ff0000"
+  }
+  if (d.distance == 0) {
+    return "#2222ff"
+  }
+  const goodness = (maxDistance - (d.distance - 1) ** 0.7) / (maxDistance)
+  return `rgb(${Math.min(255, Math.floor(510 * (1 - goodness)))}, ${Math.min(Math.floor(510 * goodness), 255)}, 0)`
+}
+
 // set the dimensions of graph, data
+const actWidth = 300
+const actHeight = 300
 const width = 960
 const height = 600
 const margin = {
@@ -65,8 +89,8 @@ const simulation = d3.forceSimulation(graph.data.nodes)
 
 // append the svg object to the body of the page
 const svg = d3.select("#graphDisplay").append("svg")
-  .attr("width", width)
-  .attr("height", height)
+  .attr("width", actWidth)
+  .attr("height", actHeight)
   .attr("viewBox", [0, 0, width, height])
   .style("border", "solid 1px black")
 
@@ -75,15 +99,15 @@ const marker = d3.select("svg")
   .append('defs')
   .append('marker')
   .attr("id", "Triangle")
-  .attr("refX", 60)
-  .attr("refY", 3)
+  .attr("refX", 3)
+  .attr("refY", 4)
   .attr("markerUnits", 'userSpaceOnUse')
-  .attr("markerWidth", 18)
-  .attr("markerHeight", 9)
+  .attr("markerWidth", 12)
+  .attr("markerHeight", 8)
   .attr("orient", 'auto')
   .append('path')
   .style("fill", "#000000")
-  .attr("d", 'M 0 0 18 3 0 6 4.5 3');
+  .attr("d", 'M 0 0 12 4 0 8 3 4');
 
 const link = svg.append("g")
   .attr("stroke", "#999")
@@ -102,24 +126,15 @@ const node = svg.selectAll(".node")
   .attr("class", "node")
   .attr("stroke", "#fff")
   .attr("stroke-width", 1.5)
-  .attr("marker-end", "url(#end")
+  .attr("style", "cursor: pointer;")
+  .each(function (d) {
+    setClick(this, d)
+  })
 
 node.append("circle")
-  .attr("r", d => d.appearances ** 0.7 + 4)
-  .attr("fill", d => {
-    if (d.name == "GaveUp") {
-      return "#ff00ff"
-    }
-    if (d.distance == "No completions") {
-      return "#ff0000"
-    }
-    if (d.distance == 0) {
-      return "#0000ff"
-    }
-    const goodness = (maxDistance - (d.distance - 1) ** 0.7) / (maxDistance)
-    console.log(goodness);
-    return `rgb(${Math.min(255, Math.floor(510 * (1 - goodness)))}, ${Math.min(Math.floor(510 * goodness), 255)}, 0)`
-  })
+  .attr("r", radius)
+  .attr("fill", color)
+
 // .call(drag(simulation));
 node.append("text")
   .attr("dx", 12)
@@ -138,6 +153,6 @@ simulation.on("tick", () => {
   link
     .attr("x1", d => d.source.x)
     .attr("y1", d => d.source.y)
-    .attr("x2", d => d.target.x)
-    .attr("y2", d => d.target.y);
+    .attr("x2", d => d.target.x - Math.cos(Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x)) * (radius(d.target) + 11))
+    .attr("y2", d => d.target.y - Math.sin(Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x)) * (radius(d.target) + 11))
 });
