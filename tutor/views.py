@@ -24,6 +24,7 @@ def catalog(request):
     """
     # get all lesson sets, display
     if request.method == 'POST':
+
         if user_auth(request):
             # search for lesson set
             if lesson_set_auth(request):
@@ -121,7 +122,6 @@ def tutor(request):
     elif request.method == 'GET':
         # Ensure user exists
         # Case 2a: if the user exists
-        print(not_complete(request))
         if user_auth(request) and not_complete(request):
             # Case 2aa: if the user has a current set
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
@@ -216,6 +216,7 @@ def completed(request, index):
     if request.method == 'GET':
         if user_auth(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+            print(request.POST['lesson'])
             if not not_complete(request):
                 current_set = current_user.completed_sets.lessons.all()
             else:
