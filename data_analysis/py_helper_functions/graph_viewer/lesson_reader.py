@@ -5,12 +5,12 @@ import json
 from data_analysis.py_helper_functions.graph_viewer.node import Node
 from plantuml import deflate_and_encode
 from data_analysis.models import DataLog
-
+from core.models import Lesson
 
 # Takes a lesson index and returns the START node of its graph representation
-def lesson_to_graph(lesson_index):
+def lesson_to_graph(lesson_id):
     query = DataLog.objects.filter(
-        lesson_key=lesson_index).order_by('user_key', 'time_stamp')
+        lesson_key=lesson_id).order_by('user_key', 'time_stamp')
     nodes_in_chain = []
     start_node = Node(Node.START_NAME, False)
     end_node = Node(Node.GAVE_UP_NAME, False)
@@ -76,15 +76,15 @@ def lesson_to_graph(lesson_index):
 
 
 # Takes a specific lesson's key and outputs a URL for an SVG of the graph. Does NOT support multiple confirm statements - will output invalid data
-def read_lesson(lesson_index):
+def read_lesson(lesson_id):
     # Tell the external package to encode make_uml's source code
     # print(make_uml(start_node, lesson_key, -1))
-    return "https://www.plantuml.com/plantuml/svg/" + deflate_and_encode(make_uml(lesson_to_graph(lesson_index), lesson_index, -1))
+    return "https://www.plantuml.com/plantuml/svg/" + deflate_and_encode(make_uml(lesson_to_graph(lesson_id), lesson_id, -1))
 
 
 # Takes a lesson index and returns a JSON representation fit for D3
-def lesson_to_json(lesson_index):
-    root = lesson_to_graph(lesson_index)
+def lesson_to_json(lesson_id):
+    root = lesson_to_graph(lesson_id)
     nodes = []
     edges = []
     for node in root.return_family():
@@ -148,3 +148,8 @@ def find_optimal_min(node_list):
         return appearances[len(appearances) - max_nodes - 1] + 1
     # Just in case it's a teeny tiny lesson with a small amount of nodes
     return 0
+
+
+def lesson_stats(lesson_id):
+    lesson = Lesson.objects.get(id=lesson_id)
+    return json.dumps({"name": lesson.lesson_name, "title": lesson.lesson_title, "instruction": lesson.instruction, "code": lesson.code.lesson_code})

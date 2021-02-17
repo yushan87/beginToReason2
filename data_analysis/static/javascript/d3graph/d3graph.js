@@ -1,3 +1,8 @@
+document.querySelector('#graphTitle').innerHTML = `${graph.lesson.name}<br>${graph.lesson.title}`
+document.querySelector('#graphCode').innerHTML = graph.lesson.code.replace(/\\r\\n/g, "<br>")
+
+
+
 const minSize = 6
 const curve = 0.1
 let selectedNode = ""
@@ -17,7 +22,14 @@ function setClick(obj, d) {
     selectedNode = d.name
     document.querySelector("#nodeName").textContent = `Name: ${d.name}`
     document.querySelector("#nodeDistance").textContent = `Distance: ${d.distance}`
-    document.querySelector("#nodeCorrect").textContent = `Correct: ${Math.round(d.score * 100)}%`
+    const correct = Math.round(d.score * 100)
+    if (correct >= 0 && correct <= 100) {
+      document.querySelector("#nodeCorrect").textContent = `Correct: ${Math.round(d.score * 100)}%`
+    } else if (correct > 100) {
+      document.querySelector("#nodeCorrect").textContent = "Correct Answer"
+    } else {
+      document.querySelector("#nodeCorrect").textContent = ""
+    }
     document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances}`
     simulation.restart()
   };
@@ -30,11 +42,23 @@ function setClick(obj, d) {
   }
 }
 
-function isSelected(d) {
+function displayDot(d) {
   if (selectedNode == d.name) {
     return "visible"
   } else {
     return "hidden"
+  }
+}
+
+function boldLine(d) {
+  if (selectedNode == d.source.name || selectedNode == d.target.name) {
+    d3.select(this)
+      .attr("stroke", "#000")
+      .attr("stroke-opacity", "0.8")
+  } else {
+    d3.select(this)
+      .attr("stroke", "#999")
+      .attr("stroke-opacity", "0.6")
   }
 }
 
@@ -134,9 +158,9 @@ const marker = d3.select("svg")
   .attr("d", 'M 0 0 12 4 0 8 3 4');
 
 const link = svg.append("g")
-  .attr("stroke", "#999")
   .attr("stroke-opacity", 0.6)
   .attr("fill", "none")
+  .attr("stroke", "#999")
   .selectAll("path")
   .data(links)
   .enter()
@@ -162,7 +186,7 @@ node.append("circle")
 
 const center = node.append("circle")
   .attr("r", minSize - 2)
-  .attr("visibility", isSelected)
+  .attr("visibility", displayDot)
   .attr("stroke-width", 0)
 
 // .call(drag(simulation));
@@ -180,12 +204,11 @@ const center = node.append("circle")
 //   .attr("stroke", "#000")
 //   .text(d => d.distance)
 simulation.on("tick", () => {
-  console.log("tikc");
   node
     .attr("transform", d => `translate(${d.x}, ${d.y})`)
 
   center
-    .attr("visibility", isSelected)
+    .attr("visibility", displayDot)
 
   link
     .attr("d", d => {
@@ -199,4 +222,5 @@ simulation.on("tick", () => {
       const middleY = (targetY + d.source.y) / 2 + Math.sin(rightAngle) * curve * distance
       return `M ${d.source.x} ${d.source.y} Q ${middleX} ${middleY} ${targetX + Math.cos(rightAngle) * curve * 20} ${targetY + Math.sin(rightAngle) * curve * 20}`
     })
+    .each(boldLine)
 });

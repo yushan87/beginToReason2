@@ -11,18 +11,21 @@
 {% block main_content %}
 <div class="container-fluid" style="background-color: white">
     <div id="graphDisplay" class="row">
+        <h1 id="graphTitle" class="col-12" style="text-align: center"></h1>
         <svg id="lessonGraph" class="col-8"></svg>
-        <div style="display: flex; flex-direction: column" class="col-4">
+        <div style="display: flex; flex-direction: column" class="col-2">
             <h2 id="nodeName">Name: </h2>
             <h2 id="nodeAppearances">Appearances: </h2>
             <h2 id="nodeDistance">Distance: </h2>
             <h2 id="nodeCorrect">Correct: </h2>
         </div>
+        <div id="graphCode" class="col-2"></div>
     </div>
 </div>
 <script>
     var graph = graph || {}
     graph.data = {{graphData|safe}}
+    graph.lesson = {{lessonData|safe}}
 </script>
 <script src="{% static 'javascript/d3graph/d3.v4.js' %}"></script>
 <script src="{% static 'javascript/d3graph/d3graph.js' %}"></script>
