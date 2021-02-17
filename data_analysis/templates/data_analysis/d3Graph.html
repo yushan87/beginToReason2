@@ -9,9 +9,16 @@
 {% endblock %}
 
 {% block main_content %}
-<div id="graphDisplay"></div>
-<div class="container" style="background-color: white">
-
+<div class="container-fluid" style="background-color: white">
+    <div id="graphDisplay" class="row">
+        <svg id="lessonGraph" class="col-8"></svg>
+        <div style="display: flex; flex-direction: column" class="col-4">
+            <div id="nodeName">Name: </div>
+            <div id="nodeAppearances">Appearances: </div>
+            <div id="nodeDistance">Distance: </div>
+            <div id="nodeCorrect">Correct: </div>
+        </div>
+    </div>
 </div>
 <script>
     var graph = graph || {}

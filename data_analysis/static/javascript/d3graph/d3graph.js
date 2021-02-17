@@ -1,19 +1,26 @@
+const minSize = 6
+
 function boundingBox() {
   let radius
   let curr_node
   for (curr_node of nodes) {
-    radius = Math.sqrt(curr_node.appearances) || 5
+    radius = Math.sqrt(curr_node.appearances) || minSize
     curr_node.x = Math.max(radius + margin.left, Math.min(width - radius - margin.right, curr_node.x));
     curr_node.y = Math.max(radius + margin.top, Math.min(height - radius - margin.bottom, curr_node.y));
   }
 }
 
 function setClick(obj, d) {
-  obj.onclick = () => console.log(d);
+  obj.onclick = () => {
+    document.querySelector("#nodeName").textContent = `Name: ${d.name}`
+    document.querySelector("#nodeDistance").textContent = `Distance: ${d.distance}`
+    document.querySelector("#nodeCorrect").textContent = `Correct: ${Math.round(d.score * 100)}%`
+    document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances}`
+  };
 }
 
 function radius(d) {
-  return d.appearances ** 0.7 + 4
+  return d.appearances ** 0.7 + minSize
 }
 
 function color(d) {
@@ -81,16 +88,14 @@ maxDistance = maxDistance ** 0.7
 // forces
 const simulation = d3.forceSimulation(graph.data.nodes)
   .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.01))
-  .force("charge", d3.forceManyBody().strength(-200))
+  .force("charge", d3.forceManyBody().strength(-180))
   .force("yVal", d3.forceY(function (d) {
     return d.height * (height - margin.top - margin.bottom) + margin.top
   }).strength(1))
   .force("bBox", boundingBox)
 
 // append the svg object to the body of the page
-const svg = d3.select("#graphDisplay").append("svg")
-  .attr("width", actWidth)
-  .attr("height", actHeight)
+const svg = d3.select("#lessonGraph")
   .attr("viewBox", [0, 0, width, height])
   .style("border", "solid 1px black")
 
@@ -136,15 +141,15 @@ node.append("circle")
   .attr("fill", color)
 
 // .call(drag(simulation));
-node.append("text")
-  .attr("dx", 12)
-  .attr("stroke", "#000")
-  .text(d => d.name)
-node.append("text")
-  .attr("dy", 16)
-  .attr("dx", -12)
-  .attr("stroke", "#000")
-  .text(d => d.distance)
+// node.append("text")
+//   .attr("dx", 12)
+//   .attr("stroke", "#000")
+//   .text(d => d.name)
+// node.append("text")
+//   .attr("dy", 16)
+//   .attr("dx", -12)
+//   .attr("stroke", "#000")
+//   .text(d => d.distance)
 
 simulation.on("tick", () => {
   node
@@ -153,6 +158,6 @@ simulation.on("tick", () => {
   link
     .attr("x1", d => d.source.x)
     .attr("y1", d => d.source.y)
-    .attr("x2", d => d.target.x - Math.cos(Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x)) * (radius(d.target) + 11))
-    .attr("y2", d => d.target.y - Math.sin(Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x)) * (radius(d.target) + 11))
+    .attr("x2", d => d.target.x - Math.cos(Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x)) * (radius(d.target) + 6 + minSize))
+    .attr("y2", d => d.target.y - Math.sin(Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x)) * (radius(d.target) + 6 + minSize))
 });
