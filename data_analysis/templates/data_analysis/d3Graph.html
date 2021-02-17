@@ -10,16 +10,24 @@
 
 {% block main_content %}
 <div class="container-fluid" style="background-color: white">
-    <div id="graphDisplay" class="row">
+    <div id="graphDisplay" class="row" style="margin-top: 15px">
         <h1 id="graphTitle" class="col-12" style="text-align: center"></h1>
-        <svg id="lessonGraph" class="col-8"></svg>
-        <div style="display: flex; flex-direction: column" class="col-2">
-            <h2 id="nodeName">Name: </h2>
-            <h2 id="nodeAppearances">Appearances: </h2>
-            <h2 id="nodeDistance">Distance: </h2>
-            <h2 id="nodeCorrect">Correct: </h2>
+        <div class="col-2">
+            <h3 class="text-center">Lesson Code</h3>
+            <div id="graphCode" style="max-height: 50vh; overflow: auto; background-color: #CCC; padding: 5px"></div>
         </div>
-        <div id="graphCode" class="col-2"></div>
+        <div class="col-8">
+            <svg id="lessonGraph" class="col-12"></svg>
+        </div>
+        <div style="display: flex; flex-direction: column" class="col-2">
+            <h3 class="text-center">Selected Answer</h3>
+            <div id="nodeInfo" style="border: 1px solid black">
+                <h4 id="nodeName">Name: </h4>
+                <h4 id="nodeAppearances">Appearances: </h4>
+                <h4 id="nodeDistance">Distance: </h4>
+                <h4 id="nodeCorrect">Correct: </h4>
+            </div>
+        </div>
     </div>
 </div>
 <script>

@@ -20,6 +20,7 @@ function boundingBox() {
 function setClick(obj, d) {
   obj.onclick = () => {
     selectedNode = d.name
+    document.querySelector("#nodeInfo").style.backgroundColor = fadedColor(d)
     document.querySelector("#nodeName").textContent = `Name: ${d.name}`
     document.querySelector("#nodeDistance").textContent = `Distance: ${d.distance}`
     const correct = Math.round(d.score * 100)
@@ -35,6 +36,7 @@ function setClick(obj, d) {
   };
   if (d.name == "Start") {
     selectedNode = d.name
+    document.querySelector("#nodeInfo").style.backgroundColor = fadedColor(d)
     document.querySelector("#nodeName").textContent = `Name: ${d.name}`
     document.querySelector("#nodeDistance").textContent = `Distance: ${d.distance}`
     document.querySelector("#nodeCorrect").textContent = `Correct: ${Math.round(d.score * 100)}%`
@@ -54,7 +56,7 @@ function boldLine(d) {
   if (selectedNode == d.source.name || selectedNode == d.target.name) {
     d3.select(this)
       .attr("stroke", "#000")
-      .attr("stroke-opacity", "0.8")
+      .attr("stroke-opacity", "0.75")
   } else {
     d3.select(this)
       .attr("stroke", "#999")
@@ -78,6 +80,20 @@ function color(d) {
   }
   const goodness = (maxDistance - (d.distance - 1) ** 0.7) / (maxDistance)
   return `rgb(${Math.min(255, Math.floor(510 * (1 - goodness)))}, ${Math.min(Math.floor(510 * goodness), 255)}, 0)`
+}
+
+function fadedColor(d) {
+  if (d.name == "GaveUp") {
+    return "#ffB0ff"
+  }
+  if (d.distance == "No completions") {
+    return "#ffB0B0"
+  }
+  if (d.distance == 0) {
+    return "#B0ffff"
+  }
+  const goodness = (maxDistance - (d.distance - 1) ** 0.7) / (maxDistance)
+  return `rgb(${Math.min(255, Math.floor(158 * (2.114 - goodness)))}, ${Math.min(Math.floor(158 * goodness + 176), 255)}, 176)`
 }
 
 // set the dimensions of graph, data
