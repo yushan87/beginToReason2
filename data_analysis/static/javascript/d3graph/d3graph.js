@@ -1,5 +1,6 @@
 const minSize = 6
 const curve = 0.1
+let selectedNode = ""
 
 function boundingBox() {
   let radius
@@ -13,11 +14,28 @@ function boundingBox() {
 
 function setClick(obj, d) {
   obj.onclick = () => {
+    selectedNode = d.name
     document.querySelector("#nodeName").textContent = `Name: ${d.name}`
     document.querySelector("#nodeDistance").textContent = `Distance: ${d.distance}`
     document.querySelector("#nodeCorrect").textContent = `Correct: ${Math.round(d.score * 100)}%`
     document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances}`
+    simulation.restart()
   };
+  if (d.name == "Start") {
+    selectedNode = d.name
+    document.querySelector("#nodeName").textContent = `Name: ${d.name}`
+    document.querySelector("#nodeDistance").textContent = `Distance: ${d.distance}`
+    document.querySelector("#nodeCorrect").textContent = `Correct: ${Math.round(d.score * 100)}%`
+    document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances}`
+  }
+}
+
+function isSelected(d) {
+  if (selectedNode == d.name) {
+    return "visible"
+  } else {
+    return "hidden"
+  }
 }
 
 function radius(d) {
@@ -32,7 +50,7 @@ function color(d) {
     return "#ff0000"
   }
   if (d.distance == 0) {
-    return "#2222ff"
+    return "#00ffff"
   }
   const goodness = (maxDistance - (d.distance - 1) ** 0.7) / (maxDistance)
   return `rgb(${Math.min(255, Math.floor(510 * (1 - goodness)))}, ${Math.min(Math.floor(510 * goodness), 255)}, 0)`
@@ -142,7 +160,16 @@ node.append("circle")
   .attr("r", radius)
   .attr("fill", color)
 
+const center = node.append("circle")
+  .attr("r", minSize - 2)
+  .attr("visibility", isSelected)
+  .attr("stroke-width", 0)
+
 // .call(drag(simulation));
+
+
+
+//Labels
 // node.append("text")
 //   .attr("dx", 12)
 //   .attr("stroke", "#000")
@@ -152,10 +179,13 @@ node.append("circle")
 //   .attr("dx", -12)
 //   .attr("stroke", "#000")
 //   .text(d => d.distance)
-
 simulation.on("tick", () => {
+  console.log("tikc");
   node
     .attr("transform", d => `translate(${d.x}, ${d.y})`)
+
+  center
+    .attr("visibility", isSelected)
 
   link
     .attr("d", d => {
