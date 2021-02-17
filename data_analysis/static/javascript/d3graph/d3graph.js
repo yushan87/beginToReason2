@@ -1,4 +1,5 @@
 const minSize = 6
+const curve = 0.1
 
 function boundingBox() {
   let radius
@@ -117,10 +118,11 @@ const marker = d3.select("svg")
 const link = svg.append("g")
   .attr("stroke", "#999")
   .attr("stroke-opacity", 0.6)
-  .selectAll("line")
+  .attr("fill", "none")
+  .selectAll("path")
   .data(links)
   .enter()
-  .append("line")
+  .append("path")
   .attr("stroke-width", d => d.size ** 0.6 + 1)
   .attr("marker-end", "url(#Triangle)");
 
@@ -156,8 +158,15 @@ simulation.on("tick", () => {
     .attr("transform", d => `translate(${d.x}, ${d.y})`)
 
   link
-    .attr("x1", d => d.source.x)
-    .attr("y1", d => d.source.y)
-    .attr("x2", d => d.target.x - Math.cos(Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x)) * (radius(d.target) + 6 + minSize))
-    .attr("y2", d => d.target.y - Math.sin(Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x)) * (radius(d.target) + 6 + minSize))
+    .attr("d", d => {
+      const angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x)
+      const adjRad = radius(d.target) + 6 + minSize
+      const targetX = d.target.x - Math.cos(angle) * adjRad
+      const targetY = d.target.y - Math.sin(angle) * adjRad
+      const distance = Math.sqrt((targetX - d.source.x) ** 2 + (targetY - d.source.y) ** 2)
+      const rightAngle = angle + Math.PI / 2
+      const middleX = (targetX + d.source.x) / 2 + Math.cos(rightAngle) * curve * distance
+      const middleY = (targetY + d.source.y) / 2 + Math.sin(rightAngle) * curve * distance
+      return `M ${d.source.x} ${d.source.y} Q ${middleX} ${middleY} ${targetX + Math.cos(rightAngle) * curve * 20} ${targetY + Math.sin(rightAngle) * curve * 20}`
+    })
 });
