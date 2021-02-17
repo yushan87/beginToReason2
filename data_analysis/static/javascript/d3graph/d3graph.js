@@ -1,11 +1,25 @@
 document.querySelector('#graphTitle').innerHTML = `${graph.lesson.name}<br>${graph.lesson.title}`
 document.querySelector('#graphCode').innerHTML = graph.lesson.code.replace(/\\r\\n/g, "<br>")
 
-
-
 const minSize = 6
 const curve = 0.1
 let selectedNode = ""
+
+const drag = d3.drag()
+  .on("start", function (d) {
+    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x
+    d.fy = d.y
+  })
+  .on("drag", function (d) {
+    d.fx = d3.event.x
+    d.fy = d3.event.y
+  })
+  .on("end", function (d) {
+    if (!d3.event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  });
 
 function boundingBox() {
   let radius
@@ -147,7 +161,7 @@ maxDistance = maxDistance ** 0.7
 // forces
 const simulation = d3.forceSimulation(graph.data.nodes)
   .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.01))
-  .force("charge", d3.forceManyBody().strength(-180))
+  .force("charge", d3.forceManyBody().strength(-150))
   .force("yVal", d3.forceY(function (d) {
     return d.height * (height - margin.top - margin.bottom) + margin.top
   }).strength(1))
@@ -195,6 +209,7 @@ const node = svg.selectAll(".node")
   .each(function (d) {
     setClick(this, d)
   })
+  .call(drag)
 
 node.append("circle")
   .attr("r", radius)
@@ -205,7 +220,6 @@ const center = node.append("circle")
   .attr("visibility", displayDot)
   .attr("stroke-width", 0)
 
-// .call(drag(simulation));
 
 
 
