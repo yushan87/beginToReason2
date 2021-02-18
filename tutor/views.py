@@ -76,7 +76,7 @@ def tutor(request):
                 print(main_set)
 
                 # if they are correct in a alt lesson, find correct to send to
-                if current_lesson.is_alternate and current_user.current_lesson_index is not 0:
+                if current_lesson.is_alternate and current_user.current_lesson_index != 0:
                     print(current_lesson.correct, "%%%%%%%%%%")
                     current_user.current_lesson_name = Lesson.objects.get(lesson_name=current_lesson.correct).lesson_name
                     index = 0
