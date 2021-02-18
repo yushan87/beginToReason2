@@ -108,17 +108,13 @@
                 <a id="closeOverlay" class="closebtn">&times;</a>
                 <div class="overlay-content">
                     <ol>
-                        {% for obj in currSet%}
-                            {% if obj.lesson_index == lesson.lesson_index and not obj.is_alternate%}
-                                {% if obj.lesson_index == currLessonNum %}
+                        {% for obj in orderedSet%}
+                            {% if forloop.counter0 == index and not obj.is_alternate%}
                                     <li id="lessonList" style=" color: white"><a style="color: #3A4958; font-size: 150%"><b>{{ obj | safe }}</b></a></li><br>
-                                {% else %}
-                                    <li id="lessonList" style=" color: white"><a style="color: #3A4958; font-size: 125%">{{ obj | safe }}</a></li><br>
-                                {% endif %}
                             {% elif not obj.is_alternate %}
-                                {% if obj.lesson_index <= completedLessonNum %}
-                                    <li id="lessonList" style="color: #3A4958"><a class = "nav-link" href="{% url 'tutor:completed' obj.lesson_index %}" style="font-size: 125%">{{ obj | safe }}</a></li><br>
-                                {% elif obj.lesson_index == currLessonNum %}
+                                {% if forloop.counter0 <= index %}
+                                    <li id="lessonList" style="color: #3A4958"><a class = "nav-link" href="{% url 'tutor:completed' forloop.counter0 %}" style="font-size: 125%">{{ obj | safe }}</a></li><br>
+                                {% elif forloop.counter0 == completedLessonNum %}
                                     <li id="lessonList" style="color: #3A4958"><a class = "nav-link" href="{% url 'tutor:tutor' %}" style="font-size: 150%"><b>{{ obj | safe }}</b></a></li><br>
                                 {% else %}
                                     <li id="lessonList" style="color: #3A4958"><a style="color: rgba(208, 206, 206, 0.5);font-size: 125%">{{ obj | safe }}</a></li><br>
