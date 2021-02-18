@@ -46,9 +46,9 @@ def lesson_set_auth(request):
                 current_user.current_main_set = main_set
                 current_set = LessonSet.objects.get(set_name=lesson_logs[0].lesson_set_key.set_name)
                 current_user.current_lesson_set = current_set
-                current_user.current_lesson_name = lesson_logs[0].lesson_key.correct
-                current_user.current_lesson_index = lesson_logs[0].lesson_index + 1
-                current_user.completed_lesson_index = lesson_logs[0].lesson_index + 1
+                current_user.current_lesson_name = current_set.first_in_set.lesson_name
+                current_user.current_lesson_index = 0
+                current_user.completed_lesson_index = 0
                 current_user.mood = "neutral"
                 current_user.save()
                 if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
@@ -128,13 +128,13 @@ def not_complete(request):
         user = User.objects.get(email=request.user.email)
         print("\t", user)
         current_user = UserInformation.objects.get(user=user)
-        print("\t", current_user)
-        print("\tCurrent Lesson Set: ", current_user.current_lesson_set )
-        print("\tCompleted Lesson Sest: ", current_user.completed_sets.all())
-
-        if current_user.current_lesson_set not in current_user.completed_sets.all():
-            print("not complete")
-            return True
+        if current_user.completed_sets is not None:
+            if current_user.current_main_set not in current_user.completed_sets.all():
+                print("not complete")
+                return True
+        else:
+            if current_user.completed_sets is None:
+                return True
     return False
 
 

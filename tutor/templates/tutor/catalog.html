@@ -34,29 +34,37 @@
                                     </div>
                                 </div>
                             </div>
-                        {% elif obj in user.userinformation.completed_sets.all %}
-
-                        {% else %}
-                            {% if obj.show %}
-                                <div id="begin" class="card lesson-card">
-                                    <div class="card-horizontal">
-                                        <div class="img-square-wrapper">
-                                            <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
-                                        </div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">{{obj}} <span class="badge recommended">Recommended</span></h5>
-                                            <p class="card-text">{{obj.set_description}}</p>
-                                            <form action="{% url 'tutor:catalog' %}" method="POST">
-                                                {% csrf_token %}
-                                                <input type="hidden" name="set_name" value="{{ obj }}"/>
-                                                <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
-                                                    Start Training
-                                                </button>
-                                            </form>
-                                        </div>
+                        {% elif user.userinformation.completed_sets == obj %}
+                            <div id="begin" class="card lesson-card">
+                                <div class="card-horizontal">
+                                    <div class="img-square-wrapper">
+                                        <img class="" src="{% static 'images/logo4.png' %}" id="card-img" alt="Card image cap">
+                                    </div>
+                                    <div class="card-body text-center">
+                                        <h1 class="card-title">No New Sets Available</h1>
+                                        <a href="{% url 'accounts:profile' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To Profile to review completed sets.</a>
                                     </div>
                                 </div>
-                            {% endif %}
+                            </div>
+                        {% else %}
+                            <div id="begin" class="card lesson-card">
+                                <div class="card-horizontal">
+                                    <div class="img-square-wrapper">
+                                        <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{obj}} <span class="badge recommended">Recommended</span></h5>
+                                        <p class="card-text">{{obj.set_description}}</p>
+                                        <form action="{% url 'tutor:catalog' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="set_name" value="{{ obj }}"/>
+                                            <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
+                                                Start Training
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
                         {% endif %}
                     {% else %}
                          <div id="begin" class="card lesson-card">
@@ -78,29 +86,7 @@
                                 </div>
                             </div>
                     {% endif %}
-                {% endfor %}
 
-                <h1 class="mb-0 page-section-heading">
-                    Completed Lessons
-                </h1>
-                {% for obj in LessonSet %}
-                    {% if user.is_authenticated %}
-                        {% if obj in user.userinformation.completed_sets.all %}
-                            <div id="begin" class="card lesson-card">
-                                <div class="card-horizontal">
-                                    <div class="img-square-wrapper">
-                                        <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
-                                    </div>
-                                    <div class="card-body">
-                                        <h5 class="card-title">{{obj}} <span class="badge recommended">Completed</span></h5>
-                                        <h5 class="card-title"><span class="badge badge-success">Author ID: 869134018</span></h5>
-                                        <p class="card-text">{{user.userinformation.completed_sets.set_description}}</p>
-                                        <a href="{% url 'tutor:completed' 0 %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Review Activity</a>
-                                    </div>
-                                </div>
-                            </div>
-                        {% endif %}
-                    {% endif %}
                 {% endfor %}
             </div>
             <div class="col-1 p-0">
@@ -147,4 +133,3 @@
         }
     </script>
 {% endblock %}
-
