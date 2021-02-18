@@ -333,7 +333,6 @@ class LessonSet(models.Model):
     first_in_set = models.ForeignKey(Lesson, related_name='first_in_set', on_delete=models.CASCADE, blank=True, null=True)
     set_description = models.TextField(default="This set is designed to further your understanding")
     # number_normal_lessons = models.IntegerField(default=0)
-    set_image = models.ImageField(upload_to=None, height_field=None, width_field=None, default='begin.png')
 
     def __str__(self):
         """"
