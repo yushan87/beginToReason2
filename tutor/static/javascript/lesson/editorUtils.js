@@ -721,6 +721,9 @@ $.postJSON = (url, data, callback) => {
                 closeThinkAloudFunctions(false, 'something went wrong',  data.answer, data.code); // for the think-aloud recording
                 unlock();
             }
+            if (response.reload == "true"){
+                setTimeout(function (){location.reload();}, 3000);
+            }
             /*
             if(data.sub){
                 console.log(data.newLessonIndex)
