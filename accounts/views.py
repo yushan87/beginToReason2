@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
-from core.models import LessonSet, MainSet
+from core.models import MainSet
 from .models import UserInformation
 from .forms import UserInformationForm
 
