@@ -78,6 +78,7 @@ def tutor(request):
                 if current_lesson.is_alternate and current_user.current_lesson_index is not 0:
                     print(current_lesson.correct, "%%%%%%%%%%")
                     current_user.current_lesson_name = Lesson.objects.get(lesson_name=current_lesson.correct).lesson_name
+                    index = 0
                     for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
                         print(index, "&&&&&&&&&", item.lesson_name)
                         if item.lesson_name == current_lesson.correct:
@@ -104,9 +105,10 @@ def tutor(request):
                 current_user.current_lesson_name = next_set.first_in_set.lesson_name
                 current_user.save()
             # if a user is not successful and there are alternates available
+            print(current_lesson.sub_lessons_available, "%%%%%%%%%%")
             if status != "success" and current_lesson.sub_lessons_available:
-                type = check_type(current_lesson, submitted_answer, status)
-                alt_lesson = alternate_lesson_check(current_lesson, type)  # how to set this and render new page
+                lesson_type = check_type(current_lesson, submitted_answer, status)
+                alt_lesson = alternate_lesson_check(current_lesson, lesson_type)  # how to set this and render new page
                 print(Lesson.objects.get(lesson_title=alt_lesson).lesson_name)
                 current_user.current_lesson_name = Lesson.objects.get(lesson_title=alt_lesson).lesson_name
                 for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
@@ -137,10 +139,10 @@ def tutor(request):
                 current_lesson.code.lesson_code = can_mutate(current_lesson)
                 # create an ordered set
                 ordered_set = current_user.current_main_set.lessons.all()
+                index = 0
                 for index, item in enumerate(current_user.current_main_set.lessons.all()):
                     if item == current_user.current_lesson_set:
                         break
-                print("index: ", index)
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
@@ -216,12 +218,10 @@ def completed(request, index):
     if request.method == 'GET':
         if user_auth(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-            if not not_complete(request):
-                current_set = current_user.completed_sets.lessons.all()
-            else:
+            if not_complete(request):
                 main_set = MainSet.objects.filter(set_name=current_user.current_main_set)[0]
-                current_set = main_set.lessons.all()
 
+            item = main_set.lessons.all()[0]
             for count, item in enumerate(main_set.lessons.all()):
                 if count == index:
                     break
@@ -234,6 +234,7 @@ def completed(request, index):
 
             # create an ordered set
             ordered_set = current_user.current_main_set.lessons.all()
+            count2 = 0
             for count2, item in enumerate(current_user.current_main_set.lessons.all()):
                 if item == current_user.current_lesson_set:
                     break
