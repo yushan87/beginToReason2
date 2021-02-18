@@ -218,14 +218,7 @@ def completed(request, index):
     if request.method == 'GET':
         if user_auth(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-<<<<<<< HEAD
             if not_complete(request):
-=======
-            print(request.POST['lesson'])
-            if not not_complete(request):
-                current_set = current_user.completed_sets.lessons.all()
-            else:
->>>>>>> d834638f9f3e85a70c43cf76aae99509b8e19020
                 main_set = MainSet.objects.filter(set_name=current_user.current_main_set)[0]
 
             item = main_set.lessons.all()[0]
