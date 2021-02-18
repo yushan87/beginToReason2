@@ -316,6 +316,20 @@ class Lesson(models.Model):
         """
         return self.lesson_title
 
+class LessonIndex(models.Model):
+    """
+        Contains a model that connects a Lesson with the order it should appear in a lesson.
+        Lessons - The linked lessons for the model
+        index - used for order in set
+
+        @param models.Model The base model
+        """
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    index = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.index) + ": " + str(self.lesson.lesson_name)
+
 
 class LessonSet(models.Model):
     """
@@ -329,6 +343,7 @@ class LessonSet(models.Model):
     """
     set_name = models.CharField(max_length=50)
     lessons = models.ManyToManyField(Lesson, blank=True)
+    l_set = models.ManyToManyField(LessonIndex, blank=True)
     set_description = models.TextField(default="This set is designed to further your understanding")
     # number_normal_lessons = models.IntegerField(default=0)
     # set_image = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=100)

@@ -20,6 +20,7 @@ class UserInformation(models.Model):
     user_class = models.CharField("Class", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
     user_gender = models.CharField("Gender", max_length=50, validators=[MinLengthValidator(1)])  # Gender field
     user_race = models.CharField("Race", max_length=50, validators=[MinLengthValidator(1)])  # Race field
+    user_instructor = models.BooleanField(default=False)
     current_lesson_set = models.ForeignKey(LessonSet, blank=True, on_delete=models.CASCADE, null=True)
     current_lesson_index = models.IntegerField(default=0)
     in_progress_sets = models.ManyToManyField(LessonSet, blank=True, related_name='current_set')

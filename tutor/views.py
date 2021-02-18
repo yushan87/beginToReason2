@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.http import JsonResponse
-from core.models import Lesson, LessonSet
+from core.models import Lesson, LessonSet, LessonIndex
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete
@@ -103,14 +103,20 @@ def tutor(request):
         if user_auth(request) and not_complete(request):
             # Case 2aa: if the user has a current set
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-            current_set = current_user.current_lesson_set.lessons.all()
-            set_len = current_set.filter(is_alternate=False).count()
-            print(set_len)
+            current_set = current_user.current_lesson_set.l_set.all()
+            print(current_set)
+            set_len =3 #current_set.filter(is_alternate=False).count()
+            #print(set_len)
             num_done = finished_lesson_count(current_user)
             # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
-            if Lesson.objects.filter(lesson_index=current_user.current_lesson_index).exists():
-                current_lesson = Lesson.objects.get(lesson_index=current_user.current_lesson_index)
+            current_index = current_set.get(index=current_user.completed_lesson_index)
+            print(current_index)
+            if current_index:
+                current_lesson = current_index.lesson
 
+
+                # Just as we are altering the code here with mutate, this will pull the previous answer
+                # to put in place for sub lessons. What identifiers do we need?
                 current_lesson.code.lesson_code = can_mutate(current_lesson)
 
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
