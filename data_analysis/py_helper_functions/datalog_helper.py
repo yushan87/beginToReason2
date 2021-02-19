@@ -19,6 +19,7 @@ def log_data(request):
     user = User.objects.get(email=request.user.email)
     user_info = UserInformation.objects.get(user=user)
     lesson_set = user_info.current_lesson_set
+    main_set = user_info.current_main_set
     lesson = Lesson.objects.get(lesson_index=user_info.current_lesson_index)
     if lesson.can_mutate:
         original_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
@@ -38,6 +39,7 @@ def log_data(request):
     data_to_log = DataLog.objects.create(user_key=user,
                                          time_stamp=timezone.now(),
                                          lesson_set_key=lesson_set,
+                                         main_set_key=main_set,
                                          lesson_key=lesson,
                                          status=status,
                                          code=code,
@@ -46,6 +48,7 @@ def log_data(request):
                                          face=face,
                                          original_code=original_code)
     data_to_log.save()
+
 
 def get_log_data(user, lesson_index):
     user = User.objects.get(email=user)
@@ -57,6 +60,7 @@ def get_log_data(user, lesson_index):
 
     print(get_lesson)
     return repr(get_lesson.code).replace("'",''), get_lesson.face, get_lesson.past_answers, get_lesson.explanation
+
 
 def finished_lesson_count(user):
     user = User.objects.get(email=user)
