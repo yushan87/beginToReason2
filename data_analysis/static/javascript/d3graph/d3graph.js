@@ -25,7 +25,7 @@ function boundingBox() {
   let radius
   let curr_node
   for (curr_node of nodes) {
-    radius = Math.sqrt(curr_node.appearances) || minSize
+    radius = Math.sqrt(curr_node.appearances.length) || minSize
     curr_node.x = Math.max(radius + margin.left, Math.min(width - radius - margin.right, curr_node.x));
     curr_node.y = Math.max(radius + margin.top, Math.min(height - radius - margin.bottom, curr_node.y));
   }
@@ -49,7 +49,7 @@ function setClick(obj, d) {
       //gave up
       document.querySelector("#nodeCorrect").textContent = "Correct: N/A"
     }
-    document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances}`
+    document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances.length}`
     simulation.restart()
   };
   if (d.name == "Start") {
@@ -58,7 +58,7 @@ function setClick(obj, d) {
     document.querySelector("#nodeName").textContent = `Name: ${d.name}`
     document.querySelector("#nodeDistance").textContent = `Distance: ${d.distance}`
     document.querySelector("#nodeCorrect").textContent = `Correct: ${Math.round(d.score * 100)}%`
-    document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances}`
+    document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances.length}`
   }
 }
 
@@ -83,7 +83,7 @@ function boldLine(d) {
 }
 
 function radius(d) {
-  return d.appearances ** 0.7 + minSize
+  return d.appearances.length ** 0.7 + minSize
 }
 
 function color(d) {
@@ -139,7 +139,7 @@ nodes.sort((a, b) => {
         return Number.parseFloat(b.distance) - Number.parseFloat(a.distance)
       } else {
         //Tied in distance, make more often nodes lower
-        return a.appearances - b.appearances
+        return a.appearances.length - b.appearances.length
       }
     }
     //b is a no completions, "infinite" distance
@@ -150,7 +150,7 @@ nodes.sort((a, b) => {
     return -1
   }
   //Both are no completions, make more often nodes lower
-  return a.appearances - b.appearances
+  return a.appearances.length - b.appearances.length
 })
 // Preferred height
 const length = nodes.length - 1

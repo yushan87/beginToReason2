@@ -15,7 +15,7 @@ class Node:
     GAVE_UP_NAME = "GaveUp"
 
     def __init__(self, attempt, is_correct):
-        self.appearances = 0
+        self.appearances = []
         self.distance_sum = 0
         self.successful_appearances = 0
         self.attempt = attempt
@@ -40,31 +40,6 @@ class Node:
                 correct += self.node_list[node]
         return float(str((correct / total) + 0.5 * 10 ** -self.DECIMAL_PRECISION)[0: 2+self.DECIMAL_PRECISION])
 
-    # Declaration of the node in plantUML code
-    def print_declaration(self, minimum_appearances):
-        if (self.appearances < minimum_appearances) & (self.attempt != self.GAVE_UP_NAME):
-            return ""
-        output = ["object \"" + str(self.attempt) +
-                  "\" as " + str(self.get_hash_code())]
-        if self.attempt == self.START_NAME:
-            output.append(" " + self.START_COLOR_CODE)
-        elif self.attempt == self.GAVE_UP_NAME:
-            output.append(" " + self.GAVE_UP_COLOR_CODE)
-        elif self.is_correct:
-            output.append(" " + self.CORRECT_COLOR_CODE)
-        output.append("\n" + str(self.get_hash_code()) +
-                      " : appearances: " + str(self.appearances) + "\n")
-        # distance
-        if (not self.is_correct) & (self.attempt != self.GAVE_UP_NAME):
-            output.append(str(self.get_hash_code()) +
-                          " : distance: " + self.distance() + "\n")
-        # score
-        goodness = self.calculate_goodness()
-        if (goodness <= 1) & (goodness >= 0):
-            output.append(str(self.get_hash_code()) +
-                          " : score: " + str(goodness) + "\n")
-        return "".join(output)
-
     def distance(self):
         if self.successful_appearances > 0:
             distance = str(self.distance_sum / self.successful_appearances)
@@ -73,31 +48,6 @@ class Node:
             return distance
         else:
             return self.DEGENERATE_CODE
-
-    # prints the connections of the node in plantUML code
-    def print_connections(self, minimum_appearances):
-        if (self.appearances < minimum_appearances) & (self.attempt != self.GAVE_UP_NAME):
-            return ""
-        output = []
-        for node in self.node_list:
-            if (node.appearances >= minimum_appearances) | (node.attempt == self.GAVE_UP_NAME):
-                output.append(str(self.get_hash_code()) + " -")
-                if self.better_than(node):
-                    output.append("up")
-                else:
-                    output.append("down")
-                thickness = self.node_list.get(node)
-                if thickness < 10:
-                    output.append("[thickness=" + str(thickness))
-                else:
-                    output.append("[thickness=10")
-                if node.is_correct:
-                    output.append("," + self.CORRECT_ARROW_COLOR_CODE)
-                output.append("]-o " + str(node.get_hash_code()))
-                if self.node_list.get(node) >= self.MINIMUM_TO_BE_ANNOTATED:
-                    output.append(": " + str(self.node_list.get(node)))
-                output.append("\n")
-        return "".join(output)
 
     def return_family(self):
         return self.return_family_helper(set())
@@ -116,8 +66,8 @@ class Node:
                 return node
         return None
 
-    def add_appearance(self):
-        self.appearances += 1
+    def add_appearance(self, user_id):
+        self.appearances.append(str(user_id))
 
     def add_successful_appearance(self):
         self.successful_appearances += 1

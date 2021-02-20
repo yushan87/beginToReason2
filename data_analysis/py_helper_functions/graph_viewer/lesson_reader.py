@@ -10,7 +10,7 @@ from core.models import Lesson
 # Takes a lesson index and returns the START node of its graph representation
 def lesson_to_graph(lesson_id):
     query = DataLog.objects.filter(
-        lesson_key=lesson_id).order_by('user_key', 'time_stamp')
+        lesson_key_id=lesson_id).order_by('user_key', 'time_stamp')
     nodes_in_chain = []
     start_node = Node(Node.START_NAME, False)
     end_node = Node(Node.GAVE_UP_NAME, False)
@@ -21,15 +21,14 @@ def lesson_to_graph(lesson_id):
         # Take only the (first) code between Confirm and ;
         log.code = log.code.split("Confirm")[1].split("\r")[
             0].strip().strip(";")
-        prev_node.add_appearance()
+        prev_node.add_appearance(log.user_key)
         # Is this kid same as the last one?
         if log.user_key != prev_student:
             # Nope!
-            prev_student = log.user_key
             if not prev_node.is_correct:
                 # Last kid gave up
                 prev_node.add_next(end_node)
-                end_node.add_appearance()
+                end_node.add_appearance(prev_student)
             else:
                 # Last kid got it right
                 chain_length = len(nodes_in_chain)
@@ -37,10 +36,11 @@ def lesson_to_graph(lesson_id):
                     chain_length -= 1
                     node.add_distance(chain_length)
                     node.add_successful_appearance()
+            prev_student = log.user_key
             nodes_in_chain.clear()
             prev_node = start_node
             nodes_in_chain.append(prev_node)
-            start_node.add_appearance()
+            start_node.add_appearance(log.user_key)
         # Runs every time
         if log.status == 'failure':
             answer_correct = False
@@ -60,11 +60,11 @@ def lesson_to_graph(lesson_id):
         nodes_in_chain.append(current_node)
         prev_node = current_node
     # Post iteration
-    prev_node.add_appearance()
+    prev_node.add_appearance(prev_student)
     if not prev_node.is_correct:
         # Last kid gave up
         prev_node.add_next(end_node)
-        end_node.add_appearance()
+        end_node.add_appearance(prev_student)
     else:
         # Last kid got it right
         chain_length = len(nodes_in_chain)
