@@ -18,7 +18,6 @@ def lesson_to_graph(lesson_id):
     nodes_in_chain.append(prev_node)
     prev_student = query[0].user_key
     for log in query:
-        print(log)
         # Take only the (first) code between Confirm and ;
         log.code = log.code.split("Confirm")[1].split("\r")[
             0].strip().strip(";")
@@ -28,8 +27,7 @@ def lesson_to_graph(lesson_id):
             # Nope!
             if not prev_node.is_correct:
                 # Last kid gave up
-                print("\n\n\nGANVELJLFJES\n\n\n")
-                prev_node.add_next(end_node)
+                prev_node.add_next(end_node, prev_student)
                 end_node.add_appearance(prev_student)
             else:
                 # Last kid got it right
@@ -57,8 +55,8 @@ def lesson_to_graph(lesson_id):
         if not current_node:
             current_node = Node(log.code, answer_correct)
         if current_node.is_correct != answer_correct:
-            print("I (think I) found conflicting data!!!")
-        prev_node.add_next(current_node)
+            print("\n\n\nI (think I) found conflicting data!!!\n(It's probably a lesson with 2 confirms)\n\n\n")
+        prev_node.add_next(current_node, log.user_key)
         nodes_in_chain.append(current_node)
         prev_node = current_node
     # Post iteration

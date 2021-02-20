@@ -22,11 +22,11 @@ class Node:
         self.is_correct = is_correct
         self.node_list = dict()
 
-    def add_next(self, next_node):
+    def add_next(self, next_node, user):
         if self.node_list.get(next_node):
-            self.node_list[next_node] += 1
+            self.node_list[next_node].append(user.first_name + " " + user.last_name)
         else:
-            self.node_list[next_node] = 1
+            self.node_list[next_node] = [user.first_name + " " + user.last_name]
 
     def calculate_goodness(self):
         if self.is_correct:
@@ -35,9 +35,9 @@ class Node:
             return -1
         correct = total = 0
         for node in self.node_list:
-            total += self.node_list[node]
+            total += len(self.node_list[node])
             if node.is_correct:
-                correct += self.node_list[node]
+                correct += len(self.node_list[node])
         return float(str((correct / total) + 0.5 * 10 ** -self.DECIMAL_PRECISION)[0: 2+self.DECIMAL_PRECISION])
 
     def distance(self):
@@ -67,7 +67,7 @@ class Node:
         return None
 
     def add_appearance(self, user_id):
-        self.appearances.append(str(user_id))
+        self.appearances.append(user_id.first_name + " " + user_id.last_name)
 
     def add_successful_appearance(self):
         self.successful_appearances += 1
@@ -77,13 +77,13 @@ class Node:
 
     def to_dict(self):
         return {"id": self.get_hash_code(),
-                "name": self.attempt, "distance": self.distance(), "score": self.calculate_goodness(), "appearances": self.appearances}
+                "name": self.attempt, "distance": self.distance(), "score": self.calculate_goodness(), "appearances": len(self.appearances), "users": self.appearances}
 
     def edge_dict(self):
         edges = []
         for dest in self.node_list.keys():
             edges.append({"source": self.get_hash_code(
-            ), "target": dest.get_hash_code(), "size": self.node_list.get(dest)})
+            ), "target": dest.get_hash_code(), "size": len(self.node_list.get(dest)), "users": self.node_list.get(dest)})
         return edges
 
     def get_hash_code(self):
