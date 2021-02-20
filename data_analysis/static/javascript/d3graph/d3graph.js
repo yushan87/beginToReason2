@@ -7,7 +7,7 @@ let selectedNode = ""
 
 const drag = d3.drag()
   .on("start", function (d) {
-    if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+    if (!d3.event.active) simulation.alphaTarget(0.2).restart();
     d.fx = d.x
     d.fy = d.y
   })
@@ -39,11 +39,15 @@ function setClick(obj, d) {
     document.querySelector("#nodeDistance").textContent = `Distance: ${d.distance}`
     const correct = Math.round(d.score * 100)
     if (correct >= 0 && correct <= 100) {
+      //incorrect ans
       document.querySelector("#nodeCorrect").textContent = `Correct: ${Math.round(d.score * 100)}%`
     } else if (correct > 100) {
+      //correct ans
+      document.querySelector("#nodeDistance").textContent = `Distance: Correct`
       document.querySelector("#nodeCorrect").textContent = "Correct Answer"
     } else {
-      document.querySelector("#nodeCorrect").textContent = ""
+      //gave up
+      document.querySelector("#nodeCorrect").textContent = "Correct: N/A"
     }
     document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances}`
     simulation.restart()
@@ -111,8 +115,6 @@ function fadedColor(d) {
 }
 
 // set the dimensions of graph, data
-const actWidth = 300
-const actHeight = 300
 const width = 960
 const height = 600
 const margin = {
@@ -132,7 +134,13 @@ let nodes = graph.data.nodes
 nodes.sort((a, b) => {
   if (!Number.isNaN(Number.parseFloat(a.distance))) {
     if (!Number.isNaN(Number.parseFloat(b.distance))) {
-      return Number.parseFloat(b.distance) - Number.parseFloat(a.distance)
+      //normal case
+      if(Number.parseFloat(b.distance) - Number.parseFloat(a.distance) != 0) {
+        return Number.parseFloat(b.distance) - Number.parseFloat(a.distance)
+      } else {
+        //Tied in distance, make more often nodes lower
+        return a.appearances - b.appearances
+      }
     }
     //b is a no completions, "infinite" distance
     return 1
@@ -141,7 +149,8 @@ nodes.sort((a, b) => {
   if (!Number.isNaN(Number.parseFloat(b.distance))) {
     return -1
   }
-  return 0
+  //Both are no completions, make more often nodes lower
+  return a.appearances - b.appearances
 })
 // Preferred height
 const length = nodes.length - 1
@@ -161,10 +170,11 @@ maxDistance = maxDistance ** 0.7
 // forces
 const simulation = d3.forceSimulation(graph.data.nodes)
   .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.01))
-  .force("charge", d3.forceManyBody().strength(-150))
+  .force("charge", d3.forceManyBody().strength(-120))
   .force("yVal", d3.forceY(function (d) {
     return d.height * (height - margin.top - margin.bottom) + margin.top
   }).strength(1))
+  .force("xVal", d3.forceX(width / 2).strength(0.005))
   .force("bBox", boundingBox)
 
 // append the svg object to the body of the page
