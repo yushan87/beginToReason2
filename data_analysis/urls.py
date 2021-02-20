@@ -10,6 +10,5 @@ app_name = 'data_analysis'
 
 # URL patterns to be matched.
 urlpatterns = [
-    path('dummyGraph/<int:index>', views.dummyGraph, name="dummyGraph"),
     path('d3Graph/<int:index>', views.d3Graph, name="d3Graph")
 ]
