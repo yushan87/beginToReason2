@@ -32,16 +32,27 @@ function boundingBox() {
   }
 }
 
-function filterByUser(d) {
-  if (!filter.users.length) {
-    return "visible"
-  }
-  for (let user of d.users) {
-    if (filter.users.includes(user)) {
-      return "visible"
+function mainFilter(d) {
+  const filterByUser = () => {
+    if (!filter.users.length) {
+      return true
     }
+    for (let user of d.users) {
+      if (filter.users.includes(user)) {
+        return true
+      }
+    }
+    return false
   }
-  return "hidden"
+  const isSelected = () => {
+    return d.name === selectedNode
+  }
+  const toShow = filterByUser() + isSelected()
+  if (toShow) {
+    return "1"
+  } else {
+    return "0.1"
+  }
 }
 
 function setClick(obj, d) {
@@ -72,6 +83,13 @@ function setClick(obj, d) {
 }
 
 function makeUserList() {
+  //set up buttons
+  document.querySelector("#selectClear").onclick = () => {
+    setAllUserChecks(false)
+  }
+  document.querySelector("#selectAll").onclick = () => {
+    setAllUserChecks(true)
+  }
   //Find start node
   let start
   for (let node of graph.data.nodes) {
@@ -81,7 +99,12 @@ function makeUserList() {
     }
   }
   let userString = ""
+  let users = []
   for (let user of start.users) {
+    if (users.includes(user)) {
+      continue
+    }
+    users.push(user)
     userString += `<div><input type="checkbox" id="${user}">
         <label for="${user}" style="display: block">${user}</label></div>`
   }
@@ -89,6 +112,15 @@ function makeUserList() {
   document.querySelectorAll("#userList input").forEach((element) => element.onclick = (event) => {
     setUserFilter()
   })
+}
+
+function setAllUserChecks(value) {
+  document.querySelectorAll("#userList input").forEach((element) => {
+    if (element.style.display != "none") {
+      element.checked = value
+    }
+  })
+  setUserFilter()
 }
 
 function updateUserList(d) {
@@ -148,11 +180,9 @@ function boldLine(d) {
   if (selectedNode == d.source.name || selectedNode == d.target.name) {
     d3.select(this)
       .attr("stroke", "#000")
-      .attr("stroke-opacity", "0.75")
   } else {
     d3.select(this)
       .attr("stroke", "#999")
-      .attr("stroke-opacity", "0.6")
   }
 }
 
@@ -275,7 +305,6 @@ const marker = d3.select("svg")
   .attr("d", 'M 0 0 12 4 0 8 3 4');
 
 const link = svg.append("g")
-  .attr("stroke-opacity", 0.6)
   .attr("fill", "none")
   .attr("stroke", "#999")
   .selectAll("path")
@@ -320,7 +349,7 @@ const center = node.append("circle")
 simulation.on("tick", () => {
   node
     .attr("transform", d => `translate(${d.x}, ${d.y})`)
-    .attr("visibility", filterByUser)
+    .attr("opacity", mainFilter)
 
   center
     .attr("visibility", displayDot)
@@ -337,6 +366,6 @@ simulation.on("tick", () => {
       const middleY = (targetY + d.source.y) / 2 + Math.sin(rightAngle) * curve * distance
       return `M ${d.source.x} ${d.source.y} Q ${middleX} ${middleY} ${targetX + Math.cos(rightAngle) * curve * 20} ${targetY + Math.sin(rightAngle) * curve * 20}`
     })
-    .attr("visibility", filterByUser)
+    .attr("opacity", mainFilter)
     .each(boldLine)
 });
