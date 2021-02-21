@@ -30,7 +30,8 @@ class Node:
     def add_next(self, next_node, user):
         if not self.node_list.get(next_node):
             self.node_list[next_node] = [get_name(user)]
-        self.node_list[next_node].append(get_name(user))
+        else:
+            self.node_list[next_node].append(get_name(user))
 
     def calculate_goodness(self):
         if self.is_correct:
@@ -42,7 +43,8 @@ class Node:
             total += len(self.node_list[node])
             if node.is_correct:
                 correct += len(self.node_list[node])
-        return float(str((correct / total) + 0.5 * 10 ** -self.DECIMAL_PRECISION)[0: 2+self.DECIMAL_PRECISION])
+        return float(str((correct / total) + 0.5 * 10 ** -self.DECIMAL_PRECISION)[0: 2 + self.DECIMAL_PRECISION])
+
 
     def distance(self):
         if self.successful_appearances > 0:

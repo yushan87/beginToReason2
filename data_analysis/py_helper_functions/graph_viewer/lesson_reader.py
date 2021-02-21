@@ -42,15 +42,7 @@ def lesson_to_graph(lesson_id):
             nodes_in_chain.append(prev_node)
             start_node.add_appearance(log.user_key)
         # Runs every time
-        if log.status == 'failure':
-            answer_correct = False
-        else:
-            # I think that the 'status' of a log is whether they got it wrong or right, with 'success' for a right
-            # answer and 'failure' for a wrong one. This checks whether that's the case.
-            if log.status != 'success':
-                print("I don't know how status works, please send help!!!")
-                print(log.status + " confused me")
-            answer_correct = True
+        answer_correct = log.status == 'success'
         current_node = start_node.find_node(log.code)
         if not current_node:
             current_node = Node(log.code, answer_correct)
