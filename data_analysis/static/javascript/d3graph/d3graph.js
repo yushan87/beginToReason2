@@ -82,7 +82,7 @@ function setClick(obj, d) {
   }
 }
 
-function makeUserList() {
+function initializeUserList() {
   //set up buttons
   document.querySelector("#selectClear").onclick = () => {
     setAllUserChecks(false)
@@ -90,37 +90,13 @@ function makeUserList() {
   document.querySelector("#selectAll").onclick = () => {
     setAllUserChecks(true)
   }
-  //Find start node
-  let start
-  for (let node of graph.data.nodes) {
-    if (node.name === "Start") {
-      start = node
-      break
-    }
-  }
   let userString = ""
-  let users = []
-  for (let user of start.users) {
-    if (users.includes(user)) {
-      continue
-    }
-    users.push(user)
-    userString += `<div><input type="checkbox" id="${user}">
-        <label for="${user}" style="display: block">${user}</label></div>`
+  for (let user of Object.entries(graph.data.users)) {
+    userString += `<div><input type="checkbox" id="${user[0]}">
+        <label for="${user[0]}" style="display: block"></label></div>`
   }
   document.querySelector("#userList").innerHTML = userString.substring(0, userString.length - 6)
-  document.querySelectorAll("#userList input").forEach((element) => element.onclick = (event) => {
-    setUserFilter()
-  })
-}
-
-function setAllUserChecks(value) {
-  document.querySelectorAll("#userList input").forEach((element) => {
-    if (element.style.display != "none") {
-      element.checked = value
-    }
-  })
-  setUserFilter()
+  document.querySelectorAll("#userList input").forEach((element) => element.onclick = setUserFilter)
 }
 
 function updateUserList(d) {
@@ -149,14 +125,32 @@ function updateUserList(d) {
         label.style.display = "initial"
         //handle multiple occurrences
         if (user[1] > 1) {
-          label.textContent = `${user[0]} (${user[1]})`
+          label.textContent = `${graph.data.users[user[0]].name} (${user[1]})`
         } else {
-          label.textContent = user[0]
+          label.textContent = graph.data.users[user[0]].name
         }
+        return
       }
     }
   })
 }
+
+function initializeSlider() {
+  const slider = document.querySelector("#filterSlider")
+  filterSlider.min = 1
+  filterSlider.value = filterSlider.max = Object.entries(graph.data.users).length
+}
+
+function setAllUserChecks(value) {
+  document.querySelectorAll("#userList input").forEach((element) => {
+    if (element.style.display != "none") {
+      element.checked = value
+    }
+  })
+  setUserFilter()
+}
+
+
 
 function setUserFilter() {
   filter.users = []
@@ -220,7 +214,8 @@ function fadedColor(d) {
 
 
 //Initialize page
-makeUserList()
+initializeUserList()
+initializeSlider()
 // set the dimensions of graph, data
 const width = 960
 const height = 600
@@ -368,4 +363,4 @@ simulation.on("tick", () => {
     })
     .attr("opacity", mainFilter)
     .each(boldLine)
-});
+})

@@ -2,12 +2,6 @@
 Class that represents an attempt made by students.
 """
 
-
-def get_name(user):
-    if not user.first_name:
-        return "admin"
-    return user.first_name + " " + user.last_name
-
 class Node:
     START_COLOR_CODE = "#9cffed"
     GAVE_UP_COLOR_CODE = "#f58787"
@@ -29,9 +23,9 @@ class Node:
 
     def add_next(self, next_node, user):
         if not self.node_list.get(next_node):
-            self.node_list[next_node] = [get_name(user)]
+            self.node_list[next_node] = [str(user)]
         else:
-            self.node_list[next_node].append(get_name(user))
+            self.node_list[next_node].append(str(user))
 
     def calculate_goodness(self):
         if self.is_correct:
@@ -73,7 +67,7 @@ class Node:
         return None
 
     def add_appearance(self, user):
-        self.appearances.append(get_name(user))
+        self.appearances.append(str(user))
 
     def add_successful_appearance(self):
         self.successful_appearances += 1
