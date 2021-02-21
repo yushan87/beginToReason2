@@ -1,7 +1,14 @@
 document.querySelector('#graphTitle').innerHTML = `${graph.lesson.name}<br>${graph.lesson.title}`
 document.querySelector('#graphCode').innerHTML = graph.lesson.code.replace(/\\r\\n/g, "<br>")
 const filter = {}
-filter.users = []
+filter.checkBoxusers = []
+filter.sliderUsers = []
+Object.entries(graph.data.users).forEach((user) => {
+  filter.sliderUsers.push(user[0])
+})
+filter.sliderUsers.sort((a, b) => {
+  return graph.data.users[b].attempts - graph.data.users[a].attempts
+})
 const minSize = 6
 const curve = 0.1
 let selectedNode = ""
@@ -34,11 +41,20 @@ function boundingBox() {
 
 function mainFilter(d) {
   const filterByUser = () => {
-    if (!filter.users.length) {
+    if (!filter.checkBoxusers.length) {
       return true
     }
     for (let user of d.users) {
-      if (filter.users.includes(user)) {
+      if (filter.checkBoxusers.includes(user)) {
+        return true
+      }
+    }
+    return false
+  }
+  const filterBySlider = () => {
+    const slice = filter.sliderUsers.slice(0, document.querySelector("#filterSlider").value)
+    for (let user of d.users) {
+      if (slice.includes(user)) {
         return true
       }
     }
@@ -47,7 +63,7 @@ function mainFilter(d) {
   const isSelected = () => {
     return d.name === selectedNode
   }
-  const toShow = filterByUser() + isSelected()
+  const toShow = filterBySlider() * filterByUser() + isSelected()
   if (toShow) {
     return "1"
   } else {
@@ -139,6 +155,9 @@ function initializeSlider() {
   const slider = document.querySelector("#filterSlider")
   filterSlider.min = 1
   filterSlider.value = filterSlider.max = Object.entries(graph.data.users).length
+  filterSlider.oninput = () => {
+    simulation.restart()
+  }
 }
 
 function setAllUserChecks(value) {
@@ -150,13 +169,11 @@ function setAllUserChecks(value) {
   setUserFilter()
 }
 
-
-
 function setUserFilter() {
-  filter.users = []
+  filter.checkBoxusers = []
   document.querySelectorAll("#userList input").forEach((element) => {
     if (element.checked) {
-      filter.users.push(element.id)
+      filter.checkBoxusers.push(element.id)
     }
   })
   simulation.restart()
