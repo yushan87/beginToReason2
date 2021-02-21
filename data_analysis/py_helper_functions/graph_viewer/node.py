@@ -3,6 +3,11 @@ Class that represents an attempt made by students.
 """
 
 
+def get_name(user):
+    if not user.first_name:
+        return "admin"
+    return user.first_name + " " + user.last_name
+
 class Node:
     START_COLOR_CODE = "#9cffed"
     GAVE_UP_COLOR_CODE = "#f58787"
@@ -23,10 +28,9 @@ class Node:
         self.node_list = dict()
 
     def add_next(self, next_node, user):
-        if self.node_list.get(next_node):
-            self.node_list[next_node].append(user.first_name + " " + user.last_name)
-        else:
-            self.node_list[next_node] = [user.first_name + " " + user.last_name]
+        if not self.node_list.get(next_node):
+            self.node_list[next_node] = [get_name(user)]
+        self.node_list[next_node].append(get_name(user))
 
     def calculate_goodness(self):
         if self.is_correct:
@@ -66,8 +70,8 @@ class Node:
                 return node
         return None
 
-    def add_appearance(self, user_id):
-        self.appearances.append(user_id.first_name + " " + user_id.last_name)
+    def add_appearance(self, user):
+        self.appearances.append(get_name(user))
 
     def add_successful_appearance(self):
         self.successful_appearances += 1

@@ -21,7 +21,7 @@ def lesson_to_graph(lesson_id):
         # Take only the (first) code between Confirm and ;
         log.code = log.code.split("Confirm")[1].split("\r")[
             0].strip().strip(";")
-        prev_node.add_appearance(log.user_key)
+        prev_node.add_appearance(prev_student)
         # Is this kid same as the last one?
         if log.user_key != prev_student:
             # Nope!

@@ -1,6 +1,7 @@
 document.querySelector('#graphTitle').innerHTML = `${graph.lesson.name}<br>${graph.lesson.title}`
 document.querySelector('#graphCode').innerHTML = graph.lesson.code.replace(/\\r\\n/g, "<br>")
-
+const filter = {}
+filter.users = []
 const minSize = 6
 const curve = 0.1
 let selectedNode = ""
@@ -31,6 +32,18 @@ function boundingBox() {
   }
 }
 
+function filterByUser(d) {
+  if (!filter.users.length) {
+    return "visible"
+  }
+  for (let user of d.users) {
+    if (filter.users.includes(user)) {
+      return "visible"
+    }
+  }
+  return "hidden"
+}
+
 function setClick(obj, d) {
   obj.onclick = () => {
     selectedNode = d.name
@@ -50,16 +63,77 @@ function setClick(obj, d) {
       document.querySelector("#nodeCorrect").textContent = "Correct: N/A"
     }
     document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances}`
+    updateUserList(d)
     simulation.restart()
   };
   if (d.name == "Start") {
-    selectedNode = d.name
-    document.querySelector("#nodeInfo").style.backgroundColor = fadedColor(d)
-    document.querySelector("#nodeName").textContent = `Name: ${d.name}`
-    document.querySelector("#nodeDistance").textContent = `Distance: ${d.distance}`
-    document.querySelector("#nodeCorrect").textContent = `Correct: ${Math.round(d.score * 100)}%`
-    document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances}`
+    obj.onclick()
   }
+}
+
+function makeUserList() {
+  //Find start node
+  let start
+  for (let node of graph.data.nodes) {
+    if (node.name === "Start") {
+      start = node
+      break
+    }
+  }
+  let userString = ""
+  for (let user of start.users) {
+    userString += `<div><input type="checkbox" id="${user}">
+        <label for="${user}" style="display: block">${user}</label></div>`
+  }
+  document.querySelector("#userList").innerHTML = userString.substring(0, userString.length - 6)
+  document.querySelectorAll("#userList input").forEach((element) => element.onclick = (event) => {
+    setUserFilter()
+  })
+}
+
+function updateUserList(d) {
+  const inputs = document.querySelectorAll("#userList input")
+  inputs.forEach((element) => {
+    element.style.display = "none"
+  })
+  document.querySelectorAll("#userList label").forEach((element) => {
+    element.style.display = "none"
+  })
+  //count users
+  let userMap = new Map()
+  for (let user of d.users) {
+    if (!userMap.has(user)) {
+      userMap.set(user, 1)
+    } else {
+      userMap.set(user, userMap.get(user) + 1)
+    }
+  }
+  inputs.forEach((element) => {
+    for (let user of userMap) {
+      if (user[0] === element.id) {
+        //show!
+        element.style.display = "initial"
+        const label = document.querySelector(`#userList label[for="${element.id}"]`)
+        label.style.display = "initial"
+        //handle multiple occurrences
+        if (user[1] > 1) {
+          label.textContent = `${user[0]} (${user[1]})`
+        } else {
+          label.textContent = user[0]
+        }
+      }
+    }
+  })
+}
+
+function setUserFilter() {
+  filter.users = []
+  document.querySelectorAll("#userList input").forEach((element) => {
+    if (element.checked) {
+      filter.users.push(element.id)
+    }
+  })
+  simulation.restart()
 }
 
 function displayDot(d) {
@@ -114,6 +188,9 @@ function fadedColor(d) {
   return `rgb(${Math.min(255, Math.floor(158 * (2.114 - goodness)))}, ${Math.min(Math.floor(158 * goodness + 176), 255)}, 176)`
 }
 
+
+//Initialize page
+makeUserList()
 // set the dimensions of graph, data
 const width = 960
 const height = 600
@@ -135,7 +212,7 @@ nodes.sort((a, b) => {
   if (!Number.isNaN(Number.parseFloat(a.distance))) {
     if (!Number.isNaN(Number.parseFloat(b.distance))) {
       //normal case
-      if(Number.parseFloat(b.distance) - Number.parseFloat(a.distance) != 0) {
+      if (Number.parseFloat(b.distance) - Number.parseFloat(a.distance) != 0) {
         return Number.parseFloat(b.distance) - Number.parseFloat(a.distance)
       } else {
         //Tied in distance, make more often nodes lower
@@ -206,7 +283,7 @@ const link = svg.append("g")
   .enter()
   .append("path")
   .attr("stroke-width", d => d.size ** 0.6 + 1)
-  .attr("marker-end", "url(#Triangle)");
+  .attr("marker-end", "url(#Triangle)")
 
 const node = svg.selectAll(".node")
   .data(nodes)
@@ -227,10 +304,7 @@ node.append("circle")
 
 const center = node.append("circle")
   .attr("r", minSize - 2)
-  .attr("visibility", displayDot)
   .attr("stroke-width", 0)
-
-
 
 
 //Labels
@@ -246,6 +320,7 @@ const center = node.append("circle")
 simulation.on("tick", () => {
   node
     .attr("transform", d => `translate(${d.x}, ${d.y})`)
+    .attr("visibility", filterByUser)
 
   center
     .attr("visibility", displayDot)
@@ -262,5 +337,6 @@ simulation.on("tick", () => {
       const middleY = (targetY + d.source.y) / 2 + Math.sin(rightAngle) * curve * distance
       return `M ${d.source.x} ${d.source.y} Q ${middleX} ${middleY} ${targetX + Math.cos(rightAngle) * curve * 20} ${targetY + Math.sin(rightAngle) * curve * 20}`
     })
+    .attr("visibility", filterByUser)
     .each(boldLine)
 });
