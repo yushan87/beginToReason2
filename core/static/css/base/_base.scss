@@ -75,3 +75,24 @@ body {
     font-size: 1.75rem;
     font-weight: 200 !important;
 }
+
+/* Footer-Related CSS */
+#page-footer {
+    // Sticky footer
+    position: absolute;
+    bottom: 0;
+    height: $page-footer-height;
+    color: $page-footer-color;
+    background-color: $page-footer-bg-color;
+
+    // Footer links
+    .footer-link {
+        font-size: 1rem;
+        color: $page-footer-navlink-color;
+        text-decoration: none;
+    }
+
+    .footer-link:hover {
+        color: $page-footer-navlink-hover-color;
+    }
+}
