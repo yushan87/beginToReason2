@@ -149,7 +149,6 @@ def tutor(request):
                 print("in if 1")
                 current_lesson.code.lesson_code = can_mutate(current_lesson)
                 # create an ordered set
-                ordered_set = current_user.current_main_set.lessons.all()
                 index = 0
                 for index, item in enumerate(current_user.current_main_set.lessons.all()):
                     if item == current_user.current_lesson_set:
@@ -166,7 +165,7 @@ def tutor(request):
                                    'completedLessonNum': current_user.completed_lesson_index,
                                    'setLength': set_len,
                                    'finished_count': num_done,
-                                   'orderedSet': ordered_set,
+                                   'orderedSet': current_user.current_main_set.lessons.all(),
                                    'mood': current_user.mood,
                                    'review': 'none',
                                    'screen_record': current_lesson.screen_record,
@@ -186,7 +185,7 @@ def tutor(request):
                                    'completedLessonNum': current_user.completed_lesson_index,
                                    'setLength': set_len,
                                    'finished_count': num_done,
-                                   'orderedSet': ordered_set,
+                                   'orderedSet': current_user.current_main_set.lessons.all(),
                                    'mood': current_user.mood,
                                    'review': 'none',
                                    'screen_record': current_lesson.screen_record,
@@ -205,7 +204,7 @@ def tutor(request):
                                'completedLessonNum': current_user.completed_lesson_index,
                                'setLength': set_len,
                                'finished_count': num_done,
-                               'orderedSet': ordered_set,
+                               'orderedSet': current_user.current_main_set.lessons.all(),
                                'mood': current_user.mood,
                                'review': 'none',
                                'screen_record': current_lesson.screen_record,

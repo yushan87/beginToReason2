@@ -6,7 +6,6 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
-from core.models import MainSet
 from .models import UserInformation
 from .forms import UserInformationForm
 
@@ -73,7 +72,9 @@ def profile(request):
             request.session.set_expiry(0)
             print("USER EXISTS IN ACCOUNTS   ", request.method)
             print(request)
-            return render(request, "accounts/profile.html", {'name': user_info.user_nickname, 'CompletedSet': user_info.completed_sets.all(), 'CurrentSet': user_info.current_main_set})
+            return render(request, "accounts/profile.html", {'name': user_info.user_nickname,
+                                                             'CompletedSet': user_info.completed_sets.all(),
+                                                             'CurrentSet': user_info.current_main_set})
         except ValidationError:
             # Case 1b: The user information model is invalid,
             #           we redirect to the settings page
