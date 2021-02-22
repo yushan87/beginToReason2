@@ -69,6 +69,7 @@ def tutor(request):
             submitted_answer = reverse_mutate(submitted_answer)
 
             log_data(request)
+            unlock_next = False
 
             if status == "success":
                 log_lesson(request)
@@ -86,39 +87,47 @@ def tutor(request):
                             break
                     current_user.current_lesson_index = index
                     current_user.save()
-                    return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
+                    unlock_next = True
+                    return JsonResponse(check_feedback(current_lesson, submitted_answer, status, unlock_next))
 
                 # find the index of the next lesson set by enumerating query set of all sets
                 for index, item in enumerate(main_set.lessons.all()):
                     if item == current_user.current_lesson_set:
                         break
                 # return if last set to go through
+                print("|||||||", index, "|||||||", len(main_set.lessons.all()))
                 if index + 1 >= len(main_set.lessons.all()):
-                    current_user.completed_sets = current_user.current_main_set
+                    current_user.completed_sets.add(current_user.current_main_set)
                     current_user.current_lesson_set = None
                     current_user.current_main_set = None
                     current_user.save()
+                    unlock_next = True
                     print("in done: ", current_user.current_lesson_set)
-                    return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
+                    return JsonResponse(check_feedback(current_lesson, submitted_answer, status, unlock_next))
+                    # return render(request, "accounts:profile")
 
                 next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[index+1])
                 current_user.current_lesson_set = next_set
                 current_user.current_lesson_name = next_set.first_in_set.lesson_name
                 current_user.save()
+
             # if a user is not successful and there are alternates available
             print(current_lesson.sub_lessons_available, "%%%%%%%%%%")
             if status != "success" and current_lesson.sub_lessons_available:
                 lesson_type = check_type(current_lesson, submitted_answer, status)
                 alt_lesson = alternate_lesson_check(current_lesson, lesson_type)  # how to set this and render new page
-                print(Lesson.objects.get(lesson_title=alt_lesson).lesson_name)
-                current_user.current_lesson_name = Lesson.objects.get(lesson_title=alt_lesson).lesson_name
-                for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
-                    if item == alt_lesson:
-                        break
-                current_user.current_lesson_index = index
-                current_user.save()
-                print("******* ", alt_lesson, " ", index)
-            return JsonResponse(check_feedback(current_lesson, submitted_answer, status))
+
+                # check if we changed to an alternate
+                if Lesson.objects.get(lesson_title=alt_lesson).lesson_name != current_user.current_lesson_name:
+                    unlock_next = True
+                    current_user.current_lesson_name = Lesson.objects.get(lesson_title=alt_lesson).lesson_name
+                    for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
+                        if item == alt_lesson:
+                            break
+                    current_user.current_lesson_index = index
+                    current_user.save()
+                    print("******* ", alt_lesson, " ", index)
+            return JsonResponse(check_feedback(current_lesson, submitted_answer, status, unlock_next))
 
     # Case 2: We have received a GET request requesting code
     elif request.method == 'GET':

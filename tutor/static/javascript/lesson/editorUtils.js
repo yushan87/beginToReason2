@@ -709,7 +709,6 @@ $.postJSON = (url, data, callback) => {
                 $("#checkCorrectness").attr("disabled", "disabled");
                 closeThinkAloudFunctions(true, 'correct solution', data.answer, data.code); // for the think-aloud recording
                 unlock();
-                setTimeout(function (){location.reload();}, 3000);
             } else if (response.status == 'failure'){
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
@@ -721,8 +720,9 @@ $.postJSON = (url, data, callback) => {
                 closeThinkAloudFunctions(false, 'something went wrong',  data.answer, data.code); // for the think-aloud recording
                 unlock();
             }
-            if (response.reload == "true"){
-                setTimeout(function (){location.reload();}, 3000);
+            if (response.unlock_next){
+                $("#next").removeAttr("disabled", "disabled");
+                $("#checkCorrectness").attr("disabled", "disabled");
             }
             /*
             if(data.sub){
