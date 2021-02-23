@@ -94,42 +94,7 @@
                         <div class="page-section-heading my-3">
                             <h3>In Progress</h3>
                         </div>
-                        {% for obj in LessonSet %}
-                            {% if user.is_authenticated %}
-                                {% if user.userinformation.current_main_set == obj %}
-                                    <div class="my-4">
-                                        <div class="card" style="background-color: inherit;">
-                                            <div class="row no-gutters">
-                                                <div class="col-md-4">
-                                                    <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
-                                                </div>
-                                                <div class="col-md-8 align-self-center">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title">{{obj}} <span class="badge recommended">In Progress</span></h5>
-                                                        <p class="card-text">{{obj.set_description}}</p>
-                                                        <p class="card-text"><small class="text-muted">Last attempted: {{ user.last_login }}</small></p>
-                                                        <form action="{% url 'tutor:tutor' %}" method="GET">
-                                                            {% csrf_token %}
-                                                            <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
-                                                                Continue Training
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% else %}
-                                {% endif %}
-                            {% endif %}
-                        {% endfor %}
-                        <div class="page-section-heading my-3">
-                            <h3>Completed</h3>
-                        </div>
-                        {% if user.is_authenticated %}
-                            {% if user.userinformation.completed_sets == None %}
-
-                            {% else %}
+                            {% if CurrentSet is not None %}
                                 <div class="my-4">
                                     <div class="card" style="background-color: inherit;">
                                         <div class="row no-gutters">
@@ -138,15 +103,47 @@
                                             </div>
                                             <div class="col-md-8 align-self-center">
                                                 <div class="card-body">
-                                                    <h5 class="card-title">{{user.userinformation.completed_sets}} <span class="badge recommended">Completed</span></h5>
-                                                    <h5 class="card-title"><span class="badge badge-success">Author ID: 869134018</span></h5>
-                                                    <p class="card-text">{{user.userinformation.completed_sets.set_description}}</p>
-                                                    <a href="{% url 'tutor:completed' 0 %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Review Activity</a>
+                                                    <h5 class="card-title">{{CurrentSet.set_name}} <span class="badge recommended">In Progress</span></h5>
+                                                    <p class="card-text">{{CurrentSet.set_description}}</p>
+                                                    <p class="card-text"><small class="text-muted">Last attempted: {{ user.last_login }}</small></p>
+                                                    <form action="{% url 'tutor:tutor' %}" method="GET">
+                                                        {% csrf_token %}
+                                                        <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
+                                                            Continue Training
+                                                        </button>
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            {% endif %}
+                        <div class="page-section-heading my-3">
+                            <h3>Completed</h3>
+                        </div>
+                        {% if user.is_authenticated %}
+                            {% if user.userinformation.completed_sets == None %}
+
+                            {% else %}
+                                {% for obj in CompletedSet %}
+                                    <div class="my-4">
+                                        <div class="card" style="background-color: inherit;">
+                                            <div class="row no-gutters">
+                                                <div class="col-md-4">
+                                                    <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
+                                                </div>
+                                                <div class="col-md-8 align-self-center">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">{{obj.set_name}} <span class="badge recommended">Completed</span></h5>
+                                                        <h5 class="card-title"><span class="badge badge-success">Author ID: 869134018</span></h5>
+                                                        <p class="card-text">{{obj.set_description}}</p>
+                                                        <a href="{% url 'tutor:completed' 0 %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Review Activity</a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
                             {% endif %}
                         {% endif %}
                     </div>
