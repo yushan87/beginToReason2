@@ -3,19 +3,20 @@ This module contains our Django views for the "data_analysis" application.
 """
 
 # Create your views here.
-import json
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
-from django.http import JsonResponse
-from core.models import Lesson, LessonSet, LessonIndex
-from accounts.models import UserInformation
-from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from tutor.py_helper_functions.tutor_helper import user_auth, user_auth_inst, lesson_set_auth
-from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
+from tutor.py_helper_functions.tutor_helper import user_auth_inst, lesson_set_auth
 
 
 def instructor(request):
+    """function instructor This function handles the view for the instructor page of the application.
+
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+
+    Returns:
+        HttpResponse: A generated http response object to the request.
+    """
+
     # get all lesson sets, display
     if request.method == 'POST':
         # Will this include where the data is updated? Such as selecting different visuals to interact with?
@@ -30,4 +31,3 @@ def instructor(request):
     else:
 
         return render(request, "data_analysis/visual.html")
-

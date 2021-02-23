@@ -330,6 +330,12 @@ class LessonIndex(models.Model):
     index = models.IntegerField(default=0)
 
     def __str__(self):
+        """"
+            function __str__ is called to display the Lesson Index. This will be useful for admin/educators when
+            building the Lesson Plan
+            Returns:
+                str: Lesson Index: lesson name
+            """
         return str(self.index) + ": " + str(self.lesson.lesson_name)
 
 

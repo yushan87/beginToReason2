@@ -9,8 +9,8 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet, MainSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete, log_lesson, \
-    check_type, alternate_lesson_check, replace_previous, align_with_preious_lesson
+from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete, \
+    log_lesson, check_type, alternate_lesson_check, replace_previous
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
 
 
@@ -77,7 +77,8 @@ def tutor(request):
                 print(main_set)
 
                 # if they are correct in a alt lesson, find correct to send to
-                print("current_lesson.is_alternate: ", current_lesson.is_alternate, " current_user.current_lesson_index: ", current_user.current_lesson_index)
+                print("current_lesson.is_alternate: ", current_lesson.is_alternate,
+                      " current_user.current_lesson_index: ", current_user.current_lesson_index)
                 if current_lesson.is_alternate and current_user.current_lesson_index != 0:
                     print(current_lesson.correct, "%%%%%%%%%%")
                     current_user.current_lesson_name = Lesson.objects.get(lesson_name=current_lesson.correct).lesson_name

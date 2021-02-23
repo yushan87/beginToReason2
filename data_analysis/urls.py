@@ -12,4 +12,3 @@ app_name = 'data_analysis'
 urlpatterns = [
     path('instructor', views.instructor, name='instructor')
 ]
-
