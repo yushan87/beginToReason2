@@ -276,6 +276,7 @@ class Lesson(models.Model):
     incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
 
 
+    default = models.CharField(max_length=50, default='None')
     simplify = models.CharField(max_length=50, default='None')
     # simplify_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='simplify_answers')
     self_reference = models.CharField(max_length=50, default='None')
@@ -371,7 +372,6 @@ class MainSet(models.Model):
     set_name = models.CharField(max_length=50)
     lessons = models.ManyToManyField(LessonSet, blank=True)
     set_description = models.TextField(default="This set is designed to further your understanding")
-    # set_image = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=100)
     show = models.BooleanField(default=False)
 
     def __str__(self):

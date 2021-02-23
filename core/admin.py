@@ -8,7 +8,6 @@ from .models import Lesson, Reference, Concept, Reasoning, McChoice, Question, C
 
 # Register your models here.
 admin.site.register(LessonSet)
-admin.site.register(LessonIndex)
 admin.site.register(Lesson)
 admin.site.register(IncorrectAnswer)
 admin.site.register(Feedback)

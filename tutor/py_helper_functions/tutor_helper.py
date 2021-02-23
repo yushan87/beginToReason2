@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from accounts.models import UserInformation
 from core.models import LessonSet, Lesson, MainSet
 from tutor.models import LessonLog
+from data_analysis.models import DataLog
 
 
 def user_auth(request):
@@ -147,8 +148,9 @@ def not_complete(request):
         print("\t", user)
         current_user = UserInformation.objects.get(user=user)
         if current_user.completed_sets is not None:
-            if current_user.current_main_set not in current_user.completed_sets.all():
+            if current_user.current_main_set != current_user.completed_sets:
                 print("not complete")
+                print(current_user.current_main_set)
                 return True
         else:
             if current_user.completed_sets is None:
@@ -172,7 +174,7 @@ def alternate_lesson_check(current_lesson, type):
              'SELF': current_lesson.self_reference,
              'ALG' : current_lesson.algebra,
              'VAR' : current_lesson.variable,
-             'DEF' : current_lesson.lesson_name
+             'DEF' : current_lesson.default
     }
 
     if current_lesson.sub_lessons_available:
@@ -267,3 +269,82 @@ def log_lesson(request):
                                              lesson_index=lesson.lesson_index,
                                              main_set_key=main_set)
     lesson_to_log.save()
+
+def align_with_preious_lesson(user, code):
+
+    last_attempt = DataLog.objects.filter(user_key=User.objects.get(email=user)).order_by('-id')[0].code
+
+    occurrence = 3
+    original = ["I", "J", "K"]
+    variables = []
+    index = 0
+
+    for i in range(0,occurrence):
+        if last_attempt.find("Read(", index) != -1:
+            index = last_attempt.find("Read(", index) + 5
+            variables.append(last_attempt[index])
+            index = index + 1
+
+    print(variables)
+
+    for i in range(0,len(variables)):
+        code = code.replace(original[i], variables[i])
+
+    change = variables[0] + "nteger"
+
+    code = code.replace(change, "Integer")
+
+    return code
+
+
+
+
+
+def replace_previous(user, code):
+
+    last_attempt = DataLog.objects.filter(user_key=User.objects.get(email=user)).order_by('-id')[0].code
+
+    # Checks if there is code to be replaced
+    present = code.find('/*previous*/')
+
+    if present != -1:
+        print("present")
+
+        occurrence = 20
+        indices1 = []
+        indices2 = []
+        index1 = 0
+        index2 = 0
+
+
+        # Has to identify the starting and ending index for each confirm statement. The format does differ
+        # between the old and new.
+
+        for i in range(0, occurrence, 2):
+            if(last_attempt.find('Confirm', index1) != -1):
+                indices1.append(last_attempt.find('Confirm', index1))
+                index1 = indices1[i] + 1
+                indices1.append(last_attempt.find(';', index1)+1)
+                index1 = indices1[i+1] + 1
+
+                indices2.append(code.find('Confirm', index2))
+                index2 = indices2[i] + 1
+                indices2.append(code.find(';', index2)+1)
+                index2 = indices2[i+1] + 1
+
+
+        print(indices1)
+        print(indices2)
+
+        old_strings = []
+        new_strings = []
+
+        for i in range(0, len(indices1),2):
+            old_strings.append(last_attempt[indices1[i]:indices1[i+1]])
+            new_strings.append(code[indices2[i]:indices2[i+1]])
+
+
+        for i in range(0,len(old_strings)):
+            code = code.replace(new_strings[i],old_strings[i])
+
+    return code
