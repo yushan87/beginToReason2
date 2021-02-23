@@ -150,7 +150,7 @@ def not_complete(request):
         if current_user.current_main_set is None:
             return False
         if current_user.completed_sets is not None:
-            if current_user.current_main_set != current_user.completed_sets:
+            if current_user.current_main_set not in current_user.completed_sets.all():
                 print("not complete")
                 print(current_user.current_main_set)
                 return True
@@ -303,12 +303,16 @@ def align_with_preious_lesson(user, code):
 def replace_previous(user, code):
 
     last_attempt = DataLog.objects.filter(user_key=User.objects.get(email=user)).order_by('-id')[0].code
+    print(last_attempt)
+    print(code)
 
     # Checks if there is code to be replaced
-    present = code.find('/*previous*/')
+    present = code.find('/*previous')
 
     if present != -1:
         print("present")
+
+        code = align_with_preious_lesson(user, code)
 
         occurrence = 20
         indices1 = []
@@ -343,6 +347,8 @@ def replace_previous(user, code):
             old_strings.append(last_attempt[indices1[i]:indices1[i+1]])
             new_strings.append(code[indices2[i]:indices2[i+1]])
 
+        print(old_strings)
+        print(new_strings)
 
         for i in range(0,len(old_strings)):
             code = code.replace(new_strings[i],old_strings[i])

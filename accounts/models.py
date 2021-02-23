@@ -26,7 +26,7 @@ class UserInformation(models.Model):
     current_lesson_index = models.IntegerField(default=0)
     completed_lesson_index = models.IntegerField(default=0)
     current_lesson_name = models.CharField(max_length=200, default="None")
-    completed_sets = models.ManyToManyField(MainSet, blank=True, related_name='sets_completed', null=True)
+    completed_sets = models.ManyToManyField(MainSet, blank=True, related_name='sets_completed')
     mood = models.CharField(max_length=10, default="neutral")
 
     def __str__(self):

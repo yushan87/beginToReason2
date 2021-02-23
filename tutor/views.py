@@ -156,7 +156,6 @@ def tutor(request):
             # to put in place for sub lessons. What identifiers do we need?
 
                 current_lesson.code.lesson_code = can_mutate(current_lesson)
-                current_lesson.code.lesson_code = align_with_preious_lesson(current_user, current_lesson.code.lesson_code)
                 current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code)
                 # create an ordered set
                 index = 0
