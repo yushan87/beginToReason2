@@ -20,12 +20,13 @@ class UserInformation(models.Model):
     user_class = models.CharField("Class", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
     user_gender = models.CharField("Gender", max_length=50, validators=[MinLengthValidator(1)])  # Gender field
     user_race = models.CharField("Race", max_length=50, validators=[MinLengthValidator(1)])  # Race field
+    user_instructor = models.BooleanField(default=False)
     current_main_set = models.ForeignKey(MainSet, blank=True, on_delete=models.CASCADE, null=True)
     current_lesson_set = models.ForeignKey(LessonSet, blank=True, on_delete=models.CASCADE, null=True)
     current_lesson_index = models.IntegerField(default=0)
     completed_lesson_index = models.IntegerField(default=0)
     current_lesson_name = models.CharField(max_length=200, default="None")
-    completed_sets = models.ManyToManyField(MainSet, blank=True, related_name='sets_completed', null=True)
+    completed_sets = models.ManyToManyField(MainSet, blank=True, related_name='sets_completed')
     mood = models.CharField(max_length=10, default="neutral")
 
     def __str__(self):
