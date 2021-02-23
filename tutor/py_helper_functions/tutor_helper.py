@@ -41,10 +41,10 @@ def lesson_set_auth(request):
             print("checking for lesson log")
             log = LessonLog.objects.filter(user=current_user.user)
             if log.filter(main_set_key=main_set).exists():
-                lesson_logs = log.filter(main_set_key=main_set)
-                print(lesson_logs[0])
+                lesson_logs = log.filter(main_set_key=main_set).last()
+                print("??????", lesson_logs.lesson_set_key.first_in_set)
                 current_user.current_main_set = main_set
-                current_set = LessonSet.objects.get(set_name=lesson_logs[0].lesson_set_key.set_name)
+                current_set = LessonSet.objects.get(set_name=lesson_logs.lesson_set_key.set_name)
                 current_user.current_lesson_set = current_set
                 current_user.current_lesson_name = current_set.first_in_set.lesson_name
                 current_user.current_lesson_index = 0
@@ -128,6 +128,8 @@ def not_complete(request):
         user = User.objects.get(email=request.user.email)
         print("\t", user)
         current_user = UserInformation.objects.get(user=user)
+        if current_user.current_main_set is None:
+            return False
         if current_user.completed_sets is not None:
             if current_user.current_main_set not in current_user.completed_sets.all():
                 print("not complete")
@@ -190,16 +192,14 @@ def check_status(status):
     return False
 
 
-def check_feedback(current_lesson, submitted_answer, status):
+def check_feedback(current_lesson, submitted_answer, status, unlock_next):
     type = 'DEF'
-    reload = 'false'
     if status == 'success':
         headline = 'Correct'
         text = current_lesson.correct_feedback
         type = 'COR'
     else:
         if current_lesson.sub_lessons_available:
-            reload = 'true'
             type = check_type(current_lesson, submitted_answer, status)
             try:
                 headline = current_lesson.feedback.get(feedback_type=type).headline
@@ -224,7 +224,7 @@ def check_feedback(current_lesson, submitted_answer, status):
             'status': status,
             'sub': current_lesson.sub_lessons_available,
             'type': type,
-            'reload': reload
+            'unlock_next': unlock_next
             }
 
 
