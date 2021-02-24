@@ -11,4 +11,5 @@ app_name = 'data_analysis'
 # URL patterns to be matched.
 urlpatterns = [
     path('d3Graph/<int:index>', views.d3Graph, name="d3Graph")
+    path('instructor', views.instructor, name='instructor')
 ]
