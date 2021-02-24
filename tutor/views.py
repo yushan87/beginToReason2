@@ -24,10 +24,12 @@ def catalog(request):
     """
     # get all lesson sets, display
     if request.method == 'POST':
+        print("Attempting to open the lesson: ", request.POST)
 
         if user_auth(request):
             # search for lesson set
             if lesson_set_auth(request):
+                print(request)
                 return redirect("/tutor/tutor")
             else:
                 print("lesson set auth returned false")
@@ -136,6 +138,7 @@ def tutor(request):
         # Ensure user exists
         # Case 2a: if the user exists
         print("in the get")
+
         if user_auth(request) and not_complete(request):
 
             # Case 2aa: if the user has a current set

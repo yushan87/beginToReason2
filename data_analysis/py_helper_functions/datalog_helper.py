@@ -20,7 +20,7 @@ def log_data(request):
     user_info = UserInformation.objects.get(user=user)
     lesson_set = user_info.current_lesson_set
     main_set = user_info.current_main_set
-    lesson = Lesson.objects.get(lesson_index=user_info.current_lesson_index)
+    lesson = Lesson.objects.get(lesson_name=user_info.current_lesson_name)
     if lesson.can_mutate:
         original_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
     else:
