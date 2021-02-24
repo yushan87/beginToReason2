@@ -260,7 +260,7 @@ def completed(request, index):
                     break
 
             if index <= count2:
-                lesson_info = get_log_data(current_user, index)
+                lesson_info = get_log_data(current_user, current_user.current_lesson_set)
                 print("lesson info: ", index)
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
