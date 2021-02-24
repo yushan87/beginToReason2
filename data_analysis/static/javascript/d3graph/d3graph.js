@@ -52,7 +52,7 @@ function mainFilter(d) {
     return false
   }
   const filterBySlider = () => {
-    const slice = filter.sliderUsers.slice(0, document.querySelector("#filterSlider").value)
+    const slice = filter.sliderUsers.slice(0, Math.ceil(document.querySelector("#filterSlider").value ** 2 / Object.entries(graph.data.users).length))
     for (let user of d.users) {
       if (slice.includes(user)) {
         return true
