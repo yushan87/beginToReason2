@@ -279,12 +279,12 @@ def completed(request, index):
             # create an ordered set
             ordered_set = current_user.current_main_set.lessons.all()
             count2 = 0
-            for count2, item in enumerate(current_user.current_main_set.lessons.all()):
-                if item == current_user.current_lesson_set:
+            for count2, item2 in enumerate(current_user.current_main_set.lessons.all()):
+                if item2 == current_user.current_lesson_set:
                     break
 
             if index <= count2:
-                lesson_info = get_log_data(current_user, index)
+                lesson_info = get_log_data(current_user, item)
                 print("lesson info: ", index)
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,

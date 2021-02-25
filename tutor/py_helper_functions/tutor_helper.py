@@ -57,6 +57,8 @@ def lesson_set_auth(request):
         print("HIT")
         main_set = MainSet.objects.filter(set_name=request.POST.get("set_name"))[0]
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+        if current_user.completed_sets.filter(set_name=request.POST.get("set_name")).exists():
+            return False
         if LessonLog.objects.filter(user=current_user.user).exists():
             print("checking for lesson log")
             log = LessonLog.objects.filter(user=current_user.user)

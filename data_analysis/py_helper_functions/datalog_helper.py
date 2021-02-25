@@ -50,13 +50,14 @@ def log_data(request):
     data_to_log.save()
 
 
-def get_log_data(user, lesson_index):
+def get_log_data(user, lesson_name):
     user = User.objects.get(email=user)
     print(user)
     get_user_successes = DataLog.objects.filter(user_key=user)
+    print(get_user_successes)
 
-    print(get_user_successes.filter(lesson_key=Lesson.objects.get(lesson_index=lesson_index)))
-    get_lesson = get_user_successes.filter(lesson_key=Lesson.objects.get(lesson_index=lesson_index)).order_by('-id')[0]
+    print("[][][][]", get_user_successes.filter(lesson_set_key=LessonSet.objects.get(set_name=lesson_name)))
+    get_lesson = get_user_successes.filter(lesson_set_key=LessonSet.objects.get(set_name=lesson_name)).order_by('-id')[0]
 
     print(get_lesson)
     return repr(get_lesson.code).replace("'",''), get_lesson.face, get_lesson.past_answers, get_lesson.explanation
