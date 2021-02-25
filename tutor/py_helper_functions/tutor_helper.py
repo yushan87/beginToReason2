@@ -281,7 +281,7 @@ def log_lesson(request):
 def align_with_previous_lesson(user, code):
 
     last_attempt = DataLog.objects.filter(user_key=User.objects.get(email=user)).order_by('-id')[0].code
-    print("Last Attempt: ", last_attempt)
+
     occurrence = 3
     original = ["I", "J", "K"]
     variables = []
