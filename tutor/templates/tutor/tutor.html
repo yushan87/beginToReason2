@@ -241,7 +241,7 @@
                         </div>
                     </div>
                 <div class="progress">
-                    <div class="progress-bar bg-success" id="percent" role="progressbar" style="width: {{finished_count|div:setLength|mul:100}}%;" aria-valuemin="0" aria-valuemax="100">{{finished_count|div:setLength|mul:100|floatformat }}%</div>
+                    <div class="progress-bar bg-success" id="percent" role="progressbar" style="width: {{index|div:setLength|mul:100}}%;" aria-valuemin="0" aria-valuemax="100">{{index|div:setLength|mul:100|floatformat }}%</div>
                 </div>
                     <script src="{% static 'javascript/lesson/editorUtils.js' %}"></script>
                 </div>
