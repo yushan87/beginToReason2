@@ -54,6 +54,7 @@ def lesson_set_auth(request):
         Boolean: A boolean to signal if the lessonSet has been found in our database
     """
     if MainSet.objects.filter(set_name=request.POST.get("set_name")).exists():
+        print("HIT")
         main_set = MainSet.objects.filter(set_name=request.POST.get("set_name"))[0]
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
         if LessonLog.objects.filter(user=current_user.user).exists():
@@ -65,8 +66,11 @@ def lesson_set_auth(request):
                 print("??????", lesson_logs.lesson_set_key.first_in_set)
                 current_user.current_main_set = main_set
                 current_set = LessonSet.objects.get(set_name=lesson_logs.lesson_set_key.set_name)
-                next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[lesson_logs.lesson_index + 1])
 
+                if (lesson_logs.lesson_index + 1) < len(main_set.lessons.all()):
+                    next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[lesson_logs.lesson_index + 1])
+                else:
+                    next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[lesson_logs.lesson_index])
                 current_user.current_lesson_set = next_set
                 current_user.current_lesson_name = next_set.first_in_set.lesson_name
                 current_user.current_lesson_index = 0
@@ -78,7 +82,7 @@ def lesson_set_auth(request):
                     return True
         else:
             current_user.current_main_set = main_set
-            print(main_set.lessons.all()[0])
+            print("1: ", main_set.lessons.all()[0])
             current_set = LessonSet.objects.get(set_name=main_set.lessons.all()[0])
             current_user.current_lesson_set = current_set
             print(current_set.lessons.all())
@@ -277,7 +281,7 @@ def log_lesson(request):
 def align_with_previous_lesson(user, code):
 
     last_attempt = DataLog.objects.filter(user_key=User.objects.get(email=user)).order_by('-id')[0].code
-
+    print("Last Attempt: ", last_attempt)
     occurrence = 3
     original = ["I", "J", "K"]
     variables = []
@@ -298,16 +302,21 @@ def align_with_previous_lesson(user, code):
 
     code = code.replace(change, "Integer")
 
+    change = variables[0] + "f"
+
+    code = code.replace(change, "If")
+
     return code
 
 
-def replace_previous(user, code):
+def replace_previous(user, code, is_alt):
 
     if not DataLog.objects.filter(user_key=User.objects.get(email=user)):
         print("There is no datalog")
         return code
 
-    code = align_with_previous_lesson(user, code)
+    if is_alt:
+        code = align_with_previous_lesson(user, code)
 
     last_attempt = DataLog.objects.filter(user_key=User.objects.get(email=user)).order_by('-id')[0].code
 

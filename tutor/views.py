@@ -160,7 +160,8 @@ def tutor(request):
             # to put in place for sub lessons. What identifiers do we need?
 
                 current_lesson.code.lesson_code = can_mutate(current_lesson)
-                current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code)
+                current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
+                                                                   current_lesson.is_alternate)
                 # create an ordered set
                 index = 0
                 for index, item in enumerate(current_user.current_main_set.lessons.all()):
