@@ -52,7 +52,7 @@ function mainFilter(d) {
     return false
   }
   const filterBySlider = () => {
-    const slice = filter.sliderUsers.slice(0, Math.ceil(document.querySelector("#filterSlider").value ** 2 / Object.entries(graph.data.users).length))
+    const slice = filter.sliderUsers.slice(0, Math.ceil(document.querySelector("#filterSlider").value ** 2.5 / Object.entries(graph.data.users).length ** 1.5))
     for (let user of d.users) {
       if (slice.includes(user)) {
         return true
@@ -347,17 +347,6 @@ const center = node.append("circle")
   .attr("r", minSize - 2)
   .attr("stroke-width", 0)
 
-
-//Labels
-// node.append("text")
-//   .attr("dx", 12)
-//   .attr("stroke", "#000")
-//   .text(d => d.name)
-// node.append("text")
-//   .attr("dy", 16)
-//   .attr("dx", -12)
-//   .attr("stroke", "#000")
-//   .text(d => d.distance)
 simulation.on("tick", () => {
   node
     .attr("transform", d => `translate(${d.x}, ${d.y})`)
