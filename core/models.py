@@ -353,6 +353,7 @@ class LessonSet(models.Model):
     lessons = models.ManyToManyField(Lesson, blank=True)
     first_in_set = models.ForeignKey(Lesson, related_name='first_in_set', on_delete=models.CASCADE, blank=True, null=True)
     set_description = models.TextField(default="This set is designed to further your understanding")
+    index_in_set = models.IntegerField(default=0)
     # number_normal_lessons = models.IntegerField(default=0)
 
     def __str__(self):

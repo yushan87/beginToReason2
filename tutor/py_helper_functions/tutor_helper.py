@@ -54,18 +54,27 @@ def lesson_set_auth(request):
         Boolean: A boolean to signal if the lessonSet has been found in our database
     """
     if MainSet.objects.filter(set_name=request.POST.get("set_name")).exists():
+        print("HIT")
         main_set = MainSet.objects.filter(set_name=request.POST.get("set_name"))[0]
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+        if current_user.completed_sets.filter(set_name=request.POST.get("set_name")).exists():
+            return False
         if LessonLog.objects.filter(user=current_user.user).exists():
             print("checking for lesson log")
             log = LessonLog.objects.filter(user=current_user.user)
+            print("log: ", log)
             if log.filter(main_set_key=main_set).exists():
                 lesson_logs = log.filter(main_set_key=main_set).last()
                 print("??????", lesson_logs.lesson_set_key.first_in_set)
                 current_user.current_main_set = main_set
                 current_set = LessonSet.objects.get(set_name=lesson_logs.lesson_set_key.set_name)
-                current_user.current_lesson_set = current_set
-                current_user.current_lesson_name = current_set.first_in_set.lesson_name
+
+                if (lesson_logs.lesson_index + 1) < len(main_set.lessons.all()):
+                    next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[lesson_logs.lesson_index + 1])
+                else:
+                    next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[lesson_logs.lesson_index])
+                current_user.current_lesson_set = next_set
+                current_user.current_lesson_name = next_set.first_in_set.lesson_name
                 current_user.current_lesson_index = 0
                 current_user.completed_lesson_index = 0
                 current_user.mood = "neutral"
@@ -75,7 +84,7 @@ def lesson_set_auth(request):
                     return True
         else:
             current_user.current_main_set = main_set
-            print(main_set.lessons.all()[0])
+            print("1: ", main_set.lessons.all()[0])
             current_set = LessonSet.objects.get(set_name=main_set.lessons.all()[0])
             current_user.current_lesson_set = current_set
             print(current_set.lessons.all())
@@ -270,7 +279,8 @@ def log_lesson(request):
                                              main_set_key=main_set)
     lesson_to_log.save()
 
-def align_with_preious_lesson(user, code):
+
+def align_with_previous_lesson(user, code):
 
     last_attempt = DataLog.objects.filter(user_key=User.objects.get(email=user)).order_by('-id')[0].code
 
@@ -294,17 +304,23 @@ def align_with_preious_lesson(user, code):
 
     code = code.replace(change, "Integer")
 
+    change = variables[0] + "f"
+
+    code = code.replace(change, "If")
+
     return code
 
 
+def replace_previous(user, code, is_alt):
 
+    if not DataLog.objects.filter(user_key=User.objects.get(email=user)):
+        print("There is no datalog")
+        return code
 
-
-def replace_previous(user, code):
+    if is_alt:
+        code = align_with_previous_lesson(user, code)
 
     last_attempt = DataLog.objects.filter(user_key=User.objects.get(email=user)).order_by('-id')[0].code
-    print(last_attempt)
-    print(code)
 
     # Checks if there is code to be replaced
     present = code.find('/*previous')
@@ -312,20 +328,17 @@ def replace_previous(user, code):
     if present != -1:
         print("present")
 
-        code = align_with_preious_lesson(user, code)
-
         occurrence = 20
         indices1 = []
         indices2 = []
         index1 = 0
         index2 = 0
 
-
         # Has to identify the starting and ending index for each confirm statement. The format does differ
         # between the old and new.
 
         for i in range(0, occurrence, 2):
-            if(last_attempt.find('Confirm', index1) != -1):
+            if last_attempt.find('Confirm', index1) != -1:
                 indices1.append(last_attempt.find('Confirm', index1))
                 index1 = indices1[i] + 1
                 indices1.append(last_attempt.find(';', index1)+1)
@@ -336,19 +349,12 @@ def replace_previous(user, code):
                 indices2.append(code.find(';', index2)+1)
                 index2 = indices2[i+1] + 1
 
-
-        print(indices1)
-        print(indices2)
-
         old_strings = []
         new_strings = []
 
         for i in range(0, len(indices1),2):
             old_strings.append(last_attempt[indices1[i]:indices1[i+1]])
             new_strings.append(code[indices2[i]:indices2[i+1]])
-
-        print(old_strings)
-        print(new_strings)
 
         for i in range(0,len(old_strings)):
             code = code.replace(new_strings[i],old_strings[i])

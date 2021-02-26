@@ -24,10 +24,12 @@ def catalog(request):
     """
     # get all lesson sets, display
     if request.method == 'POST':
+        print("Attempting to open the lesson: ", request.POST)
 
         if user_auth(request):
             # search for lesson set
             if lesson_set_auth(request):
+                print(request)
                 return redirect("/tutor/tutor")
             else:
                 print("lesson set auth returned false")
@@ -83,11 +85,31 @@ def tutor(request):
                     print(current_lesson.correct, "%%%%%%%%%%")
                     current_user.current_lesson_name = Lesson.objects.get(lesson_name=current_lesson.correct).lesson_name
                     index = 0
-                    for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
-                        print(index, "&&&&&&&&&", item.lesson_name)
-                        if item.lesson_name == current_lesson.correct:
-                            break
-                    current_user.current_lesson_index = index
+
+
+                    current_set = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
+                    print("CURRENT LESSON NAME: ", current_set, " ***** ", current_user.current_lesson_set.lessons.all())
+
+                    if current_set in current_user.current_lesson_set.lessons.all():
+                        print("PRINT LESSONS: ", current_user.current_lesson_set.lessons.all())
+
+                        #if current_user.current_lesson_name in current_user.current_lesson_set.lessons.all():
+                        for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
+                            print(index, "&&&&&&&&&", item.lesson_name)
+                            if item.lesson_name == current_lesson.correct:
+                                break
+                        current_user.current_lesson_index = index
+                    else:
+                        for index, item in enumerate(main_set.lessons.all()):
+                            if item == current_user.current_lesson_set:
+                                break
+
+                        next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[index + 1])
+                        print("***************** ", next_set)
+                        current_user.current_lesson_set = next_set
+                        current_user.current_lesson_name = next_set.first_in_set.lesson_name
+                        current_user.current_lesson_index = 0
+
                     current_user.save()
                     unlock_next = True
                     return JsonResponse(check_feedback(current_lesson, submitted_answer, status, unlock_next))
@@ -136,6 +158,7 @@ def tutor(request):
         # Ensure user exists
         # Case 2a: if the user exists
         print("in the get")
+
         if user_auth(request) and not_complete(request):
 
             # Case 2aa: if the user has a current set
@@ -151,13 +174,14 @@ def tutor(request):
 
             if Lesson.objects.filter(lesson_title=current_set[current_user.current_lesson_index]).exists():
                 current_lesson = Lesson.objects.get(lesson_title=current_set[current_user.current_lesson_index])
-                print("in if 1")
+                print("in if 1 - Current lesson: ", current_lesson)
 
             # Just as we are altering the code here with mutate, this will pull the previous answer
             # to put in place for sub lessons. What identifiers do we need?
 
                 current_lesson.code.lesson_code = can_mutate(current_lesson)
-                current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code)
+                current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
+                                                                   current_lesson.is_alternate)
                 # create an ordered set
                 index = 0
                 for index, item in enumerate(current_user.current_main_set.lessons.all()):
@@ -255,12 +279,12 @@ def completed(request, index):
             # create an ordered set
             ordered_set = current_user.current_main_set.lessons.all()
             count2 = 0
-            for count2, item in enumerate(current_user.current_main_set.lessons.all()):
-                if item == current_user.current_lesson_set:
+            for count2, item2 in enumerate(current_user.current_main_set.lessons.all()):
+                if item2 == current_user.current_lesson_set:
                     break
 
             if index <= count2:
-                lesson_info = get_log_data(current_user, index)
+                lesson_info = get_log_data(current_user, item)
                 print("lesson info: ", index)
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,

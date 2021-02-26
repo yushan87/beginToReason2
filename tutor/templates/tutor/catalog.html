@@ -26,23 +26,11 @@
                 </h1>
                 {% for obj in LessonSet %}
                     {% if user.is_authenticated %}
-                        {% if user.userinformation.current_lesson_set == obj %}
+                        {% if user.userinformation.current_main_set == obj%}
                             <div id="begin" class="card lesson-card">
                                 <div class="card-horizontal">
                                     <div class="card-body text-center">
-                                        <a href="{% url 'accounts:profile' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To Sets in Progress</a>
-                                    </div>
-                                </div>
-                            </div>
-                        {% elif user.userinformation.completed_sets == obj %}
-                            <div id="begin" class="card lesson-card">
-                                <div class="card-horizontal">
-                                    <div class="img-square-wrapper">
-                                        <img class="" src="{% static 'images/logo4.png' %}" id="card-img" alt="Card image cap">
-                                    </div>
-                                    <div class="card-body text-center">
-                                        <h1 class="card-title">No New Sets Available</h1>
-                                        <a href="{% url 'accounts:profile' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To Profile to review completed sets.</a>
+                                        <a href="{% url 'accounts:profile' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">View Your Sets</a>
                                     </div>
                                 </div>
                             </div>
