@@ -1,8 +1,12 @@
 document.querySelector('#graphTitle').innerHTML = `${graph.lesson.name}<br>${graph.lesson.title}`
 document.querySelector('#graphCode').innerHTML = graph.lesson.code.replace(/\\r\\n/g, "<br>")
 const filter = {}
-filter.checkBoxusers = []
+//users that are checked
+filter.checkBoxUsers = []
+//users in ranked "goodness" order
 filter.sliderUsers = []
+//users that should be represent by opaqueness in graph (updated each tick)
+filter.allowedUsers = []
 Object.entries(graph.data.users).forEach((user) => {
   filter.sliderUsers.push(user[0])
 })
@@ -29,6 +33,7 @@ const drag = d3.drag()
     d.fy = null;
   });
 
+//force for the simulation
 function boundingBox() {
   let radius
   let curr_node
@@ -39,27 +44,30 @@ function boundingBox() {
   }
 }
 
-function mainFilter(d) {
-  let usersFound = []
-  let allowedUsers = d.users
-  //filter by checked users
-  if (filter.checkBoxusers.length) {
-
-    for (let user of allowedUsers) {
-      if (filter.checkBoxusers.includes(user)) {
-        usersFound.push(user)
+//called each tick
+function updateAllowedUsers() {
+  //only users represented in distance slider
+  filter.allowedUsers = filter.sliderUsers.slice(0, Math.ceil(document.querySelector("#filterSlider").value ** 2.5 / Object.entries(graph.data.users).length ** 1.5))
+  //now by checkbox
+  if(filter.checkBoxUsers.length) {
+    const acceptedUsers = []
+    for(let user of filter.checkBoxUsers) {
+      if(filter.allowedUsers.includes(user)) {
+        acceptedUsers.push(user)
       }
     }
-    allowedUsers = usersFound
+    filter.allowedUsers = acceptedUsers
   }
-  const slice = filter.sliderUsers.slice(0, Math.ceil(document.querySelector("#filterSlider").value ** 2.5 / Object.entries(graph.data.users).length ** 1.5))
-  usersFound = []
-  for (let user of allowedUsers) {
-    if (slice.includes(user)) {
-      usersFound.push(user)
+}
+
+//returns the user list that the filter accepts
+function filteredUsers(d) {
+  allowedUsers = []
+  for(let user of d.users) {
+    if(filter.allowedUsers.includes(user)) {
+      allowedUsers.push(user)
     }
   }
-  allowedUsers = usersFound
   return allowedUsers
 }
 
@@ -162,10 +170,10 @@ function setAllUserChecks(value) {
 }
 
 function setUserFilter() {
-  filter.checkBoxusers = []
+  filter.checkBoxUsers = []
   document.querySelectorAll("#userList input").forEach((element) => {
     if (element.checked) {
-      filter.checkBoxusers.push(element.id)
+      filter.checkBoxUsers.push(element.id)
     }
   })
   simulation.restart()
@@ -190,7 +198,7 @@ function boldLine(d) {
 }
 
 function manageOpaqueLink(d) {
-  const users = mainFilter(d).length
+  const users = filteredUsers(d).length
   if (users > 0) {
     d3.select(this)
       .attr("stroke-width", users ** 0.6 + 1)
@@ -390,10 +398,12 @@ const center = node.append("circle")
   .attr("stroke-width", 0)
 
 simulation.on("tick", () => {
+  updateAllowedUsers()
+
   node
     .attr("transform", d => `translate(${d.x}, ${d.y})`)
     .selectAll(".opaque")
-    .attr("r", d => radiusHelper(mainFilter(d).length))
+    .attr("r", d => radiusHelper(filteredUsers(d).length))
 
   center
     .attr("visibility", displayDot)
