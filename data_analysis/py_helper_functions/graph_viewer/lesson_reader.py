@@ -102,6 +102,7 @@ def lesson_stats(lesson_id):
 
 
 def get_name(user):
-    if not user.first_name:
-        return "admin"
-    return user.first_name + " " + user.last_name
+    return str(user)
+    # if not user.first_name:
+    #     return "admin"
+    # return user.first_name + " " + user.last_name
