@@ -40,35 +40,27 @@ function boundingBox() {
 }
 
 function mainFilter(d) {
-  const filterByUser = () => {
-    if (!filter.checkBoxusers.length) {
-      return true
-    }
-    for (let user of d.users) {
+  let usersFound = []
+  let allowedUsers = d.users
+  //filter by checked users
+  if (filter.checkBoxusers.length) {
+
+    for (let user of allowedUsers) {
       if (filter.checkBoxusers.includes(user)) {
-        return true
+        usersFound.push(user)
       }
     }
-    return false
+    allowedUsers = usersFound
   }
-  const filterBySlider = () => {
-    const slice = filter.sliderUsers.slice(0, Math.ceil(document.querySelector("#filterSlider").value ** 2.5 / Object.entries(graph.data.users).length ** 1.5))
-    for (let user of d.users) {
-      if (slice.includes(user)) {
-        return true
-      }
+  const slice = filter.sliderUsers.slice(0, Math.ceil(document.querySelector("#filterSlider").value ** 2.5 / Object.entries(graph.data.users).length ** 1.5))
+  usersFound = []
+  for (let user of allowedUsers) {
+    if (slice.includes(user)) {
+      usersFound.push(user)
     }
-    return false
   }
-  const isSelected = () => {
-    return d.name === selectedNode
-  }
-  const toShow = filterBySlider() * filterByUser() + isSelected()
-  if (toShow) {
-    return "1"
-  } else {
-    return "0.1"
-  }
+  allowedUsers = usersFound
+  return allowedUsers
 }
 
 function setClick(obj, d) {
@@ -198,7 +190,14 @@ function boldLine(d) {
 }
 
 function radius(d) {
-  return d.appearances ** 0.7 + minSize
+  return radiusHelper(d.appearances)
+}
+
+function radiusHelper(appearances) {
+  if(appearances <= 0) {
+    return 0
+  }
+  return appearances ** 0.7 + minSize
 }
 
 function color(d) {
@@ -331,8 +330,6 @@ const node = svg.selectAll(".node")
   .enter()
   .append("g")
   .attr("class", "node")
-  .attr("stroke", "#fff")
-  .attr("stroke-width", 1.5)
   .attr("style", "cursor: pointer;")
   .each(function (d) {
     setClick(this, d)
@@ -342,6 +339,15 @@ const node = svg.selectAll(".node")
 node.append("circle")
   .attr("r", radius)
   .attr("fill", color)
+  .attr("opacity", 0.1)
+  .attr("class", "translucent")
+
+node.append("circle")
+  .attr("r", radius)
+  .attr("fill", color)
+  .attr("class", "opaque")
+
+
 
 const center = node.append("circle")
   .attr("r", minSize - 2)
@@ -350,7 +356,8 @@ const center = node.append("circle")
 simulation.on("tick", () => {
   node
     .attr("transform", d => `translate(${d.x}, ${d.y})`)
-    .attr("opacity", mainFilter)
+    .selectAll(".opaque")
+    .attr("r", d => radiusHelper(mainFilter(d).length))
 
   center
     .attr("visibility", displayDot)
