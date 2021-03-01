@@ -189,12 +189,25 @@ function boldLine(d) {
   }
 }
 
+function manageOpaqueLink(d) {
+  const users = mainFilter(d).length
+  if (users > 0) {
+    d3.select(this)
+      .attr("stroke-width", users ** 0.6 + 1)
+      .attr("marker-end", "url(#OpaqueTriangle")
+  } else {
+    d3.select(this)
+      .attr("stroke-width", 0)
+      .attr("marker-end", "url(#TranslucentTriangle")
+  }
+}
+
 function radius(d) {
   return radiusHelper(d.appearances)
 }
 
 function radiusHelper(appearances) {
-  if(appearances <= 0) {
+  if (appearances <= 0) {
     return 0
   }
   return appearances ** 0.7 + minSize
@@ -301,10 +314,10 @@ const svg = d3.select("#lessonGraph")
   .style("border", "solid 1px black")
 
 
-const marker = d3.select("svg")
+const opaqueMarker = d3.select("svg")
   .append('defs')
   .append('marker')
-  .attr("id", "Triangle")
+  .attr("id", "OpaqueTriangle")
   .attr("refX", 3)
   .attr("refY", 4)
   .attr("markerUnits", 'userSpaceOnUse')
@@ -315,15 +328,38 @@ const marker = d3.select("svg")
   .style("fill", "#000000")
   .attr("d", 'M 0 0 12 4 0 8 3 4');
 
-const link = svg.append("g")
-  .attr("fill", "none")
-  .attr("stroke", "#999")
-  .selectAll("path")
+const translucentMarker = d3.select("svg")
+  .append('defs')
+  .append('marker')
+  .attr("id", "TranslucentTriangle")
+  .attr("refX", 3)
+  .attr("refY", 4)
+  .attr("markerUnits", 'userSpaceOnUse')
+  .attr("markerWidth", 12)
+  .attr("markerHeight", 8)
+  .attr("orient", 'auto')
+  .append('path')
+  .style("fill", "#000000")
+  .attr("d", 'M 0 0 12 4 0 8 3 4')
+  .attr("opacity", 0.1)
+
+const link = svg.selectAll(".link")
   .data(links)
   .enter()
+  .append("g")
+  .attr("fill", "none")
+  .attr("class", "link")
+  .attr("stroke", "#999")
+
+link
   .append("path")
+  .attr("class", "translucent")
   .attr("stroke-width", d => d.size ** 0.6 + 1)
-  .attr("marker-end", "url(#Triangle)")
+  .attr("opacity", 0.1)
+
+link
+  .append("path")
+  .attr("class", "opaque")
 
 const node = svg.selectAll(".node")
   .data(nodes)
@@ -363,6 +399,7 @@ simulation.on("tick", () => {
     .attr("visibility", displayDot)
 
   link
+    .selectAll("path")
     .attr("d", d => {
       const angle = Math.atan2(d.target.y - d.source.y, d.target.x - d.source.x)
       const adjRad = radius(d.target) + 6 + minSize
@@ -374,6 +411,10 @@ simulation.on("tick", () => {
       const middleY = (targetY + d.source.y) / 2 + Math.sin(rightAngle) * curve * distance
       return `M ${d.source.x} ${d.source.y} Q ${middleX} ${middleY} ${targetX + Math.cos(rightAngle) * curve * 20} ${targetY + Math.sin(rightAngle) * curve * 20}`
     })
-    .attr("opacity", mainFilter)
+    // .attr("opacity", mainFilter)
     .each(boldLine)
+
+  link
+    .selectAll(".opaque")
+    .each(manageOpaqueLink)
 })
