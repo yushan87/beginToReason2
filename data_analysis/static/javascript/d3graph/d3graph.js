@@ -19,6 +19,7 @@ let selectedNode = ""
 
 const drag = d3.drag()
   .on("start", function (d) {
+    disableSimulationForces()
     if (!d3.event.active) simulation.alphaTarget(0.2).restart();
     d.fx = d.x
     d.fy = d.y
@@ -28,7 +29,10 @@ const drag = d3.drag()
     d.fy = d3.event.y
   })
   .on("end", function (d) {
-    if (!d3.event.active) simulation.alphaTarget(0);
+    if (!d3.event.active) {
+      simulation.alphaTarget(0).restart()
+      enableSimulationForces()
+    }
     d.fx = null;
     d.fy = null;
   });
@@ -49,10 +53,10 @@ function updateAllowedUsers() {
   //only users represented in distance slider
   filter.allowedUsers = filter.sliderUsers.slice(0, Math.ceil(document.querySelector("#filterSlider").value ** 2.5 / Object.entries(graph.data.users).length ** 1.5))
   //now by checkbox
-  if(filter.checkBoxUsers.length) {
+  if (filter.checkBoxUsers.length) {
     const acceptedUsers = []
-    for(let user of filter.checkBoxUsers) {
-      if(filter.allowedUsers.includes(user)) {
+    for (let user of filter.checkBoxUsers) {
+      if (filter.allowedUsers.includes(user)) {
         acceptedUsers.push(user)
       }
     }
@@ -63,8 +67,8 @@ function updateAllowedUsers() {
 //returns the user list that the filter accepts
 function filteredUsers(d) {
   allowedUsers = []
-  for(let user of d.users) {
-    if(filter.allowedUsers.includes(user)) {
+  for (let user of d.users) {
+    if (filter.allowedUsers.includes(user)) {
       allowedUsers.push(user)
     }
   }
@@ -149,6 +153,34 @@ function updateUserList(d) {
       }
     }
   })
+}
+
+function disableSimulationForces() {
+  simulation
+    .force("link", null)
+    .force("charge", null)
+    .force("yVal", null)
+    .force("xVal", null)
+    .force("bBox", null)
+}
+
+function enableSimulationForces() {
+  simulation
+    .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.01))
+    .force("charge", d3.forceManyBody().strength(-120))
+    .force("yVal", d3.forceY((d) => {
+      return d.height * (height - margin.top - margin.bottom) + margin.top
+    }).strength(1))
+    .force("xVal", d3.forceX(width / 2).strength(0.005))
+    .force("bBox", boundingBox)
+}
+
+function forceManager(strength) {
+  console.log("HI");
+  if (runForces) {
+    return strength
+  }
+  return 0
 }
 
 function initializeSlider() {
@@ -310,7 +342,7 @@ maxDistance = maxDistance ** 0.7
 const simulation = d3.forceSimulation(graph.data.nodes)
   .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.01))
   .force("charge", d3.forceManyBody().strength(-120))
-  .force("yVal", d3.forceY(function (d) {
+  .force("yVal", d3.forceY((d) => {
     return d.height * (height - margin.top - margin.bottom) + margin.top
   }).strength(1))
   .force("xVal", d3.forceX(width / 2).strength(0.005))
