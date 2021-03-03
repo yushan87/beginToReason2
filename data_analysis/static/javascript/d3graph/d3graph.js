@@ -535,8 +535,15 @@ nodes.sort((a, b) => {
   if (!Number.isNaN(Number.parseFloat(b.distance))) {
     return -1
   }
-  //Both are no completions, make more often nodes lower
-  return a.appearances - b.appearances
+  //Both are no completions, check to see if one is gave up node
+  if(a.score < 0) {
+    return -1
+  } else if (b.score < 0) {
+    return 1
+  } else {
+    //neither are gave up, make more often nodes lower
+    return a.appearances - b.appearances
+  }
 })
 // Preferred height
 const length = nodes.length - 1
