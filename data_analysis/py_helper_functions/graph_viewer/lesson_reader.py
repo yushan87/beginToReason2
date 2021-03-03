@@ -4,6 +4,7 @@ Main file for displaying graphs.
 import json
 from data_analysis.py_helper_functions.graph_viewer.node import Node
 from data_analysis.models import DataLog
+from accounts.models import UserInformation
 from core.models import Lesson
 
 # Takes a lesson index and returns the START node of its graph representation
@@ -102,10 +103,13 @@ def lesson_stats(lesson_id):
 
 
 def user_to_dict(user):
-    return {"name": get_name(user), "attempts": 0}
+    return {"name": get_name(user), "attempts": 0, "gender": get_user_info(user).user_gender}
 
 def get_name(user):
     return str(user)
     # if not user.first_name:
     #     return "admin"
     # return user.first_name + " " + user.last_name
+
+def get_user_info(user):
+    return UserInformation.objects.get(user=user.id)
