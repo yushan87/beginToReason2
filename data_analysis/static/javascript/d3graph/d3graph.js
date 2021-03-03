@@ -27,6 +27,23 @@ const drag = d3.drag()
   .on("drag", function (d) {
     d.fx = d3.event.x
     d.fy = d3.event.y
+    //merge preview stuff
+    const transform = d3.select(this).attr("transform").split(", ")
+    const x = transform[0].split("ranslate(")[1]
+    const y = transform[1].split(")")[0]
+    const collidedList = listCollisions(d.id, {
+      "x": x,
+      "y": y,
+      "r": radius(d)
+    })
+    const dragged = this
+    node.each(function() {
+      if(collidedList.includes(this)) {
+        mergePreview(this, dragged)
+      } else {
+        resetPreview(this)
+      }
+    })
   })
   .on("end", function (d) {
     const transform = d3.select(this).attr("transform").split(", ")
@@ -235,10 +252,15 @@ function mergeNodes(toMerge) {
   //check for gave up
   if (toMerge[0].__data__.score == -1 || toMerge[1].__data__.score == -1) {
     alert(`Sorry, you can't merge the special "Gave up" node with anything else!`)
+    resetPreview(toMerge[0])
+    resetPreview(toMerge[1])
     return
   }
+  //check for incorrect/correct merging
   if (Math.sign(toMerge[0].__data__.score - 1.5) != Math.sign(toMerge[1].__data__.score - 1.5)) {
     alert(`Sorry, you can't merge incorrect and correct nodes together!`)
+    resetPreview(toMerge[0])
+    resetPreview(toMerge[1])
     return
   }
   connectNodes(toMerge[1], toMerge[0])
@@ -246,15 +268,13 @@ function mergeNodes(toMerge) {
   if (toMerge.length < 3) {
     //done! click on the new one and refresh its color, add a dashed stroke to let the user know it's been messed with
     toMerge[0].onclick()
+    resetPreview(toMerge[0])
     d3.select(toMerge[0]).selectAll(".opaque, .translucent").attr("fill", color)
     d3.select(toMerge[0]).select(".opaque").attr("stroke", "#000").attr("stroke-dasharray", "5, 3")
     return
   } else {
     //recursive
-    console.log("before: ");
-    console.log(toMerge.length);
     toMerge.splice(1, 1)
-    console.log(toMerge.length);
     mergeNodes(toMerge)
   }
 }
@@ -262,8 +282,6 @@ function mergeNodes(toMerge) {
 function connectNodes(toDelete, parent) {
   const childData = toDelete.__data__
   const parentData = parent.__data__
-  console.log(childData);
-  console.log(parentData);
   parentData.name += `, ${childData.name}`
   //weighted averages
   parentData.height = (parentData.height * parentData.appearances + childData.height * childData.appearances) / (parentData.appearances + childData.appearances)
@@ -322,6 +340,26 @@ function connectLinks(toDelete, parent) {
           }
         })
     })
+}
+
+function mergePreview(node, dragged) {
+  d3.select(node).selectAll(".preview").remove()
+  d3.select(node)
+    .append("circle")
+    .attr("r", previewRadius(node, dragged))
+    .attr("fill", "none")
+    .attr("class", "preview")
+    .attr("stroke", "#000")
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "5, 3")
+}
+
+function previewRadius(node, dragged) {
+  return radiusHelper(node.__data__.appearances + dragged.__data__.appearances)
+}
+
+function resetPreview(node) {
+  d3.select(node).selectAll(".preview").remove()
 }
 
 function clearAllUserChecks() {
