@@ -228,13 +228,12 @@ function mergeNodes(toMerge) {
     alert(`Sorry, you can't merge incorrect and correct nodes together!`)
     return
   }
-
   connectNodes(toMerge[1], toMerge[0])
   connectLinks(toMerge[1], toMerge[0])
   if (toMerge.length < 3) {
-    //done! click on the new one and refresh its color
+    //done! click on the new one and refresh its color, add a border to let the user know it's been messed with
     toMerge[0].onclick()
-    d3.select(toMerge[0]).selectAll(".opaque, .translucent").attr("fill", color)
+    d3.select(toMerge[0]).selectAll(".opaque, .translucent").attr("fill", color).attr("stroke", "#000").attr("stroke-width", 2)
     return
   } else {
     //recursive
