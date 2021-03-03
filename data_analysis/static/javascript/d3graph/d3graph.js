@@ -406,7 +406,7 @@ function radiusHelper(appearances) {
   if (appearances <= 0) {
     return 0
   }
-  return appearances ** 0.8 + minSize
+  return appearances ** 0.5 * minSize
 }
 
 function color(d) {
