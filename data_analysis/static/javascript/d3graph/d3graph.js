@@ -29,8 +29,21 @@ const drag = d3.drag()
     d.fy = d3.event.y
   })
   .on("end", function (d) {
+    const transform = d3.select(this).attr("transform").split(", ")
+    const x = transform[0].split("ranslate(")[1]
+    const y = transform[1].split(")")[0]
+    const collidedList = listCollisions(d.id, {
+      "x": x,
+      "y": y,
+      "r": radius(d)
+    })
+    if (collidedList.length) {
+      //something collided!
+      collidedList.push(this)
+      mergeNodes(collidedList)
+    }
     if (!d3.event.active) {
-      simulation.alphaTarget(0).restart()
+      simulation.alpha(0.1).alphaTarget(0).restart()
       enableSimulationForces()
     }
     d.fx = null;
@@ -79,7 +92,7 @@ function setClick(obj, d) {
   obj.onclick = () => {
     selectedNode = d.name
     document.querySelector("#nodeInfo").style.backgroundColor = fadedColor(d)
-    document.querySelector("#nodeName").textContent = `Name: ${d.name}`
+    document.querySelector("#nodeName").innerHTML = `Name: ${d.name}`
     document.querySelector("#nodeDistance").textContent = `Distance: ${d.distance}`
     const correct = Math.round(d.score * 100)
     if (correct >= 0 && correct <= 100) {
@@ -87,7 +100,7 @@ function setClick(obj, d) {
       document.querySelector("#nodeCorrect").textContent = `Correct: ${Math.round(d.score * 100)}%`
     } else if (correct > 100) {
       //correct ans
-      document.querySelector("#nodeDistance").textContent = `Distance: Correct`
+      document.querySelector("#nodeDistance").textContent = ""
       document.querySelector("#nodeCorrect").textContent = "Correct Answer"
     } else {
       //gave up
@@ -105,10 +118,10 @@ function setClick(obj, d) {
 function initializeUserList() {
   //set up buttons
   document.querySelector("#selectClear").onclick = () => {
-    setAllUserChecks(false)
+    clearAllUserChecks(false)
   }
   document.querySelector("#selectAll").onclick = () => {
-    setAllUserChecks(true)
+    selectAllUserChecks(true)
   }
   let userString = ""
   for (let user of Object.entries(graph.data.users)) {
@@ -116,7 +129,7 @@ function initializeUserList() {
         <label for="${user[0]}" style="display: block"></label></div>`
   }
   document.querySelector("#userList").innerHTML = userString.substring(0, userString.length - 6)
-  document.querySelectorAll("#userList input").forEach((element) => element.onclick = setUserFilter)
+  document.querySelectorAll("#userList input").forEach((element) => element.onclick = setCheckBoxFilter)
 }
 
 function updateUserList(d) {
@@ -175,14 +188,6 @@ function enableSimulationForces() {
     .force("bBox", boundingBox)
 }
 
-function forceManager(strength) {
-  console.log("HI");
-  if (runForces) {
-    return strength
-  }
-  return 0
-}
-
 function initializeSlider() {
   const slider = document.querySelector("#filterSlider")
   filterSlider.min = 1
@@ -192,16 +197,152 @@ function initializeSlider() {
   }
 }
 
-function setAllUserChecks(value) {
-  document.querySelectorAll("#userList input").forEach((element) => {
-    if (element.style.display != "none") {
-      element.checked = value
-    }
-  })
-  setUserFilter()
+function listCollisions(id, circle) {
+  let collidedWith = []
+  console.log(node._groups[0].length);
+  node
+    .each(function (d) {
+      if (d.id === id) {
+        return
+      }
+      const transform = d3.select(this).attr("transform").split(", ")
+      const otherX = transform[0].split("ranslate(")[1]
+      const otherY = transform[1].split(")")[0]
+      const otherRadius = radius(d)
+      const distance = ((otherX - circle.x) ** 2 + (otherY - circle.y) ** 2) ** (1 / 2)
+      //check for circles colliding
+      if (-Math.abs(circle.r - otherRadius) < distance && distance < circle.r + otherRadius) {
+        collidedWith.push(this)
+      }
+    })
+  return collidedWith
 }
 
-function setUserFilter() {
+function mergeNodes(toMerge) {
+  //check for gave up
+  if (toMerge[0].__data__.score == -1 || toMerge[1].__data__.score == -1) {
+    alert(`Sorry, you can't merge the special "Gave up" node with anything else!`)
+    return
+  }
+  if (Math.sign(toMerge[0].__data__.score - 1.5) != Math.sign(toMerge[1].__data__.score - 1.5)) {
+    alert(`Sorry, you can't merge incorrect and correct nodes together!`)
+    return
+  }
+
+  connectNodes(toMerge[1], toMerge[0])
+  connectLinks(toMerge[1], toMerge[0])
+  if (toMerge.length < 3) {
+    //done! click on the new one and refresh its color
+    toMerge[0].onclick()
+    d3.select(toMerge[0]).selectAll(".opaque, .translucent").attr("fill", color)
+    return
+  } else {
+    //recursive
+    console.log("before: ");
+    console.log(toMerge.length);
+    toMerge.splice(1, 1)
+    console.log(toMerge.length);
+    mergeNodes(toMerge)
+  }
+}
+
+function connectNodes(toDelete, parent) {
+  const childData = toDelete.__data__
+  const parentData = parent.__data__
+  console.log(childData);
+  console.log(parentData);
+  parentData.name += `, ${childData.name}`
+  //weighted averages
+  parentData.height = (parentData.height * parentData.appearances + childData.height * childData.appearances) / (parentData.appearances + childData.appearances)
+  //only run for incorrect nodes
+  if (parentData.score != 2) {
+    if (!isNaN(parentData.distance) && !isNaN(childData.distance)) {
+      parentData.distance = Math.round((parentData.distance * parentData.appearances + childData.distance * childData.appearances) * 100 / (parentData.appearances + childData.appearances)) / 100
+    } else if (!isNaN(childData.distance)) {
+      parentData.distance = childData.distance
+    }
+    parentData.score = Math.round((parentData.score * parentData.appearances + childData.score * childData.appearances) * 100 / (parentData.appearances + childData.appearances)) / 100
+  }
+  parentData.appearances += childData.appearances
+  parentData.users = parentData.users.concat(childData.users)
+  //delete old node
+  d3.select(toDelete).remove()
+  node = d3.selectAll(".node")
+}
+
+function connectLinks(toDelete, parent) {
+  link
+    .each(function (d) {
+      //check if something interesting should happen
+      if (d.source === toDelete.__data__) {
+        //link was coming from the merged node
+        d.source = parent.__data__
+      } else if (d.target === toDelete.__data__) {
+        //link was going to the merged node
+        d.target = parent.__data__
+      } else {
+        return
+      }
+      //something interesting already happened!
+      if (d.target === d.source) {
+        //don't want this!
+        d3.select(this).remove()
+        link = d3.selectAll(".link")
+        return
+      }
+      //check to see if there are duplicate links now
+      const me = this
+      link
+        .each(function (otherD) {
+          if (this === me) {
+            return
+          }
+          if (d.source === otherD.source && d.target === otherD.target) {
+            //duplicates, needs a merge
+            //delete one of the links
+            d3.select(me).remove()
+            link = d3.selectAll(".link")
+            //merge the users
+            otherD.users = otherD.users.concat(d.users)
+          }
+        })
+    })
+}
+
+function clearAllUserChecks() {
+  document.querySelectorAll("#userList input").forEach((element) => {
+    element.checked = false
+  })
+  setCheckBoxFilter()
+}
+
+function selectAllUserChecks() {
+  let foundUnchecked = false
+  document.querySelectorAll("#userList input").forEach((element) => {
+    if (element.style.display != "none") {
+      if (!element.checked) {
+        foundUnchecked = true
+      }
+    }
+  })
+  if (!foundUnchecked) {
+    document.querySelectorAll("#userList input").forEach((element) => {
+      if (element.style.display != "none") {
+        element.checked = false
+      }
+    })
+    setCheckBoxFilter()
+    return
+  }
+  document.querySelectorAll("#userList input").forEach((element) => {
+    if (element.style.display != "none") {
+      element.checked = true
+    }
+  })
+  setCheckBoxFilter()
+}
+
+function setCheckBoxFilter() {
   filter.checkBoxUsers = []
   document.querySelectorAll("#userList input").forEach((element) => {
     if (element.checked) {
@@ -294,7 +435,7 @@ const margin = {
   "top": 50,
   "bottom": 50
 }
-const links = graph.data.links
+let links = graph.data.links
 //Filter loops
 links.forEach((link, index) => {
   if (link.source == link.target) {
@@ -338,8 +479,10 @@ nodes.forEach((node, index) => {
 })
 maxDistance--
 maxDistance = maxDistance ** 0.7
+const originalNodes = nodes
+const originalLinks = links
 // forces
-const simulation = d3.forceSimulation(graph.data.nodes)
+const simulation = d3.forceSimulation(nodes)
   .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.01))
   .force("charge", d3.forceManyBody().strength(-120))
   .force("yVal", d3.forceY((d) => {
@@ -383,7 +526,7 @@ const translucentMarker = d3.select("svg")
   .attr("d", 'M 0 0 12 4 0 8 3 4')
   .attr("opacity", 0.1)
 
-const link = svg.selectAll(".link")
+let link = svg.selectAll(".link")
   .data(links)
   .enter()
   .append("g")
@@ -401,7 +544,7 @@ link
   .append("path")
   .attr("class", "opaque")
 
-const node = svg.selectAll(".node")
+let node = svg.selectAll(".node")
   .data(nodes)
   .enter()
   .append("g")
