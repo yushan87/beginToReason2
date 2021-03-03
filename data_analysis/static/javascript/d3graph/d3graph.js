@@ -65,7 +65,7 @@ function boundingBox() {
 function updateAllowedUsers() {
   //only users represented in distance slider
   filter.allowedUsers = filter.sliderUsers.slice(0, Math.ceil(document.querySelector("#filterSlider").value ** 2.5 / Object.entries(graph.data.users).length ** 1.5))
-  //now by checkbox
+  //now by user checkboxes
   if (filter.checkBoxUsers.length) {
     const acceptedUsers = []
     for (let user of filter.checkBoxUsers) {
@@ -75,6 +75,8 @@ function updateAllowedUsers() {
     }
     filter.allowedUsers = acceptedUsers
   }
+  //now by demographics
+  
 }
 
 //returns the user list that the filter accepts
@@ -199,7 +201,6 @@ function initializeSlider() {
 
 function listCollisions(id, circle) {
   let collidedWith = []
-  console.log(node._groups[0].length);
   node
     .each(function (d) {
       if (d.id === id) {
