@@ -203,6 +203,7 @@ function disableSimulationForces() {
   simulation
     .force("link", null)
     .force("charge", null)
+    .force("collision", null)
     .force("yVal", null)
     .force("xVal", null)
     .force("bBox", null)
@@ -212,6 +213,7 @@ function enableSimulationForces() {
   simulation
     .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.01))
     .force("charge", d3.forceManyBody().strength(-120))
+    .force("collision", d3.forceCollide(radius))
     .force("yVal", d3.forceY((d) => {
       return d.height * (height - margin.top - margin.bottom) + margin.top
     }).strength(1))
@@ -557,6 +559,7 @@ const originalLinks = links
 const simulation = d3.forceSimulation(nodes)
   .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.01))
   .force("charge", d3.forceManyBody().strength(-120))
+  .force("collision", d3.forceCollide(radius))
   .force("yVal", d3.forceY((d) => {
     return d.height * (height - margin.top - margin.bottom) + margin.top
   }).strength(1))
