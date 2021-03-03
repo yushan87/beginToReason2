@@ -244,9 +244,10 @@ function mergeNodes(toMerge) {
   connectNodes(toMerge[1], toMerge[0])
   connectLinks(toMerge[1], toMerge[0])
   if (toMerge.length < 3) {
-    //done! click on the new one and refresh its color, add a border to let the user know it's been messed with
+    //done! click on the new one and refresh its color, add a dashed stroke to let the user know it's been messed with
     toMerge[0].onclick()
-    d3.select(toMerge[0]).selectAll(".opaque, .translucent").attr("fill", color).attr("stroke", "#000").attr("stroke-width", 2)
+    d3.select(toMerge[0]).selectAll(".opaque, .translucent").attr("fill", color)
+    d3.select(toMerge[0]).select(".opaque").attr("stroke", "#000").attr("stroke-dasharray", "5, 3")
     return
   } else {
     //recursive
@@ -279,6 +280,8 @@ function connectNodes(toDelete, parent) {
   parentData.users = parentData.users.concat(childData.users)
   //delete old node
   d3.select(toDelete).remove()
+  //set translucent size
+  d3.select(parent).select(".translucent").attr("r", radius)
   node = d3.selectAll(".node")
 }
 
@@ -403,7 +406,7 @@ function radiusHelper(appearances) {
   if (appearances <= 0) {
     return 0
   }
-  return appearances ** 0.7 + minSize
+  return appearances ** 0.8 + minSize
 }
 
 function color(d) {
@@ -499,6 +502,10 @@ const simulation = d3.forceSimulation(nodes)
   .force("xVal", d3.forceX(width / 2).strength(0.005))
   .force("bBox", boundingBox)
 
+//Had to wait until simulation was created for these so they can tell the simulation to restart
+initializeUserList()
+initializeSlider()
+
 // append the svg object to the body of the page
 const svg = d3.select("#lessonGraph")
   .attr("viewBox", [0, 0, width, height])
@@ -572,17 +579,15 @@ node.append("circle")
 node.append("circle")
   .attr("r", radius)
   .attr("fill", color)
+  .attr("stroke", "#555")
+  .attr("stroke-width", 1)
   .attr("class", "opaque")
-
 
 
 const center = node.append("circle")
   .attr("r", minSize - 2)
   .attr("stroke-width", 0)
 
-//Initialize page
-initializeUserList()
-initializeSlider()
 
 simulation.on("tick", () => {
   updateAllowedUsers()
