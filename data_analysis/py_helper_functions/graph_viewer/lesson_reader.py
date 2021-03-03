@@ -17,7 +17,7 @@ def lesson_to_graph(lesson_id):
     prev_node = start_node
     nodes_in_chain.append(prev_node)
     prev_student = query[0].user_key
-    users_dict[str(prev_student)] = {"name": get_name(prev_student), "attempts": 0}
+    users_dict[str(prev_student)] = user_to_dict(prev_student)
     for log in query:
         # Take only the (first) code between Confirm and ;
         log.code = log.code.split("Confirm")[1].split("\r")[
@@ -26,7 +26,7 @@ def lesson_to_graph(lesson_id):
         # Is this kid same as the last one?
         if log.user_key != prev_student:
             # Nope!
-            users_dict[str(log.user_key)] = {"name": get_name(log.user_key), "attempts": 0}
+            users_dict[str(log.user_key)] = user_to_dict(log.user_key)
             if not prev_node.is_correct:
                 # Last kid gave up
                 prev_node.add_next(end_node, prev_student)
@@ -100,6 +100,9 @@ def lesson_stats(lesson_id):
     lesson = Lesson.objects.get(id=lesson_id)
     return json.dumps({"name": lesson.lesson_name, "title": lesson.lesson_title, "instruction": lesson.instruction, "code": lesson.code.lesson_code})
 
+
+def user_to_dict(user):
+    return {"name": get_name(user), "attempts": 0}
 
 def get_name(user):
     return str(user)
