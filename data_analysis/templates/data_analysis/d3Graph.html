@@ -17,6 +17,20 @@
             <div id="graphCode" style="max-height: 50vh; overflow: auto; background-color: #CCC; padding: 5px"></div>
             <h3 class="text-center">By Distance</h3>
             <input id="filterSlider" type="range" style="transform: translate(50%, 0) scale(2, 2); margin-top: 20px;">
+            <div class="row">
+                <div class="col-4">
+                    <input id="male" name="male" type="checkbox" checked>
+                    <label for="male">Male</label>
+                </div>
+                <div class="col-4">
+                    <input id="female" name="female" type="checkbox" checked>
+                    <label for="female">Female</label>
+                </div>
+                <div class="col-4">
+                    <input id="other" name="other" type="checkbox" checked>
+                    <label for="other">Other</label>
+                </div>
+            </div>
         </div>
         <div class="col-8">
             <svg id="lessonGraph" class="col-12"></svg>
