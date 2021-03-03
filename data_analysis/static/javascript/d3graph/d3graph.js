@@ -37,8 +37,8 @@ const drag = d3.drag()
       "r": radius(d)
     })
     const dragged = this
-    node.each(function() {
-      if(collidedList.includes(this)) {
+    node.each(function () {
+      if (collidedList.includes(this)) {
         mergePreview(this, dragged)
       } else {
         resetPreview(this)
@@ -249,18 +249,7 @@ function listCollisions(id, circle) {
 }
 
 function mergeNodes(toMerge) {
-  //check for gave up
-  if (toMerge[0].__data__.score == -1 || toMerge[1].__data__.score == -1) {
-    alert(`Sorry, you can't merge the special "Gave up" node with anything else!`)
-    resetPreview(toMerge[0])
-    resetPreview(toMerge[1])
-    return
-  }
-  //check for incorrect/correct merging
-  if (Math.sign(toMerge[0].__data__.score - 1.5) != Math.sign(toMerge[1].__data__.score - 1.5)) {
-    alert(`Sorry, you can't merge incorrect and correct nodes together!`)
-    resetPreview(toMerge[0])
-    resetPreview(toMerge[1])
+  if (checkIllegalMerge(toMerge[0], toMerge[1], true)) {
     return
   }
   connectNodes(toMerge[1], toMerge[0])
@@ -277,6 +266,28 @@ function mergeNodes(toMerge) {
     toMerge.splice(1, 1)
     mergeNodes(toMerge)
   }
+}
+
+function checkIllegalMerge(merge1, merge2, interrupt) {
+  //check for gave up
+  if (merge1.__data__.score == -1 || merge2.__data__.score == -1) {
+    if (interrupt) {
+      alert(`Sorry, you can't merge the special "Gave up" node with anything else!`)
+      resetPreview(merge1)
+      resetPreview(merge2)
+    }
+    return true
+  }
+  //check for incorrect/correct merging
+  if (Math.sign(merge1.__data__.score - 1.5) != Math.sign(merge2.__data__.score - 1.5)) {
+    if (interrupt) {
+      alert(`Sorry, you can't merge incorrect and correct nodes together!`)
+      resetPreview(merge1)
+      resetPreview(merge2)
+    }
+    return true
+  }
+  return false
 }
 
 function connectNodes(toDelete, parent) {
@@ -343,6 +354,18 @@ function connectLinks(toDelete, parent) {
 }
 
 function mergePreview(node, dragged) {
+  if(checkIllegalMerge(node, dragged)) {
+    d3.select(node).selectAll(".preview").remove()
+  d3.select(node)
+    .append("circle")
+    .attr("r", previewRadius(node, dragged))
+    .attr("fill", "none")
+    .attr("class", "preview")
+    .attr("stroke", "#ff0000")
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "5, 3")
+    return
+  }
   d3.select(node).selectAll(".preview").remove()
   d3.select(node)
     .append("circle")
