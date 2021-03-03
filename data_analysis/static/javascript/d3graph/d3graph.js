@@ -76,7 +76,18 @@ function updateAllowedUsers() {
     filter.allowedUsers = acceptedUsers
   }
   //now by demographics
-  
+  document.querySelectorAll(".demographic").forEach((box) => {
+    if (box.checked) {
+      return
+    }
+    const acceptedUsers = []
+    for (let user of filter.allowedUsers) {
+      if (box.dataset.class != graph.data.users[user][box.dataset.category]) {
+        acceptedUsers.push(user)
+      }
+    }
+    filter.allowedUsers = acceptedUsers
+  })
 }
 
 //returns the user list that the filter accepts
@@ -132,6 +143,7 @@ function initializeUserList() {
   }
   document.querySelector("#userList").innerHTML = userString.substring(0, userString.length - 6)
   document.querySelectorAll("#userList input").forEach((element) => element.onclick = setCheckBoxFilter)
+  document.querySelectorAll(".demographic").forEach(element => element.oninput = simulation.restart)
 }
 
 function updateUserList(d) {
@@ -422,10 +434,6 @@ function fadedColor(d) {
   return `rgb(${Math.min(255, Math.floor(158 * (2.114 - goodness)))}, ${Math.min(Math.floor(158 * goodness + 176), 255)}, 176)`
 }
 
-
-//Initialize page
-initializeUserList()
-initializeSlider()
 // set the dimensions of graph, data
 const width = 960
 const height = 600
@@ -571,6 +579,10 @@ node.append("circle")
 const center = node.append("circle")
   .attr("r", minSize - 2)
   .attr("stroke-width", 0)
+
+//Initialize page
+initializeUserList()
+initializeSlider()
 
 simulation.on("tick", () => {
   updateAllowedUsers()
