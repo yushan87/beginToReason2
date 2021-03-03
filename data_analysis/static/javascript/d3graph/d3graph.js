@@ -43,7 +43,7 @@ const drag = d3.drag()
       mergeNodes(collidedList)
     }
     if (!d3.event.active) {
-      simulation.alpha(0.1).alphaTarget(0).restart()
+      simulation.alpha(0.07).alphaTarget(0).restart()
       enableSimulationForces()
     }
     d.fx = null;
