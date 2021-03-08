@@ -182,7 +182,7 @@ function updateUserList(d) {
   }
   inputs.forEach((element) => {
     for (let user of userMap) {
-      if (user[0] === element.id) {
+      if (user[0] == element.id) {
         //show!
         element.style.display = "initial"
         const label = document.querySelector(`#userList label[for="${element.id}"]`)

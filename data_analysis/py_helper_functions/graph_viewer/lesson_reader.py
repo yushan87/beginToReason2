@@ -9,6 +9,7 @@ from core.models import Lesson
 
 # Takes a lesson index and returns the START node of its graph representation
 def lesson_to_graph(lesson_id):
+    user_number = 1
     query = DataLog.objects.filter(
         lesson_key_id=lesson_id).order_by('user_key', 'time_stamp')
     users_dict = {}
@@ -18,20 +19,21 @@ def lesson_to_graph(lesson_id):
     prev_node = start_node
     nodes_in_chain.append(prev_node)
     prev_student = query[0].user_key
-    users_dict[str(prev_student)] = user_to_dict(prev_student)
+    users_dict[str(user_number)] = user_to_dict(prev_student, str(user_number))
     for log in query:
         # Take only the (first) code between Confirm and ;
         log.code = log.code.split("Confirm")[1].split("\r")[
             0].strip().strip(";")
-        prev_node.add_appearance(prev_student)
+        prev_node.add_appearance(str(user_number))
         # Is this kid same as the last one?
         if log.user_key != prev_student:
             # Nope!
-            users_dict[str(log.user_key)] = user_to_dict(log.user_key)
+            user_number += 1
+            users_dict[str(user_number)] = user_to_dict(log.user_key, str(user_number))
             if not prev_node.is_correct:
                 # Last kid gave up
-                prev_node.add_next(end_node, prev_student)
-                end_node.add_appearance(prev_student)
+                prev_node.add_next(end_node, str(user_number))
+                end_node.add_appearance(str(user_number))
             else:
                 # Last kid got it right
                 chain_length = len(nodes_in_chain)
@@ -43,24 +45,24 @@ def lesson_to_graph(lesson_id):
             nodes_in_chain.clear()
             prev_node = start_node
             nodes_in_chain.append(prev_node)
-            start_node.add_appearance(log.user_key)
+            start_node.add_appearance(str(user_number))
         # Runs every time
-        users_dict.get(str(log.user_key))["attempts"] = users_dict.get(str(log.user_key)).get("attempts") + 1
+        users_dict.get(str(user_number))["attempts"] = users_dict.get(str(user_number)).get("attempts") + 1
         answer_correct = log.status == 'success'
         current_node = start_node.find_node(log.code)
         if not current_node:
             current_node = Node(log.code, answer_correct)
         if current_node.is_correct != answer_correct:
             print("\n\n\nI (think I) found conflicting data!!!\n(It's probably a lesson with 2 confirms)\n\n\n")
-        prev_node.add_next(current_node, log.user_key)
+        prev_node.add_next(current_node, str(user_number))
         nodes_in_chain.append(current_node)
         prev_node = current_node
     # Post iteration
-    prev_node.add_appearance(prev_student)
+    prev_node.add_appearance(str(user_number))
     if not prev_node.is_correct:
         # Last kid gave up
-        prev_node.add_next(end_node)
-        end_node.add_appearance(prev_student)
+        prev_node.add_next(end_node, str(user_number))
+        end_node.add_appearance(str(user_number))
     else:
         # Last kid got it right
         chain_length = len(nodes_in_chain)
@@ -82,7 +84,6 @@ def lesson_to_json(lesson_id):
             edges.append(edge)
     return json.dumps({"nodes": nodes, "links": edges, "users": users})
 
-
 # Helper function
 def find_optimal_min(node_list):
     appearances = []
@@ -102,8 +103,8 @@ def lesson_stats(lesson_id):
     return json.dumps({"name": lesson.lesson_name, "title": lesson.lesson_title, "instruction": lesson.instruction, "code": lesson.code.lesson_code})
 
 
-def user_to_dict(user):
-    return {"name": get_name(user), "attempts": 0, "gender": get_user_info(user).user_gender}
+def user_to_dict(user, user_number):
+    return {"name": user_number, "attempts": 0, "gender": get_user_info(user).user_gender}
 
 def get_name(user):
     return str(user)

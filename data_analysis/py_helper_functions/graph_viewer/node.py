@@ -21,11 +21,11 @@ class Node:
         self.is_correct = is_correct
         self.node_list = dict()
 
-    def add_next(self, next_node, user):
+    def add_next(self, next_node, user_string):
         if not self.node_list.get(next_node):
-            self.node_list[next_node] = [str(user)]
+            self.node_list[next_node] = [user_string]
         else:
-            self.node_list[next_node].append(str(user))
+            self.node_list[next_node].append(user_string)
 
     def calculate_goodness(self):
         if self.is_correct:
@@ -66,8 +66,9 @@ class Node:
                 return node
         return None
 
-    def add_appearance(self, user):
-        self.appearances.append(str(user))
+    def add_appearance(self, user_string):
+        self.appearances.append(user_string)
+        print(type(user_string))
 
     def add_successful_appearance(self):
         self.successful_appearances += 1
