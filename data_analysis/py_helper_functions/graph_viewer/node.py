@@ -11,7 +11,7 @@ class Node:
     DEGENERATE_CODE = "No completions"
     DECIMAL_PRECISION = 2
     START_NAME = "Start"
-    GAVE_UP_NAME = "GaveUp"
+    GAVE_UP_NAME = "Gave Up"
 
     def __init__(self, attempt, is_correct):
         self.appearances = []

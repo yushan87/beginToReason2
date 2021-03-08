@@ -280,6 +280,15 @@ function checkIllegalMerge(merge1, merge2, interrupt) {
     }
     return true
   }
+  //check for start
+  if (merge1.__data__.name === "Start" || merge2.__data__.name === "Start") {
+    if (interrupt) {
+      alert(`Sorry, you can't merge the special "Start" node with anything else!`)
+      resetPreview(merge1)
+      resetPreview(merge2)
+    }
+    return true
+  }
   //check for incorrect/correct merging
   if (Math.sign(merge1.__data__.score - 1.5) != Math.sign(merge2.__data__.score - 1.5)) {
     if (interrupt) {
@@ -473,7 +482,7 @@ function radiusHelper(appearances) {
 }
 
 function color(d) {
-  if (d.name == "GaveUp") {
+  if (d.name == "Gave Up") {
     return "#ff00ff"
   }
   if (d.distance == "No completions") {
@@ -487,7 +496,7 @@ function color(d) {
 }
 
 function fadedColor(d) {
-  if (d.name == "GaveUp") {
+  if (d.name == "Gave Up") {
     return "#ffB0ff"
   }
   if (d.distance == "No completions") {
