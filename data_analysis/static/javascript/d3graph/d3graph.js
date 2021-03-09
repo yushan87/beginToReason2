@@ -28,12 +28,9 @@ const drag = d3.drag()
     d.fx = d3.event.x
     d.fy = d3.event.y
     //merge preview stuff
-    const transform = d3.select(this).attr("transform").split(", ")
-    const x = transform[0].split("ranslate(")[1]
-    const y = transform[1].split(")")[0]
     const collidedList = listCollisions(d.id, {
-      "x": x,
-      "y": y,
+      "x": d3.event.x,
+      "y": d3.event.y,
       "r": radius(d)
     })
     const dragged = this
@@ -46,12 +43,9 @@ const drag = d3.drag()
     })
   })
   .on("end", function (d) {
-    const transform = d3.select(this).attr("transform").split(", ")
-    const x = transform[0].split("ranslate(")[1]
-    const y = transform[1].split(")")[0]
     const collidedList = listCollisions(d.id, {
-      "x": x,
-      "y": y,
+      "x": d3.event.x,
+      "y": d3.event.y,
       "r": radius(d)
     })
     if (collidedList.length) {
@@ -137,6 +131,7 @@ function setClick(obj, d) {
       document.querySelector("#nodeCorrect").textContent = "Correct: N/A"
     }
     document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances}`
+    document.querySelector("#splitNodes").hidden = d.mergeList.length < 2
     updateUserList(d)
     simulation.restart()
   };
@@ -237,11 +232,8 @@ function listCollisions(id, circle) {
       if (d.id === id) {
         return
       }
-      const transform = d3.select(this).attr("transform").split(", ")
-      const otherX = transform[0].split("ranslate(")[1]
-      const otherY = transform[1].split(")")[0]
       const otherRadius = radius(d)
-      const distance = ((otherX - circle.x) ** 2 + (otherY - circle.y) ** 2) ** (1 / 2)
+      const distance = ((d.x - circle.x) ** 2 + (d.y - circle.y) ** 2) ** (1 / 2)
       //check for circles colliding
       if (-Math.abs(circle.r - otherRadius) < distance && distance < circle.r + otherRadius) {
         collidedWith.push(this)
@@ -250,12 +242,32 @@ function listCollisions(id, circle) {
   return collidedWith
 }
 
+function initializeMergeList(d) {
+  d.mergeList = [d.id]
+}
+
+function initializeSplitButton() {
+  document.querySelector("#splitNodes").onclick = () => {
+    for (let node of document.querySelectorAll(".node")) {
+      if (node.__data__.name === selectedNode) {
+        unMerge(node)
+        return
+      }
+    }
+  }
+}
+
+/**
+ * Merges index 1 into index 0, deletes index 1, then recurses
+ * @param toMerge 
+ */
 function mergeNodes(toMerge) {
   if (checkIllegalMerge(toMerge[0], toMerge[1], true)) {
     return
   }
   connectNodes(toMerge[1], toMerge[0])
   connectLinks(toMerge[1], toMerge[0])
+  toMerge[0].__data__.mergeList.push(...toMerge[1].__data__.mergeList)
   if (toMerge.length < 3) {
     //done! click on the new one and refresh its color, add a dashed stroke to let the user know it's been messed with
     toMerge[0].onclick()
@@ -268,6 +280,72 @@ function mergeNodes(toMerge) {
     toMerge.splice(1, 1)
     mergeNodes(toMerge)
   }
+}
+
+function unMerge(toSplit) {
+  let newNodesList = toSplit.__data__.mergeList
+  const xCenter = toSplit.__data__.x
+  const yCenter = toSplit.__data__.y
+  //Delete the old
+  d3.select(toSplit).remove()
+  removeEdges(toSplit.__data__)
+  //Remake the new
+  //Get the data of the old nodes
+  const nodeDataArray = []
+  originalNodes.forEach((node, index) => {
+    if (newNodesList.includes(node.id)) {
+      nodeDataArray.push(nodes[index] = JSON.parse(JSON.stringify(node)))
+      nodes[index].x = xCenter
+      nodes[index].y = yCenter
+      nodes[index].vx = nodes[index].vy = 0
+    }
+  })
+  addNewNodes(nodeDataArray)
+  simulation.alpha(0.07).alphaTarget(0).restart()
+  enableSimulationForces()
+}
+
+function removeEdges(nodeData) {
+  link
+    .each(function (d) {
+      if (d.source === nodeData || d.target === nodeData) {
+        d3.select(this).remove()
+      }
+    })
+}
+
+function addNewNodes(nodeDataArray) {
+  let newNodes = svg.selectAll()
+    .data(nodeDataArray)
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .attr("style", "cursor: pointer;")
+    .each(function (d) {
+      initializeMergeList(d)
+      setClick(this, d)
+    })
+    .call(drag)
+
+  newNodes.append("circle")
+    .attr("r", radius)
+    .attr("fill", color)
+    .attr("opacity", 0.1)
+    .attr("class", "translucent")
+
+  newNodes.append("circle")
+    .attr("r", radius)
+    .attr("fill", color)
+    .attr("stroke", "#555")
+    .attr("stroke-width", 1)
+    .attr("class", "opaque")
+
+  newNodes.append("circle")
+    .attr("r", minSize - 2)
+    .attr("stroke-width", 0)
+    .attr("class", "center")
+  node = svg.selectAll(".node")
+  newNodes.nodes()[0].onclick()
 }
 
 function checkIllegalMerge(merge1, merge2, interrupt) {
@@ -365,16 +443,16 @@ function connectLinks(toDelete, parent) {
 }
 
 function mergePreview(node, dragged) {
-  if(checkIllegalMerge(node, dragged)) {
+  if (checkIllegalMerge(node, dragged)) {
     d3.select(node).selectAll(".preview").remove()
-  d3.select(node)
-    .append("circle")
-    .attr("r", previewRadius(node, dragged))
-    .attr("fill", "none")
-    .attr("class", "preview")
-    .attr("stroke", "#ff0000")
-    .attr("stroke-width", 1)
-    .attr("stroke-dasharray", "5, 3")
+    d3.select(node)
+      .append("circle")
+      .attr("r", previewRadius(node, dragged))
+      .attr("fill", "none")
+      .attr("class", "preview")
+      .attr("stroke", "#ff0000")
+      .attr("stroke-width", 1)
+      .attr("stroke-dasharray", "5, 3")
     return
   }
   d3.select(node).selectAll(".preview").remove()
@@ -545,7 +623,7 @@ nodes.sort((a, b) => {
     return -1
   }
   //Both are no completions, check to see if one is gave up node
-  if(a.score < 0) {
+  if (a.score < 0) {
     return -1
   } else if (b.score < 0) {
     return 1
@@ -569,10 +647,11 @@ nodes.forEach((node, index) => {
 })
 maxDistance--
 maxDistance = maxDistance ** 0.7
-const originalNodes = nodes
-const originalLinks = links
+const originalNodes = JSON.parse(JSON.stringify(nodes))
+const originalLinks = JSON.parse(JSON.stringify(links))
 // forces
-const simulation = d3.forceSimulation(nodes)
+const simulation = d3.forceSimulation()
+  .nodes(nodes)
   .force("link", d3.forceLink(links).id(d => d.id).distance(100).strength(0.01))
   .force("charge", d3.forceManyBody().strength(-120))
   .force("collision", d3.forceCollide(radius))
@@ -585,6 +664,7 @@ const simulation = d3.forceSimulation(nodes)
 //Had to wait until simulation was created for these so they can tell the simulation to restart
 initializeUserList()
 initializeSlider()
+initializeSplitButton()
 
 // append the svg object to the body of the page
 const svg = d3.select("#lessonGraph")
@@ -646,6 +726,7 @@ let node = svg.selectAll(".node")
   .attr("class", "node")
   .attr("style", "cursor: pointer;")
   .each(function (d) {
+    initializeMergeList(d)
     setClick(this, d)
   })
   .call(drag)
@@ -664,9 +745,10 @@ node.append("circle")
   .attr("class", "opaque")
 
 
-const center = node.append("circle")
+node.append("circle")
   .attr("r", minSize - 2)
   .attr("stroke-width", 0)
+  .attr("class", "center")
 
 
 simulation.on("tick", () => {
@@ -677,7 +759,8 @@ simulation.on("tick", () => {
     .selectAll(".opaque")
     .attr("r", d => radiusHelper(filteredUsers(d).length))
 
-  center
+  node
+    .selectAll(".center")
     .attr("visibility", displayDot)
 
   link

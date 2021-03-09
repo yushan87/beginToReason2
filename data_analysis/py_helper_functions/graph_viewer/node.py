@@ -68,7 +68,6 @@ class Node:
 
     def add_appearance(self, user_string):
         self.appearances.append(user_string)
-        print(type(user_string))
 
     def add_successful_appearance(self):
         self.successful_appearances += 1

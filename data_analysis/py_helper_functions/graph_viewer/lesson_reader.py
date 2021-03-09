@@ -29,11 +29,12 @@ def lesson_to_graph(lesson_id):
         if log.user_key != prev_student:
             # Nope!
             user_number += 1
+            # Initialize new slot
             users_dict[str(user_number)] = user_to_dict(log.user_key, str(user_number))
             if not prev_node.is_correct:
                 # Last kid gave up
-                prev_node.add_next(end_node, str(user_number))
-                end_node.add_appearance(str(user_number))
+                prev_node.add_next(end_node, str(user_number - 1))
+                end_node.add_appearance(str(user_number - 1))
             else:
                 # Last kid got it right
                 chain_length = len(nodes_in_chain)
