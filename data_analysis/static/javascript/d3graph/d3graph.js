@@ -15,6 +15,7 @@ filter.sliderUsers.sort((a, b) => {
 })
 const minSize = 6
 const curve = 0.1
+const merged = new Map()
 let selectedNode = ""
 
 const drag = d3.drag()
@@ -257,6 +258,10 @@ function initializeSplitButton() {
   }
 }
 
+function findNode(id) {
+  return merged.get(id) || id
+}
+
 /**
  * Merges index 1 into index 0, deletes index 1, then recurses
  * @param toMerge 
@@ -283,7 +288,11 @@ function mergeNodes(toMerge) {
 }
 
 function unMerge(toSplit) {
-  let newNodesList = toSplit.__data__.mergeList
+  const newNodesList = toSplit.__data__.mergeList
+  //get rid of redirects
+  for (let id of newNodesList) {
+    merged.delete(id)
+  }
   const xCenter = toSplit.__data__.x
   const yCenter = toSplit.__data__.y
   //Delete the old
@@ -300,8 +309,10 @@ function unMerge(toSplit) {
       nodes[index].vx = nodes[index].vy = 0
     }
   })
+  addNewEdges(newNodesList)
   addNewNodes(nodeDataArray)
-  simulation.alpha(0.07).alphaTarget(0).restart()
+  sortZOrder()
+  simulation.alpha(.15).alphaTarget(0).restart()
   enableSimulationForces()
 }
 
@@ -315,7 +326,7 @@ function removeEdges(nodeData) {
 }
 
 function addNewNodes(nodeDataArray) {
-  let newNodes = svg.selectAll()
+  const newNodes = svg.selectAll()
     .data(nodeDataArray)
     .enter()
     .append("g")
@@ -346,6 +357,36 @@ function addNewNodes(nodeDataArray) {
     .attr("class", "center")
   node = svg.selectAll(".node")
   newNodes.nodes()[0].onclick()
+}
+
+function addNewEdges(nodeIDArray) {
+  const linkDataArray = []
+  originalLinks.forEach((link, index) => {
+    if (nodeIDArray.includes(link.source) || nodeIDArray.includes(link.target)) {
+      linkDataArray.push(links[index] = JSON.parse(JSON.stringify(link)))
+      links[index].source = findNode(links[index].source)
+      links[index].target = findNode(links[index].target)
+    }
+  })
+  const newLinks = svg.selectAll()
+    .data(linkDataArray)
+    .enter()
+    .append("g")
+    .attr("fill", "none")
+    .attr("class", "link")
+    .attr("stroke", "#999")
+
+  newLinks
+    .append("path")
+    .attr("class", "translucent")
+    .attr("stroke-width", d => d.size ** 0.6 + 1)
+    .attr("opacity", 0.1)
+
+  newLinks
+    .append("path")
+    .attr("class", "opaque")
+
+  link = svg.selectAll(".link")
 }
 
 function checkIllegalMerge(merge1, merge2, interrupt) {
@@ -404,6 +445,10 @@ function connectNodes(toDelete, parent) {
 }
 
 function connectLinks(toDelete, parent) {
+  //set up merged redirects
+  for (let id of toDelete.__data__.mergeList) {
+    merged.set(id, parent.__data__.id)
+  }
   link
     .each(function (d) {
       //check if something interesting should happen
@@ -472,6 +517,18 @@ function previewRadius(node, dragged) {
 
 function resetPreview(node) {
   d3.select(node).selectAll(".preview").remove()
+}
+
+function sortZOrder() {
+  svg.selectAll(".node, .link").sort((a, b) => {
+    if (a.target || !b.target) {
+      return -1
+    }
+    if (!a.target || b.target) {
+      return 1
+    }
+    return 0
+  })
 }
 
 function clearAllUserChecks() {
@@ -753,7 +810,6 @@ node.append("circle")
 
 simulation.on("tick", () => {
   updateAllowedUsers()
-
   node
     .attr("transform", d => `translate(${d.x}, ${d.y})`)
     .selectAll(".opaque")
