@@ -7,6 +7,7 @@ from data_analysis.models import DataLog
 from accounts.models import UserInformation
 from core.models import Lesson
 
+
 # Takes a lesson index and returns the START node of its graph representation
 def lesson_to_graph(lesson_id):
     user_number = 1

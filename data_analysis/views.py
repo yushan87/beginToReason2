@@ -3,12 +3,20 @@ This module contains our Django views for the "data_analysis" application.
 """
 from django.shortcuts import render, redirect
 from tutor.py_helper_functions.tutor_helper import user_auth_inst, lesson_set_auth
-
+from data_analysis.py_helper_functions.lesson_stats import get_set_stats
 from data_analysis.py_helper_functions.graph_viewer.lesson_reader import lesson_to_json, lesson_stats
+
+
 # Create your views here.
-def d3Graph(request, index):
+def d3_graph(request, index):
     print(request)
     return render(request, "data_analysis/d3graph.html", {'graphData': lesson_to_json(index), 'lessonData': lesson_stats(index)})
+
+
+def set_statistics(request, index):
+    print(request)
+    return render(request, "data_analysis/setStatistics.html", {'lessonSetData': get_set_stats(index)})
+
 
 def instructor(request):
     """function instructor This function handles the view for the instructor page of the application.
