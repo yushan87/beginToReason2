@@ -6,11 +6,7 @@ from core.models import Lesson, LessonSet
 # Returns JSON array of lessons in the set
 def get_set_stats(lesson_set_id):
     lesson_set_list = []
-    print("\n\n\n")
-    print(LessonSet.objects.all())
-    print("hihihi")
-    print("\n\n\n")
-    for lesson in LessonSet.objects.get(id=lesson_set_id).lessons:
+    for lesson in LessonSet.objects.get(id=lesson_set_id).lessons.all():
         lesson_set_list.append(get_lesson_stats(lesson.id))
     return json.dumps(lesson_set_list)
 
@@ -18,7 +14,7 @@ def get_set_stats(lesson_set_id):
 # Returns a dict of a single lesson for lesson statistics
 def get_lesson_stats(lesson_id):
     lesson = Lesson.objects.get(id=lesson_id)
-    lesson_dict = {{"name": lesson.lesson_name, "title": lesson.lesson_title}}
+    lesson_dict = {"name": lesson.lesson_name, "title": lesson.lesson_title}
     lesson_dict.update(get_user_stats(lesson_id))
     return lesson_dict
 
@@ -27,7 +23,8 @@ def get_lesson_stats(lesson_id):
 def get_user_stats(lesson_id):
     query = DataLog.objects.filter(
         lesson_key_id=lesson_id).order_by('user_key', 'time_stamp')
-    if not query[0]:
+    if not query:
+        print("Empty!")
         return {"userCount": 0, "completionRate": 0, "firstTryRate": 0, "averageAttempts": 0}
     user_count = 1
     completions = 0
