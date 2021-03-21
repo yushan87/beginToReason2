@@ -41,3 +41,8 @@ def get_user_stats(lesson_id):
         attempts += 1
     return {"userCount": user_count, "completionRate": completions / user_count, "firstTryRate": first_try / user_count,
             "averageAttempts": attempts / user_count, "lessonID": lesson_id}
+
+
+# Returns the set's name (not the name of the lesson)
+def get_set_name(lesson_set_id):
+    return LessonSet.objects.get(id=lesson_set_id).set_name

@@ -16,7 +16,7 @@
         </h1>
     </div>
 </div>
-<h2>Bootstrap Horizontal Scrolling</h2>
+<h2 style="margin-left: 20px">{{lessonSetName | safe}}</h2>
 <div id="lessonContainer" class="row flex-nowrap" style="width: 100vw; overflow-x: scroll">
 </div>
 <script type="application/javascript">
@@ -58,7 +58,6 @@
             }
         });
     }
-    // var lessonSetData = {{lessonSetData | safe}}
     var lessonSetData = {{lessonSetData | safe}}
 </script>
 <script src="{% static 'javascript/setStats/setStats.js' %}"></script>
