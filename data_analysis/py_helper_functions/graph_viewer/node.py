@@ -37,8 +37,10 @@ class Node:
             total += len(self.node_list[node])
             if node.is_correct:
                 correct += len(self.node_list[node])
+        if total == 0:
+            # Must be an empty lesson
+            return 0
         return float(str((correct / total) + 0.5 * 10 ** -self.DECIMAL_PRECISION)[0: 2 + self.DECIMAL_PRECISION])
-
 
     def distance(self):
         if self.successful_appearances > 0:

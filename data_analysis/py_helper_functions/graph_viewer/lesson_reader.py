@@ -19,6 +19,9 @@ def lesson_to_graph(lesson_id):
     end_node = Node(Node.GAVE_UP_NAME, False)
     prev_node = start_node
     nodes_in_chain.append(prev_node)
+    if not query:
+        #Nobody has taken this lesson yet!
+        return start_node, {}
     prev_student = query[0].user_key
     users_dict[str(user_number)] = user_to_dict(prev_student, str(user_number))
     for log in query:

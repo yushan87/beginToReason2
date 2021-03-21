@@ -134,7 +134,17 @@ function setClick(obj, d) {
     document.querySelector("#nodeAppearances").textContent = `Appearances: ${d.appearances}`
     document.querySelector("#splitNodes").hidden = d.mergeList.length < 2
     updateUserList(d)
-    simulation.restart()
+    //Check to handle empty lesson
+    if (d.appearances > 0) {
+      simulation.restart()
+    } else {
+      if (confirm(`Looks like nobody has attempted this lesson yet...
+Want to go back?`)) {
+        window.history.back()
+      }
+      simulation.stop()
+      svg.remove()
+    }
   };
   if (d.name == "Start") {
     obj.onclick()
