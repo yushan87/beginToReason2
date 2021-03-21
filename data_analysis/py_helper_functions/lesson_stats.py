@@ -25,7 +25,7 @@ def get_user_stats(lesson_id):
         lesson_key_id=lesson_id).order_by('user_key', 'time_stamp')
     if not query:
         print("Empty!")
-        return {"userCount": 0, "completionRate": 0, "firstTryRate": 0, "averageAttempts": 0}
+        return {"userCount": 0, "completionRate": 0, "firstTryRate": 0, "averageAttempts": 0, "lessonID": lesson_id}
     user_count = 1
     completions = 0
     attempts = 0
@@ -39,4 +39,5 @@ def get_user_stats(lesson_id):
             first_try += int(log.status == 'success')
         completions += int(log.status == 'success')
         attempts += 1
-    return {"userCount": user_count, "completionRate": completions / user_count, "firstTryRate": first_try / user_count, "averageAttempts": attempts / user_count}
+    return {"userCount": user_count, "completionRate": completions / user_count, "firstTryRate": first_try / user_count,
+            "averageAttempts": attempts / user_count, "lessonID": lesson_id}
