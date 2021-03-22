@@ -9,8 +9,8 @@ function HTMLStringToElement(text) {
 const container = document.querySelector("#lessonContainer")
 let newCard
 for (let lesson of lessonSetData) {
-    newCard = HTMLStringToElement(`<div class="col-3" style="margin: 20px 0px; cursor: pointer">
-    <div class="card">
+    newCard = HTMLStringToElement(`<div class="col-3" style="margin: 20px 15px; cursor: pointer">
+    <div class="card" id="lesson${lesson.lessonID}">
         <div class="card-body">
             <h5 class="card-title">${lesson.title}</h5>
             <h6 class="card-subtitle mb-2 text-muted">${lesson.name}</h6>
@@ -19,7 +19,7 @@ for (let lesson of lessonSetData) {
                 First try rate: ${(100*lesson.firstTryRate).toString().substr(0, 5)}%<br>
                 Completion rate: ${(100 * lesson.completionRate).toString().substr(0, 5)}%<br>
                 Users: ${lesson.userCount}
-            </div>
+            </p>
         </div>
     </div>
 </div>`)
