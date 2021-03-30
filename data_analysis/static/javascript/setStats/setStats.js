@@ -5,25 +5,6 @@ function HTMLStringToElement(text) {
 }
 
 
-function makeCardText(lesson) {
-    cardText = `Average attempts: ${lesson.averageAttempts.toString().substr(0, 4)}`
-    cardText += withinBounds(lesson.averageAttempts, "averageAttempts", true)
-
-    cardText += `<br>
-    First try rate: ${(100*lesson.firstTryRate).toString().substr(0, 5)}%`
-    cardText += withinBounds(lesson.firstTryRate, "firstTryRate", false)
-
-    cardText += `<br>
-    Completion rate: ${(100 * lesson.completionRate).toString().substr(0, 5)}%`
-    cardText += withinBounds(lesson.completionRate, "completionRate", false)
-
-    cardText += `<br>
-    Users: ${lesson.userCount}`
-
-    return cardText
-}
-
-
 /**
  * 
  * @param {float} point 
@@ -66,7 +47,10 @@ for (let lesson of lessons) {
             <h5 class="card-title">${lesson.title}</h5>
             <h6 class="card-subtitle mb-2 text-muted">${lesson.name}</h6>
             <p class="card-text">
-                ${makeCardText(lesson)}
+                Average attempts: ${lesson.averageAttempts.toString().substr(0, 4)}${withinBounds(lesson.averageAttempts, "averageAttempts", true)}<br>
+                First try rate: ${(100*lesson.firstTryRate).toString().substr(0, 5)}%${withinBounds(lesson.firstTryRate, "firstTryRate", false)}<br>
+                Completion rate: ${(100 * lesson.completionRate).toString().substr(0, 5)}%${withinBounds(lesson.completionRate, "completionRate", false)}<br>
+                Users: ${lesson.userCount}
             </p>
         </div>
     </div>
