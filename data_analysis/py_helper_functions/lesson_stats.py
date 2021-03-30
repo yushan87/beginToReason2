@@ -66,8 +66,17 @@ def find_stat_ranges(lesson_set_list):
 # Currently returning just the quartiles because 1.5*IQR was too lenient
 def get_normal_range(data_list, list_length):
     data_list.sort()
-    quartile_1 = data_list[int(list_length / 4)]
-    quartile_3 = data_list[int(3 * list_length / 4)]
+    half_length = int(list_length / 2)
+
+    if half_length % 2:
+        # It's odd!
+        quartile_1 = data_list[int(half_length / 2)]
+        quartile_3 = data_list[list_length - int((half_length + 1) / 2)]
+    else:
+        # It's even!
+        quartile_1 = (data_list[half_length / 2] + data_list[half_length / 2 - 1]) / 2
+        quartile_3 = (data_list[list_length - half_length / 2] + data_list[list_length - half_length / 2 - 1]) / 2
+
     inter_quartile = quartile_3 - quartile_1
     return quartile_1, quartile_3
 
