@@ -7,9 +7,9 @@ function HTMLStringToElement(text) {
 
 /**
  * 
- * @param {float} point 
- * @param {string} type 
- * @param {boolean} highMeansHard 
+ * @param {float} point specific number that you want to test
+ * @param {string} type name that the server uses to call this (e.g. "averageAttempts")
+ * @param {boolean} highMeansHard whether the parameter being high means the lesson is too hard (it'll be red if it's hard, green if it's easy)
  * @returns String to be added on
  */
 function withinBounds(point, type, highMeansHard) {
@@ -56,7 +56,7 @@ for (let lesson of lessons) {
     </div>
 </div>`)
     newCard.onclick = () => {
-        window.location.href = `/data_analysis/graph/${lesson.lessonID}`
+        window.location.href = `/data_analysis/graph/${lessonSetInfo["id"]}/${lesson.lessonID}`
     }
     container.appendChild(newCard)
 }

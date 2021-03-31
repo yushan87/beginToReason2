@@ -82,5 +82,5 @@ def get_normal_range(data_list, list_length):
 
 
 # Returns the set's name (not the name of the lesson)
-def get_set_name(lesson_set_id):
-    return LessonSet.objects.get(id=lesson_set_id).set_name
+def get_set_info(lesson_set_id):
+    return {"name": LessonSet.objects.get(id=lesson_set_id).set_name, "id": lesson_set_id}

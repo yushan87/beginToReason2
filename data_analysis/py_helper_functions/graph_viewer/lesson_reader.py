@@ -5,7 +5,7 @@ import json, re
 from data_analysis.py_helper_functions.graph_viewer.node import Node
 from data_analysis.models import DataLog
 from accounts.models import UserInformation
-from core.models import Lesson
+from core.models import Lesson, LessonSet
 
 
 # Takes a lesson index and returns the START node of its graph representation
@@ -78,7 +78,8 @@ def lesson_to_graph(lesson_id):
 
 
 # Takes a lesson index and returns a JSON representation fit for D3
-def lesson_to_json(lesson_id):
+def lesson_to_json(set_id, lesson_index):
+    lesson_id = LessonSet.objects.get(id=set_id).lessons.all()[lesson_index].id
     (root, users) = lesson_to_graph(lesson_id)
     nodes = []
     edges = []
@@ -116,8 +117,8 @@ def find_optimal_min(node_list):
     return 0
 
 
-def lesson_stats(lesson_id):
-    lesson = Lesson.objects.get(id=lesson_id)
+def lesson_stats(set_id, lesson_index):
+    lesson = LessonSet.objects.get(id=set_id).lessons.all()[lesson_index]
     return json.dumps({"name": lesson.lesson_name, "title": lesson.lesson_title,
                        "instruction": lesson.instruction, "code": lesson.code.lesson_code})
 
@@ -144,5 +145,5 @@ def locate_confirms(code):
         ans += line[8:len(line) - 1]
         ans += ", "
     if len(lines) > 1:
-        return "{" + ans[:len(ans) - 2] + "}"
+        return "(" + ans[:len(ans) - 2] + ")"
     return ans[:len(ans) - 2]

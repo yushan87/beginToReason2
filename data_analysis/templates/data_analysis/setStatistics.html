@@ -16,7 +16,7 @@
         </h1>
     </div>
 </div>
-<h2 style="margin-left: 20px">{{lessonSetName | safe}}</h2>
+<h2 style="margin-left: 20px">{{lessonSetInfo.name | safe}}</h2>
 <div id="lessonContainer" class="row no-gutters flex-nowrap" style="width: 100vw; overflow-x: scroll;">
 </div>
 <script type="application/javascript">
@@ -59,6 +59,7 @@
         });
     }
     var lessonSetData = {{lessonSetData | safe}}
+    var lessonSetInfo = {{lessonSetInfo | safe}}
 </script>
 <script src="{% static 'javascript/setStats/setStats.js' %}"></script>
 {% endblock %}
