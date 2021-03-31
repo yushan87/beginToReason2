@@ -18,6 +18,11 @@ def get_set_info(lesson_set_id):
     return {"name": LessonSet.objects.get(id=lesson_set_id).set_name, "id": lesson_set_id}
 
 
+"""
+Helper Methods
+"""
+
+
 # Returns a dict of a single lesson for lesson statistics
 def _get_lesson_stats(lesson, index):
     lesson_dict = {"name": lesson.lesson_name, "title": lesson.lesson_title}
