@@ -1,18 +1,18 @@
 """
 Main file for displaying graphs.
 """
-import json, re
-from data_analysis.py_helper_functions.graph_viewer.node import Node
-from data_analysis.models import DataLog
+import json
+import re
 from accounts.models import UserInformation
-from core.models import Lesson, LessonSet
+from core.models import LessonSet
+from data_analysis.models import DataLog
+from data_analysis.py_helper_functions.graph_viewer.node import Node
 
 
 # Takes a lesson index and returns the START node of its graph representation
 def lesson_to_graph(lesson_id):
     user_number = 1
-    query = DataLog.objects.filter(
-        lesson_key_id=lesson_id).order_by('user_key', 'time_stamp')
+    query = DataLog.objects.filter(lesson_key_id=lesson_id).order_by('user_key', 'time_stamp')
     users_dict = {}
     nodes_in_chain = []
     start_node = Node(Node.START_NAME, False)
@@ -117,10 +117,11 @@ def find_optimal_min(node_list):
     return 0
 
 
-def lesson_stats(set_id, lesson_index):
-    lesson = LessonSet.objects.get(id=set_id).lessons.all()[lesson_index]
+def lesson_info(set_id, lesson_index):
+    lessons = LessonSet.objects.get(id=set_id).lessons.all()
+    lesson = lessons[lesson_index]
     return json.dumps({"name": lesson.lesson_name, "title": lesson.lesson_title,
-                       "instruction": lesson.instruction, "code": lesson.code.lesson_code})
+                       "instruction": lesson.instruction, "code": lesson.code.lesson_code, "setLength": len(lessons)})
 
 
 def user_to_dict(user, user_number):

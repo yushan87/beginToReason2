@@ -1,5 +1,17 @@
 document.querySelector('#graphTitle').innerHTML = `${graph.lesson.name}<br>${graph.lesson.title}`
 document.querySelector('#graphCode').innerHTML = graph.lesson.code.replace(/\\r\\n/g, "<br>")
+const urlSplit = window.location.href.split('/')
+const lessonIndex = parseInt(urlSplit[urlSplit.length - 1])
+document.querySelector('#prevLesson').hidden = lessonIndex < 2
+document.querySelector('#nextLesson').hidden = lessonIndex >= graph.lesson.setLength
+document.querySelector('#prevLesson').onclick = () => {
+  urlSplit[urlSplit.length - 1] = lessonIndex - 1
+  window.location.href = urlSplit.join('/')
+}
+document.querySelector('#nextLesson').onclick = () => {
+  urlSplit[urlSplit.length - 1] = lessonIndex + 1
+  window.location.href = urlSplit.join('/')
+}
 const filter = {}
 //users that are checked
 filter.checkBoxUsers = []
