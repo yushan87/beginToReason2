@@ -136,7 +136,7 @@ def find_prev_lesson(current_lesson_index, lessons):
     return -1
 
 
-# Returns index in the lesson set of the next lesson
+# Returns index in the lesson set of the next lesson, skipping over alternate lessons
 def find_next_lesson(current_lesson, lessons):
     index = current_lesson + 1
     while index < len(lessons):
