@@ -4,7 +4,7 @@ Main file for displaying graphs.
 import json
 import re
 from accounts.models import UserInformation
-from core.models import LessonSet
+from core.models import Lesson, LessonSet
 from data_analysis.models import DataLog
 from data_analysis.py_helper_functions.graph_viewer.node import Node
 
@@ -120,8 +120,37 @@ def find_optimal_min(node_list):
 def lesson_info(set_id, lesson_index):
     lessons = LessonSet.objects.get(id=set_id).lessons.all()
     lesson = lessons[lesson_index]
-    return json.dumps({"name": lesson.lesson_name, "title": lesson.lesson_title,
-                       "instruction": lesson.instruction, "code": lesson.code.lesson_code, "setLength": len(lessons)})
+    return json.dumps({"name": lesson.lesson_name, "title": lesson.lesson_title, "instruction": lesson.instruction,
+                       "code": lesson.code.lesson_code, "prevLesson": find_prev_lesson(lesson, lessons),
+                       "nextLesson": find_next_lesson(lesson, lessons)})
+
+
+# Returns the index of the previous lesson given the set of lessons and the current lesson
+def find_prev_lesson(current_lesson, lessons):
+    return find_prev_helper(lessons[0], None, current_lesson, lessons)
+
+
+# Recursively steps through until it finds something that points to the lesson (won't work for sublessons)
+def find_prev_helper(current, previous, target, lessons):
+    if current == target:
+        # Base case!
+        if previous is None:
+            # In case we're trying to find previous of the first lesson
+            return -1
+        for index, lesson in enumerate(lessons):
+            if lesson == previous:
+                return index
+        print("BAD BAD BAD (I shouldn't be here)")
+        return -1
+    return find_prev_helper(Lesson.objects.get(lesson_name=current.correct), current, target, lessons)
+
+
+# Returns index in the lesson set of the next lesson
+def find_next_lesson(current_lesson, lessons):
+    for index, lesson in enumerate(lessons):
+        if lesson.lesson_name == current_lesson.correct:
+            return index
+    return -1
 
 
 def user_to_dict(user, user_number):

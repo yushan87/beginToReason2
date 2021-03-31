@@ -42,7 +42,7 @@ for (let lesson of lessons) {
         continue
     }
     newCard = HTMLStringToElement(`<div class="col-3" style="margin: 20px 15px; cursor: pointer">
-    <div class="card" id="lesson${lesson.lessonID}">
+    <div class="card" id="lesson${lesson.lessonIndex}">
         <div class="card-body">
             <h5 class="card-title">${lesson.title}</h5>
             <h6 class="card-subtitle mb-2 text-muted">${lesson.name}</h6>
@@ -56,7 +56,7 @@ for (let lesson of lessons) {
     </div>
 </div>`)
     newCard.onclick = () => {
-        window.location.href = `/data_analysis/graph/${lessonSetInfo["id"]}/${lesson.lessonID}`
+        window.location.href = `/data_analysis/data/${lessonSetInfo["id"]}/${lesson.lessonIndex}`
     }
     container.appendChild(newCard)
 }
