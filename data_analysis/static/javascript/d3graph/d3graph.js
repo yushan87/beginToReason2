@@ -1,8 +1,8 @@
 document.querySelector('#graphTitle').innerHTML = `${graph.lesson.name}<br>${graph.lesson.title}`
 document.querySelector('#graphCode').innerHTML = graph.lesson.code.replace(/\\r\\n/g, "<br>")
 const urlSplit = window.location.href.split('/')
-document.querySelector('#prevLesson').hidden = graph.lesson.prevLesson < 0
-document.querySelector('#nextLesson').hidden = graph.lesson.nextLesson < 0
+document.querySelector('#prevLesson').disabled = graph.lesson.prevLesson < 0
+document.querySelector('#nextLesson').disabled = graph.lesson.nextLesson < 0
 document.querySelector('#prevLesson').onclick = () => {
   urlSplit[urlSplit.length - 1] = graph.lesson.prevLesson
   window.location.href = urlSplit.join('/')
@@ -10,6 +10,9 @@ document.querySelector('#prevLesson').onclick = () => {
 document.querySelector('#nextLesson').onclick = () => {
   urlSplit[urlSplit.length - 1] = graph.lesson.nextLesson
   window.location.href = urlSplit.join('/')
+}
+document.querySelector("#setView").onclick = () => {
+  window.location.href = urlSplit.splice(0, urlSplit.length - 1).join('/')
 }
 const filter = {}
 //users that are checked

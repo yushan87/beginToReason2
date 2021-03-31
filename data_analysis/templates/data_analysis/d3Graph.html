@@ -11,9 +11,16 @@
 {% block main_content %}
 <div class="container-fluid" style="background-color: white">
     <div id="graphDisplay" class="row justify-content-center" style="margin-top: 15px">
-        <div class="col-2 text-right"><button type="button" class="btn btn-primary" id="prevLesson" hidden>Previous Lesson</button></div>
-        <h1 id="graphTitle" class="col-6" style="text-align: center"></h1>
-        <div class="col-2 text-left"><button class="btn btn-primary" id="nextLesson" hidden>Next Lesson</button></div>
+        <div class="col-2">
+            <button type="button" class="btn btn-primary" id="setView">Back to Set View</button>
+        </div>
+        <h1 id="graphTitle" class="col-8" style="text-align: center"></h1>
+        <div class="col-2">
+            <div style="margin: 10px">
+                <button type="button" class="btn btn-primary" id="prevLesson" disabled>Previous Lesson</button>
+                <button class="btn btn-primary" id="nextLesson" disabled>Next Lesson</button>
+            </div>
+        </div>
         <div class="w-100"></div>
         <div class="col-2">
             <h3 class="text-center">Lesson Code</h3>
