@@ -31,7 +31,8 @@ def lesson_info(set_id, lesson_index):
     lesson = lessons[lesson_index]
     return json.dumps({"name": lesson.lesson_name, "title": lesson.lesson_title,
                        "code": lesson.code.lesson_code, "prevLesson": _find_prev_lesson(lesson_index, lessons),
-                       "nextLesson": _find_next_lesson(lesson_index, lessons)})
+                       "nextLesson": _find_next_lesson(lesson_index, lessons),
+                       "confirms": _locate_confirm_indices(lesson.code.lesson_code)})
 
 
 """
@@ -177,3 +178,13 @@ def _locate_confirms(code):
     if len(lines) > 1:
         return "(" + ans[:len(ans) - 2] + ")"
     return ans[:len(ans) - 2]
+
+
+def _locate_confirm_indices(code):
+    confirms = []
+    for index, line in enumerate(re.split("\\\\r\\\\n", code)):
+        if re.search("Confirm [^;]*;|ensures [^;]*;", line):
+            confirms.append(index)
+    print(confirms)
+    return confirms
+
