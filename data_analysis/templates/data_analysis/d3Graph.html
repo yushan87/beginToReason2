@@ -1,0 +1,98 @@
+{% extends "core/base.html" %}
+{% load static compress %}
+
+{% block css %}
+{% compress css %}
+<link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/catalog.scss' %}" media="screen">
+<link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
+<link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/lesson.scss' %}" media="screen">
+<style>
+    /* ugly fix */
+    body {overflow-y: hidden;}
+</style>
+{% endcompress %}
+{% endblock %}
+
+{% block body_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
+            integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-chaos.min.js"
+            integrity="sha256-ck2clJ3aqYWprrGnnBxu1OCoEh54qkccsXRguhaZyuo=" crossorigin="anonymous"></script>
+    <script src="{% static 'javascript/lesson/mode-resolve.js' %}"></script>
+    <script src="{% static 'javascript/lesson/editorUpdate.js' %}"></script>
+    <script src="{% static 'javascript/d3graph/d3.v4.js' %}"></script>
+{% endblock %}
+
+{% block main_content %}
+<div class="container-fluid" style="background-color: white">
+    <div id="graphDisplay" class="row justify-content-center" style="margin-top: 15px">
+        <div class="col-2">
+            <button type="button" class="btn btn-primary" id="setView" style="margin: 10px">Back to Set View</button>
+        </div>
+        <h1 id="graphTitle" class="col-8" style="text-align: center"></h1>
+        <div class="col-2">
+            <div style="margin: 10px">
+                <button type="button" class="btn btn-primary" id="prevLesson" disabled>Previous Lesson</button>
+                <button class="btn btn-primary" id="nextLesson" disabled>Next Lesson</button>
+            </div>
+        </div>
+        <div class="w-100"></div>
+        <div class="col-3">
+            <div class="card">
+                <h3 class="text-center">Lesson Code</h3>
+            </div>
+            <div style="position: relative; height: 50vh;">
+                <div id="editor" style="position: absolute; top: 0; right: 0; bottom: 0; left: 0; border-right: 0px !important;"></div>
+            </div>
+            <div class="card" style="margin: 10px 0px">
+                <h3 class="text-center" style="margin: 10px 0px">Filter by Answers Tried</h3>
+                <div class="card-body">
+                    <input id="filterSlider" type="range" style="transform: translate(100%, 0) scale(2.6, 2.6); margin: auto">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-4">
+                    <input data-category="gender" data-class="Male" class="demographic" id="male" name="male" type="checkbox" checked>
+                    <label for="male">Male</label>
+                </div>
+                <div class="col-4">
+                    <input data-category="gender" data-class="Female" class="demographic" id="female" name="female" type="checkbox" checked>
+                    <label for="female">Female</label>
+                </div>
+                <div class="col-4">
+                    <input data-category="gender" data-class="Prefer Not To Answer" class="demographic" id="other" name="other" type="checkbox" checked>
+                    <label for="other">Other</label>
+                </div>
+            </div>
+        </div>
+        <div class="col-7">
+            <svg id="lessonGraph"></svg>
+        </div>
+        <div style="display: flex; flex-direction: column" class="row col-2">
+            <div class="card">
+                <h3 class="text-center card-title">Selected Answer</h3>
+                <div id="nodeInfo" class="card-body" style="border: 1px solid black">
+                    <h4 id="nodeName">Name: </h4>
+                    <h4 id="nodeAppearances">Appearances: </h4>
+                    <h4 id="nodeDistance">Distance: </h4>
+                    <h4 id="nodeCorrect">Correct: </h4>
+                </div>
+            </div>
+            <btn class="btn btn-primary" id="splitNodes" type="button">Split</btn>
+            <div style="margin-top: 10px">
+                <h3 class="text-center" style="display: inline">Users</h3>
+                <btn class="btn btn-primary" id="selectClear" type="button" style="float: right; margin: 5px">Clear</btn>
+                <btn class="btn btn-primary" id="selectAll" type="button" style="float: right; margin: 5px">Select All</btn>
+            </div>
+            <div class="card" id="userList" style="max-height: 47vh; overflow: auto; padding: 5px;"></div>
+        </div>
+    </div>
+</div>
+<script>
+    var graph = graph || {}
+    graph.data = {{graphData | safe}}
+    graph.lesson = {{lessonData | safe}}
+</script>
+<script src="{% static 'javascript/d3graph/d3graph.js' %}"></script>
+<script src="{% static 'javascript/d3graph/basiceditor.js' %}"></script>
+{% endblock %}
