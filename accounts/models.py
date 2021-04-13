@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.core.validators import MinLengthValidator
 from django.db import models
 from core.models import LessonSet, MainSet
+from instructor.models import Class
 
 
 class UserInformation(models.Model):
@@ -17,7 +18,7 @@ class UserInformation(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)  # Foreign key referring to an entry in the user table
     user_nickname = models.CharField("Nickname", max_length=25, validators=[MinLengthValidator(1)])  # Nickname field
     user_school = models.CharField("School", max_length=100, validators=[MinLengthValidator(1)])  # School field
-    user_class = models.CharField("Class", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
+    user_classes = models.ManyToManyField(Class, blank=True, related_name='members')  # Classes user is taking/teaching
     user_gender = models.CharField("Gender", max_length=50, validators=[MinLengthValidator(1)])  # Gender field
     user_race = models.CharField("Race", max_length=50, validators=[MinLengthValidator(1)])  # Race field
     user_instructor = models.BooleanField(default=False)

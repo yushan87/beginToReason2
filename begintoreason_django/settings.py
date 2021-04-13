@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'core',
     'data_analysis',
     'educator',
+    'instructor',
     'think_aloud',
     'tutor',
 

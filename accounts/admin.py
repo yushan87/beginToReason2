@@ -11,7 +11,7 @@ class UserInformationAdmin(admin.ModelAdmin):
     This class contains rendering details for the UserInformation table
     """
     model = UserInformation
-    list_display = ('get_user_email', 'user_nickname', 'user_school', 'user_class')     # Fields to be shown initially
+    list_display = ('get_user_email', 'user_nickname', 'user_school')     # Fields to be shown initially
 
 
 # Register your models here.
