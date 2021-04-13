@@ -30,7 +30,6 @@ class Migration(migrations.Migration):
                 ('completed_lesson_index', models.IntegerField(default=0)),
                 ('current_lesson_name', models.CharField(default='None', max_length=200)),
                 ('mood', models.CharField(default='neutral', max_length=10)),
-                ('completed_sets', models.ManyToManyField(blank=True, related_name='sets_completed', to='core.MainSet')),
                 ('current_lesson_set', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.lessonset')),
                 ('current_main_set', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.mainset')),
                 ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
