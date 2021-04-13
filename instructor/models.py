@@ -12,4 +12,12 @@ class Class(models.Model):
 
     @param models.Model The base model
     """
-    user_class = models.CharField("Class", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
+    class_name = models.CharField("Class", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
+
+    def __str__(self):
+        """function __str__ is used to create a string representation of this class
+
+        Returns:
+            str: user email
+        """
+        return self.class_name
