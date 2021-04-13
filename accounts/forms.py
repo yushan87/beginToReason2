@@ -70,7 +70,6 @@ class UserInformationForm(forms.ModelForm):
     user_email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'readonly': 'readonly'}))  # read only
     user_nickname = forms.CharField(label='Nickname', max_length=25)
     user_school = forms.ChoiceField(label='School', choices=schools)
-    user_class = forms.ChoiceField(label='Class', choices=classes)
     user_gender = forms.ChoiceField(label='Gender', choices=genders)
     user_race = forms.ChoiceField(label='Race', choices=races)
 
@@ -92,4 +91,4 @@ class UserInformationForm(forms.ModelForm):
         A class that stores the meta information about this form
         """
         model = UserInformation
-        fields = ['user_email', 'user_nickname', 'user_school', 'user_class', 'user_gender', 'user_race']
+        fields = ['user_email', 'user_nickname', 'user_school', 'user_gender', 'user_race']
