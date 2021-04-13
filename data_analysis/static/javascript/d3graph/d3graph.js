@@ -647,7 +647,7 @@ function color(d) {
   if (d.distance == "No completions") {
     return "#ff0000"
   }
-  if (d.distance == 0) {
+  if (d.distance <= 0) {
     return "#00ffff"
   }
   const goodness = (maxDistance - (d.distance - 1) ** 0.7) / (maxDistance)

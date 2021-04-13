@@ -149,3 +149,4 @@ package-lock.json
 package.json
 dbBeforeClasses.sqlite3
 dbBeforeMergingSpringData.sqlite3
+db.sqlite3-journal

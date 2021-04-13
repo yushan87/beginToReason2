@@ -56,6 +56,9 @@ def _lesson_to_graph(lesson_id, is_anonymous):
     prev_student = query[0].user_key
     users_dict[str(user_number)] = _user_to_dict(prev_student, str(user_number), is_anonymous)
     for log in query:
+        # Throw out instructors
+        if is_user_instructor(log.user_key):
+            continue
         # Only need confirm statements
         log.code = _locate_confirms(log.code)
         prev_node.add_appearance(str(user_number))
@@ -167,6 +170,10 @@ def _get_name(user):
 
 def _get_user_info(user):
     return UserInformation.objects.get(user=user.id)
+
+
+def is_user_instructor(user_id):
+    return _get_user_info(user_id).user_instructor
 
 
 def _locate_confirms(code):

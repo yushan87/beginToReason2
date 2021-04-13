@@ -4,6 +4,9 @@ from core.models import Lesson, LessonSet
 
 
 # Returns JSON array of lessons in the set
+from data_analysis.py_helper_functions.graph_viewer.lesson_reader import is_user_instructor
+
+
 def get_set_stats(lesson_set_id):
     lesson_set_list = []
     for index, lesson in enumerate(LessonSet.objects.get(id=lesson_set_id).lessons.all()):
@@ -43,6 +46,9 @@ def _get_user_stats(lesson, index):
     first_try = int(query[0].status == 'correct')
     prev_student = query[0].user_key
     for log in query:
+        # Throw out instructors
+        if is_user_instructor(log.user_key):
+            continue
         if log.user_key != prev_student:
             # New student!
             user_count += 1
