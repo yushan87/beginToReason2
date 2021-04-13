@@ -39,7 +39,7 @@ def user_auth_inst(request):
         user = User.objects.get(email=request.user.email)
         if UserInformation.objects.filter(user=user).exists():
             inst = UserInformation.objects.get(user=user)
-            if(inst.user_instructor):
+            if inst.user_instructor:
                 return True
     return False
 
