@@ -107,7 +107,7 @@ for (let lesson of lessons) {
     </div>
 </div>`)
     addition.querySelector(".btn-primary").onclick = () => {
-        window.location.href = `/data_analysis/data/${lessonSetInfo["id"]}/${lesson.lessonIndex}`
+        window.location.href += `/${lesson.lessonIndex}`
     }
     addition.querySelector(`#menu${lesson.lessonIndex}`).onclick = () => {
         window.sessionStorage.setItem("selectedLesson", lesson.lessonIndex)

@@ -34,7 +34,7 @@
                                     <div class="card-body">
                                         <h5 class="card-title">{{set.set_name}}</h5>
                                         <p class="card-text">{{set.set_description}}</p>
-                                        <form action="{% url 'data_analysis:set-statistics' set.id %}" method="GET">
+                                        <form action="{% url 'data_analysis:set-statistics' class.id set.id %}" method="GET">
                                             {% csrf_token %}
                                             <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
                                                 View Set Data

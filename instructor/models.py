@@ -30,8 +30,4 @@ class Class(models.Model):
         Returns:
             int: count of how many non-instructor users are enrolled
         """
-        count = 0
-        for member in self.members.all():
-            if not member.user_instructor:
-                count += 1
-        return count
+        return self.members.filter(user_instructor=False).count()

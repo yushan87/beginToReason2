@@ -7,7 +7,7 @@ from data_analysis.py_helper_functions.graph_viewer.lesson_reader import lesson_
 
 
 # Create your views here.
-def d3_graph(request, setID, lessonIndex):
+def d3_graph(request, classID, setID, lessonIndex):
     """function d3_graph This function handles the view for the graph of a specific lesson
 
     Args:
@@ -19,11 +19,11 @@ def d3_graph(request, setID, lessonIndex):
         HttpResponse: A generated http response object to the request to generate the graph
     """
     print(request)
-    return render(request, "data_analysis/d3graph.html", {'graphData': lesson_to_json(setID, lessonIndex, True),
+    return render(request, "data_analysis/d3graph.html", {'graphData': lesson_to_json(classID, setID, lessonIndex, True),
                                                           'lessonData': lesson_info(setID, lessonIndex)})
 
 
-def set_statistics(request, setID):
+def set_statistics(request, classID, setID):
     """function d3_graph This function handles the view for lesson set-wide stats
 
     Args:
@@ -34,5 +34,5 @@ def set_statistics(request, setID):
         HttpResponse: A generated http response object to the request to show the lesson set
     """
     print(request)
-    return render(request, "data_analysis/setStatistics.html", {'lessonSetData': get_set_stats(setID),
+    return render(request, "data_analysis/setStatistics.html", {'lessonSetData': get_set_stats(classID, setID),
                                                                 'lessonSetInfo': get_set_info(setID)})

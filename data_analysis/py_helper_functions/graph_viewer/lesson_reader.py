@@ -10,9 +10,9 @@ from data_analysis.py_helper_functions.graph_viewer.node import Node
 
 
 # Takes a lesson index and returns a JSON representation fit for D3
-def lesson_to_json(set_id, lesson_index, is_anonymous):
+def lesson_to_json(class_id, set_id, lesson_index, is_anonymous):
     lesson_id = LessonSet.objects.get(id=set_id).lessons.all()[lesson_index].id
-    (root, users) = _lesson_to_graph(lesson_id, is_anonymous)
+    (root, users) = _lesson_to_graph(class_id, lesson_id, is_anonymous)
     nodes = []
     edges = []
     allowed = _filter_by_appearances(root.return_family())
@@ -41,9 +41,9 @@ Helper methods
 
 
 # Takes a lesson index and returns the START node of its graph representation
-def _lesson_to_graph(lesson_id, is_anonymous):
+def _lesson_to_graph(class_id, lesson_id, is_anonymous):
     user_number = 1
-    query = DataLog.objects.filter(lesson_key_id=lesson_id).order_by('user_key', 'time_stamp')
+    query = DataLog.objects.filter(lesson_key_id=lesson_id, class_key_id = class_id).order_by('user_key', 'time_stamp')
     users_dict = {}
     nodes_in_chain = []
     start_node = Node(Node.START_NAME, False)
