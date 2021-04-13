@@ -99,6 +99,22 @@ def lesson_set_auth(request):
     return False
 
 
+def user_in_class_auth(user_info, class_id):
+    """function user_in_class_auth This function handles the auth logic for users in classes
+
+    Args:
+        user_info: Model from accounts
+        class_id (int): ID of the class in question
+
+    Returns:
+        Boolean: A boolean to signal whether the user is in the class
+    """
+    for user_class in user_info.user_classes.all():
+        if user_class.id == class_id:
+            return True
+    return False
+
+
 def lesson_auth(request):
     """function lesson_auth This function handles the auth logic for a lesson
 

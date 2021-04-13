@@ -12,7 +12,7 @@
     <div class="jumbotron jumbotron-fluid py-5 mb-0">
         <div class="container p-0">
             <h1 class="font-weight-bold" id="jumbo-title">
-                    Classes
+                    {{class.class_name}}
             </h1>
         </div>
     </div>
@@ -21,9 +21,9 @@
         <div class="row">
             <div class="col-12">
                 <div class="page-section-heading my-3">
-                    <h3>Current Classes</h3>
+                    <h3>Currently Assigned Sets</h3>
                 </div>
-                {% for class in classes %}
+                {% for set in class.lesson_sets.all %}
                     <div class="my-4">
                         <div class="card" style="background-color: inherit;">
                             <div class="row no-gutters">
@@ -32,13 +32,12 @@
                                 </div>
                                 <div class="col-md-8 align-self-center">
                                     <div class="card-body">
-                                        <h5 class="card-title">{{class.class_name}}</h5>
-                                        <p class="card-text">{{CurrentSet.set_description}}</p>
-                                        <p class="card-text"><small class="text-muted">User count: {{ class.user_count }}</small></p>
-                                        <form action="{% url 'instructor:class-view' class.id %}" method="GET">
+                                        <h5 class="card-title">{{set.set_name}}</h5>
+                                        <p class="card-text">{{set.set_description}}</p>
+                                        <form action="{% url 'data_analysis:set-statistics' set.id %}" method="GET">
                                             {% csrf_token %}
                                             <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
-                                                View Lesson Sets
+                                                View Set Data
                                             </button>
                                         </form>
                                     </div>

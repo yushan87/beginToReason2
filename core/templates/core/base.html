@@ -49,6 +49,11 @@
             <li class="nav-item ml-3">
                 <a class="nav-link pb-0" href="{% url 'tutor:catalog' %}">Catalog</a>
             </li>
+            {% if UserInformation.objects.get(user=user.id).user_instructor %}
+            <li class="nav-item ml-3">
+                <a class="nav-link pb-0" href="{% url 'instructor:main-view' %}">Instructor Tools</a>
+            </li>
+            {% endif %}
             <li class="nav-item ml-3">
                 <a class="nav-link pb-0" href="{% url 'accounts:privacy' %}">Privacy Policy</a>
             </li>
