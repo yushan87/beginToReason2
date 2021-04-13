@@ -4,6 +4,7 @@ a new instance of a model will be made.
 """
 from django.core.validators import MinLengthValidator
 from django.db import models
+from core.models import MainSet
 
 
 class Class(models.Model):
@@ -12,7 +13,8 @@ class Class(models.Model):
 
     @param models.Model The base model
     """
-    class_name = models.CharField("Class", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
+    class_name = models.CharField("Name", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
+    lesson_sets = models.ManyToManyField(MainSet, blank=True, related_name='classes') # Lessons assigned to the class
 
     def __str__(self):
         """function __str__ is used to create a string representation of this class
