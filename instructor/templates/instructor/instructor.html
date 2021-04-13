@@ -31,11 +31,11 @@
                                     <div class="card-body">
                                         <h5 class="card-title">{{class.class_name}}</h5>
                                         <p class="card-text">{{CurrentSet.set_description}}</p>
-                                        <p class="card-text"><small class="text-muted">User count: {{ user.last_login }}</small></p>
-                                        <form action="{% url 'tutor:tutor' %}" method="GET">
+                                        <p class="card-text"><small class="text-muted">User count: {{ class.user_count }}</small></p>
+                                        <form action="{% url 'instructor:class-view' class.id %}" method="GET">
                                             {% csrf_token %}
                                             <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
-                                                Continue Training
+                                                View Lesson Sets
                                             </button>
                                         </form>
                                     </div>

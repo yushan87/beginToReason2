@@ -21,3 +21,15 @@ class Class(models.Model):
             str: user email
         """
         return self.class_name
+
+    def user_count(self):
+        """function user_count is used to count how many students are in a class
+
+        Returns:
+            int: count of how many non-instructor users are enrolled
+        """
+        count = 0
+        for member in self.members.all():
+            if not member.user_instructor:
+                count += 1
+        return count

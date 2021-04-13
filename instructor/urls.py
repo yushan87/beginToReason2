@@ -10,5 +10,6 @@ app_name = 'instructor'
 
 # URL patterns to be matched.
 urlpatterns = [
-    path('index', views.instructor, name='main-view')
+    path('', views.instructor, name='main-view'),
+    path('class/<int:class_id>', views.class_view, name='class-view')
 ]
