@@ -148,3 +148,4 @@ node_modules
 package-lock.json
 package.json
 dbBeforeClasses.sqlite3
+dbBeforeMergingSpringData.sqlite3
