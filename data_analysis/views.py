@@ -7,21 +7,21 @@ from data_analysis.py_helper_functions.graph_viewer.lesson_reader import lesson_
 
 
 # Create your views here.
-def d3_graph(request, classID, setID, lessonIndex):
+def d3_graph(request, classID, mainSetID, lessonSetIndex):
     """function d3_graph This function handles the view for the graph of a specific lesson
 
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
         classID (int): ID of the class that user is interested in
-        setID (int): ID of the set within the database
-        lessonIndex (int): index of the lesson within the set's lessons() call
+        mainSetID (int): ID of the set within the database
+        lessonSetIndex (int): index of the lesson set within the main set
 
     Returns:
         HttpResponse: A generated http response object to the request to generate the graph
     """
     print(request)
-    return render(request, "data_analysis/d3graph.html", {'graphData': lesson_to_json(classID, setID, lessonIndex, True),
-                                                          'lessonData': lesson_info(setID, lessonIndex)})
+    return render(request, "data_analysis/d3graph.html", {'graphData': lesson_to_json(classID, mainSetID, lessonSetIndex, True),
+                                                          'lessonData': lesson_info(mainSetID, lessonSetIndex)})
 
 
 def mainset_statistics(request, classID, mainSetID):

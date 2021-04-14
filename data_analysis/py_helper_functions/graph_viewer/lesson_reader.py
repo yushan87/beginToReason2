@@ -4,14 +4,14 @@ Main file for displaying graphs.
 import json
 import re
 from accounts.models import UserInformation
-from core.models import LessonSet
+from core.models import LessonSet, MainSet
 from data_analysis.models import DataLog
 from data_analysis.py_helper_functions.graph_viewer.node import Node
 
 
 # Takes a lesson index and returns a JSON representation fit for D3
-def lesson_to_json(class_id, set_id, lesson_index, is_anonymous):
-    lesson_id = LessonSet.objects.get(id=set_id).lessons.all()[lesson_index].id
+def lesson_to_json(class_id, mainset_id, lessonset_index, is_anonymous):
+    lesson_id = MainSet.objects.get(id=mainset_id).lessons.all()[lessonset_index].lessons.all()[0]
     (root, users) = _lesson_to_graph(class_id, lesson_id, is_anonymous)
     nodes = []
     edges = []
@@ -26,12 +26,14 @@ def lesson_to_json(class_id, set_id, lesson_index, is_anonymous):
 
 
 # Returns JSON containing info that graph needs to display about the lesson
-def lesson_info(set_id, lesson_index):
-    lessons = LessonSet.objects.get(id=set_id).lessons.all()
-    lesson = lessons[lesson_index]
-    return json.dumps({"name": lesson.lesson_name, "title": lesson.lesson_title,
-                       "code": lesson.code.lesson_code, "prevLesson": _find_prev_lesson(lesson_index, lessons),
-                       "nextLesson": _find_next_lesson(lesson_index, lessons),
+def lesson_info(mainset_id, lessonset_index):
+    lesson_sets = MainSet.objects.get(id=mainset_id).lessons.all()
+    lesson_set = lesson_sets[lessonset_index]
+    lesson = lesson_set.lessons.all()[0]
+    return json.dumps({"lessonName": lesson.lesson_name, "lessonTitle": lesson.lesson_title,
+                       "lessonSetName": lesson_set.set_name, "code": lesson.code.lesson_code,
+                       "prevLessonSet": _find_prev_lesson_set(lessonset_index),
+                       "nextLessonSet": _find_next_lesson_set(lessonset_index, lesson_sets),
                        "confirms": _locate_confirm_indices(lesson.code.lesson_code)})
 
 
@@ -133,26 +135,22 @@ def _find_optimal_min(node_list):
     return 0
 
 
-# Returns the index of the previous lesson, skipping over alternate lessons
-def _find_prev_lesson(current_lesson_index, lessons):
-    index = current_lesson_index - 1
-    while index > -1:
-        if not lessons[index].is_alternate:
-            return index
-        index -= 1
-    # Didn't find it - was the first non-alternate lesson in the set
-    return -1
+# Returns the index of the previous lesson set
+def _find_prev_lesson_set(current_lesson_set_index):
+    if current_lesson_set_index == 0:
+        # First lesson set in main set
+        return -1
+
+    return current_lesson_set_index - 1
 
 
-# Returns index in the lesson set of the next lesson, skipping over alternate lessons
-def _find_next_lesson(current_lesson, lessons):
-    index = current_lesson + 1
-    while index < len(lessons):
-        if not lessons[index].is_alternate:
-            return index
-        index += 1
-    # Didn't find it
-    return -1
+# Returns index in the main set of the next lesson set
+def _find_next_lesson_set(current_lesson_set_index, lesson_sets):
+    if current_lesson_set_index + 1 == len(lesson_sets):
+        # Last lesson in lesson set
+        return -1
+
+    return current_lesson_set_index + 1
 
 
 def _user_to_dict(user, user_number, is_anonymous):
