@@ -31,14 +31,7 @@ def _get_lesson_set_stats(class_id, lesson_set, index):
 
 # Returns a dictionary of the user-specific stats (e.g. avg. num of attempts)
 def _get_user_stats(class_id, lesson_set, index):
-    for index, lesson in enumerate(lesson_set.lessons.all()):
-        if index == 0:
-            query = DataLog.objects.filter(lesson_key_id=lesson.id, class_key_id=class_id)
-        else:
-            query = query.union(DataLog.objects.filter(lesson_key_id=lesson.id, class_key_id=class_id))
-            # Cast it to bool to evaluate it to prevent Django from being confused
-            print(len(query))
-    query = query.order_by('user_key', 'time_stamp')
+    query = DataLog.objects.filter(lesson_set_key_id=lesson_set.id, class_key_id=class_id).order_by('user_key', 'time_stamp')
     if not query:
         # Means that no students have taken the lesson yet
         return {"userCount": 0, "completionRate": 0, "firstTryRate": 0, "averageAttempts": 0, "lessonSetIndex": index}
