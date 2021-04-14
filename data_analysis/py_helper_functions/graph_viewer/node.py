@@ -62,10 +62,10 @@ class Node:
                 already_found = node.return_family_helper(already_found)
         return already_found
 
-    def find_node(self, attempt):
+    def find_node(self, attempt, correct):
         for node in self.return_family():
             # Take away spaces for slight formatting differences
-            if node.attempt.replace(" ", "") == attempt.replace(" ", ""):
+            if node.attempt.replace(" ", "") == attempt.replace(" ", "") and node.is_correct == correct:
                 return node
         return None
 
