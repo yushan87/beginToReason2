@@ -23,7 +23,7 @@
                 <div class="page-section-heading my-3">
                     <h3>Currently Assigned Sets</h3>
                 </div>
-                {% for set in class.lesson_sets.all %}
+                {% for set in class.main_sets.all %}
                     <div class="my-4">
                         <div class="card" style="background-color: inherit;">
                             <div class="row no-gutters">
@@ -34,7 +34,7 @@
                                     <div class="card-body">
                                         <h5 class="card-title">{{set.set_name}}</h5>
                                         <p class="card-text">{{set.set_description}}</p>
-                                        <form action="{% url 'data_analysis:set-statistics' class.id set.id %}" method="GET">
+                                        <form action="{% url 'data_analysis:mainset-statistics' class.id set.id %}" method="GET">
                                             {% csrf_token %}
                                             <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
                                                 View Set Data

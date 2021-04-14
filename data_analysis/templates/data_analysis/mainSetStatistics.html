@@ -12,14 +12,14 @@
 <div class="jumbotron jumbotron-fluid">
     <div class="container">
         <h1 class="font-weight-bold" id="jumbo-title">
-            Full Catalog
+            {{mainSetInfo.name}}
         </h1>
     </div>
 </div>
 <div style="display: flex;">
     <h2 style="margin-left: 20px; display: inline">{{lessonSetInfo.name | safe}}</h2>
     <div class="form-outline" style="margin-left: 40px;">
-        <input type="search" id="lessonSearch" class="form-control" placeholder="Search Lessons"
+        <input type="search" id="lessonSearch" class="form-control" placeholder="Search Lesson Sets"
         aria-label="Search" />
     </div>
 </div>
@@ -64,8 +64,7 @@
             }
         });
     }
-    var lessonSetData = {{lessonSetData | safe}}
-    var lessonSetInfo = {{lessonSetInfo | safe}}
+    var mainSetData = {{mainSetData | safe}}
 </script>
 <script src="{% static 'javascript/setStats/setStats.js' %}"></script>
 {% endblock %}
