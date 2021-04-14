@@ -12,6 +12,7 @@ from data_analysis.py_helper_functions.graph_viewer.node import Node
 # Takes a lesson index and returns a JSON representation fit for D3
 def lesson_to_json(class_id, mainset_id, lessonset_index, is_anonymous):
     lesson = _find_main_lesson(MainSet.objects.get(id=mainset_id).lessons.all()[lessonset_index].lessons.all())
+    print("lesson is", lesson)
     (root, users) = _lesson_to_graph(class_id, lesson, is_anonymous)
     nodes = []
     edges = []
@@ -152,7 +153,8 @@ def _find_main_lesson(lessons):
     for lesson in lessons:
         if not lesson.is_alternate:
             return lesson
-    return -1
+    print("Couldn't find a non-alternate lesson! Defaulting to the first one...")
+    return lessons[0]
 
 
 def _user_to_dict(user, user_number, is_anonymous):
@@ -201,5 +203,5 @@ def _locate_confirm_indices(code):
 # Replaces XYZ, LMN, EFG with IJK
 def _unmutate(code, variables):
     for index, var in enumerate(variables):
-        code = code.replace(var, chr(73 + index))
-    return code
+        code = code.replace(var, chr(81 + index))
+    return code.replace("Q", "I").replace("R", "J").replace("S", "K")
