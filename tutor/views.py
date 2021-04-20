@@ -207,9 +207,8 @@ def tutor(request):
             print("===============", num_done)
             # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
 
-
-            if Lesson.objects.filter(lesson_title=current_set[current_user.current_lesson_index]).exists():
-                current_lesson = Lesson.objects.get(lesson_title=current_set[current_user.current_lesson_index])
+            if Lesson.objects.filter(id=current_set[current_user.current_lesson_index].id).exists():
+                current_lesson = Lesson.objects.get(id=current_set[current_user.current_lesson_index].id)
                 print("in if 1 - Current lesson: ", current_lesson)
 
             # Just as we are altering the code here with mutate, this will pull the previous answer
