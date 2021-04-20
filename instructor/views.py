@@ -1,17 +1,13 @@
 """
 This module contains our Django views for the "instructor" application.
 """
-import json
-
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from accounts.models import UserInformation
-from instructor.forms import NewClassForm
 from instructor.models import Class, ClassMembership
 from tutor.py_helper_functions.tutor_helper import user_auth
-from instructor.py_helper_functions.instructor_helper import user_auth_inst, user_is_instructor, \
-    get_classes, get_classes_taught
+from instructor.py_helper_functions.instructor_helper import user_auth_inst, user_is_instructor, get_classes_taught
 
 
 # Create your views here.
@@ -48,19 +44,13 @@ def instructor(request):
             # Case 1b: User doesn't exist in table
             return redirect("/accounts/settings")
 
-    # Case 2: User not an instructor
-    # Is user a user?
-    elif user_auth(request):
-        # Case 2a: User is user. Go to profile page
-        return redirect("/accounts/profile")
-
     else:
-        # Case 2b: User not user. Go to login
+        # Case 2: User not valid. Go to login
         return redirect("/accounts/settings")
 
 
 @login_required(login_url='/accounts/login/')
-def class_view(request, classID):
+def class_view_instructor(request, classID):
     """function instructor This function handles the view for the instructor page of the application.
 
     Args:

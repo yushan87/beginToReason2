@@ -9,6 +9,8 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet, MainSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
+from instructor.models import Class
+from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete, \
     log_lesson, check_type, alternate_lesson_check, replace_previous
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
@@ -38,6 +40,40 @@ def catalog(request):
             return redirect("/accounts/settings")
     else:
         return render(request, "tutor/catalog.html", {'LessonSet': MainSet.objects.all()})
+
+
+@login_required(login_url='/accounts/login/')
+def classes(request):
+    """function catalog This function handles the view for the classes page of the application.
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+    Returns:
+        HttpResponse: A generated http response object to the request depending on whether or not
+                      the user is authenticated.
+    """
+    if user_auth(request):
+        current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+        return render(request, "tutor/classes.html", {'classes': get_classes(current_user)})
+    else:
+        return redirect("/accounts/settings")
+
+
+def class_view(request, classID):
+    """function catalog This function handles the view for the class page of the application.
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+    Returns:
+        HttpResponse: A generated http response object to the request depending on whether or not
+                      the user is authenticated.
+    """
+    if user_auth(request):
+        if user_in_class_auth(UserInformation.objects.get(user=User.objects.get(email=request.user.email)), classID):
+            class_to_show = Class.objects.get(id=classID)
+            return render(request, "tutor/class.html", {'mainSets': class_to_show.main_sets.all(), 'class': class_to_show})
+        else:
+            return redirect("/tutor/classes")
+    else:
+        return redirect("/accounts/settings")
 
 
 @login_required(login_url='/accounts/login/')
