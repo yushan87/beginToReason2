@@ -62,7 +62,7 @@ def _lesson_to_graph(class_id, lesson, is_anonymous):
         if is_user_instructor(log.user_key):
             continue
         # Only need confirm statements
-        log.code = _locate_confirms(log.code)
+        log.code = _locate_confirms(log.original_code)
         # Is this kid same as the last one?
         if log.user_key != prev_student:
             # Nope!
@@ -200,7 +200,7 @@ def _locate_confirm_indices(code):
     return confirms
 
 
-# Replaces XYZ, LMN, EFG with IJK
+# Replaces any order of IJK with specific order IJK
 def _unmutate(code, variables):
     for index, var in enumerate(variables):
         code = code.replace(var, chr(81 + index))
