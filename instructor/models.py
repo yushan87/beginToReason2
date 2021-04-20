@@ -4,6 +4,8 @@ a new instance of a model will be made.
 """
 from django.core.validators import MinLengthValidator
 from django.db import models
+
+from accounts.models import UserInformation
 from core.models import MainSet
 
 
@@ -31,3 +33,14 @@ class Class(models.Model):
             int: count of how many non-instructor users are enrolled
         """
         return self.members.filter(user_instructor=False).count()
+
+
+class ClassMembership(models.Model):
+    """
+    A many-to-many containing a boolean signifying whether user is instructor of class or not
+
+    @param models.Model The base model
+    """
+    user = models.ForeignKey(UserInformation, on_delete=models.CASCADE)
+    class_taking = models.ForeignKey(Class, on_delete=models.CASCADE)
+    is_instructor = models.BooleanField(default=False)
