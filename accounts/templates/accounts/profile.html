@@ -84,15 +84,15 @@
                     <div class="tab-pane fade show active" id="nav-courses" role="tabpanel"
                          aria-labelledby="nav-courses-tab">
                         <div class="page-section-heading my-3">
-                            <h3>Start New Set</h3>
+                            <h3>Manage Classes</h3>
                         </div>
                         <div class="card mb-3">
                             <div class="card-body">
-                                <a href="{% url 'tutor:catalog' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To Activity Catalog</a>
+                                <a href="{% url 'tutor:classes' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To My Classes</a>
                             </div>
                         </div>
                         <div class="page-section-heading my-3">
-                            <h3>In Progress</h3>
+                            <h3>Current Sets In Progress</h3>
                         </div>
                             {% if CurrentSet is not None %}
                                 <div class="my-4">

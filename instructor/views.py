@@ -1,6 +1,9 @@
 """
 This module contains our Django views for the "instructor" application.
 """
+import random
+
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
@@ -34,10 +37,22 @@ def instructor(request):
                 # Handle new class creation
                 class_name = request.POST.get('class-name', None)
                 if class_name is not None:
-                    new_class = Class(class_name=class_name)
+                    # Get unique join code
+                    join_code = random.randrange(100000, 999999, 1)
+
+                    while True:
+                        try:
+                            Class.objects.get(join_code=join_code)
+                            join_code = random.randrange(100000, 999999, 1)
+                        except Class.DoesNotExist:
+                            break
+
+                    new_class = Class(class_name=class_name, join_code=join_code)
                     new_class.save()
                     new_relation = ClassMembership(user_id=current_user.id, class_taking_id=new_class.id, is_instructor=True)
                     new_relation.save()
+                    messages.info(request, "Successfully created " + class_name + ". Students can input the code '" + str(join_code) + "' to join it.")
+                return redirect("/instructor")
             # Return class view
             return render(request, "instructor/instructor.html", {'classes': get_classes_taught(current_user)})
         else:

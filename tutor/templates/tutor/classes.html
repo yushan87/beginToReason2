@@ -21,8 +21,13 @@
             <div class="col-1 p-0">
             </div>
             <div class="col-10 p-0">
-                <h1 class="mb-0 page-section-heading">
-                    My Classes
+                <h1 class="mb-0 page-section-heading row">
+                    <div class="col-10">
+                        <h3>My Classes</h3>
+                    </div>
+                    <div class="col-2">
+                        <btn class="btn select-btn btn-block float-right" data-toggle="modal" data-target="#joinClassModal">Join a class</btn>
+                    </div>
                 </h1>
                 {% for class in classes %}
                     <div id="begin" class="card lesson-card">
@@ -47,6 +52,31 @@
             </div>
             <button onclick="topFunction()" id="top" title="Go to top"><i class="fas fa-arrow-up"></i></button>
         </div>
+    </div>
+
+    <div class="modal fade" id="joinClassModal" tabindex="-1" role="dialog" aria-labelledby="joinClassModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'tutor:classes' %}">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="joinClassModalLabel">New class</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <div class="form-group">
+                    <label for="class-code" class="col-form-label">Class join code:</label>
+                    <input type="text" class="form-control" id="class-code" name="class-code" required maxlength="6">
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <input type="submit" value="Join" class="btn select-btn">
+              </div>
+            </form>
+        </div>
+      </div>
     </div>
 
     <script type="application/javascript">

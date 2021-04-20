@@ -17,6 +17,7 @@ class Class(models.Model):
     """
     class_name = models.CharField("Name", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
     main_sets = models.ManyToManyField(MainSet, blank=True, related_name='classes')  # Sets assigned to the class
+    join_code = models.CharField("Join_Code", max_length=6, validators=[MinLengthValidator(6)], unique=True)  # Code for joining class
 
     def __str__(self):
         """function __str__ is used to create a string representation of this class

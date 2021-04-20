@@ -2,6 +2,8 @@
 This module contains our Django views for the "tutor" application.
 """
 import json
+
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -9,7 +11,7 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet, MainSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from instructor.models import Class
+from instructor.models import Class, ClassMembership
 from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete, \
     log_lesson, check_type, alternate_lesson_check, replace_previous
@@ -53,6 +55,27 @@ def classes(request):
     """
     if user_auth(request):
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+        if request.method == 'POST':
+            # Handle class join
+            class_code = request.POST.get('class-code', None)
+            if class_code is not None:
+                try:
+                    class_to_join = Class.objects.get(join_code=class_code)
+                except Class.DoesNotExist:
+                    class_to_join = None
+                if class_to_join is not None:
+                    if ClassMembership.objects.filter(user_id=current_user.id, class_taking_id=class_to_join.id).exists():
+                        messages.error(request, "You are already in " + str(class_to_join) + "!")
+                    else:
+                        new_relation = ClassMembership(user_id=current_user.id, class_taking_id=class_to_join.id,
+                                                       is_instructor=False)
+                        new_relation.save()
+                        messages.info(request, "Successfully added you to " + str(class_to_join))
+                else:
+                    messages.error(request, "Sorry, class code invalid!")
+            else:
+                messages.error(request, "Sorry, class code invalid!")
+            return redirect("/tutor/classes")
         return render(request, "tutor/classes.html", {'classes': get_classes(current_user)})
     else:
         return redirect("/accounts/settings")
@@ -69,7 +92,8 @@ def class_view(request, classID):
     if user_auth(request):
         if user_in_class_auth(UserInformation.objects.get(user=User.objects.get(email=request.user.email)), classID):
             class_to_show = Class.objects.get(id=classID)
-            return render(request, "tutor/class.html", {'mainSets': class_to_show.main_sets.all(), 'class': class_to_show})
+            return render(request, "tutor/class.html",
+                          {'mainSets': class_to_show.main_sets.all(), 'class': class_to_show})
         else:
             return redirect("/tutor/classes")
     else:
@@ -119,17 +143,18 @@ def tutor(request):
                       " current_user.current_lesson_index: ", current_user.current_lesson_index)
                 if current_lesson.is_alternate and current_user.current_lesson_index != 0:
                     print(current_lesson.correct, "%%%%%%%%%%")
-                    current_user.current_lesson_name = Lesson.objects.get(lesson_name=current_lesson.correct).lesson_name
+                    current_user.current_lesson_name = Lesson.objects.get(
+                        lesson_name=current_lesson.correct).lesson_name
                     index = 0
 
-
                     current_set = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
-                    print("CURRENT LESSON NAME: ", current_set, " ***** ", current_user.current_lesson_set.lessons.all())
+                    print("CURRENT LESSON NAME: ", current_set, " ***** ",
+                          current_user.current_lesson_set.lessons.all())
 
                     if current_set in current_user.current_lesson_set.lessons.all():
                         print("PRINT LESSONS: ", current_user.current_lesson_set.lessons.all())
 
-                        #if current_user.current_lesson_name in current_user.current_lesson_set.lessons.all():
+                        # if current_user.current_lesson_name in current_user.current_lesson_set.lessons.all():
                         for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
                             print(index, "&&&&&&&&&", item.lesson_name)
                             if item.lesson_name == current_lesson.correct:
@@ -166,7 +191,7 @@ def tutor(request):
                     return JsonResponse(check_feedback(current_lesson, submitted_answer, status, unlock_next))
                     # return render(request, "accounts:profile")
 
-                next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[index+1])
+                next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[index + 1])
                 current_user.current_lesson_set = next_set
                 current_user.current_lesson_name = next_set.first_in_set.lesson_name
                 current_user.save()
@@ -211,8 +236,8 @@ def tutor(request):
                 current_lesson = Lesson.objects.get(id=current_set[current_user.current_lesson_index].id)
                 print("in if 1 - Current lesson: ", current_lesson)
 
-            # Just as we are altering the code here with mutate, this will pull the previous answer
-            # to put in place for sub lessons. What identifiers do we need?
+                # Just as we are altering the code here with mutate, this will pull the previous answer
+                # to put in place for sub lessons. What identifiers do we need?
 
                 current_lesson.code.lesson_code = can_mutate(current_lesson)
                 current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
