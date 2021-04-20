@@ -20,8 +20,9 @@ def d3_graph(request, classID, mainSetID, lessonSetIndex):
         HttpResponse: A generated http response object to the request to generate the graph
     """
     print(request)
-    return render(request, "data_analysis/d3graph.html", {'graphData': lesson_to_json(classID, mainSetID, lessonSetIndex, True),
-                                                          'lessonData': lesson_info(mainSetID, lessonSetIndex)})
+    return render(request, "data_analysis/d3graph.html",
+                  {'graphData': lesson_to_json(classID, mainSetID, lessonSetIndex, True),
+                   'lessonData': lesson_info(mainSetID, lessonSetIndex)})
 
 
 def mainset_statistics(request, classID, mainSetID):
@@ -37,4 +38,4 @@ def mainset_statistics(request, classID, mainSetID):
     """
     print(request)
     return render(request, "data_analysis/mainSetStatistics.html", {'mainSetData': get_set_stats(classID, mainSetID),
-                                                                'mainSetInfo': get_set_info(mainSetID)})
+                                                                    'mainSetInfo': get_set_info(mainSetID)})

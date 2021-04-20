@@ -32,7 +32,7 @@ class Class(models.Model):
         Returns:
             int: count of how many non-instructor users are enrolled
         """
-        return self.members.filter(user_instructor=False).count()
+        return ClassMembership.objects.filter(class_taking_id=self.id, is_instructor=False).count()
 
 
 class ClassMembership(models.Model):

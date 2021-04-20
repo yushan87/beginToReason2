@@ -26,24 +26,6 @@ def user_auth(request):
     return False
 
 
-def user_auth_inst(request):
-    """function user_auth_inst This function handles the auth logic for an instructor in both django users and UserInformation
-
-    Args:
-         request (HTTPRequest): A http request object created automatically by Django.
-
-    Returns:
-        Boolean: A boolean to signal if the user has been found in our database
-    """
-    if request.user.is_authenticated:
-        user = User.objects.get(email=request.user.email)
-        if UserInformation.objects.filter(user=user).exists():
-            inst = UserInformation.objects.get(user=user)
-            if inst.user_instructor:
-                return True
-    return False
-
-
 def lesson_set_auth(request):
     """function lesson_auth This function handles the auth logic for a lessonSet
 
@@ -96,22 +78,6 @@ def lesson_set_auth(request):
             if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
                 print("starting new set")
                 return True
-    return False
-
-
-def user_in_class_auth(user_info, class_id):
-    """function user_in_class_auth This function handles the auth logic for users in classes
-
-    Args:
-        user_info: Model from accounts
-        class_id (int): ID of the class in question
-
-    Returns:
-        Boolean: A boolean to signal whether the user is in the class
-    """
-    for user_class in user_info.user_classes.all():
-        if user_class.id == class_id:
-            return True
     return False
 
 
