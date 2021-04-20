@@ -20,8 +20,13 @@
     <div class="container px-0 py-3">
         <div class="row">
             <div class="col-12">
-                <div class="page-section-heading my-3">
-                    <h3>Current Classes</h3>
+                <div class="page-section-heading my-3 row">
+                    <div class="col-10">
+                        <h3>Current Classes</h3>
+                    </div>
+                    <div class="col-2">
+                        <btn class="btn select-btn btn-block float-right" data-toggle="modal" data-target="#newClassModal">New class</btn>
+                    </div>
                 </div>
                 {% for class in classes %}
                     <div class="my-4">
@@ -34,7 +39,7 @@
                                     <div class="card-body">
                                         <h5 class="card-title">{{class.class_name}}</h5>
                                         <p class="card-text">{{CurrentSet.set_description}}</p>
-                                        <p class="card-text"><small class="text-muted">User count: {{ class.user_count }}</small></p>
+                                        <p class="card-text"><small class="text-muted">Student count: {{ class.user_count }}</small></p>
                                         <form action="{% url 'instructor:class-view' class.id %}" method="GET">
                                             {% csrf_token %}
                                             <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
@@ -49,6 +54,31 @@
                 {% endfor %}
             </div>
         </div>
+    </div>
+
+    <div class="modal fade" id="newClassModal" tabindex="-1" role="dialog" aria-labelledby="newClassModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="/instructor/">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="newClassModalLabel">New class</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <div class="form-group">
+                    <label for="class-name" class="col-form-label">Class name:</label>
+                    <input type="text" class="form-control" id="class-name" name="class-name" required maxlength="30">
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <input type="submit" value="Create class" class="btn select-btn">
+              </div>
+            </form>
+        </div>
+      </div>
     </div>
 
     <script type="application/javascript">

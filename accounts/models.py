@@ -8,6 +8,7 @@ from django.core.validators import MinLengthValidator
 from django.db import models
 from core.models import LessonSet, MainSet
 
+
 class UserInformation(models.Model):
     """
     Contains a model of a user to keep track of user information.

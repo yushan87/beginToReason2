@@ -1,11 +1,14 @@
 """
 This module contains our Django views for the "instructor" application.
 """
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from accounts.models import UserInformation
-from instructor.models import Class
+from instructor.forms import NewClassForm
+from instructor.models import Class, ClassMembership
 from tutor.py_helper_functions.tutor_helper import user_auth
 from instructor.py_helper_functions.instructor_helper import user_auth_inst, user_is_instructor, \
     get_classes, get_classes_taught
@@ -24,14 +27,22 @@ def instructor(request):
     Returns:
         HttpResponse: A generated http response object to the request.
     """
-
     # Is user valid?
     if user_auth(request):
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
         # Case 1: User is valid
         # Is user instructor?
         if user_is_instructor(current_user):
-            # Case 1a: User is instructor. Return class view
+            # Case 1a: User is instructor
+            if request.method == 'POST':
+                # Handle new class creation
+                class_name = request.POST.get('class-name', None)
+                if class_name is not None:
+                    new_class = Class(class_name=class_name)
+                    new_class.save()
+                    new_relation = ClassMembership(user_id=current_user.id, class_taking_id=new_class.id, is_instructor=True)
+                    new_relation.save()
+            # Return class view
             return render(request, "instructor/instructor.html", {'classes': get_classes_taught(current_user)})
         else:
             # Case 1b: User doesn't exist in table

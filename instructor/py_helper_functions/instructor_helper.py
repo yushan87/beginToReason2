@@ -83,6 +83,4 @@ def get_classes_taught(user_info):
     for class_id in class_ids:
         classes.append(Class.objects.get(id=class_id))
 
-    print(classes)
-    print("hi")
     return classes
