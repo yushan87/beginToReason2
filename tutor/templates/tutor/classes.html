@@ -37,7 +37,11 @@
                             </div>
                             <div class="card-body">
                                 <h5 class="card-title">{{class}}</h5>
-                                <p class="card-text">Next lesson due: ???</p>
+                                {% if class.next_lesson_due_date %}
+                                <p class="card-text">Next lesson due: {{ class.next_lesson_due_date }}</p>
+                                {% else %}
+                                <p class="card-text">No current assignments!</p>
+                                {% endif %}
                                 <a href="{% url 'tutor:class' classID=class.id %}">
                                     <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
                                         View Class

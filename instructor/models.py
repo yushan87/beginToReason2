@@ -2,6 +2,8 @@
 This module contains model templates for the "instructor" application. When we create a new item in the database,
 a new instance of a model will be made.
 """
+from datetime import date
+
 from django.core.validators import MinLengthValidator
 from django.db import models
 
@@ -16,7 +18,6 @@ class Class(models.Model):
     @param models.Model The base model
     """
     class_name = models.CharField("Name", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
-    main_sets = models.ManyToManyField(MainSet, blank=True, related_name='classes')  # Sets assigned to the class
     join_code = models.CharField("Join_Code", max_length=6, validators=[MinLengthValidator(6)], unique=True)  # Code for joining class
 
     def __str__(self):
@@ -34,6 +35,40 @@ class Class(models.Model):
             int: count of how many non-instructor users are enrolled
         """
         return ClassMembership.objects.filter(class_taking_id=self.id, is_instructor=False).count()
+
+    def get_assignments(self):
+        """function get_classes_taught This function gives assignments of a class
+
+        Returns:
+            List of assignments from a class
+        """
+        return Assignment.objects.filter(class_key_id=self.id).all()
+
+    def next_lesson_due_date(self):
+        """function next_lesson_due_date handles finding the nearest due date of all lessons for a class
+
+        Returns: Date of nearest due assignment
+        """
+        record = date.min
+        for assignment in self.get_assignments():
+            if (assignment.end_date > record) & (assignment.end_date >= date.today()):
+                record = assignment.end_date
+
+        if record == date.min:
+            return None
+        return record
+
+
+class Assignment(models.Model):
+    """
+    A class-specific main set with a start and end date
+
+    @param models.Model The base model
+    """
+    class_key = models.ForeignKey(Class, on_delete=models.CASCADE)  # Class this was assigned to
+    main_set = models.ForeignKey(MainSet, on_delete=models.CASCADE)  # Main set assigned
+    start_date = models.DateField(default=date.today)
+    end_date = models.DateField(blank=True)
 
 
 class ClassMembership(models.Model):

@@ -93,7 +93,7 @@ def class_view(request, classID):
         if user_in_class_auth(UserInformation.objects.get(user=User.objects.get(email=request.user.email)), classID):
             class_to_show = Class.objects.get(id=classID)
             return render(request, "tutor/class.html",
-                          {'mainSets': class_to_show.main_sets.all(), 'class': class_to_show})
+                          {'class': class_to_show})
         else:
             return redirect("/tutor/classes")
     else:

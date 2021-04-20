@@ -1,10 +1,7 @@
 """
 This module contains our Django helper functions for the "instructor" application.
 """
-from django.contrib.auth.models import User
-
-from accounts.models import UserInformation
-from instructor.models import ClassMembership, Class
+from instructor.models import ClassMembership, Class, Assignment
 
 
 def user_is_instructor(user_info):
