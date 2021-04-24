@@ -37,7 +37,14 @@
                                 </div>
                                 <div class="col-md-8 align-self-center">
                                     <div class="card-body">
-                                        <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
+                                        <div class="row no-gutters">
+                                            <div class="col-9">
+                                                <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
+                                            </div>
+                                            <div class="col-3">
+                                                <btn class="btn select-btn btn-block float-right" data-toggle="modal" data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }}">Edit assignment</btn>
+                                            </div>
+                                        </div>
                                         <p class="card-text"><small class="text-muted">Opened {{ assignment.start_date }}, closes {{ assignment.end_date }}</small></p>
                                         <p class="card-text">{{assignment.main_set.set_description}}</p>
                                         <form action="{% url 'data_analysis:mainset-statistics' class.id assignment.main_set.id %}" method="GET">
@@ -64,6 +71,7 @@
                                 </div>
                                 <div class="col-md-8 align-self-center">
                                     <div class="card-body">
+                                        <btn class="btn select-btn btn-block float-right" data-toggle="modal" data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }}">Edit assignment</btn>
                                         <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
                                         <p class="card-text"><small class="text-muted">Opens {{ assignment.start_date }}, closes {{ assignment.end_date }}</small></p>
                                         <p class="card-text">{{assignment.main_set.set_description}}</p>
@@ -91,6 +99,7 @@
                                 </div>
                                 <div class="col-md-8 align-self-center">
                                     <div class="card-body">
+                                        <btn class="btn select-btn btn-block float-right" data-toggle="modal" data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }}">Edit assignment</btn>
                                         <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
                                         <p class="card-text"><small class="text-muted">Opened {{ assignment.start_date }}, closed {{ assignment.end_date }}</small></p>
                                         <p class="card-text">{{assignment.main_set.set_description}}</p>
@@ -142,6 +151,32 @@
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <input type="submit" value="Create assignment" class="btn select-btn">
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="editAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="editAssignmentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'instructor:edit-assignment' %}">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="editAssignmentModalLabel">Edit assignment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <div class="form-group">
+                    <label for="new-end-date" class="col-form-label">New due date:</label>
+                    <input type="date" class="form-control" id="new-end-date" name="end_date" min="{{ today }}"required>
+                  </div>
+                  <input type="number" id="assignmentID" name="assignment_id" hidden>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <input type="submit" value="Change assignment due date" class="btn select-btn">
               </div>
             </form>
         </div>

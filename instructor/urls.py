@@ -11,5 +11,6 @@ app_name = 'instructor'
 # URL patterns to be matched.
 urlpatterns = [
     path('', views.instructor, name='main-view'),
-    path('class/<int:classID>', views.class_view_instructor, name='class-view')
+    path('class/<int:classID>', views.class_view_instructor, name='class-view'),
+    path('editAssignment', views.edit_assignment, name='edit-assignment')
 ]

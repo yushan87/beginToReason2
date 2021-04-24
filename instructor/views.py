@@ -8,9 +8,11 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
+from django.urls import reverse
+
 from accounts.models import UserInformation
 from core.models import MainSet
-from instructor.models import Class, ClassMembership
+from instructor.models import Class, ClassMembership, Assignment
 from tutor.py_helper_functions.tutor_helper import user_auth
 from instructor.py_helper_functions.instructor_helper import user_auth_inst, user_is_instructor, get_classes_taught
 
@@ -84,9 +86,94 @@ def class_view_instructor(request, classID):
         # Does user instruct the class?
         if user_auth_inst(user_info, classID):
             # Case 1a: User is instructor of class
+
+            if request.method == 'POST':
+                # Handle assignment creation
+                main_set = request.POST.get('main_set', None)
+                start_date = date.fromisoformat(request.POST.get('start_date', date.today().isoformat()))
+                end_date = request.POST.get('end_date', None)
+
+                # Basically a do: while(False) loop
+                while True:
+                    if main_set is None:
+                        messages.error(request, "You must select a main set!")
+                        break
+                    if end_date is None:
+                        messages.error(request, "You must supply a due date!")
+                        break
+                    end_date = date.fromisoformat(end_date)
+                    if end_date < start_date:
+                        messages.error(request, "Assignment must open before it closes!")
+                        break
+                    new_assignment = Assignment(class_key_id=classID, main_set_id=main_set,
+                                                start_date=start_date, end_date=end_date)
+                    new_assignment.save()
+                    return redirect(reverse('instructor:class-view', args=[classID]))
+
+            # Error carried from POST endpoints
+            if 'error' in request.session:
+                error = request.session['error']
+                del request.session['error']
+                messages.error(request, error)
+
             return render(request, "instructor/assignments_instructor.html",
                           {'class': Class.objects.get(id=classID), 'main_sets': MainSet.objects.filter(show=True),
                            'today': date.today().isoformat()})
+        else:
+            # Case 1b: User doesn't teach class
+            return redirect("/instructor/")
+    else:
+        # Case 2: User doesn't exist in table
+        return redirect("/accounts/settings")
+
+
+@login_required(login_url='/accounts/login/')
+def edit_assignment(request):
+    """function instructor This function handles the POST request for editing an assignment
+
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+        assignmentID: ID of the assignment being edited
+
+    Returns:
+        HttpResponse: A generated http response object to the request.
+    """
+
+    if request.method != 'POST':
+        return redirect("/instructor/")
+
+    # Get assignment
+    try:
+        assignment_id = request.POST.get('assignment_id', -1)
+        assignment = Assignment.objects.get(id=assignment_id)
+    except Assignment.DoesNotExist:
+        # Assignment doesn't exist!
+        return redirect('/instructor/')
+
+    # Is user valid?
+    if user_auth(request):
+        # Case 1: User is valid
+        user_info = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+        # Does user instruct the class?
+        if user_auth_inst(user_info, assignment.class_key):
+            # Case 1a: User is instructor of class
+            # Handle assignment edit
+            end_date = request.POST.get('end_date', None)
+
+            # Basically a do: while(False) loop
+            while True:
+                if end_date is None:
+                    request.session['error'] = "You must supply a due date!"
+                    break
+                end_date = date.fromisoformat(end_date)
+                if end_date < assignment.start_date:
+                    request.session['error'] = "Assignment must open before it closes!"
+                    break
+                assignment.end_date = end_date
+                assignment.save()
+                break
+
+            return redirect(reverse('instructor:class-view', args=[assignment.class_key_id]))
         else:
             # Case 1b: User doesn't teach class
             return redirect("/instructor/")
