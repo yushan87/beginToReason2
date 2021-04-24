@@ -44,14 +44,39 @@ class Class(models.Model):
         """
         return Assignment.objects.filter(class_key_id=self.id).all()
 
+    def get_current_assignments(self):
+        """function get_classes_taught This function gives assignments of a class that are currently assigned
+
+        Returns:
+            List of assignments from a class
+        """
+        today = date.today()
+        return Assignment.objects.filter(class_key_id=self.id, start_date__lte=today, end_date__gte=today).all()
+
+    def get_future_assignments(self):
+        """function get_classes_taught This function gives assignments of a class that haven't opened yet
+
+        Returns:
+            List of assignments from a class
+        """
+        return Assignment.objects.filter(class_key_id=self.id, start_date__gt=date.today()).all()
+
+    def get_past_assignments(self):
+        """function get_classes_taught This function gives assignments of a class that have closed already
+
+        Returns:
+            List of assignments from a class
+        """
+        return Assignment.objects.filter(class_key_id=self.id, end_date__lt=date.today()).all()
+
     def next_lesson_due_date(self):
         """function next_lesson_due_date handles finding the nearest due date of all lessons for a class
 
         Returns: Date of nearest due assignment
         """
         record = date.min
-        for assignment in self.get_assignments():
-            if (assignment.end_date > record) & (assignment.end_date >= date.today()):
+        for assignment in self.get_current_assignments():
+            if assignment.end_date < record:
                 record = assignment.end_date
 
         if record == date.min:

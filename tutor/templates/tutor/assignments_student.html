@@ -22,9 +22,33 @@
             </div>
             <div class="col-10 p-0">
                 <h1 class="mb-0 page-section-heading">
-                    Sets in {{ class }}
+                    Assignments in {{ class }}
                 </h1>
-                {% for assignment in class.get_assignments %}
+                {% for assignment in class.get_current_assignments %}
+                    <div id="begin" class="card lesson-card">
+                                <div class="card-horizontal">
+                                    <div class="img-square-wrapper">
+                                        <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{assignment.main_set}}</h5>
+                                        <p class="card-text">{{assignment.main_set.set_description}}</p>
+                                        <p class="card-text"><small class="text-muted">Due date: {{ assignment.end_date }}</small></p>
+                                        <form action="{% url 'tutor:catalog' %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="set_name" value="{{ assignment.main_set }}"/>
+                                            <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
+                                                Start Training
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                {% endfor %}
+                <h1 class="mb-0 page-section-heading">
+                    Past Assignments
+                </h1>
+                {% for assignment in class.get_past_assignments %}
                     <div id="begin" class="card lesson-card">
                                 <div class="card-horizontal">
                                     <div class="img-square-wrapper">

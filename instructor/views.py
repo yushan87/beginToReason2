@@ -82,7 +82,7 @@ def class_view_instructor(request, classID):
         # Does user instruct the class?
         if user_auth_inst(user_info, classID):
             # Case 1a: User is instructor of class
-            return render(request, "instructor/mainsets.html", {'class': Class.objects.get(id=classID)})
+            return render(request, "instructor/assignments_instructor.html", {'class': Class.objects.get(id=classID)})
         else:
             # Case 1b: User doesn't teach class
             return redirect("/instructor/")
