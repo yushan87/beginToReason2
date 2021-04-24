@@ -2,12 +2,14 @@
 This module contains our Django views for the "instructor" application.
 """
 import random
+from datetime import date
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from accounts.models import UserInformation
+from core.models import MainSet
 from instructor.models import Class, ClassMembership
 from tutor.py_helper_functions.tutor_helper import user_auth
 from instructor.py_helper_functions.instructor_helper import user_auth_inst, user_is_instructor, get_classes_taught
@@ -82,7 +84,9 @@ def class_view_instructor(request, classID):
         # Does user instruct the class?
         if user_auth_inst(user_info, classID):
             # Case 1a: User is instructor of class
-            return render(request, "instructor/assignments_instructor.html", {'class': Class.objects.get(id=classID)})
+            return render(request, "instructor/assignments_instructor.html",
+                          {'class': Class.objects.get(id=classID), 'main_sets': MainSet.objects.filter(show=True),
+                           'today': date.today().isoformat()})
         else:
             # Case 1b: User doesn't teach class
             return redirect("/instructor/")
