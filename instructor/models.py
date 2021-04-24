@@ -74,12 +74,12 @@ class Class(models.Model):
 
         Returns: Date of nearest due assignment
         """
-        record = date.min
+        record = date.max
         for assignment in self.get_current_assignments():
             if assignment.end_date < record:
                 record = assignment.end_date
 
-        if record == date.min:
+        if record == date.max:
             return None
         return record
 
@@ -93,7 +93,23 @@ class Assignment(models.Model):
     class_key = models.ForeignKey(Class, on_delete=models.CASCADE)  # Class this was assigned to
     main_set = models.ForeignKey(MainSet, on_delete=models.CASCADE)  # Main set assigned
     start_date = models.DateField(default=date.today)
-    end_date = models.DateField(blank=True)
+    end_date = models.DateField()
+
+    def start_date_iso(self):
+        """function start_date_iso formats start date for ISO for HTML
+
+        Returns: Start date in YYYY-MM-DD ISO format
+        """
+
+        return self.start_date.isoformat()
+
+    def end_date_iso(self):
+        """function end_date_iso formats due date for ISO for HTML
+
+        Returns: Due date in YYYY-MM-DD ISO format
+        """
+
+        return self.end_date.isoformat()
 
 
 class ClassMembership(models.Model):

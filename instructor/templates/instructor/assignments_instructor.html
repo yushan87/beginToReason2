@@ -42,7 +42,10 @@
                                                 <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
                                             </div>
                                             <div class="col-3">
-                                                <btn class="btn select-btn btn-block float-right" data-toggle="modal" data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }}">Edit assignment</btn>
+                                                <btn class="btn select-btn btn-block float-right" data-toggle="modal"
+                                                     data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }};
+                                                     document.querySelector('#new-start-date').value = '{{ assignment.start_date_iso }}';
+                                                     document.querySelector('#new-end-date').value = '{{ assignment.end_date_iso }}'">Edit assignment</btn>
                                             </div>
                                         </div>
                                         <p class="card-text"><small class="text-muted">Opened {{ assignment.start_date }}, closes {{ assignment.end_date }}</small></p>
@@ -59,7 +62,8 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="page-section-heading my-3">
+                {% if class.get_future_assignments %}
+                <div class="page-section-heading my-3 row">
                     <h3>Future Assignments</h3>
                 </div>
                 {% for assignment in class.get_future_assignments %}
@@ -71,8 +75,17 @@
                                 </div>
                                 <div class="col-md-8 align-self-center">
                                     <div class="card-body">
-                                        <btn class="btn select-btn btn-block float-right" data-toggle="modal" data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }}">Edit assignment</btn>
-                                        <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
+                                        <div class="row no-gutters">
+                                            <div class="col-9">
+                                                <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
+                                            </div>
+                                            <div class="col-3">
+                                                <btn class="btn select-btn btn-block float-right" data-toggle="modal"
+                                                     data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }};
+                                                     document.querySelector('#new-start-date').value = '{{ assignment.start_date_iso }}';
+                                                     document.querySelector('#new-end-date').value = '{{ assignment.end_date_iso }}'">Edit assignment</btn>
+                                            </div>
+                                        </div>
                                         <p class="card-text"><small class="text-muted">Opens {{ assignment.start_date }}, closes {{ assignment.end_date }}</small></p>
                                         <p class="card-text">{{assignment.main_set.set_description}}</p>
                                         <form action="{% url 'data_analysis:mainset-statistics' class.id assignment.main_set.id %}" method="GET">
@@ -87,7 +100,9 @@
                         </div>
                     </div>
                 {% endfor %}
-                <div class="page-section-heading my-3">
+                {% endif %}
+                {% if class.get_past_assignments %}
+                <div class="page-section-heading my-3 row">
                     <h3>Past Assignments</h3>
                 </div>
                 {% for assignment in class.get_past_assignments %}
@@ -99,8 +114,17 @@
                                 </div>
                                 <div class="col-md-8 align-self-center">
                                     <div class="card-body">
-                                        <btn class="btn select-btn btn-block float-right" data-toggle="modal" data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }}">Edit assignment</btn>
-                                        <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
+                                        <div class="row no-gutters">
+                                            <div class="col-9">
+                                                <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
+                                            </div>
+                                            <div class="col-3">
+                                                <btn class="btn select-btn btn-block float-right" data-toggle="modal"
+                                                     data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }};
+                                                     document.querySelector('#new-start-date').value = '{{ assignment.start_date_iso }}';
+                                                     document.querySelector('#new-end-date').value = '{{ assignment.end_date_iso }}'">Edit assignment</btn>
+                                            </div>
+                                        </div>
                                         <p class="card-text"><small class="text-muted">Opened {{ assignment.start_date }}, closed {{ assignment.end_date }}</small></p>
                                         <p class="card-text">{{assignment.main_set.set_description}}</p>
                                         <form action="{% url 'data_analysis:mainset-statistics' class.id assignment.main_set.id %}" method="GET">
@@ -115,6 +139,7 @@
                         </div>
                     </div>
                 {% endfor %}
+                {% endif %}
             </div>
         </div>
     </div>
@@ -169,16 +194,43 @@
               </div>
               <div class="modal-body">
                   <div class="form-group">
-                    <label for="new-end-date" class="col-form-label">New due date:</label>
-                    <input type="date" class="form-control" id="new-end-date" name="end_date" min="{{ today }}"required>
+                    <label for="new-start-date" class="col-form-label">New start date:</label>
+                    <input type="date" class="form-control" id="new-start-date" name="start_date" value="2021-04-24" required>
                   </div>
+                  <div class="form-group">
+                    <label for="new-end-date" class="col-form-label">New due date:</label>
+                    <input type="date" class="form-control" id="new-end-date" name="end_date" required>
+                  </div>
+                  <input type="checkbox" id="deleteAssignment" name="delete_assignment" hidden>
                   <input type="number" id="assignmentID" name="assignment_id" hidden>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <input type="submit" value="Change assignment due date" class="btn select-btn">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="modal" data-target="#deleteAssignmentModal">Delete</button>
+                <input type="submit" id="submitEdit" value="Change assignment due date" class="btn select-btn">
               </div>
             </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="deleteAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="deleteAssignmentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'instructor:edit-assignment' %}">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteAssignmentModalLabel">Delete assignment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  Are you sure?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="document.querySelector('#deleteAssignment').checked = true; document.querySelector('#submitEdit').click()">Delete</button>
+              </div>
         </div>
       </div>
     </div>

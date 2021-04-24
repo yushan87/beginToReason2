@@ -129,7 +129,7 @@ def class_view_instructor(request, classID):
 
 @login_required(login_url='/accounts/login/')
 def edit_assignment(request):
-    """function instructor This function handles the POST request for editing an assignment
+    """function instructor This function handles the POST request for editing/deleting an assignment
 
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
@@ -158,10 +158,15 @@ def edit_assignment(request):
         if user_auth_inst(user_info, assignment.class_key):
             # Case 1a: User is instructor of class
             # Handle assignment edit
+            delete = request.POST.get('delete_assignment', False)
             end_date = request.POST.get('end_date', None)
 
             # Basically a do: while(False) loop
             while True:
+                if delete is not False:
+                    # Delete the assignment
+                    assignment.delete()
+                    break
                 if end_date is None:
                     request.session['error'] = "You must supply a due date!"
                     break
