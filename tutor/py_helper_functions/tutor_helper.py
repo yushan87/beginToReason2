@@ -151,6 +151,14 @@ def set_not_complete(request):
 
 
 def not_complete(request):
+    """function not_complete This function handles the logic for a if a set has not been completed
+
+    Args:
+         request (HTTPRequest): A http request object created automatically by Django.
+
+    Returns:
+        Boolean: A boolean to signal if the set has been completed
+    """
     print("not_complete method in tutor_helper.py")
     if user_auth(request):
         user = User.objects.get(email=request.user.email)
@@ -170,15 +178,15 @@ def not_complete(request):
 
 
 def alternate_lesson_check(current_lesson, type):
-    """function set_not_complete This function handles the logic for a if a set has not been completed
+    """function alternate_lesson_check This function handles the logic for a if a lesson has an alternate
 
     Args:
-         request (HTTPRequest): A http request object created automatically by Django.
+         current_lesson: a Lesson that is currently being completed
+         type: type of lesson to use for lookup
 
     Returns:
-        String: name of lesson to redirect to
+        current_lesson: a Lesson found from finding alternate with lookup of type
     """
-
     dict = { 'NUM' : current_lesson.use_of_concrete_values,
              'INIT': current_lesson.not_using_initial_value,
              'SIM' : current_lesson.simplify,
@@ -195,6 +203,16 @@ def alternate_lesson_check(current_lesson, type):
 
 
 def check_type(current_lesson, submitted_answer, status):
+    """function check_type This function finds the type of alternate to look for
+
+    Args:
+         current_lesson: a Lesson that is currently being completed
+         submitted_answer: string of code that user submitted
+        status: string of result from compiler
+
+    Returns:
+        type: type of lesson to use for lookup
+    """
     all_answers = submitted_answer.split(";")
     type = 'None'
 
@@ -216,12 +234,31 @@ def check_type(current_lesson, submitted_answer, status):
 
 
 def check_status(status):
+    """function check_status This function converts a string to a boolean
+
+        Args:
+            status: string of result from compiler
+
+        Returns:
+            boolean
+        """
     if status == 'success':
         return True
     return False
 
 
 def check_feedback(current_lesson, submitted_answer, status, unlock_next):
+    """function check_feedback This function finds the feedback to show to the user
+
+    Args:
+         current_lesson: a Lesson that is currently being completed
+         submitted_answer: string of code that user submitted
+         status: string of result from compiler
+         unlock_next: boolean for unlocking next button
+
+    Returns:
+        type: type of lesson to use for lookup
+    """
     type = 'DEF'
     if status == 'success':
         headline = 'Correct'
@@ -281,7 +318,15 @@ def log_lesson(request):
 
 
 def align_with_previous_lesson(user, code):
+    """function align_with_previous_lesson This function changes the mutation to match the last lesson they did
 
+    Args:
+         user: user model using tutor
+         code: code that user submitted in last lesson
+
+    Returns:
+        code: code with variables matching letters of that from their last lesson
+    """
     last_attempt = DataLog.objects.filter(user_key=User.objects.get(email=user)).order_by('-id')[0].code
 
     occurrence = 3
@@ -312,7 +357,16 @@ def align_with_previous_lesson(user, code):
 
 
 def replace_previous(user, code, is_alt):
+    """function replace_previous This function changes the previous lesson code
 
+    Args:
+         user: user model using tutor
+         code: code that user submitted in last lesson
+         is_alt: boolean for if alternate lesson
+
+    Returns:
+        code: ? string of code
+    """
     if not DataLog.objects.filter(user_key=User.objects.get(email=user)):
         print("There is no datalog")
         return code

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
-from .models import UserInformation
+from .models import UserInformation, Class
 from .forms import UserInformationForm
 
 
@@ -54,8 +54,10 @@ def profile(request):
         request (HTTPRequest): A http request object created automatically by Django.
 
     Returns:
-        HttpResponse: A generated http response object to the request depending on whether or not
-                      the user is authenticated.
+        HTML Render of profile page or settings if user is not registered
+        name: user nickname
+        completedSet: list of completed lesson sets
+        currentSet: current set user is working on
     """
     # Query for user in the 'User' table
     print("GET IN  ACCOUNTS PROFILE")
@@ -94,8 +96,8 @@ def settings(request):
         request (HTTPRequest): A http request object created automatically by Django.
 
     Returns:
-        HttpResponse: A generated http response object to the request depending on whether or not
-                      the user is authenticated.
+        HTML Render of settings page
+        form: user information form for registering a user with some prepoulated fields
     """
     # Query for user in the 'User' table
     user = User.objects.get(email=request.user.email)
@@ -113,6 +115,7 @@ def settings(request):
             # Since 'user' is a foreign key, we must store the queried entry from the 'User' table
             user_info = form.save(commit=False)
             user_info.user = user
+            # user_info.user_class.add(Class.objects.get(class_name=form.cleaned_data['user_class']))
             user_info.save()
 
             request.session.set_expiry(0)

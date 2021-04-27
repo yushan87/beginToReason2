@@ -3,4 +3,3 @@ This module contains model templates for the "educator" application. When we cre
 a new instance of a model will be made.
 """
 
-# Create your models here.
