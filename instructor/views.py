@@ -13,8 +13,8 @@ from django.urls import reverse
 from accounts.models import UserInformation
 from core.models import MainSet
 from instructor.models import Class, ClassMembership, Assignment
-from tutor.py_helper_functions.tutor_helper import user_auth
 from instructor.py_helper_functions.instructor_helper import user_auth_inst, user_is_instructor, get_classes_taught
+from tutor.py_helper_functions.tutor_helper import user_auth
 
 
 # Create your views here.
@@ -55,7 +55,8 @@ def instructor(request):
                     new_class.save()
                     new_relation = ClassMembership(user_id=current_user.id, class_taking_id=new_class.id, is_instructor=True)
                     new_relation.save()
-                    messages.info(request, "Successfully created " + class_name + ". Students can input the code '" + str(join_code) + "' to join it.")
+                    messages.info(request, "Successfully created " + class_name + ". Students can input the code '"
+                                  + str(join_code) + "' to join it.")
                 return redirect("/instructor")
             # Return class view
             return render(request, "instructor/instructor.html", {'classes': get_classes_taught(current_user)})
@@ -128,8 +129,8 @@ def class_view_instructor(request, classID):
 
 
 @login_required(login_url='/accounts/login/')
-def students(request, classID):
-    """function instructor This function handles the view the students of a class
+def members(request, classID):
+    """function instructor This function handles the view the members of a class
 
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
@@ -175,7 +176,7 @@ def students(request, classID):
                 del request.session['error']
                 messages.error(request, error)
 
-            return render(request, "instructor/students.html",
+            return render(request, "instructor/members.html",
                           {'class': Class.objects.get(id=classID)})
         else:
             # Case 1b: User doesn't teach class

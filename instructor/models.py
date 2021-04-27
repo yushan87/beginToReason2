@@ -40,7 +40,7 @@ class Class(models.Model):
         """function get_classes_taught This function gives assignments of a class
 
         Returns:
-            List of assignments from a class
+            List: List of assignments from a class
         """
         return Assignment.objects.filter(class_key_id=self.id).all()
 
@@ -48,7 +48,7 @@ class Class(models.Model):
         """function get_classes_taught This function gives assignments of a class that are currently assigned
 
         Returns:
-            List of assignments from a class
+            List: List of assignments from a class
         """
         today = date.today()
         return Assignment.objects.filter(class_key_id=self.id, start_date__lte=today, end_date__gte=today).all()
@@ -57,7 +57,7 @@ class Class(models.Model):
         """function get_classes_taught This function gives assignments of a class that haven't opened yet
 
         Returns:
-            List of assignments from a class
+            List: List of assignments from a class
         """
         return Assignment.objects.filter(class_key_id=self.id, start_date__gt=date.today()).all()
 
@@ -65,14 +65,15 @@ class Class(models.Model):
         """function get_classes_taught This function gives assignments of a class that have closed already
 
         Returns:
-            List of assignments from a class
+            List: List of assignments from a class
         """
         return Assignment.objects.filter(class_key_id=self.id, end_date__lt=date.today()).all()
 
     def next_lesson_due_date(self):
         """function next_lesson_due_date handles finding the nearest due date of all lessons for a class
 
-        Returns: Date of nearest due assignment
+        Returns:
+            Date: Date of nearest due assignment
         """
         record = date.max
         for assignment in self.get_current_assignments():
@@ -86,15 +87,30 @@ class Class(models.Model):
     def get_students(self):
         """function get_students handles finding all non-instructor students in a class
 
-        Returns: List of non-instructor students
+        Returns:
+            List: List of non-instructor students
         """
         membership_list = ClassMembership.objects.filter(class_taking=self, is_instructor=False)
 
-        members_list = []
+        students_list = []
         for membership in membership_list:
-            members_list.append(membership.user)
+            students_list.append(membership.user)
 
-        return members_list
+        return sorted(students_list, key=lambda x: x.user.last_login, reverse=True)
+
+    def get_instructors(self):
+        """function get_instructors handles finding all instructors of a class
+
+        Returns:
+            List: List of instructors
+        """
+        membership_list = ClassMembership.objects.filter(class_taking=self, is_instructor=True)
+
+        instructors_list = []
+        for membership in membership_list:
+            instructors_list.append(membership.user)
+
+        return sorted(instructors_list, key=lambda x: x.user.last_login, reverse=True)
 
 
 class Assignment(models.Model):
@@ -111,7 +127,8 @@ class Assignment(models.Model):
     def start_date_iso(self):
         """function start_date_iso formats start date for ISO for HTML
 
-        Returns: Start date in YYYY-MM-DD ISO format
+        Returns:
+            String: Start date in YYYY-MM-DD ISO format
         """
 
         return self.start_date.isoformat()
@@ -119,7 +136,8 @@ class Assignment(models.Model):
     def end_date_iso(self):
         """function end_date_iso formats due date for ISO for HTML
 
-        Returns: Due date in YYYY-MM-DD ISO format
+        Returns:
+            String: Due date in YYYY-MM-DD ISO format
         """
 
         return self.end_date.isoformat()

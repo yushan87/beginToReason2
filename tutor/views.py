@@ -85,6 +85,7 @@ def class_view(request, classID):
     """function catalog This function handles the view for the class page of the application.
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
+        classID (int): The ID of the class that's being viewed
     Returns:
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.

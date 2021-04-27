@@ -12,7 +12,7 @@ app_name = 'instructor'
 urlpatterns = [
     path('', views.instructor, name='main-view'),
     path('class/<int:classID>', views.class_view_instructor, name='class-view'),
-    path('students/<int:classID>', views.students, name='students'),
+    path('members/<int:classID>', views.members, name='members'),
     path('editAssignment', views.edit_assignment, name='edit-assignment'),
     path('editClass', views.edit_class, name='edit-class')
 ]
