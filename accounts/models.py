@@ -53,7 +53,7 @@ class Class(models.Model):
     """
     # All of the fields in the model has validators to make sure they are valid.
     class_name = models.CharField("Class", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
-    school = models.CharField("School", max_length=100, default="",  validators=[MinLengthValidator(1)])  # Class name field
+    school = models.CharField("School", max_length=100, default="", validators=[MinLengthValidator(1)]) # Class name field
     class_instructor = models.ManyToManyField(UserInformation, blank=True, related_name="Instructor")
     student = models.ManyToManyField(UserInformation, blank=True, related_name="Student")
     lesson_plan = models.ManyToManyField(MainSet, blank=True)

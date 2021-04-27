@@ -14,7 +14,7 @@ def instructor(request):
         request (HTTPRequest): A http request object created automatically by Django.
 
     Returns:
-        HTML Render of instructor page or settings if user is not registered or profile if set doesnt exist
+        HttpResponse: HTML Render of instructor page or settings if user is not registered or profile if set doesnt exist
     """
 
     # get all lesson sets, display
