@@ -276,6 +276,7 @@ class Lesson(models.Model):
     incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
 
 
+    default = models.CharField(max_length=50, default='None')
     simplify = models.CharField(max_length=50, default='None')
     # simplify_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='simplify_answers')
     self_reference = models.CharField(max_length=50, default='None')
@@ -317,14 +318,35 @@ class Lesson(models.Model):
         """
         return self.lesson_title
 
+class LessonIndex(models.Model):
+    """
+        Contains a model that connects a Lesson with the order it should appear in a lesson.
+        Lessons - The linked lessons for the model
+        index - used for order in set
+
+        @param models.Model The base model
+        """
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
+    index = models.IntegerField(default=0)
+
+    def __str__(self):
+        """"
+            function __str__ is called to display the Lesson Index. This will be useful for admin/educators when
+            building the Lesson Plan
+            Returns:
+                str: Lesson Index: lesson name
+            """
+        return str(self.index) + ": " + str(self.lesson.lesson_name)
+
 
 class LessonSet(models.Model):
     """
     Contains a model of a lesson set
     Name - For identifying purposes.
     Lessons - The linked lessons for the model
-    Concepts - could be used to filter lesson sets
+    First In Set - Identifying the first lesson in the set
     Description - To display on the catalog
+    Index - To order in main set
 
     @param models.Model The base model
     """
@@ -332,6 +354,7 @@ class LessonSet(models.Model):
     lessons = models.ManyToManyField(Lesson, blank=True)
     first_in_set = models.ForeignKey(Lesson, related_name='first_in_set', on_delete=models.CASCADE, blank=True, null=True)
     set_description = models.TextField(default="This set is designed to further your understanding")
+    index_in_set = models.IntegerField(default=0)
     # number_normal_lessons = models.IntegerField(default=0)
 
     def __str__(self):
@@ -349,7 +372,7 @@ class MainSet(models.Model):
     Contains a model of a main set
     Name - For identifying purposes.
     Lessons - The linked lessons for the model
-    Concepts - could be used to filter lesson sets
+    Show - Boolean for visible or not
     Description - To display on the catalog
 
     @param models.Model The base model
@@ -357,12 +380,11 @@ class MainSet(models.Model):
     set_name = models.CharField(max_length=50)
     lessons = models.ManyToManyField(LessonSet, blank=True)
     set_description = models.TextField(default="This set is designed to further your understanding")
-    # set_image = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=100)
     show = models.BooleanField(default=False)
 
     def __str__(self):
         """"
-        function __str__ is called to display the Lesson name. This will be useful for admin/educators when
+        function __str__ is called to display the set name. This will be useful for admin/educators when
         building the Lesson Plan
         Returns:
             str: lesson name

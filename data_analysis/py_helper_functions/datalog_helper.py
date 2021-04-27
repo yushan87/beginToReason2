@@ -20,7 +20,7 @@ def log_data(request):
     user_info = UserInformation.objects.get(user=user)
     lesson_set = user_info.current_lesson_set
     main_set = user_info.current_main_set
-    lesson = Lesson.objects.get(lesson_index=user_info.current_lesson_index)
+    lesson = Lesson.objects.get(lesson_name=user_info.current_lesson_name)
     if lesson.can_mutate:
         original_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
     else:
@@ -50,19 +50,37 @@ def log_data(request):
     data_to_log.save()
 
 
-def get_log_data(user, lesson_index):
+def get_log_data(user, lesson_name):
+    """function get_log_data This function handles getting log data
+
+    Args:
+        user: the user model for who we are looking for logs
+        lesson_name: the name of the Lesson
+
+    Returns:
+        String representation of data log
+    """
     user = User.objects.get(email=user)
     print(user)
     get_user_successes = DataLog.objects.filter(user_key=user)
+    print(get_user_successes)
 
-    print(get_user_successes.filter(lesson_key=Lesson.objects.get(lesson_index=lesson_index)))
-    get_lesson = get_user_successes.filter(lesson_key=Lesson.objects.get(lesson_index=lesson_index)).order_by('-id')[0]
+    print("[][][][]", get_user_successes.filter(lesson_set_key=LessonSet.objects.get(set_name=lesson_name)))
+    get_lesson = get_user_successes.filter(lesson_set_key=LessonSet.objects.get(set_name=lesson_name)).order_by('-id')[0]
 
     print(get_lesson)
     return repr(get_lesson.code).replace("'",''), get_lesson.face, get_lesson.past_answers, get_lesson.explanation
 
 
 def finished_lesson_count(user):
+    """function finished_lesson_count This function returns the number of finished lesson by the user
+
+    Args:
+        user: the user model for who we are looking for log count
+
+    Returns:
+        int of successes found in the logs by the user
+    """
     user = User.objects.get(email=user)
 
     get_user_successes = DataLog.objects.filter(user_key=user).filter(status='success')
