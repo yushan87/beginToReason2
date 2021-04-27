@@ -12,7 +12,7 @@
     <div class="jumbotron jumbotron-fluid py-5 mb-0">
         <div class="container p-0">
             <h1 class="font-weight-bold" id="jumbo-title">
-                    Classes
+                    My Classes
             </h1>
         </div>
     </div>
@@ -37,15 +37,30 @@
                                 </div>
                                 <div class="col-md-8 align-self-center">
                                     <div class="card-body">
-                                        <h5 class="card-title">{{class.class_name}}</h5>
+                                        <div class="row no-gutters">
+                                            <div class="col-9">
+                                                <h5 class="card-title">{{class.class_name}}</h5>
+                                            </div>
+                                            <div class="col-3">
+                                                <btn class="btn select-btn btn-block float-right" data-toggle="modal"
+                                                     data-target="#editClassModal" onclick="document.querySelector('#classID').value = {{ class.id }};
+                                                     document.querySelector('#new-name').value = '{{ class.class_name }}'">Edit class</btn>
+                                            </div>
+                                        </div>
                                         <p class="card-text">Student count: {{ class.user_count }}</p>
                                         <p class="card-text"><small class="text-muted">Join code: {{ class.join_code }}</small></p>
-                                        <form action="{% url 'instructor:class-view' class.id %}" method="GET">
-                                            {% csrf_token %}
-                                            <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
-                                                View Assignments
-                                            </button>
-                                        </form>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <a class="btn select-btn btn-block" href="{% url 'instructor:students' class.id %}">
+                                                    Manage Students
+                                                </a>
+                                            </div>
+                                            <div class="col-6">
+                                                <a class="btn select-btn btn-block" href="{% url 'instructor:class-view' class.id %}">
+                                                    View Assignments
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -75,6 +90,56 @@
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <input type="submit" value="Create class" class="btn select-btn">
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="editClassModal" tabindex="-1" role="dialog" aria-labelledby="editClassModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'instructor:edit-class' %}">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="editClassModalLabel">Edit assignment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <div class="form-group">
+                    <label for="new-name" class="col-form-label">New class name:</label>
+                    <input type="text" class="form-control" id="new-name" name="new_name" maxlength="100" required>
+                  </div>
+                  <input type="checkbox" id="deleteClass" name="delete_class" hidden>
+                  <input type="number" id="classID" name="class_id" hidden>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="modal" data-target="#deleteClassModal">Delete</button>
+                <input type="submit" id="submitEdit" value="Change class name" class="btn select-btn">
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="deleteClassModal" tabindex="-1" role="dialog" aria-labelledby="deleteClassModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'instructor:edit-class' %}">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteClassModalLabel">Delete class</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  Are you sure?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="document.querySelector('#deleteClass').checked = true; document.querySelector('#submitEdit').click()">Delete</button>
               </div>
             </form>
         </div>

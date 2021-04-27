@@ -12,7 +12,7 @@
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
             <h1 class="font-weight-bold" id="jumbo-title">
-                    Full Catalog
+                {{ class }}
             </h1>
         </div>
     </div>
@@ -22,7 +22,7 @@
             </div>
             <div class="col-10 p-0">
                 <h1 class="mb-0 page-section-heading">
-                    Assignments in {{ class }}
+                    Current Assignments
                 </h1>
                 {% for assignment in class.get_current_assignments %}
                     <div id="begin" class="card lesson-card">

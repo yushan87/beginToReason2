@@ -133,7 +133,6 @@ def edit_assignment(request):
 
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
-        assignmentID: ID of the assignment being edited
 
     Returns:
         HttpResponse: A generated http response object to the request.
@@ -179,6 +178,61 @@ def edit_assignment(request):
                 break
 
             return redirect(reverse('instructor:class-view', args=[assignment.class_key_id]))
+        else:
+            # Case 1b: User doesn't teach class
+            return redirect("/instructor/")
+    else:
+        # Case 2: User doesn't exist in table
+        return redirect("/accounts/settings")
+
+
+@login_required(login_url='/accounts/login/')
+def edit_class(request):
+    """function instructor This function handles the POST request for renaming/deleting a class
+
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+
+    Returns:
+        HttpResponse: A generated http response object to the request.
+    """
+
+    if request.method != 'POST':
+        return redirect("/instructor/")
+
+    # Get class
+    try:
+        class_id = request.POST.get('class_id', -1)
+        class_to_edit = Class.objects.get(id=class_id)
+    except Class.DoesNotExist:
+        # Class doesn't exist!
+        return redirect('/instructor/')
+
+    # Is user valid?
+    if user_auth(request):
+        # Case 1: User is valid
+        user_info = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+        # Does user instruct the class?
+        if user_auth_inst(user_info, class_id):
+            # Case 1a: User is instructor of class
+            # Handle class edit
+            delete = request.POST.get('delete_class', False)
+            new_name = request.POST.get('new_name', None)
+
+            # Basically a do: while(False) loop
+            while True:
+                if delete is not False:
+                    # Delete the class
+                    class_to_edit.delete()
+                    break
+                if new_name is None:
+                    request.session['error'] = "You must supply a class name!"
+                    break
+                class_to_edit.class_name = new_name
+                class_to_edit.save()
+                break
+
+            return redirect(reverse('instructor:main-view'))
         else:
             # Case 1b: User doesn't teach class
             return redirect("/instructor/")
