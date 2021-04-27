@@ -1,0 +1,35 @@
+{% extends "core/base.html" %}
+{% load static compress %}
+
+{% block css %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/catalog.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
+    {% endcompress %}
+{% endblock %}
+
+{% block main_content %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="font-weight-bold" id="jumbo-title">
+                    Instructor Page
+            </h1>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-1 p-0">
+            </div>
+            <div class="col-10 p-0">
+                <div class="" style="display: flex; justify-content: center;">
+                    <a class="btn btn-lg select-btn" style="margin-right: 20px" href="{% url 'educator:create_class' %}"><i class="fas fa-plus"></i> Create New Class</a>
+                    <a class="btn btn-lg select-btn" style="margin-right: 20px" href="{% url 'educator:instructor' %}"><i class="fas fa-edit"></i> Edit Lesson Plan</a>
+                    <a class="btn btn-lg select-btn" href="{% url 'educator:instructor' %}"><i class="fas fa-folder-plus"></i> Assign Lesson Plan</a>
+                </div>
+            </div>
+            <div class="col-1 p-0">
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

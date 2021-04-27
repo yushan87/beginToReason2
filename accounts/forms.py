@@ -2,7 +2,7 @@
 This module contains custom forms used to collect the information needed to create a model.
 """
 from django import forms
-from .models import UserInformation
+from .models import UserInformation, Class
 
 
 class UserInformationForm(forms.ModelForm):
@@ -25,16 +25,6 @@ class UserInformationForm(forms.ModelForm):
         (fau, 'Florida Atlantic University'),
         (osu, 'The Ohio State University'),
         (rhit, 'Rose-Hulman Institute of Technology'),
-        (other, 'Other')
-    ]
-
-    # Courses options
-    cpsc2150 = 'CPSC2150'
-    cpsc3720 = 'CPSC3720'
-    classes = [
-        (blank, ''),
-        (cpsc2150, 'CPSC2150'),
-        (cpsc3720, 'CPSC3720'),
         (other, 'Other')
     ]
 
@@ -70,9 +60,10 @@ class UserInformationForm(forms.ModelForm):
     user_email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'readonly': 'readonly'}))  # read only
     user_nickname = forms.CharField(label='Nickname', max_length=25)
     user_school = forms.ChoiceField(label='School', choices=schools)
-    user_class = forms.ChoiceField(label='Class', choices=classes)
+    user_class = forms.ModelChoiceField(label='Class', queryset=Class.objects.all())
     user_gender = forms.ChoiceField(label='Gender', choices=genders)
     user_race = forms.ChoiceField(label='Race', choices=races)
+    user_instructor = forms.BooleanField(label='Are You An Instructor?', required=True)
 
     def __init__(self, *args, **kwargs):
         """function __init__ is called to instantiate the user information form
@@ -81,7 +72,8 @@ class UserInformationForm(forms.ModelForm):
             *args: Variable length argument list.
             **kwargs: Arbitrary keyword arguments.
         """
-        super(UserInformationForm, self).__init__(*args, **kwargs)
+        # super(UserInformationForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # Validator that makes sure all the fields have been filled in
         for _field_name, field in self.fields.items():
@@ -92,4 +84,4 @@ class UserInformationForm(forms.ModelForm):
         A class that stores the meta information about this form
         """
         model = UserInformation
-        fields = ['user_email', 'user_nickname', 'user_school', 'user_class', 'user_gender', 'user_race']
+        fields = ['user_email', 'user_nickname', 'user_school', 'user_class', 'user_gender', 'user_race', 'user_instructor']
