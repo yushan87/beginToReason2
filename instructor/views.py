@@ -298,3 +298,68 @@ def edit_class(request):
     else:
         # Case 2: User doesn't exist in table
         return redirect("/accounts/settings")
+
+
+@login_required(login_url='/accounts/login/')
+def promote_student(request):
+    """function instructor This function handles the POST request for making a student an instructor
+
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+
+    Returns:
+        HttpResponse: A generated http response object to the request.
+    """
+
+    if request.method != 'POST':
+        return redirect("/instructor/")
+
+    # Get class
+    try:
+        class_id = request.POST.get('class_id', -1)
+        class_to_edit = Class.objects.get(id=class_id)
+    except Class.DoesNotExist:
+        # Class doesn't exist!
+        return redirect('/instructor/')
+
+    # Is user valid?
+    if user_auth(request):
+        # Case 1: User is valid
+        user_info = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+        # Does user instruct the class?
+        if user_auth_inst(user_info, class_id):
+            # Case 1a: User is instructor of class
+            # Handle promotion
+            student_id = request.POST.get('student_id', None)
+
+            # Basically a do: while(False) loop
+            while True:
+                if student_id is None:
+                    request.session['error'] = "Server error. Try again?"
+                    break
+
+                try:
+                    membership = ClassMembership.objects.get(user_id=student_id, class_taking_id=class_id)
+                except ClassMembership.DoesNotExist:
+                    request.session['error'] = "Server error. Try again?"
+                    break
+
+                try:
+                    account = UserInformation.objects.get(id=student_id)
+                except UserInformation.DoesNotExist:
+                    request.session['error'] = "Server error. Try again?"
+                    break
+
+                account.user_instructor = True
+                membership.is_instructor = True
+                account.save()
+                membership.save()
+                break
+
+            return redirect(reverse('instructor:members', args=[class_id]))
+        else:
+            # Case 1b: User doesn't teach class
+            return redirect("/instructor/")
+    else:
+        # Case 2: User doesn't exist in table
+        return redirect("/accounts/settings")

@@ -52,17 +52,46 @@
                         <th>Student Username</th>
                         <th>Student Email</th>
                         <th>Last Logged In</th>
+                        <th>Promote</th>
                     </tr>
                     {% for student in class.get_students %}
                     <tr>
                         <td>{{student.user}}</td>
                         <td>{{student.user.email}}</td>
                         <td>{{student.user.last_login}}</td>
+                        <td><button class="btn select-btn" data-toggle="modal"data-target="#promoteStudentModal"
+                                    onclick="document.querySelector('#studentID').value={{student.id}}">
+                            Make Instructor
+                        </button></td>
                     </tr>
                     {% endfor %}
                 </table>
             </div>
         </div>
+    </div>
+
+    <div class="modal fade" id="promoteStudentModal" tabindex="-1" role="dialog" aria-labelledby="promoteStudentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'instructor:promote-student' %}">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="promoteStudentModalLabel">Promote Student</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <p>Are you sure? This will give the student all the permissions over this class that you currently have.</p>
+                  <input type="number" name="class_id" value="{{class.id}}"hidden>
+                  <input type="number" id="studentID" name="student_id" hidden>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <input type="submit" id="submitPromote" value="Make Instructor" class="btn select-btn">
+              </div>
+            </form>
+        </div>
+      </div>
     </div>
 
     <script type="application/javascript">

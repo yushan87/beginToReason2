@@ -14,5 +14,6 @@ urlpatterns = [
     path('class/<int:classID>', views.class_view_instructor, name='class-view'),
     path('members/<int:classID>', views.members, name='members'),
     path('editAssignment', views.edit_assignment, name='edit-assignment'),
-    path('editClass', views.edit_class, name='edit-class')
+    path('editClass', views.edit_class, name='edit-class'),
+    path('promoteStudent', views.promote_student, name='promote-student')
 ]
