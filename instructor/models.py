@@ -83,6 +83,19 @@ class Class(models.Model):
             return None
         return record
 
+    def get_students(self):
+        """function get_students handles finding all non-instructor students in a class
+
+        Returns: List of non-instructor students
+        """
+        membership_list = ClassMembership.objects.filter(class_taking=self, is_instructor=False)
+
+        members_list = []
+        for membership in membership_list:
+            members_list.append(membership.user)
+
+        return members_list
+
 
 class Assignment(models.Model):
     """

@@ -318,6 +318,7 @@ class Lesson(models.Model):
         """
         return self.lesson_title
 
+
 class LessonIndex(models.Model):
     """
         Contains a model that connects a Lesson with the order it should appear in a lesson.
