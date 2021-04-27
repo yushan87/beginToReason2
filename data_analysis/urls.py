@@ -10,5 +10,7 @@ app_name = 'data_analysis'
 
 # URL patterns to be matched.
 urlpatterns = [
+    path('data/<int:setID>/<int:lessonIndex>', views.d3_graph, name="d3-graph"),
+    path('data/<int:setID>', views.set_statistics, name='set-statistics'),
     path('instructor', views.instructor, name='instructor')
 ]
