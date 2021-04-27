@@ -1,3 +1,7 @@
+""" This file isn't used as it is not completely working
+Use this idea to connect the Python backend to Resolve
+Currently the connection is made in tutor/static/javascript/lesson/editorUtils """
+
 import asyncio
 import ssl
 import websocket
