@@ -21,7 +21,7 @@ class ClassForm(forms.ModelForm):
             *args: Variable length argument list.
             **kwargs: Arbitrary keyword arguments.
         """
-        super(ClassForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         # Validator that makes sure all the fields have been filled in
         for _field_name, field in self.fields.items():
