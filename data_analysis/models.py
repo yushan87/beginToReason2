@@ -4,8 +4,9 @@ a new instance of a model will be made.
 """
 from datetime import datetime
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from core.models import Lesson, LessonSet, MainSet
+User = get_user_model()
 
 
 class DataLog(models.Model):
