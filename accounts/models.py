@@ -3,10 +3,12 @@ This module contains model templates for the "accounts" application. In particul
 database tables related to the user account information. When we create a new item in the database,
 a new instance of a model will be made.
 """
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.validators import MinLengthValidator
 from django.db import models
 from core.models import LessonSet, MainSet
+
+User = get_user_model()
 
 
 class UserInformation(models.Model):
