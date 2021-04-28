@@ -2,12 +2,14 @@
 This module contains our Django views for the "accounts" application.
 """
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from django.views.decorators.csrf import csrf_protect
 from .models import UserInformation
 from .forms import UserInformationForm
+
+User = get_user_model()
 
 
 def login(request):
