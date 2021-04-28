@@ -2,7 +2,7 @@
 This module contains custom forms used to collect the information needed to create a model.
 """
 from django import forms
-from .models import UserInformation, Class
+from .models import UserInformation
 
 
 class UserInformationForm(forms.ModelForm):
@@ -60,10 +60,8 @@ class UserInformationForm(forms.ModelForm):
     user_email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'readonly': 'readonly'}))  # read only
     user_nickname = forms.CharField(label='Nickname', max_length=25)
     user_school = forms.ChoiceField(label='School', choices=schools)
-    user_class = forms.ModelChoiceField(label='Class', queryset=Class.objects.all())
     user_gender = forms.ChoiceField(label='Gender', choices=genders)
     user_race = forms.ChoiceField(label='Race', choices=races)
-    user_instructor = forms.BooleanField(label='Are You An Instructor?', required=True)
 
     def __init__(self, *args, **kwargs):
         """function __init__ is called to instantiate the user information form
@@ -84,4 +82,4 @@ class UserInformationForm(forms.ModelForm):
         A class that stores the meta information about this form
         """
         model = UserInformation
-        fields = ['user_email', 'user_nickname', 'user_school', 'user_class', 'user_gender', 'user_race', 'user_instructor']
+        fields = ['user_email', 'user_nickname', 'user_school', 'user_gender', 'user_race']
