@@ -317,7 +317,7 @@ def promote_student(request):
     # Get class
     try:
         class_id = request.POST.get('class_id', -1)
-        class_to_edit = Class.objects.get(id=class_id)
+        Class.objects.get(id=class_id)
     except Class.DoesNotExist:
         # Class doesn't exist!
         return redirect('/instructor/')
