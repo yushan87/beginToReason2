@@ -4,7 +4,7 @@ This module contains our Django views for the "tutor" application.
 import json
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from core.models import Lesson, LessonSet, MainSet
 from accounts.models import UserInformation
@@ -12,6 +12,8 @@ from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_d
 from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete, \
     log_lesson, check_type, alternate_lesson_check, replace_previous
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
+
+User = get_user_model()
 
 
 def catalog(request):
