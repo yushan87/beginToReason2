@@ -51,6 +51,15 @@ def log_data(request):
 
 
 def get_log_data(user, lesson_name):
+    """function get_log_data This function handles getting log data
+
+    Args:
+        user: the user model for who we are looking for logs
+        lesson_name: the name of the Lesson
+
+    Returns:
+        String representation of data log
+    """
     user = User.objects.get(email=user)
     print(user)
     get_user_successes = DataLog.objects.filter(user_key=user)
@@ -64,6 +73,14 @@ def get_log_data(user, lesson_name):
 
 
 def finished_lesson_count(user):
+    """function finished_lesson_count This function returns the number of finished lesson by the user
+
+    Args:
+        user: the user model for who we are looking for log count
+
+    Returns:
+        int of successes found in the logs by the user
+    """
     user = User.objects.get(email=user)
 
     get_user_successes = DataLog.objects.filter(user_key=user).filter(status='success')

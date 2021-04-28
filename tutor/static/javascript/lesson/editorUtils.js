@@ -686,7 +686,9 @@ function getTime() {
     time = endTime;
     return result;
 }*/
-
+/////////////////////////////////////////
+// POST result from Resolve to backend //
+/////////////////////////////////////////
 $.postJSON = (url, data, callback) => {
 
     return $.ajax({
@@ -806,6 +808,10 @@ function decode(data) {
     return obj;
 }
 
+/*
+    connecting socket to resolve. we want to remove this whole thing eventually
+    This handles the listeners for result
+*/
 function verify(code){
     var vcs = {}
     var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project');

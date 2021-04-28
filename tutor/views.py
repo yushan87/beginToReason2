@@ -109,6 +109,24 @@ def tutor(request):
     Returns:
         HttpResponse: A generated http response object to the request depending on whether or not
                       the user is authenticated.
+        lesson: Lesson object
+        lesson_code: string of code
+        concept: list of concepts
+        referenceSet: list of references
+        reason: string of question to ask or null
+        mc_set: multiple choice options or null
+        currLessonNum: int of index
+        completedLessonNum: int of index of last completed (this might be depreciated and can remove)
+        setLength: int of size of set
+        finished_count: int of lessons finished
+        orderedSet: list of lessons in order (this might be depreciated and can remove)
+        mood: string of mood of user
+        review: ?
+        screen_record: boolean of to screen record
+        audio_record: boolean of to audio record
+        audio_transcribe: boolean of to transcribe audio
+        user_email: string of user email
+        index: int of order in main set
     """
 
     print(request)

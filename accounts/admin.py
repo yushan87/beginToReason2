@@ -3,7 +3,7 @@ This module registers the models we created for the "accounts" application. Afte
 the model, the data will be accessible through Django's admin functionality.
 """
 from django.contrib import admin
-from .models import UserInformation
+from .models import UserInformation, Class
 
 
 class UserInformationAdmin(admin.ModelAdmin):
@@ -16,3 +16,4 @@ class UserInformationAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(UserInformation, UserInformationAdmin)
+admin.site.register(Class)

@@ -1,0 +1,46 @@
+{% extends "core/base.html" %}
+{% load static compress crispy_forms_tags crispy_forms_filters %}
+
+{% block css %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/catalog.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/settings.scss' %}" media="screen">
+    {% endcompress %}
+{% endblock %}
+
+{% block main_content %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="font-weight-bold" id="jumbo-title">
+                    Create Your Class
+            </h1>
+        </div>
+    </div>
+    <div class="container px-3 py-0">
+        <form action="{% url 'educator:create_class' %}" method="POST">
+            {% csrf_token %}
+            <div class="page-section-heading my-3">
+                <h3>Basic Information</h3>
+            </div>
+            <div class="my-4">
+                {{ form.class_name|as_crispy_field }}
+                {{ form.school|as_crispy_field }}
+            </div>
+            <div class="page-section-heading my-3">
+                <h3>Instructor Information</h3>
+            </div>
+            <div class="form-row my-4">
+                <div class="form-group col-md-6 mb-0">
+                    {{ form.class_instructor|as_crispy_field }}
+                </div>
+            </div>
+            <div class="d-flex p-0 justify-content-center">
+                <button type="submit" class="btn btn-success" aria-expanded="true">Create</button>
+                <a href="{% url 'educator:instructor' %}" class="btn btn-danger ml-2" role="button" aria-pressed="true">Cancel</a>
+            </div>
+        </form>
+        <br>
+    </div>
+
+{% endblock %}

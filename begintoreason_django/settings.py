@@ -28,8 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # client keys and secret for google auth
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '440772211828-t27jfq6nq5sa75aueb7e4uknd67lhrin.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'QitezbEq7hPQWRUod9-Tg90G'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '611944294175-bbmqfpu7gemb6bjeacgrdtqg0qq6arcg.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'tqfQvS7M_TnxDTM0PO4T_GAe'
 
 # Application definition
 

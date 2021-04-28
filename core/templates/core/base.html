@@ -47,17 +47,13 @@
         </a>
         <ul class="navbar-nav flex-row align-items-center text-center">
             {% if user.userinformation.user_instructor %}
-            <li class="nav-item ml-3">
-                <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">Student View</a>
-            </li>
-            <li class="nav-item ml-3">
-                <a class="nav-link pb-0" href="{% url 'instructor:main-view' %}">Instructor Tools</a>
-            </li>
-            {% else %}
-            <li class="nav-item ml-3">
-                <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">My Classes</a>
-            </li>
+                <li class="nav-item ml-3">
+                    <a class="nav-link pb-0" href="{% url 'educator:instructor' %}">Instructor</a>
+                </li>
             {% endif %}
+            <li class="nav-item ml-3">
+                <a class="nav-link pb-0" href="{% url 'tutor:catalog' %}">Catalog</a>
+            </li>
             <li class="nav-item ml-3">
                 <a class="nav-link pb-0" href="{% url 'accounts:privacy' %}">Privacy Policy</a>
             </li>
@@ -101,30 +97,6 @@
             {% endif %}
         </ul>
     </nav>
-    {% if messages %}
-    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Messages</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                {{ message }}
-            </li>
-            {% endfor %}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    {% endif %}
 </header>
 
 <!-- Main Content Block -->
@@ -133,9 +105,5 @@
     {% endblock %}
 </main>
 </body>
-{% if messages %}
-<script type="text/javascript">
-    $('#messageModal').modal()
-</script>
-{% endif %}
+
 </html>
