@@ -344,8 +344,9 @@ class LessonSet(models.Model):
     Contains a model of a lesson set
     Name - For identifying purposes.
     Lessons - The linked lessons for the model
-    Concepts - could be used to filter lesson sets
+    First In Set - Identifying the first lesson in the set
     Description - To display on the catalog
+    Index - To order in main set
 
     @param models.Model The base model
     """
@@ -371,7 +372,7 @@ class MainSet(models.Model):
     Contains a model of a main set
     Name - For identifying purposes.
     Lessons - The linked lessons for the model
-    Concepts - could be used to filter lesson sets
+    Show - Boolean for visible or not
     Description - To display on the catalog
 
     @param models.Model The base model
@@ -383,7 +384,7 @@ class MainSet(models.Model):
 
     def __str__(self):
         """"
-        function __str__ is called to display the Lesson name. This will be useful for admin/educators when
+        function __str__ is called to display the set name. This will be useful for admin/educators when
         building the Lesson Plan
         Returns:
             str: lesson name
