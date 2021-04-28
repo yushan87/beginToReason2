@@ -35,7 +35,7 @@ jobs:
           pip install -r dev-requirements.txt
       - name: Lint with pylint
         run: |
-          pylint accounts/ core/ data_analysis/ educator/ think_aloud/ tutor/
+          pylint --load-plugins pylint_django --django-settings-module=begintoreason_django.settings accounts/ core/ data_analysis/ educator/ think_aloud/ tutor/
   build:
     runs-on: ubuntu-latest
     strategy:
