@@ -42,7 +42,10 @@ def user_in_class_auth(user_info, class_id):
     Returns:
         ClassMembership: The relationship between the two, or None if doesn't exist
     """
-    return ClassMembership.objects.get(user_id=user_info.id, class_taking=class_id)
+    try:
+        return ClassMembership.objects.get(user_id=user_info.id, class_taking=class_id)
+    except ClassMembership.DoesNotExist:
+        return None
 
 
 def get_classes(user_info):

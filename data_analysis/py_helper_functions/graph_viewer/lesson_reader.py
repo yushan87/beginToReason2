@@ -12,7 +12,6 @@ from data_analysis.py_helper_functions.graph_viewer.node import Node
 # Takes a lesson index and returns a JSON representation fit for D3
 def lesson_to_json(class_id, mainset_id, lessonset_index, is_anonymous):
     lesson = _find_main_lesson(MainSet.objects.get(id=mainset_id).lessons.all()[lessonset_index].lessons.all())
-    print("lesson is", lesson)
     (root, users) = _lesson_to_graph(class_id, lesson, is_anonymous)
     nodes = []
     edges = []
@@ -62,7 +61,7 @@ def _lesson_to_graph(class_id, lesson, is_anonymous):
         if is_user_instructor(log.user_key):
             continue
         # Only need confirm statements
-        log.code = _locate_confirms(log.original_code)
+        log.code = _locate_confirms(log.code)
         # Is this kid same as the last one?
         if log.user_key != prev_student:
             # Nope!
