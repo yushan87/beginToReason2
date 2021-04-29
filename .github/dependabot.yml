@@ -1,0 +1,28 @@
+version: 2
+updates:
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  reviewers:
+  - yushan87
+  labels:
+  - dependencies
+  ignore:
+  - dependency-name: pylint-django
+    versions:
+    - 2.4.2
+    - 2.4.4
+  - dependency-name: django
+    versions:
+    - 3.1.5
+    - 3.1.8
+  - dependency-name: pylint
+    versions:
+    - 2.6.0
+    - 2.6.1
+  - dependency-name: django-crispy-forms
+    versions:
+    - 1.10.0
