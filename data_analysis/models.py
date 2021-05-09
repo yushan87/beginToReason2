@@ -6,7 +6,8 @@ from datetime import datetime
 from django.db import models
 from django.contrib.auth import get_user_model
 from core.models import Lesson, LessonSet, MainSet
-from instructor.models import Class
+from instructor.models import Class, Assignment
+
 User = get_user_model()
 
 
@@ -21,8 +22,7 @@ class DataLog(models.Model):
     time_stamp = models.DateTimeField(default=datetime.now, blank=True)
     lesson_key = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True)
     lesson_set_key = models.ForeignKey(LessonSet, on_delete=models.CASCADE, blank=True)
-    main_set_key = models.ForeignKey(MainSet, blank=True, on_delete=models.CASCADE, null=True)
-    class_key = models.ForeignKey(Class, on_delete=models.SET_NULL, null=True)
+    assignment_key = models.ForeignKey(Assignment, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=50)
     code = models.TextField(default="null")
     explanation = models.TextField()

@@ -43,10 +43,10 @@ def assignment_auth(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
 
             # Is the user already taking this assignment?
-            if AssignmentProgress.objects.filter(assignment_key=assignment.id, user_info_key=current_user.id).exists():
+            if AssignmentProgress.objects.filter(assignment_key=assignment, user_info_key=current_user).exists():
                 print("old assignment")
                 # I should include a completed assignment check here. Is this how it works?
-                progress = AssignmentProgress.objects.get(assignment_key=assignment.id, user_key=current_user.id)
+                progress = AssignmentProgress.objects.get(assignment_key=assignment, user_info_key=current_user)
                 if progress.current_lesson_index == progress.completed_lesson_index:
                     print("Already completed!")
                     return False

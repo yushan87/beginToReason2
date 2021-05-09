@@ -31,17 +31,7 @@ def catalog(request):
     # get all lesson sets, display
     if request.method == 'POST':
         print("Attempting to open the assignment: ", request.POST)
-
-        if user_auth(request):
-            # search for assignment
-            if assignment_auth(request):
-                print(request)
-                return redirect("/tutor/tutor")
-            else:
-                print("lesson set auth returned false")
-                return redirect("accounts:profile")
-        else:
-            return redirect("/accounts/settings")
+        return lesson_code(request)
     else:
         return render(request, "tutor/catalog.html", {'LessonSet': MainSet.objects.all()})
 
@@ -234,16 +224,19 @@ def tutor(request):
                     current_user.save()
                     print("******* ", alt_lesson, " ", index)
             return JsonResponse(check_feedback(current_lesson, submitted_answer, status, unlock_next))
+    return redirect("accounts:profile")
 
-    # Case 2: We have received a GET request requesting code
-    elif request.method == 'GET':
-        print("in the get")
+
+def lesson_code(request):
+    # Internal function that returns a lesson's code (split from tutor.tutor).
+    if request.method == 'POST':
+        print("getting lesson's code")
 
         if assignment_auth(request):
             # Case 2a: User is valid and is taking this assignment
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             progress = AssignmentProgress.objects.get(
-                assignment_key=Assignment.objects.get(id=request.POST.get("assignment_id")), user_key=current_user.id)
+                assignment_key=Assignment.objects.get(id=request.POST.get("assignment_id")), user_info_key=current_user)
 
             current_set = progress.current_lesson_set.lessons.all()
             set_len = len(progress.assignment_key.main_set.lessons.all())
@@ -327,60 +320,4 @@ def tutor(request):
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
                                'index': index})
-    return redirect("accounts:profile")
-
-
-@login_required(login_url='/accounts/login/')
-def completed(request, index):
-    """function previous This function handles retrieving the prev lesson.
-        Args:
-            request (HTTPRequest): A http request object created automatically by Django.
-            index (int): The index of the lesson to retrieve
-        Returns:
-            HttpResponse: A generated http response object to the request depending on whether or not
-                          the user is authenticated.
-        """
-    if request.method == 'GET':
-        if user_auth(request):
-            current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-            if not_complete(request):
-                main_set = MainSet.objects.filter(set_name=current_user.current_main_set)[0]
-
-            item = main_set.lessons.all()[0]
-            for count, item in enumerate(main_set.lessons.all()):
-                if count == index:
-                    break
-
-            current_lesson = Lesson.objects.get(lesson_title=item.first_in_set)
-
-            set_len = len(current_user.current_main_set.lessons.all())
-            print("set len: ", set_len)
-            num_done = finished_lesson_count(current_user)
-
-            # create an ordered set
-            ordered_set = current_user.current_main_set.lessons.all()
-            count2 = 0
-            for count2, item2 in enumerate(current_user.current_main_set.lessons.all()):
-                if item2 == current_user.current_lesson_set:
-                    break
-
-            if index <= count2:
-                lesson_info = get_log_data(current_user, item)
-                print("lesson info: ", index)
-                return render(request, "tutor/tutor.html",
-                              {'lesson': current_lesson,
-                               'lesson_code': lesson_info[0],
-                               'concept': current_lesson.lesson_concept.all(),
-                               'referenceSet': current_lesson.reference_set.all(),
-                               'currLessonNum': current_user.current_lesson_index,
-                               'setLength': set_len,
-                               'finished_count': num_done,
-                               'orderedSet': ordered_set,
-                               'mood': lesson_info[1],
-                               'past': lesson_info[2],
-                               'completedLessonNum': count2,
-                               'review': current_lesson.correct_feedback,
-                               'index': index})
-            return redirect("tutor:tutor")
-
     return redirect("accounts:profile")
