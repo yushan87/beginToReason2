@@ -189,7 +189,6 @@ class IncorrectAnswer(models.Model):
         return self.lesson_text + ': ' + self.answer_type + '-' + self.answer_text
 
 
-
 class Feedback(models.Model):
     """
         Contains a model of Feedback for students.
@@ -237,7 +236,6 @@ class Feedback(models.Model):
             str: choice text
         """
         return self.feedback_type + ': ' + self.feedback_text
-
 
 
 class Lesson(models.Model):

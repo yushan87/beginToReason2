@@ -11,9 +11,9 @@ from django.http import JsonResponse
 from core.models import Lesson, LessonSet, MainSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from instructor.models import Class, ClassMembership
+from instructor.models import Class, ClassMembership, AssignmentProgress, Assignment
 from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, assignment_auth, check_feedback, not_complete, \
+from tutor.py_helper_functions.tutor_helper import user_auth, assignment_auth, check_feedback, \
     log_lesson, check_type, alternate_lesson_check, replace_previous
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
 
@@ -237,24 +237,23 @@ def tutor(request):
 
     # Case 2: We have received a GET request requesting code
     elif request.method == 'GET':
-        # Ensure user exists
-        # Case 2a: if the user exists
         print("in the get")
 
-        if user_auth(request) and not_complete(request):
-
-            # Case 2aa: if the user has a current set
+        if assignment_auth(request):
+            # Case 2a: User is valid and is taking this assignment
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+            progress = AssignmentProgress.objects.get(
+                assignment_key=Assignment.objects.get(id=request.POST.get("assignment_id")), user_key=current_user.id)
 
-            current_set = current_user.current_lesson_set.lessons.all()
-            set_len = len(current_user.current_main_set.lessons.all())
+            current_set = progress.current_lesson_set.lessons.all()
+            set_len = len(progress.assignment_key.main_set.lessons.all())
             print(set_len)
             num_done = finished_lesson_count(current_user)
             print("===============", num_done)
-            # Case 2aaa: if the current set has a lesson of index that the user is on, set to current lesson
 
-            if Lesson.objects.filter(id=current_set[current_user.current_lesson_index].id).exists():
-                current_lesson = Lesson.objects.get(id=current_set[current_user.current_lesson_index].id)
+            # Case 2aa: if the current set has a lesson of index that the user is on, set to current lesson
+            if Lesson.objects.filter(id=current_set[progress.current_lesson_index].id).exists():
+                current_lesson = Lesson.objects.get(id=current_set[progress.current_lesson_index].id)
                 print("in if 1 - Current lesson: ", current_lesson)
 
                 # Just as we are altering the code here with mutate, this will pull the previous answer
@@ -265,9 +264,10 @@ def tutor(request):
                                                                    current_lesson.is_alternate)
                 # create an ordered set
                 index = 0
-                for index, item in enumerate(current_user.current_main_set.lessons.all()):
-                    if item == current_user.current_lesson_set:
+                for index, item in enumerate(progress.assignment_key.main_set.lessons.all()):
+                    if item == progress.current_lesson_set:
                         break
+                # Case 2aaa: if questions if MC or Both
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
@@ -276,11 +276,11 @@ def tutor(request):
                                    'referenceSet': current_lesson.reference_set.all(),
                                    'reason': current_lesson.reason.reasoning_question,
                                    'mc_set': current_lesson.reason.mc_set.all(),
-                                   'currLessonNum': current_user.current_lesson_index,
-                                   'completedLessonNum': current_user.completed_lesson_index,
+                                   'currLessonNum': progress.current_lesson_index,
+                                   'completedLessonNum': progress.completed_lesson_index,
                                    'setLength': set_len,
                                    'finished_count': num_done,
-                                   'orderedSet': current_user.current_main_set.lessons.all(),
+                                   'orderedSet': progress.assignment_key.main_set.lessons.all(),
                                    'mood': current_user.mood,
                                    'review': 'none',
                                    'screen_record': current_lesson.screen_record,
@@ -288,7 +288,7 @@ def tutor(request):
                                    'audio_transcribe': current_lesson.audio_transcribe,
                                    'user_email': request.user.email,
                                    'index': index})
-                # Case 2aaab: if question is of type Text
+                # Case 2aab: if question is of type Text
                 elif current_lesson.reason.reasoning_type == 'Text':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
@@ -296,11 +296,11 @@ def tutor(request):
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
                                    'reason': current_lesson.reason.reasoning_question,
-                                   'currLessonNum': current_user.current_lesson_index,
-                                   'completedLessonNum': current_user.completed_lesson_index,
+                                   'currLessonNum': progress.current_lesson_index,
+                                   'completedLessonNum': progress.completed_lesson_index,
                                    'setLength': set_len,
                                    'finished_count': num_done,
-                                   'orderedSet': current_user.current_main_set.lessons.all(),
+                                   'orderedSet': progress.assignment_key.main_set.all(),
                                    'mood': current_user.mood,
                                    'review': 'none',
                                    'screen_record': current_lesson.screen_record,
@@ -308,18 +308,18 @@ def tutor(request):
                                    'audio_transcribe': current_lesson.audio_transcribe,
                                    'user_email': request.user.email,
                                    'index': index})
-                # Case 2aaac: if question is of type none
 
+                # Case 2aac: if question is of type none
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
                                'lesson_code': current_lesson.code.lesson_code,
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
-                               'currLessonNum': current_user.current_lesson_index,
-                               'completedLessonNum': current_user.completed_lesson_index,
+                               'currLessonNum': progress.current_lesson_index,
+                               'completedLessonNum': progress.completed_lesson_index,
                                'setLength': set_len,
                                'finished_count': num_done,
-                               'orderedSet': current_user.current_main_set.lessons.all(),
+                               'orderedSet': progress.assignment_key.main_set.lessons.all(),
                                'mood': current_user.mood,
                                'review': 'none',
                                'screen_record': current_lesson.screen_record,

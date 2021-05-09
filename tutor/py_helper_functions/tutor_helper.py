@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from accounts.models import UserInformation
 from core.models import LessonSet, Lesson, MainSet
-from instructor.models import Assignment, AssignmentProgress
+from instructor.models import Assignment, AssignmentProgress, ClassMembership
 from data_analysis.models import DataLog
 
 
@@ -27,7 +27,7 @@ def user_auth(request):
 
 
 def assignment_auth(request):
-    """function lesson_auth This function handles the auth logic for a lessonSet
+    """function lesson_auth This function handles the auth logic for an assignment
 
     Args:
          request (HTTPRequest): A http request object created automatically by Django.
@@ -35,51 +35,36 @@ def assignment_auth(request):
     Returns:
         Boolean: A boolean to signal if the student is able to go into the assignment
     """
-    # Do we have the assignment in the DB?
-    if Assignment.objects.filter(id=request.POST.get("assignment_id")).exists():
-        print("HIT")
-        assignment = Assignment.objects.filter(id=request.POST.get("assignment_id"))[0]
-        current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+    if user_auth(request):
+        # Do we have the assignment in the DB?
+        if Assignment.objects.filter(id=request.POST.get("assignment_id")).exists():
+            print("HIT")
+            assignment = Assignment.objects.get(id=request.POST.get("assignment_id"))
+            current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
 
-        # I should include a completed assignment check here
-
-        if LessonLog.objects.filter(user=current_user.user).exists():
-            print("checking for lesson log")
-            log = LessonLog.objects.filter(user=current_user.user)
-            print("log: ", log)
-            if log.filter(main_set_key=main_set).exists():
-                lesson_logs = log.filter(main_set_key=main_set).last()
-                print("??????", lesson_logs.lesson_set_key.first_in_set)
-                current_user.current_main_set = main_set
-                current_set = LessonSet.objects.get(set_name=lesson_logs.lesson_set_key.set_name)
-
-                if (lesson_logs.lesson_index + 1) < len(main_set.lessons.all()):
-                    next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[lesson_logs.lesson_index + 1])
-                else:
-                    next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[lesson_logs.lesson_index])
-                current_user.current_lesson_set = next_set
-                current_user.current_lesson_name = next_set.first_in_set.lesson_name
-                current_user.current_lesson_index = 0
-                current_user.completed_lesson_index = 0
-                current_user.mood = "neutral"
-                current_user.save()
-                if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
-                    print("found in logs")
-                    return True
-        else:
-            current_user.current_main_set = main_set
-            print("1: ", main_set.lessons.all()[0])
-            current_set = LessonSet.objects.get(set_name=main_set.lessons.all()[0])
-            current_user.current_lesson_set = current_set
-            print(current_set.lessons.all())
-            current_user.current_lesson_name = current_set.first_in_set.lesson_name
-            current_user.current_lesson_index = 0
-            current_user.completed_lesson_index = 0
-            current_user.mood = "neutral"
-            current_user.save()
-            if current_user.current_lesson_index < len(current_user.current_lesson_set.lessons.all()):
-                print("starting new set")
+            # Is the user already taking this assignment?
+            if AssignmentProgress.objects.filter(assignment_key=assignment.id, user_info_key=current_user.id).exists():
+                print("old assignment")
+                # I should include a completed assignment check here. Is this how it works?
+                progress = AssignmentProgress.objects.get(assignment_key=assignment.id, user_key=current_user.id)
+                if progress.current_lesson_index == progress.completed_lesson_index:
+                    print("Already completed!")
+                    return False
                 return True
+            else:
+                # Is the user in the class for this assignment?
+                if ClassMembership.objects.filter(user=current_user, class_taking=assignment.class_key).exists():
+                    progress = AssignmentProgress(user_info_key=current_user, assignment_key=assignment,
+                                                  current_lesson_set=assignment.main_set.lessons.all()[0],
+                                                  current_lesson_index=0, completed_lesson_index=-1)
+                    progress.save()
+                    print("starting new assignment")
+                    return True
+                print("User not in the class for this assignment!")
+        else:
+            print("Assignment doesn't exist!")
+    else:
+        print("Bad user!")
     return False
 
 
@@ -130,33 +115,6 @@ def set_not_complete(request):
             print("Not complete call from GET")
             if current_user.current_lesson_index < len(current_set):
                 print("TEST PRINT")
-                return True
-    return False
-
-
-def not_complete(request):
-    """function not_complete This function handles the logic for a if a set has not been completed
-
-    Args:
-         request (HTTPRequest): A http request object created automatically by Django.
-
-    Returns:
-        Boolean: A boolean to signal if the set has been completed
-    """
-    print("not_complete method in tutor_helper.py")
-    if user_auth(request):
-        user = User.objects.get(email=request.user.email)
-        print("\t", user)
-        current_user = UserInformation.objects.get(user=user)
-        if current_user.current_main_set is None:
-            return False
-        if current_user.completed_sets is not None:
-            if current_user.current_main_set not in current_user.completed_sets.all():
-                print("not complete")
-                print(current_user.current_main_set)
-                return True
-        else:
-            if current_user.completed_sets is None:
                 return True
     return False
 
@@ -395,6 +353,6 @@ def replace_previous(user, code, is_alt):
             new_strings.append(code[indices2[i]:indices2[i+1]])
 
         for i in range(0,len(old_strings)):
-            code = code.replace(new_strings[i],old_strings[i])
+            code = code.replace(new_strings[i], old_strings[i])
 
     return code
