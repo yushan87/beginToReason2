@@ -1,8 +1,10 @@
 """
 This module contains our Django views for the "tutor" application.
 """
+import asyncio
 import json
 import re
+from asgiref.sync import async_to_sync, sync_to_async
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -15,7 +17,7 @@ from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_d
 from instructor.models import Class, ClassMembership, AssignmentProgress, Assignment
 from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth
 from tutor.py_helper_functions.tutor_helper import user_auth, assignment_auth, check_feedback, \
-    log_lesson, check_type, alternate_lesson_check, replace_previous
+    log_lesson, check_type, alternate_lesson_check, replace_previous, encode, send_to_verifier
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
 
 User = get_user_model()
@@ -140,12 +142,17 @@ def tutor(request):
 
             # Get submitted answer. No 'Confirm', no spaces, each ends w/ a semicolon
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
-            print(submitted_answer)
             submitted_answer = ''.join(submitted_answer)
-            print(submitted_answer)
 
-            log_data(request)
+
+            """
+            REMEMBER TO LOG DATA
+            """
             unlock_next = False
+
+            # Send it off to the RESOLVE verifier
+            print('starting websocket stuff\n\n\n\n\n\n\n\n\n\n')
+            asyncio.run(send_to_verifier(data['code']))
 
             if status == "success":
                 log_lesson(request)

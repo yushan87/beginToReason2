@@ -39,12 +39,11 @@ def log_data(request):
     data_to_log = DataLog.objects.create(user_key=user,
                                          time_stamp=timezone.now(),
                                          lesson_set_key=lesson_set,
-                                         main_set_key=main_set,
+                                         assignment_key=main_set,
                                          lesson_key=lesson,
                                          status=status,
                                          code=code,
                                          explanation=explanation,
-                                         past_answers = past_answers,
                                          face=face,
                                          original_code=original_code)
     data_to_log.save()

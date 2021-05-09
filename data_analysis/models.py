@@ -17,7 +17,6 @@ class DataLog(models.Model):
 
     @param models.Model The base model
     """
-    # submission_id = models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)
     user_key = models.ForeignKey(User, blank=True, on_delete=models.CASCADE)
     time_stamp = models.DateTimeField(default=datetime.now, blank=True)
     lesson_key = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True)

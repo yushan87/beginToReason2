@@ -2,6 +2,10 @@
 This module contains our Django helper functions for the "tutor" application.
 """
 import json
+import re
+import urllib
+import websockets
+
 from django.utils import timezone
 from django.contrib.auth.models import User
 from accounts.models import UserInformation
@@ -129,14 +133,14 @@ def alternate_lesson_check(current_lesson, type):
     Returns:
         current_lesson: a Lesson found from finding alternate with lookup of type
     """
-    dict = { 'NUM' : current_lesson.use_of_concrete_values,
-             'INIT': current_lesson.not_using_initial_value,
-             'SIM' : current_lesson.simplify,
-             'SELF': current_lesson.self_reference,
-             'ALG' : current_lesson.algebra,
-             'VAR' : current_lesson.variable,
-             'DEF' : current_lesson.default
-    }
+    dict = {'NUM': current_lesson.use_of_concrete_values,
+            'INIT': current_lesson.not_using_initial_value,
+            'SIM': current_lesson.simplify,
+            'SELF': current_lesson.self_reference,
+            'ALG': current_lesson.algebra,
+            'VAR': current_lesson.variable,
+            'DEF': current_lesson.default
+            }
 
     if current_lesson.sub_lessons_available:
         return Lesson.objects.get(lesson_name=dict[type])
@@ -223,9 +227,9 @@ def check_feedback(current_lesson, submitted_answer, status, unlock_next):
                 text = current_lesson.feedback.get(feedback_type='DEF').feedback_text
                 type = 'DEF'
             else:
-                return{'resultsHeader': "<h3>Something went wrong</h3>",
-                       'resultDetails': 'Try again or contact us.',
-                       'status': status}
+                return {'resultsHeader': "<h3>Something went wrong</h3>",
+                        'resultDetails': 'Try again or contact us.',
+                        'status': status}
 
     return {'resultsHeader': headline,
             'resultDetails': text,
@@ -276,7 +280,7 @@ def align_with_previous_lesson(user, code):
     variables = []
     index = 0
 
-    for i in range(0,occurrence):
+    for i in range(0, occurrence):
         if last_attempt.find("Read(", index) != -1:
             index = last_attempt.find("Read(", index) + 5
             variables.append(last_attempt[index])
@@ -284,7 +288,7 @@ def align_with_previous_lesson(user, code):
 
     print(variables)
 
-    for i in range(0,len(variables)):
+    for i in range(0, len(variables)):
         code = code.replace(original[i], variables[i])
 
     change = variables[0] + "nteger"
@@ -337,22 +341,48 @@ def replace_previous(user, code, is_alt):
             if last_attempt.find('Confirm', index1) != -1:
                 indices1.append(last_attempt.find('Confirm', index1))
                 index1 = indices1[i] + 1
-                indices1.append(last_attempt.find(';', index1)+1)
-                index1 = indices1[i+1] + 1
+                indices1.append(last_attempt.find(';', index1) + 1)
+                index1 = indices1[i + 1] + 1
 
                 indices2.append(code.find('Confirm', index2))
                 index2 = indices2[i] + 1
-                indices2.append(code.find(';', index2)+1)
-                index2 = indices2[i+1] + 1
+                indices2.append(code.find(';', index2) + 1)
+                index2 = indices2[i + 1] + 1
 
         old_strings = []
         new_strings = []
 
-        for i in range(0, len(indices1),2):
-            old_strings.append(last_attempt[indices1[i]:indices1[i+1]])
-            new_strings.append(code[indices2[i]:indices2[i+1]])
+        for i in range(0, len(indices1), 2):
+            old_strings.append(last_attempt[indices1[i]:indices1[i + 1]])
+            new_strings.append(code[indices2[i]:indices2[i + 1]])
 
-        for i in range(0,len(old_strings)):
+        for i in range(0, len(old_strings)):
             code = code.replace(new_strings[i], old_strings[i])
 
     return code
+
+
+async def send_to_verifier(code):
+    async with websockets.connect(
+            'wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project', ping_interval=None) as ws:
+        await ws.send(encode(code))
+
+        while True:
+            response = json.loads(await ws.recv())
+            if response['status'] == 'complete':
+                return response
+
+
+def encode(data):
+    """
+        Don't ask, just accept. This is how the Resolve Web API works at the
+        moment. If you want to fix this, PLEASE DO.
+    """
+    print("orig:", data)
+    data = urllib.parse.quote(data)
+    print("parsed:", data)
+    re.sub(" ", "%20", data)
+    re.sub("/+", "%2B", data)
+    print("replaced:", data)
+    return json.dumps({'name': 'BeginToReason', 'pkg': 'User', 'project': 'Teaching_Project', 'content': data,
+                       'parent': 'undefined', 'type': 'f'})
