@@ -813,9 +813,33 @@ function decode(data) {
     This handles the listeners for result
 */
 function verify(code){
+
+    /*
+    * posting data to back end to log
+    * */
+    let data = {};
+    data.assignment = assignment;
+    //data.answer = submitAnswers; just the confirms - I can do on backend
+    data.pastAnswers = allAnswers; //Doesn't include the current one!!!
+    data.code = code; // def need this
+    if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
+    else if (hasMC){data.explanation = multiAnswer;}
+    else {data.explanation = "No Explanation Requested";}
+
+    const faces = document.querySelectorAll('input[name="smiley"]');
+    let selectedValue;
+    for (const x of faces) {
+        if (x.checked) {
+            selectedValue = x.value;
+            data.face = selectedValue
+        }
+    }
+
+    $.postJSON("tutor", data, (results) => {});
+    submitAnswers = '';
+
     var vcs = {}
     var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project');
-
     // Connection opened
     ws.addEventListener('open', function (event) {
         ws.send(encode(code));
@@ -824,6 +848,7 @@ function verify(code){
     // Listen for messages
     ws.addEventListener('message', function (event) {
         message = JSON.parse(event.data)
+        console.log('message :>> ', message);
         if (message.status == 'error' || message.status == '') {
             unlock();
             document.getElementById("resultsHeader").innerHTML = "<h3>Syntax error";
@@ -838,6 +863,7 @@ function verify(code){
                 document.getElementById("answersCard").removeAttribute("hidden")
                 currentAttemptAnswers += aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')  + "\n";
                 var confirmLine = aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')  + "<br>";
+                console.log('allAnswers :>> ', allAnswers);
                 allAnswers = allAnswers + confirmLine;
                 if (i == message.errors[0].errors.length - 1){
                     allAnswers += "<br><br>";
@@ -898,8 +924,7 @@ function verify(code){
             data.code = code;
             if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
             else if (hasMC){data.explanation = multiAnswer;}
-            else {data.explanation = "No Explaination Requested";}
-            data.status = lines.overall;
+            else {data.explanation = "No Explanation Requested";}
 
             const faces = document.querySelectorAll('input[name="smiley"]');
             let selectedValue;

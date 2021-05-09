@@ -26,7 +26,6 @@ class DataLog(models.Model):
     status = models.CharField(max_length=50)
     code = models.TextField(default="null")
     explanation = models.TextField()
-    past_answers = models.TextField(default="null")
     face = models.TextField(default="null")
     original_code = models.TextField(default="null")
 

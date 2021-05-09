@@ -62,7 +62,7 @@ def profile(request):
         currentSet: current set user is working on
     """
     # Query for user in the 'User' table
-    print("GET IN  ACCOUNTS PROFILE")
+    print("GET IN ACCOUNTS PROFILE")
     user = User.objects.get(email=request.user.email)
 
     # Case 1: The user email exists in our user information table.

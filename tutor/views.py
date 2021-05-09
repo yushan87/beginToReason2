@@ -2,6 +2,7 @@
 This module contains our Django views for the "tutor" application.
 """
 import json
+import re
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -56,7 +57,8 @@ def classes(request):
                 except Class.DoesNotExist:
                     class_to_join = None
                 if class_to_join is not None:
-                    if ClassMembership.objects.filter(user_id=current_user.id, class_taking_id=class_to_join.id).exists():
+                    if ClassMembership.objects.filter(user_id=current_user.id,
+                                                      class_taking_id=class_to_join.id).exists():
                         messages.error(request, "You are already in " + str(class_to_join) + "!")
                     else:
                         new_relation = ClassMembership(user_id=current_user.id, class_taking_id=class_to_join.id,
@@ -127,19 +129,20 @@ def tutor(request):
     if request.method == 'POST':
         # Case 1a: if the user exists
         if user_auth(request):
-            # submitted_json = json.loads(request.body.decode('utf-8'))
             # if success, return next lesson
             # if fail, do something
-            # Case 1aa: if the user has not completed set
 
+            data = json.loads(request.body.decode('utf-8'))
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-            current_lesson = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
+            progress = AssignmentProgress.objects.get(assignment_key_id=data['assignment'],
+                                                      user_info_key=current_user)
+            current_lesson = progress.current_lesson_set.lessons.all()[progress.current_lesson_index]
 
-            status = json.loads(request.body.decode('utf-8'))['status']
-            print("status: ", status)
-            submitted_answer = json.loads(request.body.decode('utf-8'))['answer'].replace(" ", "")
-
-            submitted_answer = reverse_mutate(submitted_answer)
+            # Get submitted answer. No 'Confirm', no spaces, each ends w/ a semicolon
+            submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
+            print(submitted_answer)
+            submitted_answer = ''.join(submitted_answer)
+            print(submitted_answer)
 
             log_data(request)
             unlock_next = False
@@ -264,6 +267,7 @@ def lesson_code(request):
                 if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
+                                   'assignment': progress.assignment_key,
                                    'lesson_code': current_lesson.code.lesson_code,
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
@@ -285,6 +289,7 @@ def lesson_code(request):
                 elif current_lesson.reason.reasoning_type == 'Text':
                     return render(request, "tutor/tutor.html",
                                   {'lesson': current_lesson,
+                                   'assignment': progress.assignment_key,
                                    'lesson_code': current_lesson.code.lesson_code,
                                    'concept': current_lesson.lesson_concept.all(),
                                    'referenceSet': current_lesson.reference_set.all(),
@@ -305,6 +310,7 @@ def lesson_code(request):
                 # Case 2aac: if question is of type none
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
+                               'assignment': progress.assignment_key,
                                'lesson_code': current_lesson.code.lesson_code,
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
