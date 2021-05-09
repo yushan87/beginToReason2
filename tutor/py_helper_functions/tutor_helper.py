@@ -240,29 +240,6 @@ def check_feedback(current_lesson, submitted_answer, status, unlock_next):
             }
 
 
-def log_lesson(request):
-    """function log_lesson This function handles the logic for logging lessons
-    Args:
-         request (HTTPRequest): A http request object created automatically by Django.
-    Returns:
-    """
-    user = User.objects.get(email=request.user.email)
-    user_info = UserInformation.objects.get(user=user)
-    lesson_set = user_info.current_lesson_set
-    lesson = Lesson.objects.get(lesson_index=user_info.current_lesson_index)
-    main_set = user_info.current_main_set
-
-    print("lesson_logged")
-
-    lesson_to_log = LessonLog.objects.create(user=user,
-                                             time_stamp=timezone.now(),
-                                             lesson_set_key=lesson_set,
-                                             lesson_key=lesson,
-                                             lesson_index=lesson.lesson_index,
-                                             main_set_key=main_set)
-    lesson_to_log.save()
-
-
 def align_with_previous_lesson(user, code):
     """function align_with_previous_lesson This function changes the mutation to match the last lesson they did
 
@@ -378,11 +355,8 @@ def encode(data):
         Don't ask, just accept. This is how the Resolve Web API works at the
         moment. If you want to fix this, PLEASE DO.
     """
-    print("orig:", data)
     data = urllib.parse.quote(data)
-    print("parsed:", data)
     re.sub(" ", "%20", data)
     re.sub("/+", "%2B", data)
-    print("replaced:", data)
     return json.dumps({'name': 'BeginToReason', 'pkg': 'User', 'project': 'Teaching_Project', 'content': data,
                        'parent': 'undefined', 'type': 'f'})

@@ -261,8 +261,7 @@ class Lesson(models.Model):
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
     reference_set = models.ManyToManyField(Reference, blank=True)
     reason = models.ForeignKey(Reasoning, on_delete=models.CASCADE, blank=True, null=True)
-
-    correct = models.CharField(max_length=50, default='Lesson To Go To')
+    correct = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
     correct_feedback = models.TextField(default='Proceeding to the next lesson.')
     feedback = models.ManyToManyField(Feedback, blank=True)
 
@@ -317,27 +316,6 @@ class Lesson(models.Model):
         return self.lesson_title
 
 
-class LessonIndex(models.Model):
-    """
-        Contains a model that connects a Lesson with the order it should appear in a lesson.
-        Lessons - The linked lessons for the model
-        index - used for order in set
-
-        @param models.Model The base model
-        """
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    index = models.IntegerField(default=0)
-
-    def __str__(self):
-        """"
-            function __str__ is called to display the Lesson Index. This will be useful for admin/educators when
-            building the Lesson Plan
-            Returns:
-                str: Lesson Index: lesson name
-            """
-        return str(self.index) + ": " + str(self.lesson.lesson_name)
-
-
 class LessonSet(models.Model):
     """
     Contains a model of a lesson set
@@ -350,11 +328,9 @@ class LessonSet(models.Model):
     @param models.Model The base model
     """
     set_name = models.CharField(max_length=50)
-    lessons = models.ManyToManyField(Lesson, blank=True)
-    first_in_set = models.ForeignKey(Lesson, related_name='first_in_set', on_delete=models.CASCADE, blank=True, null=True)
+    first_in_set = models.ForeignKey(Lesson, on_delete=models.PROTECT)
     set_description = models.TextField(default="This set is designed to further your understanding")
     index_in_set = models.IntegerField(default=0)
-    # number_normal_lessons = models.IntegerField(default=0)
 
     def __str__(self):
         """"
@@ -364,6 +340,19 @@ class LessonSet(models.Model):
             str: lesson name
         """
         return self.set_name
+
+
+class LessonSetLessons(models.Model):
+    """
+    Many to Many between Lesson Sets
+    and Lessons.
+    Index - placement of lesson within lesson set
+
+    @param models.Model The base model
+    """
+    lesson_set = models.ForeignKey(LessonSet, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.PROTECT)  # We do NOT want to cascade here - it will destroy indexing!
+    index = models.IntegerField()  # No defaults, never blank, never null.
 
 
 class MainSet(models.Model):
@@ -377,7 +366,6 @@ class MainSet(models.Model):
     @param models.Model The base model
     """
     set_name = models.CharField(max_length=50)
-    lessons = models.ManyToManyField(LessonSet, blank=True)
     set_description = models.TextField(default="This set is designed to further your understanding")
     show = models.BooleanField(default=False)
 
@@ -389,3 +377,16 @@ class MainSet(models.Model):
             str: lesson name
         """
         return self.set_name
+
+
+class MainSetLessonSets(models.Model):
+    """
+    Many to Many between Main Sets
+    and Lesson Sets.
+    Index - placement of lesson set within main set
+
+    @param models.Model The base model
+    """
+    main_set = models.ForeignKey(MainSet, on_delete=models.CASCADE)
+    lesson_set = models.ForeignKey(LessonSet, on_delete=models.PROTECT)  # We do NOT want to cascade here - it will destroy indexing!
+    index = models.IntegerField()  # No defaults, never blank, never null.
