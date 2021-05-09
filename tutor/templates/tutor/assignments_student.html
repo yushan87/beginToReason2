@@ -36,7 +36,7 @@
                                         <p class="card-text"><small class="text-muted">Due date: {{ assignment.end_date }}</small></p>
                                         <form action="{% url 'tutor:catalog' %}" method="POST">
                                             {% csrf_token %}
-                                            <input type="hidden" name="set_name" value="{{ assignment.main_set }}"/>
+                                            <input type="hidden" name="assignment_id" value="{{ assignment.ID }}"/>
                                             <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
                                                 Start Training
                                             </button>

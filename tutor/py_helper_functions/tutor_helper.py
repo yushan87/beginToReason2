@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 from accounts.models import UserInformation
 from core.models import LessonSet, Lesson, MainSet
-from tutor.models import LessonLog
+from instructor.models import Assignment, AssignmentProgress
 from data_analysis.models import DataLog
 
 
@@ -26,21 +26,23 @@ def user_auth(request):
     return False
 
 
-def lesson_set_auth(request):
+def assignment_auth(request):
     """function lesson_auth This function handles the auth logic for a lessonSet
 
     Args:
          request (HTTPRequest): A http request object created automatically by Django.
 
     Returns:
-        Boolean: A boolean to signal if the lessonSet has been found in our database
+        Boolean: A boolean to signal if the student is able to go into the assignment
     """
-    if MainSet.objects.filter(set_name=request.POST.get("set_name")).exists():
+    # Do we have the assignment in the DB?
+    if Assignment.objects.filter(id=request.POST.get("assignment_id")).exists():
         print("HIT")
-        main_set = MainSet.objects.filter(set_name=request.POST.get("set_name"))[0]
+        assignment = Assignment.objects.filter(id=request.POST.get("assignment_id"))[0]
         current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-        if current_user.completed_sets.filter(set_name=request.POST.get("set_name")).exists():
-            return False
+
+        # I should include a completed assignment check here
+
         if LessonLog.objects.filter(user=current_user.user).exists():
             print("checking for lesson log")
             log = LessonLog.objects.filter(user=current_user.user)

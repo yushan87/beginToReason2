@@ -8,7 +8,7 @@ from django.core.validators import MinLengthValidator
 from django.db import models
 
 from accounts.models import UserInformation
-from core.models import MainSet
+from core.models import MainSet, LessonSet
 
 
 class Class(models.Model):
@@ -141,6 +141,19 @@ class Assignment(models.Model):
         """
 
         return self.end_date.isoformat()
+
+
+class AssignmentProgress(models.Model):
+    """
+    A many-to-many between Assignment and UserInformation that stores progress on the assignment
+
+    @param models.Model The base model
+    """
+    assignment_key = models.ForeignKey(Assignment, on_delete=models.CASCADE)  # Assignment
+    user_info_key = models.ForeignKey(UserInformation, on_delete=models.CASCADE)  # User
+    current_lesson_set = models.ForeignKey(LessonSet, blank=True, on_delete=models.CASCADE, null=True)
+    current_lesson_index = models.IntegerField(default=0)
+    completed_lesson_index = models.IntegerField(default=0)
 
 
 class ClassMembership(models.Model):

@@ -13,7 +13,7 @@ from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
 from instructor.models import Class, ClassMembership
 from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, lesson_set_auth, check_feedback, not_complete, \
+from tutor.py_helper_functions.tutor_helper import user_auth, assignment_auth, check_feedback, not_complete, \
     log_lesson, check_type, alternate_lesson_check, replace_previous
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
 
@@ -30,11 +30,11 @@ def catalog(request):
     """
     # get all lesson sets, display
     if request.method == 'POST':
-        print("Attempting to open the lesson: ", request.POST)
+        print("Attempting to open the assignment: ", request.POST)
 
         if user_auth(request):
-            # search for lesson set
-            if lesson_set_auth(request):
+            # search for assignment
+            if assignment_auth(request):
                 print(request)
                 return redirect("/tutor/tutor")
             else:
