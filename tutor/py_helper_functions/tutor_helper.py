@@ -49,18 +49,19 @@ def assignment_auth(request):
             # Is the user already taking this assignment?
             if AssignmentProgress.objects.filter(assignment_key=assignment, user_info_key=current_user).exists():
                 print("old assignment")
-                # I should include a completed assignment check here. Is this how it works?
-                progress = AssignmentProgress.objects.get(assignment_key=assignment, user_info_key=current_user)
-                if progress.current_lesson_index == progress.completed_lesson_index:
+                # Check that assignment hasn't been completed already
+                current_lesson_set, current_lesson = assignment.get_user_lesson(current_user.id)
+                if current_lesson_set is None:
                     print("Already completed!")
                     return False
                 return True
             else:
                 # Is the user in the class for this assignment?
                 if ClassMembership.objects.filter(user=current_user, class_taking=assignment.class_key).exists():
+                    lesson_set = assignment.main_set.set_by_index(0)
                     progress = AssignmentProgress(user_info_key=current_user, assignment_key=assignment,
-                                                  current_lesson_set=assignment.main_set.lessons.all()[0],
-                                                  current_lesson_index=0, completed_lesson_index=-1)
+                                                  current_lesson_set=lesson_set,
+                                                  current_lesson=lesson_set.lesson_by_index(0))
                     progress.save()
                     print("starting new assignment")
                     return True

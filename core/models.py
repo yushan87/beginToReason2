@@ -341,6 +341,25 @@ class LessonSet(models.Model):
         """
         return self.set_name
 
+    def lesson_by_index(self, index):
+        """"
+        function lesson_by_index returns the lesson at the given index in the lesson set
+        Returns:
+            Lesson
+        """
+        try:
+            return LessonSetLessons.objects.get(lesson_set=self, index=index).lesson
+        except MainSetLessonSets.DoesNotExist:
+            return None
+
+    def length(self):
+        """"
+        function lesson_by_index returns how many lessons a lesson set has
+        Returns:
+            Integer representing length of set
+        """
+        return LessonSetLessons.objects.get(lesson_set=self).count()
+
 
 class LessonSetLessons(models.Model):
     """
@@ -377,6 +396,17 @@ class MainSet(models.Model):
             str: lesson name
         """
         return self.set_name
+
+    def set_by_index(self, index):
+        """"
+        function set_by_index returns the lesson set at the given index in the main set
+        Returns:
+            Lesson set
+        """
+        try:
+            return MainSetLessonSets.objects.get(main_set=self, index=index).lesson_set
+        except MainSetLessonSets.DoesNotExist:
+            return None
 
 
 class MainSetLessonSets(models.Model):

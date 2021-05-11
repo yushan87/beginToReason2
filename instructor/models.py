@@ -8,7 +8,7 @@ from django.core.validators import MinLengthValidator
 from django.db import models
 
 from accounts.models import UserInformation
-from core.models import MainSet, LessonSet
+from core.models import MainSet, LessonSet, Lesson
 
 
 class Class(models.Model):
@@ -142,6 +142,17 @@ class Assignment(models.Model):
 
         return self.end_date.isoformat()
 
+    def get_user_lesson(self, user_id):
+        """function get_user_lesson a helper function to retrieve a user's current lesson set and lesson on an
+        assignment
+
+        Returns:
+            current lesson set, current lesson
+        """
+        progress = AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id) \
+            .order_by('-alternate_level')[0]
+        return progress.current_lesson_set, progress.current_lesson
+
 
 class AssignmentProgress(models.Model):
     """
@@ -151,9 +162,9 @@ class AssignmentProgress(models.Model):
     """
     assignment_key = models.ForeignKey(Assignment, on_delete=models.CASCADE)  # Assignment
     user_info_key = models.ForeignKey(UserInformation, on_delete=models.CASCADE)  # User
-    current_lesson_set = models.ForeignKey(LessonSet, blank=True, on_delete=models.CASCADE, null=True)
-    current_lesson_index = models.IntegerField(default=0)
-    completed_lesson_index = models.IntegerField(default=0)
+    current_lesson_set = models.ForeignKey(LessonSet, blank=True, on_delete=models.SET_NULL, null=True)
+    current_lesson = models.ForeignKey(Lesson, blank=True, on_delete=models.SET_NULL, null=True)
+    alternate_level = models.IntegerField(default=0)
 
 
 class ClassMembership(models.Model):

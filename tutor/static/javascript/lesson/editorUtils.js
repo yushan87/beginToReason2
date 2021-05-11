@@ -30,7 +30,7 @@ let instructOpen = true;
 /*
  * Function for creating and embedding the ACE Editor into our page.
  */
-function createEditor(code, explain, lessonName, currIndex, compIndex, review, past) {
+function createEditor(code, explain, lessonName, review, past) {
     // RESOLVE mode
     let ResolveMode = ace.require("ace/mode/resolve").Mode;
     Range = ace.require("ace/range").Range;
@@ -86,14 +86,6 @@ function createEditor(code, explain, lessonName, currIndex, compIndex, review, p
     else {
         hasFR = false;
         hasMC = false;
-    }
-
-    if (parseInt(currIndex) < parseInt(compIndex)){
-        console.log("HIT")
-        console.log("currIndex: " + currIndex + " compIndex: " + compIndex)
-        aceEditor.setReadOnly(true)
-        $("#resetCode").attr("disabled", "disabled");
-        $("#checkCorrectness").attr("disabled", "disabled");
     }
 }
 

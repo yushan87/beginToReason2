@@ -6,7 +6,6 @@ a new instance of a model will be made.
 from django.contrib.auth import get_user_model
 from django.core.validators import MinLengthValidator
 from django.db import models
-from core.models import LessonSet, MainSet
 
 User = get_user_model()
 
@@ -39,4 +38,5 @@ class UserInformation(models.Model):
             str: user email
         """
         return self.user.email
+
     get_user_email.short_description = 'User Email'  # Renames column head

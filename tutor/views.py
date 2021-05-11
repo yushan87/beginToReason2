@@ -242,85 +242,30 @@ def lesson_code(request):
         if assignment_auth(request):
             # Case 2a: User is valid and is taking this assignment
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-            progress = AssignmentProgress.objects.get(
-                assignment_key=Assignment.objects.get(id=request.POST.get("assignment_id")), user_info_key=current_user)
-
-            current_set = progress.current_lesson_set.lessons.all()
-            set_len = len(progress.assignment_key.main_set.lessons.all())
-            print(set_len)
+            assignment = Assignment.objects.get(id=request.POST.get("assignment_id"))
+            current_set, current_lesson = assignment.get_user_lesson(current_user.id)
             num_done = finished_lesson_count(current_user)
             print("===============", num_done)
+            print("in if 1 - Current lesson: ", current_lesson)
 
-            # Case 2aa: if the current set has a lesson of index that the user is on, set to current lesson
-            if Lesson.objects.filter(id=current_set[progress.current_lesson_index].id).exists():
-                current_lesson = Lesson.objects.get(id=current_set[progress.current_lesson_index].id)
-                print("in if 1 - Current lesson: ", current_lesson)
+            # Just as we are altering the code here with mutate, this will pull the previous answer
+            # to put in place for sub lessons. What identifiers do we need?
 
-                # Just as we are altering the code here with mutate, this will pull the previous answer
-                # to put in place for sub lessons. What identifiers do we need?
+            current_lesson.code.lesson_code = can_mutate(current_lesson)
+            current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
+                                                               current_lesson.is_alternate)
 
-                current_lesson.code.lesson_code = can_mutate(current_lesson)
-                current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
-                                                                   current_lesson.is_alternate)
-                # create an ordered set
-                index = 0
-                for index, item in enumerate(progress.assignment_key.main_set.lessons.all()):
-                    if item == progress.current_lesson_set:
-                        break
-                # Case 2aaa: if questions if MC or Both
-                if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
-                    return render(request, "tutor/tutor.html",
-                                  {'lesson': current_lesson,
-                                   'assignment': progress.assignment_key,
-                                   'lesson_code': current_lesson.code.lesson_code,
-                                   'concept': current_lesson.lesson_concept.all(),
-                                   'referenceSet': current_lesson.reference_set.all(),
-                                   'reason': current_lesson.reason.reasoning_question,
-                                   'mc_set': current_lesson.reason.mc_set.all(),
-                                   'currLessonNum': progress.current_lesson_index,
-                                   'completedLessonNum': progress.completed_lesson_index,
-                                   'setLength': set_len,
-                                   'finished_count': num_done,
-                                   'orderedSet': progress.assignment_key.main_set.lessons.all(),
-                                   'mood': current_user.mood,
-                                   'review': 'none',
-                                   'screen_record': current_lesson.screen_record,
-                                   'audio_record': current_lesson.audio_record,
-                                   'audio_transcribe': current_lesson.audio_transcribe,
-                                   'user_email': request.user.email,
-                                   'index': index})
-                # Case 2aab: if question is of type Text
-                elif current_lesson.reason.reasoning_type == 'Text':
-                    return render(request, "tutor/tutor.html",
-                                  {'lesson': current_lesson,
-                                   'assignment': progress.assignment_key,
-                                   'lesson_code': current_lesson.code.lesson_code,
-                                   'concept': current_lesson.lesson_concept.all(),
-                                   'referenceSet': current_lesson.reference_set.all(),
-                                   'reason': current_lesson.reason.reasoning_question,
-                                   'currLessonNum': progress.current_lesson_index,
-                                   'completedLessonNum': progress.completed_lesson_index,
-                                   'setLength': set_len,
-                                   'finished_count': num_done,
-                                   'orderedSet': progress.assignment_key.main_set.all(),
-                                   'mood': current_user.mood,
-                                   'review': 'none',
-                                   'screen_record': current_lesson.screen_record,
-                                   'audio_record': current_lesson.audio_record,
-                                   'audio_transcribe': current_lesson.audio_transcribe,
-                                   'user_email': request.user.email,
-                                   'index': index})
-
-                # Case 2aac: if question is of type none
+            # Case 2aa: if questions if MC or Both
+            if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
-                               'assignment': progress.assignment_key,
+                               'assignment': assignment.id,
                                'lesson_code': current_lesson.code.lesson_code,
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
-                               'currLessonNum': progress.current_lesson_index,
-                               'completedLessonNum': progress.completed_lesson_index,
-                               'setLength': set_len,
+                               'reason': current_lesson.reason.reasoning_question,
+                               'mc_set': current_lesson.reason.mc_set.all(),
+                               'setLength': current_set.length(),
                                'finished_count': num_done,
                                'orderedSet': progress.assignment_key.main_set.lessons.all(),
                                'mood': current_user.mood,
@@ -330,4 +275,45 @@ def lesson_code(request):
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
                                'index': index})
+            # Case 2ab: if question is of type Text
+            elif current_lesson.reason.reasoning_type == 'Text':
+                return render(request, "tutor/tutor.html",
+                              {'lesson': current_lesson,
+                               'assignment': progress.assignment_key,
+                               'lesson_code': current_lesson.code.lesson_code,
+                               'concept': current_lesson.lesson_concept.all(),
+                               'referenceSet': current_lesson.reference_set.all(),
+                               'reason': current_lesson.reason.reasoning_question,
+                               'currLessonNum': progress.current_lesson_index,
+                               'completedLessonNum': progress.completed_lesson_index,
+                               'setLength': set_len,
+                               'finished_count': num_done,
+                               'orderedSet': progress.assignment_key.main_set.all(),
+                               'mood': current_user.mood,
+                               'review': 'none',
+                               'screen_record': current_lesson.screen_record,
+                               'audio_record': current_lesson.audio_record,
+                               'audio_transcribe': current_lesson.audio_transcribe,
+                               'user_email': request.user.email,
+                               'index': index})
+
+            # Case 2ac: if question is of type none
+            return render(request, "tutor/tutor.html",
+                          {'lesson': current_lesson,
+                           'assignment': progress.assignment_key,
+                           'lesson_code': current_lesson.code.lesson_code,
+                           'concept': current_lesson.lesson_concept.all(),
+                           'referenceSet': current_lesson.reference_set.all(),
+                           'currLessonNum': progress.current_lesson_index,
+                           'completedLessonNum': progress.completed_lesson_index,
+                           'setLength': set_len,
+                           'finished_count': num_done,
+                           'orderedSet': progress.assignment_key.main_set.lessons.all(),
+                           'mood': current_user.mood,
+                           'review': 'none',
+                           'screen_record': current_lesson.screen_record,
+                           'audio_record': current_lesson.audio_record,
+                           'audio_transcribe': current_lesson.audio_transcribe,
+                           'user_email': request.user.email,
+                           'index': index})
     return redirect("accounts:profile")
