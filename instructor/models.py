@@ -150,13 +150,57 @@ class Assignment(models.Model):
         Returns:
             current lesson set, current set index, current lesson, current lesson index
         """
-        if AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
-            progress = AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id) \
+        if AlternateProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
+            # User is in an alt lesson
+            alt_progress = AlternateProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id) \
                 .order_by('-alternate_level')[0]
+            progress = AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id)
+            return alt_progress.lesson_set, progress.current_set_index, \
+                alt_progress.lesson_set.lesson_by_index(alt_progress.current_lesson_index), \
+                alt_progress.current_lesson_index
+        if AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
+            progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=user_id)
             lesson_set = self.main_set.set_by_index(progress.current_set_index)
             return lesson_set, progress.current_set_index, lesson_set.lesson_by_index(progress.current_lesson_index), \
                 progress.current_lesson_index
+        # Not in the assignment currently
         return None, -1, None, -1
+
+    def advance_user(self, user_id):
+        """function advance_user a helper function to move a user on to the next lesson
+        Returns:
+            if there's more to the assignment (false if complete, true if incomplete)
+        """
+        if AlternateProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
+            # User is in an alt lesson
+            alt_progress = AlternateProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id) \
+                .order_by('-alternate_level')[0]
+            alt_progress.current_lesson_index += 1
+            # Does the lesson set have a lesson for the incremented index?
+            if alt_progress.lesson_set.lesson_by_index(alt_progress.current_lesson_index) is None:
+                # No! This means the alt lesson is complete and we can go up a level.
+                alt_progress.delete()
+            return True
+        if AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
+            # User is not in an alt lesson but user is in the assignment
+            progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=user_id)
+            progress.current_lesson_index += 1
+            # Does the lesson set have an alt lesson for the incremented index?
+            lesson_set = self.main_set.set_by_index(progress.current_set_index)
+            if lesson_set.lesson_by_index(progress.current_lesson_index) is not None:
+                # Yes!
+                return True
+            # No! I need to increment the lesson set.
+            progress.current_set_index += 1
+            # Does the main set have a set for the incremented index?
+            if self.main_set.set_by_index(progress.current_set_index) is not None:
+                # Yes!
+                progress.current_lesson_index = 0
+                return True
+            # No! The user has completed the assignment.
+            return False
+        # Not in the assignment currently
+        return False
 
 
 class AssignmentProgress(models.Model):
