@@ -341,11 +341,20 @@ async def send_to_verifier(code):
     async with websockets.connect(
             'wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project', ping_interval=None) as ws:
         await ws.send(encode(code))
-
+        vcs = {}
         while True:
             response = json.loads(await ws.recv())
+            if response.get('status') == 'error' or response.get('status') is None:
+                return None
+            if response['status'] == 'processing':
+                result = response['result']
+                if re.search(r"^Proved", result['result']):
+                    vcs[result['id']] = 'success'
+                else:
+                    vcs[result['id']] = 'failure'
             if response['status'] == 'complete':
-                return response
+                response['result'] = decode(response['result'])
+                return response, vcs
 
 
 def encode(data):
@@ -353,8 +362,46 @@ def encode(data):
         Don't ask, just accept. This is how the Resolve Web API works at the
         moment. If you want to fix this, PLEASE DO.
     """
-    data = urllib.parse.quote(data)
-    re.sub(" ", "%20", data)
-    re.sub("/+", "%2B", data)
-    return json.dumps({'name': 'BeginToReason', 'pkg': 'User', 'project': 'Teaching_Project', 'content': data,
-                       'parent': 'undefined', 'type': 'f'})
+    return json.dumps({'name': 'BeginToReason', 'pkg': 'User', 'project': 'Teaching_Project',
+                       'content': urllib.parse.quote(data), 'parent': 'undefined', 'type': 'f'})
+
+
+def decode(data):
+    """
+        Taken straight from editorUtils.js, or at least as straight as I could.
+    """
+    data = urllib.parse.unquote(data)
+    data = re.sub(r"%20", " ", data)
+    data = re.sub(r"%2B", "+", data)
+    data = re.sub(r"<vcFile>(.*)</vcFile>", r"\1", data)
+    data = urllib.parse.unquote(data)
+    data = urllib.parse.unquote(data)
+    data = re.sub(r"\n", "", data)
+    return json.loads(data)
+
+
+def overall_status(data, vcs):
+    """
+    Takes the 'result' portion of RESOLVE's response, updates the status to be 'success' or 'failure', and returns an
+    array of lines and their statuses
+    @param data: RESOLVE's response['data']
+    @param vcs: dict made from the processing responses from RESOLVE
+    @return: individual line status array
+    """
+    overall = 'success'
+    lines = {}
+    for vc in data['result']['vcs']:
+        if vcs.get(vc.get('vc')) != 'success':
+            overall = 'failure'
+        if lines.get(vc.get('lineNum')) != 'failure': # Don't overwrite an already failed line
+            lines[vc.get('lineNum')] = vcs.get(vc.get('vc'))
+
+    # Convert lines dict to array of dicts
+    line_array = []
+    for line, status in lines.items():
+        line_array.append({"lineNum": line, "status": status})
+
+    # Update response
+    data['status'] = overall
+
+    return line_array

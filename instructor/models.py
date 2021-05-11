@@ -161,7 +161,7 @@ class Assignment(models.Model):
 
 class AssignmentProgress(models.Model):
     """
-    A many-to-many between Assignment and UserInformation that stores progress on the assignment
+    A many-to-many between Assignment and UserInformation that stores progress on the assignment's main set
 
     @param models.Model The base model
     """
@@ -169,7 +169,21 @@ class AssignmentProgress(models.Model):
     user_info_key = models.ForeignKey(UserInformation, on_delete=models.CASCADE)  # User
     current_set_index = models.IntegerField(default=0)
     current_lesson_index = models.IntegerField(default=0)
-    alternate_level = models.IntegerField(default=0)
+
+
+class AlternateProgress(models.Model):
+    """
+    A many-to-many between Assignment, UserInformation and LessonSet that keeps track of a user's progress through
+    an alternate lesson
+
+    @param models.Model The base model
+    """
+    assignment_key = models.ForeignKey(Assignment, on_delete=models.CASCADE)  # Assignment
+    user_info_key = models.ForeignKey(UserInformation, on_delete=models.CASCADE)  # User
+    lesson_set = models.ForeignKey(LessonSet, on_delete=models.CASCADE)
+    current_lesson_index = models.IntegerField(default=0)
+    alternate_level = models.IntegerField(default=0)  # How 'deep' it is - starts at 0 and as a user continues to
+    # activate alternate lessons, makes more with larger levels
 
 
 class ClassMembership(models.Model):

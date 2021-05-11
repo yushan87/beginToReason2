@@ -17,7 +17,7 @@ from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_d
 from instructor.models import Class, ClassMembership, AssignmentProgress, Assignment
 from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth
 from tutor.py_helper_functions.tutor_helper import user_auth, assignment_auth, check_feedback, \
-    check_type, alternate_lesson_check, replace_previous, send_to_verifier
+    check_type, alternate_lesson_check, replace_previous, send_to_verifier, overall_status
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
 
 User = get_user_model()
@@ -151,11 +151,85 @@ def tutor(request):
             unlock_next = False
 
             # Send it off to the RESOLVE verifier
-            response = asyncio.run(send_to_verifier(data['code']))
+            response, vcs = asyncio.run(send_to_verifier(data['code']))
+            lines = overall_status(response, vcs)
+            print("\n\n\nRESPONSE:", response)
+            print("\n\nLINES:", lines)
+            # Do what the JS used to do for me
+            """
+            let lines = mergeVCsAndLineNums(vcs, lineNums.vcs)
+            var
+            confirmLine
+            let
+            vcLine = parseInt(lineNums.vcs[0].lineNum, 10)
 
+            let
+            currentAttemptAnswers = '';
+            for (var i = 0; i < lines.lines.length; i++) {
+            if (lines.lines[i].status == "success") {
+            aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_correct");
+            confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace( / \s / g, '');
+            confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
+            allAnswers = allAnswers + confirmLine  + "<br>";
+            submitAnswers = submitAnswers + confirmLine;
+            currentAttemptAnswers += confirmLine + '\n'
+            }
+            else {
+            aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_error");
+            document.getElementById("answersCard").removeAttribute("hidden")
+            confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace( / \s / g, '');
+            confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
+            allAnswers = allAnswers + confirmLine  + "<br>";
+            submitAnswers = submitAnswers + confirmLine;
+            if (i == lines.lines.length - 1){
+            allAnswers += "<br><br>";
+            currentAttemptAnswers += confirmLine + '\n'
+            }
+            document.getElementById("pastAnswers").innerHTML = allAnswers;
+            }
+            }
+
+            // posting
+            back
+            end
+            data
+            to
+            log
+            let
+            data = {};
+            data.name = name;
+            data.answer = submitAnswers;
+            data.allAnswers = allAnswers;
+            data.code = code;
+            if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
+            else if (hasMC){data.explanation = multiAnswer;}
+            else {data.explanation = "No Explanation Requested";}
+
+            const
+            faces = document.querySelectorAll('input[name="smiley"]');
+            let
+            selectedValue;
+            for (const x of faces) {
+            if (x.checked) {
+            selectedValue = x.value;
+            data.face = selectedValue
+            }
+            }
+            // The
+            original
+            post
+            // $.postJSON("tutor", data, (results) = > {});
+            submitAnswers = '';
+"""
             if response['status'] == "success":
-                main_set = assignment.main_set
-                # if they are correct in a alt lesson, find correct to send to
+                # Update assignment progress
+                lesson_index += 1
+                # Is the lesson set over?
+                if current_lesson_set.lesson_by_index(lesson_index) is None:
+                    # Lesson set is over!
+                    set_index += 1
+                    lesson_index = 0
+                    # Is the
                 print("current_lesson.is_alternate: ", current_lesson.is_alternate,
                       " current_user.current_lesson_index: ", current_user.current_lesson_index)
                 if current_lesson.is_alternate and current_user.current_lesson_index != 0:
