@@ -408,6 +408,17 @@ class MainSet(models.Model):
         except MainSetLessonSets.DoesNotExist:
             return None
 
+    def sets(self):
+        """"
+        function set_by_index returns ordered list of the lesson sets within the main set
+        Returns:
+            Array of Lesson sets
+        """
+        set_list = []
+        for relation in MainSetLessonSets.objects.get(main_set=self).order_by('index').all():
+            set_list += relation.lesson_set
+        return set_list
+
 
 class MainSetLessonSets(models.Model):
     """
