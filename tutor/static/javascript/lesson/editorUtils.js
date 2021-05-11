@@ -818,18 +818,17 @@ function verify(code){
     else if (hasMC){data.explanation = multiAnswer;}
     else {data.explanation = "No Explanation Requested";}
 
-    const faces = document.querySelectorAll('input[name="smiley"]');
-    let selectedValue;
-    for (const x of faces) {
-        if (x.checked) {
-            selectedValue = x.value;
-            data.face = selectedValue
+    for (const face of document.querySelectorAll('input[name="smiley"]')) {
+        if (face.checked) {
+            data.face = face.value
+            break
         }
     }
 
     $.postJSON("tutor", data, (results) => {});
     submitAnswers = '';
-
+    // Old code to comm with RESOLVE verifier
+    /*
     var vcs = {}
     var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project');
     // Connection opened
@@ -906,9 +905,7 @@ function verify(code){
                 }
             }
 
-            /*
-            * posting data to back end to log
-            * */
+            // posting back end data to log
             let data = {};
             data.name = name;
             data.answer = submitAnswers;
@@ -926,10 +923,11 @@ function verify(code){
                     data.face = selectedValue
                 }
             }
-
-            $.postJSON("tutor", data, (results) => {});
+            //The original post
+            //$.postJSON("tutor", data, (results) => {});
             submitAnswers = '';
 
         }
     });
+    */
 }

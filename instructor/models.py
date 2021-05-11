@@ -18,7 +18,8 @@ class Class(models.Model):
     @param models.Model The base model
     """
     class_name = models.CharField("Name", max_length=100, validators=[MinLengthValidator(1)])  # Class name field
-    join_code = models.CharField("Join_Code", max_length=6, validators=[MinLengthValidator(6)], unique=True)  # Code for joining class
+    join_code = models.CharField("Join_Code", max_length=6, validators=[MinLengthValidator(6)],
+                                 unique=True)  # Code for joining class
 
     def __str__(self):
         """function __str__ is used to create a string representation of this class
@@ -147,11 +148,15 @@ class Assignment(models.Model):
         assignment
 
         Returns:
-            current lesson set, current lesson
+            current lesson set, current set index, current lesson, current lesson index
         """
-        progress = AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id) \
-            .order_by('-alternate_level')[0]
-        return progress.current_lesson_set, progress.current_lesson
+        if AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
+            progress = AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id) \
+                .order_by('-alternate_level')[0]
+            lesson_set = self.main_set.set_by_index(progress.current_set_index)
+            return lesson_set, progress.current_set_index, lesson_set.lesson_by_index(progress.current_lesson_index), \
+                progress.current_lesson_index
+        return None, -1, None, -1
 
 
 class AssignmentProgress(models.Model):
@@ -162,8 +167,8 @@ class AssignmentProgress(models.Model):
     """
     assignment_key = models.ForeignKey(Assignment, on_delete=models.CASCADE)  # Assignment
     user_info_key = models.ForeignKey(UserInformation, on_delete=models.CASCADE)  # User
-    current_lesson_set = models.ForeignKey(LessonSet, blank=True, on_delete=models.SET_NULL, null=True)
-    current_lesson = models.ForeignKey(Lesson, blank=True, on_delete=models.SET_NULL, null=True)
+    current_set_index = models.IntegerField(default=0)
+    current_lesson_index = models.IntegerField(default=0)
     alternate_level = models.IntegerField(default=0)
 
 

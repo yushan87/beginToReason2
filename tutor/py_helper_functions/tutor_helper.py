@@ -50,18 +50,15 @@ def assignment_auth(request):
             if AssignmentProgress.objects.filter(assignment_key=assignment, user_info_key=current_user).exists():
                 print("old assignment")
                 # Check that assignment hasn't been completed already
-                current_lesson_set, current_lesson = assignment.get_user_lesson(current_user.id)
-                if current_lesson_set is None:
+                current_lesson_set, x, current_lesson, x = assignment.get_user_lesson(current_user.id)
+                if current_lesson_set is None or current_lesson is None:
                     print("Already completed!")
                     return False
                 return True
             else:
                 # Is the user in the class for this assignment?
                 if ClassMembership.objects.filter(user=current_user, class_taking=assignment.class_key).exists():
-                    lesson_set = assignment.main_set.set_by_index(0)
-                    progress = AssignmentProgress(user_info_key=current_user, assignment_key=assignment,
-                                                  current_lesson_set=lesson_set,
-                                                  current_lesson=lesson_set.lesson_by_index(0))
+                    progress = AssignmentProgress(user_info_key=current_user, assignment_key=assignment)
                     progress.save()
                     print("starting new assignment")
                     return True
@@ -231,7 +228,7 @@ def check_feedback(current_lesson, submitted_answer, status, unlock_next):
                 return {'resultsHeader': "<h3>Something went wrong</h3>",
                         'resultDetails': 'Try again or contact us.',
                         'status': status}
-
+    print("\n\n\n\nRESPONSE:", headline, "text", text, status, "sub", current_lesson.sub_lessons_available, type, unlock_next)
     return {'resultsHeader': headline,
             'resultDetails': text,
             'status': status,

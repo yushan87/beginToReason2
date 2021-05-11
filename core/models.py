@@ -352,13 +352,24 @@ class LessonSet(models.Model):
         except MainSetLessonSets.DoesNotExist:
             return None
 
+    def lessons(self):
+        """"
+        function lessons returns ordered list of the lessons within the lesson set
+        Returns:
+            Array of Lessons
+        """
+        lesson_list = []
+        for relation in LessonSetLessons.objects.filter(lesson_set=self).order_by('index').all():
+            lesson_list.append(relation.lesson)
+        return lesson_list
+
     def length(self):
         """"
-        function lesson_by_index returns how many lessons a lesson set has
+        function length returns how many lessons a lesson set has
         Returns:
             Integer representing length of set
         """
-        return LessonSetLessons.objects.get(lesson_set=self).count()
+        return LessonSetLessons.objects.filter(lesson_set=self).count()
 
 
 class LessonSetLessons(models.Model):
@@ -415,9 +426,17 @@ class MainSet(models.Model):
             Array of Lesson sets
         """
         set_list = []
-        for relation in MainSetLessonSets.objects.get(main_set=self).order_by('index').all():
-            set_list += relation.lesson_set
+        for relation in MainSetLessonSets.objects.filter(main_set=self).order_by('index').all():
+            set_list.append(relation.lesson_set)
         return set_list
+
+    def length(self):
+        """"
+        function length returns how many lesson sets a main set has
+        Returns:
+            Integer representing length of main set
+        """
+        return MainSetLessonSets.objects.filter(main_set=self).count()
 
 
 class MainSetLessonSets(models.Model):
@@ -429,5 +448,6 @@ class MainSetLessonSets(models.Model):
     @param models.Model The base model
     """
     main_set = models.ForeignKey(MainSet, on_delete=models.CASCADE)
-    lesson_set = models.ForeignKey(LessonSet, on_delete=models.PROTECT)  # We do NOT want to cascade here - it will destroy indexing!
+    lesson_set = models.ForeignKey(LessonSet, on_delete=models.PROTECT)  # We do NOT want to cascade here as
+    # it will destroy indexing!
     index = models.IntegerField()  # No defaults, never blank, never null.

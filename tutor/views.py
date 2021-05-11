@@ -136,10 +136,9 @@ def tutor(request):
 
             data = json.loads(request.body.decode('utf-8'))
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-            progress = AssignmentProgress.objects.get(assignment_key_id=data['assignment'],
-                                                      user_info_key=current_user)
-            current_lesson = progress.current_lesson_set.lessons.all()[progress.current_lesson_index]
-            print("lessons in set:", progress.current_lesson_set.lessons.all())
+            assignment = Assignment.objects.get(id=data['assignment'])
+            current_lesson_set, set_index, current_lesson, lesson_index = assignment.get_user_lesson(current_user.id)
+            print("lessons in set:", current_lesson_set.lessons())
             print("my lesson:", current_lesson)
             # Get submitted answer. No 'Confirm', no spaces, each ends w/ a semicolon
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
@@ -155,7 +154,7 @@ def tutor(request):
             response = asyncio.run(send_to_verifier(data['code']))
 
             if response['status'] == "success":
-                main_set = progress.assignment_key.main_set
+                main_set = assignment.main_set
                 # if they are correct in a alt lesson, find correct to send to
                 print("current_lesson.is_alternate: ", current_lesson.is_alternate,
                       " current_user.current_lesson_index: ", current_user.current_lesson_index)
@@ -191,7 +190,7 @@ def tutor(request):
 
                     current_user.save()
                     unlock_next = True
-                    return JsonResponse(check_feedback(current_lesson, submitted_answer, status, unlock_next))
+                    return JsonResponse(check_feedback(current_lesson, submitted_answer, response['status'], unlock_next))
 
                 # find the index of the next lesson set by enumerating query set of all sets
                 for index, item in enumerate(main_set.lessons.all()):
@@ -206,18 +205,18 @@ def tutor(request):
                     current_user.save()
                     unlock_next = True
                     print("in done: ", current_user.current_lesson_set)
-                    return JsonResponse(check_feedback(current_lesson, submitted_answer, status, unlock_next))
+                    return JsonResponse(check_feedback(current_lesson, submitted_answer, response['status'], unlock_next))
                     # return render(request, "accounts:profile")
 
                 next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[index + 1])
                 current_user.current_lesson_set = next_set
                 current_user.current_lesson_name = next_set.first_in_set.lesson_name
                 current_user.save()
-
+            """
             # if a user is not successful and there are alternates available
             print(current_lesson.sub_lessons_available, "%%%%%%%%%%")
-            if status != "success" and current_lesson.sub_lessons_available:
-                lesson_type = check_type(current_lesson, submitted_answer, status)
+            if response['status'] != "success" and current_lesson.sub_lessons_available:
+                lesson_type = check_type(current_lesson, submitted_answer, response['status'])
                 alt_lesson = alternate_lesson_check(current_lesson, lesson_type)  # how to set this and render new page
 
                 # check if we changed to an alternate
@@ -230,7 +229,8 @@ def tutor(request):
                     current_user.current_lesson_index = index
                     current_user.save()
                     print("******* ", alt_lesson, " ", index)
-            return JsonResponse(check_feedback(current_lesson, submitted_answer, status, unlock_next))
+            """
+            return JsonResponse(check_feedback(current_lesson, submitted_answer, response['status'], unlock_next))
     return redirect("accounts:profile")
 
 
@@ -243,7 +243,7 @@ def lesson_code(request):
             # Case 2a: User is valid and is taking this assignment
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             assignment = Assignment.objects.get(id=request.POST.get("assignment_id"))
-            current_set, current_lesson = assignment.get_user_lesson(current_user.id)
+            current_set, set_index, current_lesson, lesson_index = assignment.get_user_lesson(current_user.id)
             num_done = finished_lesson_count(current_user)
             print("===============", num_done)
             print("in if 1 - Current lesson: ", current_lesson)
@@ -259,61 +259,57 @@ def lesson_code(request):
             if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
-                               'assignment': assignment.id,
+                               'assignment': assignment,
                                'lesson_code': current_lesson.code.lesson_code,
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'reason': current_lesson.reason.reasoning_question,
                                'mc_set': current_lesson.reason.mc_set.all(),
-                               'setLength': current_set.length(),
+                               'setLength': assignment.main_set.length(),
                                'finished_count': num_done,
-                               'orderedSet': progress.assignment_key.main_set.lessons.all(),
+                               'orderedSet': assignment.main_set.length(),
                                'mood': current_user.mood,
                                'review': 'none',
                                'screen_record': current_lesson.screen_record,
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': index})
+                               'index': set_index})
             # Case 2ab: if question is of type Text
             elif current_lesson.reason.reasoning_type == 'Text':
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
-                               'assignment': progress.assignment_key,
+                               'assignment': assignment,
                                'lesson_code': current_lesson.code.lesson_code,
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'reason': current_lesson.reason.reasoning_question,
-                               'currLessonNum': progress.current_lesson_index,
-                               'completedLessonNum': progress.completed_lesson_index,
-                               'setLength': set_len,
+                               'setLength': assignment.main_set.length(),
                                'finished_count': num_done,
-                               'orderedSet': progress.assignment_key.main_set.all(),
+                               'orderedSet': assignment.main_set.sets(),
                                'mood': current_user.mood,
                                'review': 'none',
                                'screen_record': current_lesson.screen_record,
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': index})
+                               'index': set_index})
 
             # Case 2ac: if question is of type none
             return render(request, "tutor/tutor.html",
                           {'lesson': current_lesson,
-                           'assignment': progress.assignment_key,
+                           'assignment': assignment,
                            'lesson_code': current_lesson.code.lesson_code,
                            'concept': current_lesson.lesson_concept.all(),
                            'referenceSet': current_lesson.reference_set.all(),
-                           'currLessonNum': progress.current_lesson_index,
-                           'completedLessonNum': progress.completed_lesson_index,
-                           'setLength': set_len,
+                           'setLength': assignment.main_set.length(),
                            'finished_count': num_done,
-                           'orderedSet': progress.assignment_key.main_set.lessons.all(),
+                           'orderedSet': assignment.main_set.sets(),
                            'mood': current_user.mood,
                            'review': 'none',
                            'screen_record': current_lesson.screen_record,
                            'audio_record': current_lesson.audio_record,
                            'audio_transcribe': current_lesson.audio_transcribe,
                            'user_email': request.user.email,
-                           'index': index})
+                           'index': set_index})
     return redirect("accounts:profile")
