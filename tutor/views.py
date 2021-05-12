@@ -148,7 +148,6 @@ def tutor(request):
             """
             REMEMBER TO LOG DATA
             """
-            unlock_next = False
 
             # Send it off to the RESOLVE verifier
             response, vcs = asyncio.run(send_to_verifier(data['code']))
@@ -223,13 +222,11 @@ def tutor(request):
 """
             if response['status'] == "success":
                 # Update assignment progress
-                lesson_index += 1
-                # Is the lesson set over?
-                if current_lesson_set.lesson_by_index(lesson_index) is None:
-                    # Lesson set is over!
-                    set_index += 1
-                    lesson_index = 0
-                    # Is the
+                has_next = assignment.advance_user(current_user.id)
+                return JsonResponse(check_feedback(current_lesson, submitted_answer, response['status'], True))
+            else:
+                return JsonResponse(check_feedback(current_lesson, submitted_answer, response['status'], False))
+                """
                 print("current_lesson.is_alternate: ", current_lesson.is_alternate,
                       " current_user.current_lesson_index: ", current_user.current_lesson_index)
                 if current_lesson.is_alternate and current_user.current_lesson_index != 0:
@@ -286,6 +283,7 @@ def tutor(request):
                 current_user.current_lesson_set = next_set
                 current_user.current_lesson_name = next_set.first_in_set.lesson_name
                 current_user.save()
+                """
             """
             # if a user is not successful and there are alternates available
             print(current_lesson.sub_lessons_available, "%%%%%%%%%%")
@@ -304,7 +302,6 @@ def tutor(request):
                     current_user.save()
                     print("******* ", alt_lesson, " ", index)
             """
-            return JsonResponse(check_feedback(current_lesson, submitted_answer, response['status'], unlock_next))
     return redirect("accounts:profile")
 
 
@@ -341,7 +338,7 @@ def lesson_code(request):
                                'mc_set': current_lesson.reason.mc_set.all(),
                                'setLength': assignment.main_set.length(),
                                'finished_count': num_done,
-                               'orderedSet': assignment.main_set.length(),
+                               'orderedSet': assignment.main_set.sets(),
                                'mood': current_user.mood,
                                'review': 'none',
                                'screen_record': current_lesson.screen_record,

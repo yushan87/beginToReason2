@@ -349,7 +349,7 @@ class LessonSet(models.Model):
         """
         try:
             return LessonSetLessons.objects.get(lesson_set=self, index=index).lesson
-        except MainSetLessonSets.DoesNotExist:
+        except LessonSetLessons.DoesNotExist:
             return None
 
     def lessons(self):
