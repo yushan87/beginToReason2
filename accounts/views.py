@@ -99,7 +99,7 @@ def settings(request):
 
     Returns:
         HTML Render of settings page
-        form: user information form for registering a user with some prepoulated fields
+        form: user information form for registering a user with some prepopulated fields
     """
     # Query for user in the 'User' table
     user = User.objects.get(email=request.user.email)

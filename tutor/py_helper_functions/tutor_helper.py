@@ -8,6 +8,8 @@ import websockets
 
 from django.utils import timezone
 from django.contrib.auth.models import User
+
+import core.models
 from accounts.models import UserInformation
 from core.models import LessonSet, Lesson, MainSet
 from instructor.models import Assignment, AssignmentProgress, ClassMembership
@@ -30,20 +32,22 @@ def user_auth(request):
     return False
 
 
-def assignment_auth(request):
+def assignment_auth(request, assignment_id=None):
     """function lesson_auth This function handles the auth logic for an assignment
 
     Args:
          request (HTTPRequest): A http request object created automatically by Django.
-
+        assignment_id: An optional ID that can be input to check GET requests
     Returns:
         Boolean: A boolean to signal if the student is able to go into the assignment
     """
     if user_auth(request):
+        if assignment_id is None:
+            assignment_id = request.POST.get("assignment_id")
         # Do we have the assignment in the DB?
-        if Assignment.objects.filter(id=request.POST.get("assignment_id")).exists():
+        if Assignment.objects.filter(id=assignment_id).exists():
             print("HIT")
-            assignment = Assignment.objects.get(id=request.POST.get("assignment_id"))
+            assignment = Assignment.objects.get(id=assignment_id)
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
 
             # Is the user already taking this assignment?
@@ -204,33 +208,34 @@ def check_feedback(current_lesson, submitted_answer, status, unlock_next):
         type: type of lesson to use for lookup
     """
     type = 'DEF'
-    if status == 'success':
-        headline = 'Correct'
-        text = current_lesson.correct_feedback
-        type = 'COR'
-    else:
-        if current_lesson.sub_lessons_available:
-            type = check_type(current_lesson, submitted_answer, status)
-            try:
-                headline = current_lesson.feedback.get(feedback_type=type).headline
-                text = current_lesson.feedback.get(feedback_type=type).feedback_text
-            except:
-                type = 'DEF'
-            finally:
-                headline = current_lesson.feedback.get(feedback_type=type).headline
-                text = current_lesson.feedback.get(feedback_type=type).feedback_text
-        else:
-            if status == 'failure':
-                headline = current_lesson.feedback.get(feedback_type='DEF').headline
-                text = current_lesson.feedback.get(feedback_type='DEF').feedback_text
-                type = 'DEF'
+    try:
+        if status == 'success':
+            headline = 'Correct'
+            text = current_lesson.correct_feedback
+            type = 'COR'
+        elif status == 'failure':
+            if current_lesson.sub_lessons_available:
+                type = check_type(current_lesson, submitted_answer, status)
+                try:
+                    feedback = current_lesson.feedback.get(feedback_type=type)
+                except core.models.Feedback.DoesNotExist:
+                    type = 'DEF'
+                    feedback = current_lesson.feedback.get(feedback_type=type)
             else:
-                return {'resultsHeader': "<h3>Something went wrong</h3>",
-                        'resultDetails': 'Try again or contact us.',
-                        'status': status}
+                type = 'DEF'
+                feedback = current_lesson.feedback.get(feedback_type=type)
+        else:
+            return {'resultsHeader': "<h3>Something went wrong</h3>",
+                    'resultDetails': 'Try again or contact us.',
+                    'status': status}
+    except core.models.Feedback.DoesNotExist:
+        return {'resultsHeader': "<h3>Something went wrong</h3>",
+                'resultDetails': 'Try again or contact us.',
+                'status': status}
+
     print("\n\n\n\nRESPONSE:", headline, "text", text, status, "sub", current_lesson.sub_lessons_available, type, unlock_next)
-    return {'resultsHeader': headline,
-            'resultDetails': text,
+    return {'resultsHeader': feedback.headline,
+            'resultDetails': feedback.feedback_text,
             'status': status,
             'sub': current_lesson.sub_lessons_available,
             'type': type,
@@ -345,7 +350,7 @@ async def send_to_verifier(code):
         while True:
             response = json.loads(await ws.recv())
             if response.get('status') == 'error' or response.get('status') is None:
-                return None
+                return None, None
             if response['status'] == 'processing':
                 result = response['result']
                 if re.search(r"^Proved", result['result']):

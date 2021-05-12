@@ -13,5 +13,7 @@ urlpatterns = [
     path('catalog', views.catalog, name='catalog'),
     path('classes', views.classes, name='classes'),
     path('class/<int:classID>', views.class_view, name='class'),
-    path('tutor', views.tutor, name='tutor')
+    path('<int:assignmentID>/<int:index>', views.tutor, name='completed'),
+    path('<int:assignmentID>', views.tutor, name='tutor'),
+    path('grader', views.grader, name='grader')
 ]

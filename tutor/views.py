@@ -32,11 +32,7 @@ def catalog(request):
                       the user is authenticated.
     """
     # get all lesson sets, display
-    if request.method == 'POST':
-        print("Attempting to open the assignment: ", request.POST)
-        return lesson_code(request)
-    else:
-        return render(request, "tutor/catalog.html", {'LessonSet': MainSet.objects.all()})
+    return render(request, "tutor/catalog.html", {'LessonSet': MainSet.objects.all()})
 
 
 @login_required(login_url='/accounts/login/')
@@ -98,8 +94,8 @@ def class_view(request, classID):
 
 
 @login_required(login_url='/accounts/login/')
-def tutor(request):
-    """function tutor This function handles the view for the tutor page of the application.
+def grader(request):
+    """function grader This function handles checking code sent by the JS.
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
     Returns:
@@ -151,10 +147,14 @@ def tutor(request):
 
             # Send it off to the RESOLVE verifier
             response, vcs = asyncio.run(send_to_verifier(data['code']))
-            lines = overall_status(response, vcs)
-            print("\n\n\nRESPONSE:", response)
-            print("\n\nLINES:", lines)
-            # Do what the JS used to do for me
+            if response is not None:
+                lines = overall_status(response, vcs)
+                print("\n\n\nRESPONSE:", response)
+                print("\n\nLINES:", lines)
+                status = response['status']
+            else:
+                status = 'failure'
+                lines = []
             """
             let lines = mergeVCsAndLineNums(vcs, lineNums.vcs)
             var
@@ -220,12 +220,12 @@ def tutor(request):
             // $.postJSON("tutor", data, (results) = > {});
             submitAnswers = '';
 """
-            if response['status'] == "success":
+            if status == "success":
                 # Update assignment progress
                 has_next = assignment.advance_user(current_user.id)
-                return JsonResponse(check_feedback(current_lesson, submitted_answer, response['status'], True))
+                return JsonResponse(check_feedback(current_lesson, submitted_answer, status, True))
             else:
-                return JsonResponse(check_feedback(current_lesson, submitted_answer, response['status'], False))
+                return JsonResponse(check_feedback(current_lesson, submitted_answer, status, False))
                 """
                 print("current_lesson.is_alternate: ", current_lesson.is_alternate,
                       " current_user.current_lesson_index: ", current_user.current_lesson_index)
@@ -305,15 +305,13 @@ def tutor(request):
     return redirect("accounts:profile")
 
 
-def lesson_code(request):
-    # Internal function that returns a lesson's code (split from tutor.tutor).
-    if request.method == 'POST':
-        print("getting lesson's code")
-
-        if assignment_auth(request):
+def tutor(request, assignmentID, index=None):
+    # View that returns a lesson's code (split from tutor.grader).
+    if request.method == 'GET':
+        if assignment_auth(request, assignmentID):
             # Case 2a: User is valid and is taking this assignment
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-            assignment = Assignment.objects.get(id=request.POST.get("assignment_id"))
+            assignment = Assignment.objects.get(id=assignmentID)
             current_set, set_index, current_lesson, lesson_index = assignment.get_user_lesson(current_user.id)
             num_done = finished_lesson_count(current_user)
             print("===============", num_done)

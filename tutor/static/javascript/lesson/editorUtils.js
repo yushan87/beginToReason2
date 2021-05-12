@@ -825,7 +825,7 @@ function verify(code){
         }
     }
 
-    $.postJSON("tutor", data, (results) => {});
+    $.postJSON("grader", data, (results) => {});
     submitAnswers = '';
     // Old code to comm with RESOLVE verifier
     /*
