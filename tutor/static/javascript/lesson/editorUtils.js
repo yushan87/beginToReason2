@@ -685,7 +685,7 @@ $.postJSON = (url, data, callback) => {
 
     return $.ajax({
         type: "POST",
-        url: url,
+        url: `/tutor/${url}`,
         contentType: "application/json",
         data: JSON.stringify(data),
         dataType: "json",

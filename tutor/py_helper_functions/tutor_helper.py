@@ -218,12 +218,18 @@ def check_feedback(current_lesson, submitted_answer, status, unlock_next):
                 type = check_type(current_lesson, submitted_answer, status)
                 try:
                     feedback = current_lesson.feedback.get(feedback_type=type)
+                    headline = feedback.headline
+                    text = feedback.feedback_text
                 except core.models.Feedback.DoesNotExist:
                     type = 'DEF'
                     feedback = current_lesson.feedback.get(feedback_type=type)
+                    headline = feedback.headline
+                    text = feedback.feedback_text
             else:
                 type = 'DEF'
                 feedback = current_lesson.feedback.get(feedback_type=type)
+                headline = feedback.headline
+                text = feedback.feedback_text
         else:
             return {'resultsHeader': "<h3>Something went wrong</h3>",
                     'resultDetails': 'Try again or contact us.',
@@ -234,8 +240,8 @@ def check_feedback(current_lesson, submitted_answer, status, unlock_next):
                 'status': status}
 
     print("\n\n\n\nRESPONSE:", headline, "text", text, status, "sub", current_lesson.sub_lessons_available, type, unlock_next)
-    return {'resultsHeader': feedback.headline,
-            'resultDetails': feedback.feedback_text,
+    return {'resultsHeader': headline,
+            'resultDetails': text,
             'status': status,
             'sub': current_lesson.sub_lessons_available,
             'type': type,
