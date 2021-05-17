@@ -149,7 +149,8 @@ class Assignment(models.Model):
         assignment
 
         Returns:
-            current lesson set, current set index, current lesson, current lesson index
+            current lesson set, current set index, current lesson, current lesson index, is_alternate (whether current
+            lesson is an alternate or not)
         """
         if AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
             progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=user_id)
@@ -158,14 +159,14 @@ class Assignment(models.Model):
                 alt_progress = AlternateProgress.objects.all().filter(progress=progress).order_by('-alternate_level')[0]
                 return alt_progress.lesson_set, progress.current_set_index, \
                        alt_progress.lesson_set.lesson_by_index(alt_progress.current_lesson_index), \
-                       alt_progress.current_lesson_index
+                       alt_progress.current_lesson_index, True
             # User is not in an alt lesson
             progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=user_id)
             lesson_set = self.main_set.set_by_index(progress.current_set_index)
             return lesson_set, progress.current_set_index, lesson_set.lesson_by_index(progress.current_lesson_index), \
-                   progress.current_lesson_index
+                   progress.current_lesson_index, False
         # Not in the assignment currently
-        return None, -1, None, -1
+        return None, -1, None, -1, False
 
     def advance_user(self, user_id):
         """function advance_user a helper function to move a user on to the next lesson

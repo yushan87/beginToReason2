@@ -266,45 +266,13 @@ class Lesson(models.Model):
     feedback = models.ManyToManyField(Feedback, blank=True)
 
     is_walkthrough = models.BooleanField(default=False)
-    is_alternate = models.BooleanField(default=False)
     can_mutate = models.BooleanField(default=False)
 
-    sub_lessons_available = models.BooleanField(default=False)
     incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
-
-
-    default = models.CharField(max_length=50, default='None')
-    simplify = models.CharField(max_length=50, default='None')
-    # simplify_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='simplify_answers')
-    self_reference = models.CharField(max_length=50, default='None')
-    # self_reference_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='self_answers')
-    use_of_concrete_values = models.CharField(max_length=50, default='None')
-    # use_of_concrete_values_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='concrete_answers')
-    not_using_initial_value = models.CharField(max_length=50, default='None')
-    # not_using_initial_value_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='initial_answers')
-    algebra = models.CharField(max_length=50, default='None')
-    # algebra_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='algebra_answers')
-
-    variable = models.CharField(max_length=50, default='None')
-    # variable_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='variable_answers')
-
-
-    # Tool already handles syntax,so I think this should be left out.
-    # syntax = models.CharField(max_length=50, default='Lesson To Go To')
-    # syntax_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
 
     screen_record = models.BooleanField(default=False)
     audio_record = models.BooleanField(default=False)
     audio_transcribe = models.BooleanField(default=False)
-
-    # 0 correct
-    # 1 correct simplify
-    # 2 self reference
-    # 3 use of num
-    # 4 missing #
-    # 5 algebra
-    # 6 syntax
-    # 7 var
 
     def __str__(self):
         """"

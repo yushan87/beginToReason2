@@ -133,7 +133,7 @@ def grader(request):
             data = json.loads(request.body.decode('utf-8'))
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             assignment = Assignment.objects.get(id=data['assignment'])
-            current_lesson_set, set_index, current_lesson, lesson_index = assignment.get_user_lesson(current_user.id)
+            current_lesson_set, set_index, current_lesson, lesson_index, is_alternate = assignment.get_user_lesson(current_user.id)
             print("lessons in set:", current_lesson_set.lessons())
             print("my lesson:", current_lesson)
             # Get submitted answer. No 'Confirm', no spaces, each ends w/ a semicolon
@@ -238,7 +238,8 @@ def tutor(request, assignmentID, index=None):
             # Case 2a: User is valid and is taking this assignment
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             assignment = Assignment.objects.get(id=assignmentID)
-            current_set, set_index, current_lesson, lesson_index = assignment.get_user_lesson(current_user.id)
+            current_set, set_index, current_lesson, lesson_index, is_alternate = \
+                assignment.get_user_lesson(current_user.id)
             num_done = finished_lesson_count(current_user)
             print("===============", num_done)
             print("in if 1 - Current lesson: ", current_lesson)
@@ -248,7 +249,7 @@ def tutor(request, assignmentID, index=None):
 
             current_lesson.code.lesson_code = can_mutate(current_lesson)
             current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
-                                                               current_lesson.is_alternate)
+                                                               is_alternate)
 
             # Case 2aa: if questions if MC or Both
             if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':

@@ -246,7 +246,7 @@ def replace_previous(user, code, is_alt):
     Returns:
         code: ? string of code
     """
-    if not DataLog.objects.filter(user_key=User.objects.get(email=user)):
+    if not DataLog.objects.filter(user_key=User.objects.get(email=user)).exists():
         print("There is no datalog")
         return code
 

@@ -112,7 +112,7 @@ def assignment_auth(request, assignment_id=None):
             if AssignmentProgress.objects.filter(assignment_key=assignment, user_info_key=current_user).exists():
                 print("old assignment")
                 # Check that assignment hasn't been completed already
-                current_lesson_set, x, current_lesson, x = assignment.get_user_lesson(current_user.id)
+                current_lesson_set, x, current_lesson, x, x = assignment.get_user_lesson(current_user.id)
                 if current_lesson_set is None or current_lesson is None:
                     print("Already completed!")
                     return False
