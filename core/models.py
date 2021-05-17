@@ -372,6 +372,30 @@ class LessonSet(models.Model):
         return LessonSetLessons.objects.filter(lesson_set=self).count()
 
 
+class LessonAlternate(models.Model):
+    """
+    A many-to-many between lessons (the primary, main lessons) and their alternate sets. Also includes an enumeration
+    of the incorrect answer type that should be linked to the set. If no relation is present for a type, there is no
+    alternate and progress is normal. If the relation exists, when a user triggers the type with an incorrect answer,
+    the user will progress through the alternate set referenced, and when the user is done with the alternate, they
+    will be at the NEXT lesson after the triggering lesson (i.e. alternates replace the triggering lesson)
+
+    @param models.Model The base model
+    """
+    class AlternateType(models.IntegerChoices):
+        DEFAULT = 0, 'Default'
+        SIMPLIFY = 1, 'Simplify'
+        SELF_REFERENCE = 2, 'Self Reference'
+        CONCRETE = 3, "Used Concrete Value as Answer"
+        INITIAL = 4, 'Missing # Symbol'
+        ALGEBRA = 5, 'Algebra'
+        VARIABLE = 6, 'Variable'
+
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=False)
+    alternate_set = models.ForeignKey(LessonSet, on_delete=models.PROTECT, null=False)
+    type = models.IntegerField(choices=AlternateType.choices, null=False)
+
+
 class LessonSetLessons(models.Model):
     """
     Many to Many between Lesson Sets

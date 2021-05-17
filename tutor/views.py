@@ -15,8 +15,8 @@ from core.models import Lesson, LessonSet, MainSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
 from instructor.models import Class, ClassMembership, AssignmentProgress, Assignment
-from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, assignment_auth, check_feedback, \
+from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth, assignment_auth
+from tutor.py_helper_functions.tutor_helper import user_auth, check_feedback, \
     check_type, alternate_lesson_check, replace_previous, send_to_verifier, overall_status
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
 
@@ -225,83 +225,9 @@ def grader(request):
                 has_next = assignment.advance_user(current_user.id)
                 return JsonResponse(check_feedback(current_lesson, submitted_answer, status, True))
             else:
+                # Activate alternate if needed
+                assignment.alternate_check(current_user.id)
                 return JsonResponse(check_feedback(current_lesson, submitted_answer, status, False))
-                """
-                print("current_lesson.is_alternate: ", current_lesson.is_alternate,
-                      " current_user.current_lesson_index: ", current_user.current_lesson_index)
-                if current_lesson.is_alternate and current_user.current_lesson_index != 0:
-                    print(current_lesson.correct, "%%%%%%%%%%")
-                    current_user.current_lesson_name = Lesson.objects.get(
-                        lesson_name=current_lesson.correct).lesson_name
-                    index = 0
-
-                    current_set = Lesson.objects.get(lesson_name=current_user.current_lesson_name)
-                    print("CURRENT LESSON NAME: ", current_set, " ***** ",
-                          current_user.current_lesson_set.lessons.all())
-
-                    if current_set in current_user.current_lesson_set.lessons.all():
-                        print("PRINT LESSONS: ", current_user.current_lesson_set.lessons.all())
-
-                        # if current_user.current_lesson_name in current_user.current_lesson_set.lessons.all():
-                        for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
-                            print(index, "&&&&&&&&&", item.lesson_name)
-                            if item.lesson_name == current_lesson.correct:
-                                break
-                        current_user.current_lesson_index = index
-                    else:
-                        for index, item in enumerate(main_set.lessons.all()):
-                            if item == current_user.current_lesson_set:
-                                break
-
-                        next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[index + 1])
-                        print("***************** ", next_set)
-                        current_user.current_lesson_set = next_set
-                        current_user.current_lesson_name = next_set.first_in_set.lesson_name
-                        current_user.current_lesson_index = 0
-
-                    current_user.save()
-                    unlock_next = True
-                    return JsonResponse(check_feedback(current_lesson, submitted_answer, response['status'], unlock_next))
-
-                # find the index of the next lesson set by enumerating query set of all sets
-                for index, item in enumerate(main_set.lessons.all()):
-                    if item == current_user.current_lesson_set:
-                        break
-                # return if last set to go through
-                print("|||||||", index, "|||||||", len(main_set.lessons.all()))
-                if index + 1 >= len(main_set.lessons.all()):
-                    current_user.completed_sets.add(current_user.current_main_set)
-                    current_user.current_lesson_set = None
-                    current_user.current_main_set = None
-                    current_user.save()
-                    unlock_next = True
-                    print("in done: ", current_user.current_lesson_set)
-                    return JsonResponse(check_feedback(current_lesson, submitted_answer, response['status'], unlock_next))
-                    # return render(request, "accounts:profile")
-
-                next_set = LessonSet.objects.get(set_name=main_set.lessons.all()[index + 1])
-                current_user.current_lesson_set = next_set
-                current_user.current_lesson_name = next_set.first_in_set.lesson_name
-                current_user.save()
-                """
-            """
-            # if a user is not successful and there are alternates available
-            print(current_lesson.sub_lessons_available, "%%%%%%%%%%")
-            if response['status'] != "success" and current_lesson.sub_lessons_available:
-                lesson_type = check_type(current_lesson, submitted_answer, response['status'])
-                alt_lesson = alternate_lesson_check(current_lesson, lesson_type)  # how to set this and render new page
-
-                # check if we changed to an alternate
-                if Lesson.objects.get(lesson_title=alt_lesson).lesson_name != current_user.current_lesson_name:
-                    unlock_next = True
-                    current_user.current_lesson_name = Lesson.objects.get(lesson_title=alt_lesson).lesson_name
-                    for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
-                        if item == alt_lesson:
-                            break
-                    current_user.current_lesson_index = index
-                    current_user.save()
-                    print("******* ", alt_lesson, " ", index)
-            """
     return redirect("accounts:profile")
 
 

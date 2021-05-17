@@ -9,6 +9,7 @@ from django.db import models
 
 from accounts.models import UserInformation
 from core.models import MainSet, LessonSet, Lesson
+import tutor.py_helper_functions as tutor_helper
 
 
 class Class(models.Model):
@@ -156,13 +157,13 @@ class Assignment(models.Model):
                 # User is in an alt lesson
                 alt_progress = AlternateProgress.objects.all().filter(progress=progress).order_by('-alternate_level')[0]
                 return alt_progress.lesson_set, progress.current_set_index, \
-                    alt_progress.lesson_set.lesson_by_index(alt_progress.current_lesson_index), \
-                    alt_progress.current_lesson_index
+                       alt_progress.lesson_set.lesson_by_index(alt_progress.current_lesson_index), \
+                       alt_progress.current_lesson_index
             # User is not in an alt lesson
             progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=user_id)
             lesson_set = self.main_set.set_by_index(progress.current_set_index)
             return lesson_set, progress.current_set_index, lesson_set.lesson_by_index(progress.current_lesson_index), \
-                progress.current_lesson_index
+                   progress.current_lesson_index
         # Not in the assignment currently
         return None, -1, None, -1
 
@@ -205,6 +206,33 @@ class Assignment(models.Model):
             return False
         # Not in the assignment currently
         return False
+
+    def alternate_check(self, user_id, submitted_answer):
+        """function advance_user a helper function to move a user to an alternate lesson. Call whenever a user gets
+        a question wrong.
+        """
+        if not AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
+            # Not in the assignment currently
+            return
+
+        progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=user_id)
+        current_lesson = self.main_set.set_by_index(progress.current_set_index) \
+            .lesson_by_index(progress.current_lesson_index)
+
+        alt_lesson = tutor_helper.tutor_helper.alternate_lesson_check(current_lesson,
+                                                                      tutor_helper.tutor_helper.check_type(
+                                                                          current_lesson, submitted_answer, 'failure'))
+
+        # check if we changed to an alternate
+        if Lesson.objects.get(lesson_title=alt_lesson).lesson_name != current_user.current_lesson_name:
+            unlock_next = True
+            current_user.current_lesson_name = Lesson.objects.get(lesson_title=alt_lesson).lesson_name
+            for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
+                if item == alt_lesson:
+                    break
+            current_user.current_lesson_index = index
+            current_user.save()
+            print("******* ", alt_lesson, " ", index)
 
 
 class AssignmentProgress(models.Model):

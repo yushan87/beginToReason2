@@ -12,7 +12,6 @@ from django.contrib.auth.models import User
 import core.models
 from accounts.models import UserInformation
 from core.models import LessonSet, Lesson, MainSet
-from instructor.models import Assignment, AssignmentProgress, ClassMembership
 from data_analysis.models import DataLog
 
 
@@ -30,59 +29,6 @@ def user_auth(request):
         if UserInformation.objects.filter(user=user).exists():
             return True
     return False
-
-
-def assignment_auth(request, assignment_id=None):
-    """function lesson_auth This function handles the auth logic for an assignment
-
-    Args:
-         request (HTTPRequest): A http request object created automatically by Django.
-        assignment_id: An optional ID that can be input to check GET requests
-    Returns:
-        Boolean: A boolean to signal if the student is able to go into the assignment
-    """
-    if user_auth(request):
-        if assignment_id is None:
-            assignment_id = request.POST.get("assignment_id")
-        # Do we have the assignment in the DB?
-        if Assignment.objects.filter(id=assignment_id).exists():
-            print("HIT")
-            assignment = Assignment.objects.get(id=assignment_id)
-            current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-
-            # Is the user already taking this assignment?
-            if AssignmentProgress.objects.filter(assignment_key=assignment, user_info_key=current_user).exists():
-                print("old assignment")
-                # Check that assignment hasn't been completed already
-                current_lesson_set, x, current_lesson, x = assignment.get_user_lesson(current_user.id)
-                if current_lesson_set is None or current_lesson is None:
-                    print("Already completed!")
-                    return False
-                return True
-            else:
-                # Is the user in the class for this assignment?
-                if ClassMembership.objects.filter(user=current_user, class_taking=assignment.class_key).exists():
-                    progress = AssignmentProgress(user_info_key=current_user, assignment_key=assignment)
-                    progress.save()
-                    print("starting new assignment")
-                    return True
-                print("User not in the class for this assignment!")
-        else:
-            print("Assignment doesn't exist!")
-    else:
-        print("Bad user!")
-    return False
-
-
-def lesson_auth(request):
-    """function lesson_auth This function handles the auth logic for a lesson
-
-    Args:
-         request (HTTPRequest): A http request object created automatically by Django.
-
-    Returns:
-        Boolean: A boolean to signal if the lesson has been found in our database
-    """
 
 
 def set_not_complete(request):
@@ -162,7 +108,7 @@ def check_type(current_lesson, submitted_answer, status):
         type: type of lesson to use for lookup
     """
     all_answers = submitted_answer.split(";")
-    type = 'None'
+    lesson_type = None
 
     queried_set = current_lesson.incorrect_answers.all()
     for ans in all_answers:
@@ -170,15 +116,16 @@ def check_type(current_lesson, submitted_answer, status):
         for each in queried_set:
             if search == each.answer_text:
                 print(search)
-                type = each.answer_type
+                lesson_type = each.answer_type
                 break
 
-    if type == 'None' and status == 'failure':
-        type = 'DEF'
-    elif type == 'None':
-        type = 'COR'
+    if lesson_type is None:
+        if status == 'failure':
+            lesson_type = 'DEF'
+        else:
+            lesson_type = 'COR'
 
-    return type
+    return lesson_type
 
 
 def check_status(status):

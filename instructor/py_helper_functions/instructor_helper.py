@@ -1,7 +1,9 @@
 """
 This module contains our Django helper functions for the "instructor" application.
 """
-from instructor.models import ClassMembership, Class, Assignment
+from accounts.models import UserInformation, User
+from instructor.models import ClassMembership, Class, Assignment, AssignmentProgress
+import tutor.py_helper_functions.tutor_helper as tutor_helper
 
 
 def user_is_instructor(user_info):
@@ -86,3 +88,45 @@ def get_classes_taught(user_info):
         classes.append(Class.objects.get(id=class_id))
 
     return classes
+
+
+def assignment_auth(request, assignment_id=None):
+    """function lesson_auth This function handles the auth logic for an assignment
+
+    Args:
+         request (HTTPRequest): A http request object created automatically by Django.
+        assignment_id: An optional ID that can be input to check GET requests
+    Returns:
+        Boolean: A boolean to signal if the student is able to go into the assignment
+    """
+    if tutor_helper.user_auth(request):
+        if assignment_id is None:
+            assignment_id = request.POST.get("assignment_id")
+        # Do we have the assignment in the DB?
+        if Assignment.objects.filter(id=assignment_id).exists():
+            print("HIT")
+            assignment = Assignment.objects.get(id=assignment_id)
+            current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
+
+            # Is the user already taking this assignment?
+            if AssignmentProgress.objects.filter(assignment_key=assignment, user_info_key=current_user).exists():
+                print("old assignment")
+                # Check that assignment hasn't been completed already
+                current_lesson_set, x, current_lesson, x = assignment.get_user_lesson(current_user.id)
+                if current_lesson_set is None or current_lesson is None:
+                    print("Already completed!")
+                    return False
+                return True
+            else:
+                # Is the user in the class for this assignment?
+                if ClassMembership.objects.filter(user=current_user, class_taking=assignment.class_key).exists():
+                    progress = AssignmentProgress(user_info_key=current_user, assignment_key=assignment)
+                    progress.save()
+                    print("starting new assignment")
+                    return True
+                print("User not in the class for this assignment!")
+        else:
+            print("Assignment doesn't exist!")
+    else:
+        print("Bad user!")
+    return False
