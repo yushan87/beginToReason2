@@ -20,6 +20,7 @@ class DataLog(models.Model):
     user_key = models.ForeignKey(User, blank=True, on_delete=models.CASCADE)
     time_stamp = models.DateTimeField(default=datetime.now, blank=True)
     lesson_key = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True)
+    is_alternate = models.BooleanField(null=False, blank=False)
     lesson_set_key = models.ForeignKey(LessonSet, on_delete=models.CASCADE, blank=True)
     assignment_key = models.ForeignKey(Assignment, on_delete=models.SET_NULL, null=True)
     status = models.CharField(max_length=50)
@@ -35,4 +36,4 @@ class DataLog(models.Model):
         Returns:
             str: status
         """
-        return str(self.user_key) + ": " + self.status + " - "+ str(self.lesson_key)
+        return str(self.user_key) + ": " + self.status + " - " + str(self.lesson_key)

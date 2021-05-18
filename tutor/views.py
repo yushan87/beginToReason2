@@ -13,6 +13,7 @@ from django.contrib.auth import get_user_model
 from django.http import JsonResponse
 from core.models import Lesson, LessonSet, MainSet
 from accounts.models import UserInformation
+from data_analysis.models import DataLog
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
 from instructor.models import Class, ClassMembership, AssignmentProgress, Assignment
 from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth, assignment_auth
@@ -140,21 +141,33 @@ def grader(request):
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
             submitted_answer = ''.join(submitted_answer)
 
-
-            """
-            REMEMBER TO LOG DATA
-            """
-
             # Send it off to the RESOLVE verifier
             response, vcs = asyncio.run(send_to_verifier(data['code']))
             if response is not None:
                 lines = overall_status(response, vcs)
-                print("\n\n\nRESPONSE:", response)
-                print("\n\nLINES:", lines)
                 status = response['status']
             else:
                 status = 'failure'
                 lines = []
+
+
+            """
+            REMEMBER TO LOG DATA
+            """
+            log_data(current_user, assignment, current_lesson_set, current_lesson, data)
+            data_log = DataLog(user_key=current_user.user.id, time_stamp=datetime.now())
+
+            user_key = models.ForeignKey(User, blank=True, on_delete=models.CASCADE)
+            time_stamp = models.DateTimeField(default=datetime.now, blank=True)
+            lesson_key = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True)
+            lesson_set_key = models.ForeignKey(LessonSet, on_delete=models.CASCADE, blank=True)
+            assignment_key = models.ForeignKey(Assignment, on_delete=models.SET_NULL, null=True)
+            status = models.CharField(max_length=50)
+            code = models.TextField(default="null")
+            explanation = models.TextField()
+            face = models.TextField(default="null")
+            original_code = models.TextField(default="null")
+
             """
             let lines = mergeVCsAndLineNums(vcs, lineNums.vcs)
             var
