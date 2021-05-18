@@ -13,6 +13,7 @@ import core.models
 from accounts.models import UserInformation
 from core.models import LessonSet, Lesson, MainSet
 from data_analysis.models import DataLog
+from tutor.py_helper_functions.mutation import reverse_mutate
 
 
 def user_auth(request):
@@ -93,29 +94,22 @@ def check_type(current_lesson, submitted_code):
 
     Args:
          current_lesson: a Lesson that is currently being completed
-         submitted_code: All the code submitted to RESOLVE
+         submitted_code: All the code submitted to RESOLVE, mutated in the form presented to user
 
     Returns:
-        type: type of lesson to use for lookup
+        type: type of lesson to use for lookup (integer enumeration). None if no incorrect answers were triggered.
     """
-    all_answers = get_confirm_lines(submitted_code)
-    lesson_type = None
+    for answer in get_confirm_lines(reverse_mutate(submitted_code)):
+        try:
+            answer_id = core.models.IncorrectAnswer.objects.get(answer_text=answer).id
+        except core.models.IncorrectAnswer.DoesNotExist:
+            continue
+        try:
+            return core.models.LessonIncorrectAnswers.objects.get(lesson=current_lesson, answer_id=answer_id).type
+        except core.models.LessonIncorrectAnswers.DoesNotExist:
+            continue
 
-    queried_set = current_lesson.incorrect_answers.all()
-    for ans in all_answers:
-        for each in queried_set:
-            if ans == each.answer_text:
-                print(ans)
-                lesson_type = each.answer_type
-                break
-
-    if lesson_type is None:
-        if status == 'failure':
-            lesson_type = 'DEF'
-        else:
-            lesson_type = 'COR'
-
-    return lesson_type
+    return None
 
 
 def check_status(status):
@@ -357,10 +351,20 @@ def overall_status(data, vcs):
 def get_confirm_lines(code):
     """
     Takes the block of code submitted to RESOLVE and returns a list of the lines that start with Confirm or ensures,
-    keeping the semicolons attached at the end
+    keeping the semicolons attached at the end, and removing all spaces (starting, ending, or in between)
     @param code: All code submitted to RESOLVE verifier
-    @return: List of confirm/ensures statements
+    @return: List of confirm/ensures statements, missing the confirm/ensures but with their semicolons, all spaces
+    removed
     """
     # Regex explanation: [^;]* is any amount of characters that isn't a semicolon, so what this is saying is find
-    # Confirm [characters that aren't ;]; OR ensures [characters that aren't ;];
-    return re.findall("Confirm [^;]*;|ensures [^;]*;", code)
+    # all Confirm [characters that aren't ;]; OR ensures [characters that aren't ;];
+    # The parentheses tell regex what to actually return out, so the Confirm/ensures are chopped off but they did have
+    # to be present for it to match
+    lines = []
+    for match in re.findall("Confirm ([^;]*;)|ensures ([^;]*;)", code):
+        for group in match:
+            if group:
+                # This check gets rid of the empty matches made by having 2 group statements
+                # Get rid of all spaces
+                lines.append(re.sub(" ", "", group))
+    return lines
