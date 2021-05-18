@@ -72,8 +72,8 @@ def set_not_complete(request):
     return False
 
 
-def alternate_lesson_check(current_lesson, alternate_type):
-    """function alternate_lesson_check This function handles the logic for a if a lesson has an alternate
+def alternate_set_check(current_lesson, alternate_type):
+    """function alternate_set_check This function handles the logic for a if a lesson has an alternate
 
     Args:
          current_lesson: a Lesson that is currently being completed
@@ -81,12 +81,12 @@ def alternate_lesson_check(current_lesson, alternate_type):
          in which case it will simply return None for the alternate lesson.
 
     Returns:
-        alternate_lesson: the alternate lesson that should be redirected to or None if it doesn't exist
+        LessonAlternate model, or None no redirect needed
     """
     if alternate_type is None:
         return None
     try:
-        return core.models.LessonAlternate.objects.get(lesson=current_lesson, type=alternate_type).alternate_lesson
+        return core.models.LessonAlternate.objects.get(lesson=current_lesson, type=alternate_type)
     except core.models.LessonAlternate.DoesNotExist:
         return None
 

@@ -211,32 +211,41 @@ class Assignment(models.Model):
     def alternate_check(self, user_id, submitted_answer):
         """function advance_user a helper function to move a user to an alternate lesson. Call whenever a user gets
         a question wrong.
+        Returns:
+            Boolean signifying whether an alternate lesson was activated (and therefore a page needs to be reloaded)
         """
         if not AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
             # Not in the assignment currently
-            return
+            return False
 
-        progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=user_id)
+        progress = AssignmentProgress.objects.get(assignment_key_id=self.id, user_info_key_id=user_id)
         current_lesson = self.main_set.set_by_index(progress.current_set_index) \
             .lesson_by_index(progress.current_lesson_index)
 
-        alt_lesson = tutor_helper.tutor_helper.alternate_lesson_check(current_lesson,
-                                                                      tutor_helper.tutor_helper.check_type(
-                                                                          current_lesson, submitted_answer))
-        if alt_lesson is not None:
-            print("I would have redirected to", alt_lesson)
-            pass
+        lesson_alternate = tutor_helper.tutor_helper.alternate_set_check(current_lesson,
+                                                                         tutor_helper.tutor_helper.check_type(
+                                                                             current_lesson, submitted_answer))
 
-        # check if we changed to an alternate
-        if Lesson.objects.get(lesson_title=alt_lesson).lesson_name != current_user.current_lesson_name:
-            unlock_next = True
-            current_user.current_lesson_name = Lesson.objects.get(lesson_title=alt_lesson).lesson_name
-            for index, item in enumerate(current_user.current_lesson_set.lessons.all()):
-                if item == alt_lesson:
-                    break
-            current_user.current_lesson_index = index
-            current_user.save()
-            print("******* ", alt_lesson, " ", index)
+        if lesson_alternate is None:
+            return False
+
+        # Alt lesson activated! Update current state.
+        if lesson_alternate.replace:
+            # This alternate replaces the current lesson, so I've got to advance the user
+            self.advance_user(user_id)
+
+        # Get the depth of the next alternate level
+        alt_progresses = AlternateProgress.objects.filter(progress=progress).order_by('-alternate_level')
+        if len(alt_progresses) > 0:
+            # User is currently in an alt lesson!
+            depth = alt_progresses[0].depth + 1
+        else:
+            # User is not currently in an alt lesson!
+            depth = 0
+
+        alt_progress = AlternateProgress(progress=progress, lesson_set=lesson_alternate.alternate_set,
+                                         current_lesson_index=0, alternate_level=depth)
+        alt_progress.save()
 
 
 class AssignmentProgress(models.Model):

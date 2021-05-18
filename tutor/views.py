@@ -18,7 +18,7 @@ from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_d
 from instructor.models import Class, ClassMembership, AssignmentProgress, Assignment
 from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth, assignment_auth
 from tutor.py_helper_functions.tutor_helper import user_auth, check_feedback, \
-    check_type, alternate_lesson_check, replace_previous, send_to_verifier, overall_status
+    check_type, alternate_set_check, replace_previous, send_to_verifier, overall_status
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
 
 User = get_user_model()
