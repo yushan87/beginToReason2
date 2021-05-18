@@ -71,51 +71,41 @@ def set_not_complete(request):
     return False
 
 
-def alternate_lesson_check(current_lesson, type):
+def alternate_lesson_check(current_lesson, alternate_type):
     """function alternate_lesson_check This function handles the logic for a if a lesson has an alternate
 
     Args:
          current_lesson: a Lesson that is currently being completed
-         type: type of lesson to use for lookup
+         alternate_type: type of lesson to use for lookup, enum found in core.models.LessonAlternate
 
     Returns:
-        current_lesson: a Lesson found from finding alternate with lookup of type
+        alternate_lesson: the alternate lesson that should be redirected to or None if it doesn't exist
     """
-    dict = {'NUM': current_lesson.use_of_concrete_values,
-            'INIT': current_lesson.not_using_initial_value,
-            'SIM': current_lesson.simplify,
-            'SELF': current_lesson.self_reference,
-            'ALG': current_lesson.algebra,
-            'VAR': current_lesson.variable,
-            'DEF': current_lesson.default
-            }
-
-    if current_lesson.sub_lessons_available:
-        return Lesson.objects.get(lesson_name=dict[type])
-
-    return current_lesson
+    try:
+        return core.models.LessonAlternate.objects.get(lesson=current_lesson, type=alternate_type).alternate_lesson
+    except core.models.LessonAlternate.DoesNotExist:
+        return None
 
 
-def check_type(current_lesson, submitted_answer, status):
-    """function check_type This function finds the type of alternate to look for
+def check_type(current_lesson, submitted_code):
+    """function check_type This function finds the type of alternate to look for.
+    Only to be called on incorrect answers.
 
     Args:
          current_lesson: a Lesson that is currently being completed
-         submitted_answer: string of code that user submitted
-        status: string of result from compiler
+         submitted_code: All the code submitted to RESOLVE
 
     Returns:
         type: type of lesson to use for lookup
     """
-    all_answers = submitted_answer.split(";")
+    all_answers = get_confirm_lines(submitted_code)
     lesson_type = None
 
     queried_set = current_lesson.incorrect_answers.all()
     for ans in all_answers:
-        search = ans + ';'
         for each in queried_set:
-            if search == each.answer_text:
-                print(search)
+            if ans == each.answer_text:
+                print(ans)
                 lesson_type = each.answer_type
                 break
 
@@ -162,7 +152,7 @@ def check_feedback(current_lesson, submitted_answer, status, unlock_next):
             type = 'COR'
         elif status == 'failure':
             if current_lesson.sub_lessons_available:
-                type = check_type(current_lesson, submitted_answer, status)
+                type = check_type(current_lesson, submitted_answer)
                 try:
                     feedback = current_lesson.feedback.get(feedback_type=type)
                     headline = feedback.headline
@@ -186,11 +176,10 @@ def check_feedback(current_lesson, submitted_answer, status, unlock_next):
                 'resultDetails': 'Try again or contact us.',
                 'status': status}
 
-    print("\n\n\n\nRESPONSE:", headline, "text", text, status, "sub", current_lesson.sub_lessons_available, type, unlock_next)
+    print("\n\n\n\nRESPONSE:", headline, "text", text, status, type, unlock_next)
     return {'resultsHeader': headline,
             'resultDetails': text,
             'status': status,
-            'sub': current_lesson.sub_lessons_available,
             'type': type,
             'unlock_next': unlock_next
             }
@@ -363,3 +352,15 @@ def overall_status(data, vcs):
     data['status'] = overall
 
     return line_array
+
+
+def get_confirm_lines(code):
+    """
+    Takes the block of code submitted to RESOLVE and returns a list of the lines that start with Confirm or ensures,
+    keeping the semicolons attached at the end
+    @param code: All code submitted to RESOLVE verifier
+    @return: List of confirm/ensures statements
+    """
+    # Regex explanation: [^;]* is any amount of characters that isn't a semicolon, so what this is saying is find
+    # Confirm [characters that aren't ;]; OR ensures [characters that aren't ;];
+    return re.findall("Confirm [^;]*;|ensures [^;]*;", code)

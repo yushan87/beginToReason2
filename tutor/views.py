@@ -142,6 +142,7 @@ def grader(request):
             submitted_answer = ''.join(submitted_answer)
 
             # Send it off to the RESOLVE verifier
+            '''
             response, vcs = asyncio.run(send_to_verifier(data['code']))
             if response is not None:
                 lines = overall_status(response, vcs)
@@ -149,24 +150,12 @@ def grader(request):
             else:
                 status = 'failure'
                 lines = []
+            '''
+            status = 'failure'
+            lines = [3, 5]
 
-
-            """
-            REMEMBER TO LOG DATA
-            """
-            log_data(current_user, assignment, current_lesson_set, current_lesson, data)
-            data_log = DataLog(user_key=current_user.user.id, time_stamp=datetime.now())
-
-            user_key = models.ForeignKey(User, blank=True, on_delete=models.CASCADE)
-            time_stamp = models.DateTimeField(default=datetime.now, blank=True)
-            lesson_key = models.ForeignKey(Lesson, on_delete=models.CASCADE, blank=True)
-            lesson_set_key = models.ForeignKey(LessonSet, on_delete=models.CASCADE, blank=True)
-            assignment_key = models.ForeignKey(Assignment, on_delete=models.SET_NULL, null=True)
-            status = models.CharField(max_length=50)
-            code = models.TextField(default="null")
-            explanation = models.TextField()
-            face = models.TextField(default="null")
-            original_code = models.TextField(default="null")
+            # Log data
+            log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status)
 
             """
             let lines = mergeVCsAndLineNums(vcs, lineNums.vcs)
@@ -239,7 +228,7 @@ def grader(request):
                 return JsonResponse(check_feedback(current_lesson, submitted_answer, status, True))
             else:
                 # Activate alternate if needed
-                assignment.alternate_check(current_user.id)
+                assignment.alternate_check(current_user.id, data['code'])
                 return JsonResponse(check_feedback(current_lesson, submitted_answer, status, False))
     return redirect("accounts:profile")
 

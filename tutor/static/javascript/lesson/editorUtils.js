@@ -718,14 +718,6 @@ $.postJSON = (url, data, callback) => {
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
             }
-            /*
-            if(data.sub){
-                console.log(data.newLessonIndex)
-                console.log(data.newLessonCode)
-                loadLesson(data.newLessonCode, 'None',data.newLessonName)
-            }
-
-             */
         }
 
     });

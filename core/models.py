@@ -148,36 +148,13 @@ class Reasoning(models.Model):
 
 class IncorrectAnswer(models.Model):
     """
-    Contains a model of Multiple Choice Answers. Each choice is attached to one Question.
+    Contains a model of Incorrect Answers. These are answers that when input on lessons, signify that the lesson should
+    be redirected into an alternate lesson of their type. The type is recorded as an enumeration in the M2M relation
+    LessonIncorrectAnswers.
 
     @param models.Model The base model
     """
-
-    lesson_text = models.CharField(max_length=200, default='Lesson2')
-
-    simplify = 'SIM'
-    self = 'SELF'
-    concrete = 'NUM'
-    initial = 'INIT'
-    algebra = 'ALG'
-    variable = 'VAR'
-
-    response_options = [
-        (simplify, 'Simplify'),
-        (self, 'Self Reference'),
-        (concrete, 'Used Concrete Value as Answer'),
-        (initial, 'Missing # Symbol'),
-        (algebra, 'Algebra'),
-        (variable, 'Variable')
-    ]
-
-    answer_type = models.CharField(
-        max_length=4,
-        choices=response_options,
-        default=simplify
-    )
-
-    answer_text = models.CharField(max_length=200)
+    answer_text = models.CharField(max_length=200)  # Has a semicolon at the end!!!
 
     def __str__(self):
         """"
@@ -267,9 +244,6 @@ class Lesson(models.Model):
 
     is_walkthrough = models.BooleanField(default=False)
     can_mutate = models.BooleanField(default=False)
-
-    incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
-
     screen_record = models.BooleanField(default=False)
     audio_record = models.BooleanField(default=False)
     audio_transcribe = models.BooleanField(default=False)
@@ -282,6 +256,24 @@ class Lesson(models.Model):
             str: lesson name
         """
         return self.lesson_title
+
+
+class LessonIncorrectAnswers(models.Model):
+    """
+    Model that is a many-to-many between lessons and their incorrect answers. Contains an enumeration so we can store
+    alternate types in the database in an efficient manner.
+    """
+    class AlternateType(models.IntegerChoices):
+        DEFAULT = 0, 'Default'
+        SIMPLIFY = 1, 'Simplify'
+        SELF_REFERENCE = 2, 'Self Reference'
+        CONCRETE = 3, "Used Concrete Value as Answer"
+        INITIAL = 4, 'Missing # Symbol'
+        ALGEBRA = 5, 'Algebra'
+        VARIABLE = 6, 'Variable'
+    lesson = models.ForeignKey(Lesson, blank=False, null=False, on_delete=models.CASCADE)
+    answer = models.ForeignKey(IncorrectAnswer, blank=False, null=False, on_delete=models.PROTECT)
+    type = models.IntegerField(choices=AlternateType.choices, blank=False, null=False)
 
 
 class LessonSet(models.Model):
@@ -350,18 +342,10 @@ class LessonAlternate(models.Model):
 
     @param models.Model The base model
     """
-    class AlternateType(models.IntegerChoices):
-        DEFAULT = 0, 'Default'
-        SIMPLIFY = 1, 'Simplify'
-        SELF_REFERENCE = 2, 'Self Reference'
-        CONCRETE = 3, "Used Concrete Value as Answer"
-        INITIAL = 4, 'Missing # Symbol'
-        ALGEBRA = 5, 'Algebra'
-        VARIABLE = 6, 'Variable'
 
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=False)
     alternate_set = models.ForeignKey(LessonSet, on_delete=models.PROTECT, null=False)
-    type = models.IntegerField(choices=AlternateType.choices, null=False)
+    type = models.IntegerField(choices=LessonIncorrectAnswers.AlternateType.choices, null=False)
 
 
 class LessonSetLessons(models.Model):

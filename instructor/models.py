@@ -222,7 +222,9 @@ class Assignment(models.Model):
 
         alt_lesson = tutor_helper.tutor_helper.alternate_lesson_check(current_lesson,
                                                                       tutor_helper.tutor_helper.check_type(
-                                                                          current_lesson, submitted_answer, 'failure'))
+                                                                          current_lesson, submitted_answer))
+        if alt_lesson is not None:
+            pass
 
         # check if we changed to an alternate
         if Lesson.objects.get(lesson_title=alt_lesson).lesson_name != current_user.current_lesson_name:
