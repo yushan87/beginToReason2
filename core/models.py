@@ -345,6 +345,8 @@ class LessonAlternate(models.Model):
 
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=False)
     alternate_set = models.ForeignKey(LessonSet, on_delete=models.PROTECT, null=False)
+    replace = models.BooleanField(null=False, blank=False)  # If true, if alt lesson A is called on lesson 1, after A
+    # is completed the user goes to lesson 2. If false, they would have to complete A, then 1, then 2.
     type = models.IntegerField(choices=LessonIncorrectAnswers.AlternateType.choices, null=False)
 
 
