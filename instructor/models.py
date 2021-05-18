@@ -224,6 +224,7 @@ class Assignment(models.Model):
                                                                       tutor_helper.tutor_helper.check_type(
                                                                           current_lesson, submitted_answer))
         if alt_lesson is not None:
+            print("I would have redirected to", alt_lesson)
             pass
 
         # check if we changed to an alternate

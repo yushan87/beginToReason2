@@ -77,11 +77,14 @@ def alternate_lesson_check(current_lesson, alternate_type):
 
     Args:
          current_lesson: a Lesson that is currently being completed
-         alternate_type: type of lesson to use for lookup, enum found in core.models.LessonAlternate
+         alternate_type: type of lesson to use for lookup, enum found in core.models.LessonAlternate. Supports None,
+         in which case it will simply return None for the alternate lesson.
 
     Returns:
         alternate_lesson: the alternate lesson that should be redirected to or None if it doesn't exist
     """
+    if alternate_type is None:
+        return None
     try:
         return core.models.LessonAlternate.objects.get(lesson=current_lesson, type=alternate_type).alternate_lesson
     except core.models.LessonAlternate.DoesNotExist:
@@ -146,6 +149,7 @@ def check_feedback(current_lesson, submitted_answer, status, unlock_next):
             type = 'COR'
         elif status == 'failure':
             if current_lesson.sub_lessons_available:
+                # This is currently broken because I need to change these to enums, not strings!!!
                 type = check_type(current_lesson, submitted_answer)
                 try:
                     feedback = current_lesson.feedback.get(feedback_type=type)
