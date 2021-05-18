@@ -5,6 +5,20 @@ a new instance of a model will be made.
 from django.db import models
 
 
+class AlternateType(models.IntegerChoices):
+    """
+    Note: this is NOT a table in the database! This is a helper class for enumeration of types.
+    """
+    CORRECT = -1, 'Correct'
+    DEFAULT = 0, 'Default'
+    SIMPLIFY = 1, 'Simplify'
+    SELF_REFERENCE = 2, 'Self Reference'
+    CONCRETE = 3, "Used Concrete Value as Answer"
+    INITIAL = 4, 'Missing # Symbol'
+    ALGEBRA = 5, 'Algebra'
+    VARIABLE = 6, 'Variable'
+
+
 class Code(models.Model):
     """
     Contains a model of the code, allows for the ability to reuse.
@@ -174,35 +188,7 @@ class Feedback(models.Model):
         """
 
     headline = models.CharField(max_length=50, default='Try Again!')
-
-    default = 'DEF'
-    correct = 'COR'
-    simplify = 'SIM'
-    self = 'SELF'
-    concrete = 'NUM'
-    initial = 'INIT'
-    algebra = 'ALG'
-    variable = 'VAR'
-    sub_lesson = 'SUB'
-
-    feedback_options = [
-        (default, 'Default'),
-        (correct, 'Correct'),
-        (simplify, 'Simplify'),
-        (self, 'Self Reference'),
-        (concrete, 'Used Concrete Value as Answer'),
-        (initial, 'Missing # Symbol'),
-        (algebra, 'Algebra'),
-        (variable, 'Variable'),
-        (sub_lesson, 'Sub_Lesson')
-    ]
-
-    feedback_type = models.CharField(
-        max_length=4,
-        choices=feedback_options,
-        default=default
-    )
-
+    feedback_type = models.IntegerField(choices=AlternateType.choices, blank=False, null=False)
     feedback_text = models.TextField(max_length=500)
 
     def __str__(self):
@@ -263,14 +249,6 @@ class LessonIncorrectAnswers(models.Model):
     Model that is a many-to-many between lessons and their incorrect answers. Contains an enumeration so we can store
     alternate types in the database in an efficient manner.
     """
-    class AlternateType(models.IntegerChoices):
-        DEFAULT = 0, 'Default'
-        SIMPLIFY = 1, 'Simplify'
-        SELF_REFERENCE = 2, 'Self Reference'
-        CONCRETE = 3, "Used Concrete Value as Answer"
-        INITIAL = 4, 'Missing # Symbol'
-        ALGEBRA = 5, 'Algebra'
-        VARIABLE = 6, 'Variable'
     lesson = models.ForeignKey(Lesson, blank=False, null=False, on_delete=models.CASCADE)
     answer = models.ForeignKey(IncorrectAnswer, blank=False, null=False, on_delete=models.PROTECT)
     type = models.IntegerField(choices=AlternateType.choices, blank=False, null=False)
@@ -347,7 +325,7 @@ class LessonAlternate(models.Model):
     alternate_set = models.ForeignKey(LessonSet, on_delete=models.PROTECT, null=False)
     replace = models.BooleanField(null=False, blank=False)  # If true, if alt lesson A is called on lesson 1, after A
     # is completed the user goes to lesson 2. If false, they would have to complete A, then 1, then 2.
-    type = models.IntegerField(choices=LessonIncorrectAnswers.AlternateType.choices, null=False)
+    type = models.IntegerField(choices=AlternateType.choices, blank=False, null=False)
 
 
 class LessonSetLessons(models.Model):
