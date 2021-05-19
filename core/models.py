@@ -159,26 +159,6 @@ class Reasoning(models.Model):
         return self.reasoning_name
 
 
-class IncorrectAnswer(models.Model):
-    """
-    Contains a model of Incorrect Answers. These are answers that when input on lessons, signify that the lesson should
-    be redirected into an alternate lesson of their type. The type is recorded as an enumeration in the M2M relation
-    LessonIncorrectAnswers.
-
-    @param models.Model The base model
-    """
-    answer_text = models.CharField(max_length=200)  # Has a semicolon at the end!!!
-
-    def __str__(self):
-        """"
-        function __str__ is called to display the multiple choice texts. Helps for admin usability.
-
-        Returns:
-            str: choice text
-        """
-        return self.lesson_text + ': ' + self.answer_type + '-' + self.answer_text
-
-
 class Feedback(models.Model):
     """
         Contains a model of Feedback for students.
@@ -243,13 +223,13 @@ class Lesson(models.Model):
         return self.lesson_title
 
 
-class LessonIncorrectAnswers(models.Model):
+class IncorrectAnswer(models.Model):
     """
-    Model that is a many-to-many between lessons and their incorrect answers. Contains an enumeration so we can store
+    Model that is a one-to-many between lessons and their incorrect answers. Uses an enumeration so we can store
     alternate types in the database in an efficient manner.
     """
     lesson = models.ForeignKey(Lesson, blank=False, null=False, on_delete=models.CASCADE)
-    answer = models.ForeignKey(IncorrectAnswer, blank=False, null=False, on_delete=models.PROTECT)
+    answer_text = models.CharField(max_length=200, blank=False, null=False)  # Has a semicolon at the end!!!
     type = models.IntegerField(choices=AlternateType.choices, blank=False, null=False)
 
 
