@@ -104,12 +104,8 @@ def check_type(current_lesson, submitted_code):
     """
     for answer in get_confirm_lines(reverse_mutate(submitted_code)):
         try:
-            answer_id = core.models.IncorrectAnswer.objects.get(answer_text=answer).id
+            return core.models.IncorrectAnswer.objects.get(answer_text=answer, lesson=current_lesson).type
         except core.models.IncorrectAnswer.DoesNotExist:
-            continue
-        try:
-            return core.models.LessonIncorrectAnswers.objects.get(lesson=current_lesson, answer_id=answer_id).type
-        except core.models.LessonIncorrectAnswers.DoesNotExist:
             continue
 
     return None
