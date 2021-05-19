@@ -129,56 +129,38 @@ def check_status(status):
     return False
 
 
-def check_feedback(current_lesson, submitted_answer, status, unlock_next):
-    """function check_feedback This function finds the feedback to show to the user
+def browser_response(current_lesson, current_assignment, current_user, submitted_answer, status, unlock_next):
+    """function browser_response This function finds the feedback to show to the user
 
     Args:
          current_lesson: a Lesson that is currently being completed
+         current_assignment: The assignment containing the lesson
+         current_user: The UserInfo that is attempting the lesson
          submitted_answer: string of code that user submitted
          status: string of result from compiler
          unlock_next: boolean for unlocking next button
 
     Returns:
-        type: type of lesson to use for lookup
+        dict that should be send to JS
     """
-    type = 'DEF'
-    try:
-        if status == 'success':
-            headline = 'Correct'
-            text = current_lesson.correct_feedback
-            type = 'COR'
-        elif status == 'failure':
-            if current_lesson.sub_lessons_available:
-                # This is currently broken because I need to change these to enums, not strings!!!
-                type = check_type(current_lesson, submitted_answer)
-                try:
-                    feedback = current_lesson.feedback.get(feedback_type=type)
-                    headline = feedback.headline
-                    text = feedback.feedback_text
-                except core.models.Feedback.DoesNotExist:
-                    type = 'DEF'
-                    feedback = current_lesson.feedback.get(feedback_type=type)
-                    headline = feedback.headline
-                    text = feedback.feedback_text
-            else:
-                type = 'DEF'
-                feedback = current_lesson.feedback.get(feedback_type=type)
-                headline = feedback.headline
-                text = feedback.feedback_text
-        else:
-            return {'resultsHeader': "<h3>Something went wrong</h3>",
-                    'resultDetails': 'Try again or contact us.',
-                    'status': status}
-    except core.models.Feedback.DoesNotExist:
-        return {'resultsHeader': "<h3>Something went wrong</h3>",
-                'resultDetails': 'Try again or contact us.',
-                'status': status}
+    if status == 'success':
+        headline = 'Correct'
+        text = current_lesson.correct_feedback
+    else:
+        try:
+            feedback = current_lesson.feedback.get(feedback_type=check_type(current_lesson, submitted_answer))
+            headline = feedback.headline
+            text = feedback.feedback_text
+        except core.models.Feedback.DoesNotExist:
+            headline = "Try Again!"
+            text = "Did you read the reference material?"
 
-    print("\n\n\n\nRESPONSE:", headline, "text", text, status, type, unlock_next)
+    text += '<br>You have attempted this lesson ' + \
+            str(DataLog.objects.filter(assignment_key=current_assignment, user_key=current_user.user,
+                                   lesson_key=current_lesson).count()) + ' times.'
     return {'resultsHeader': headline,
             'resultDetails': text,
             'status': status,
-            'type': type,
             'unlock_next': unlock_next
             }
 
@@ -284,7 +266,8 @@ def replace_previous(user, code, is_alt):
 
 async def send_to_verifier(code):
     async with websockets.connect(
-            'wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project', ping_interval=None) as ws:
+            'wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project', ping_interval=None) \
+            as ws:
         await ws.send(encode(code))
         vcs = {}
         while True:

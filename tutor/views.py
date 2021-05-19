@@ -17,7 +17,7 @@ from data_analysis.models import DataLog
 from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
 from instructor.models import Class, ClassMembership, AssignmentProgress, Assignment
 from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth, assignment_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, check_feedback, \
+from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, \
     check_type, alternate_set_check, replace_previous, send_to_verifier, overall_status
 from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
 
@@ -225,11 +225,13 @@ def grader(request):
             if status == "success":
                 # Update assignment progress
                 has_next = assignment.advance_user(current_user.id)
-                return JsonResponse(check_feedback(current_lesson, submitted_answer, status, True))
+                return JsonResponse(browser_response(current_lesson, assignment, current_user, submitted_answer,
+                                                     status, True))
             else:
                 # Activate alternate if needed
                 assignment.alternate_check(current_user.id, data['code'])
-                return JsonResponse(check_feedback(current_lesson, submitted_answer, status, False))
+                return JsonResponse(browser_response(current_lesson, assignment, current_user, submitted_answer,
+                                                     status, False))
     return redirect("accounts:profile")
 
 

@@ -9,7 +9,6 @@ class AlternateType(models.IntegerChoices):
     """
     Note: this is NOT a table in the database! This is a helper class for enumeration of types.
     """
-    CORRECT = -1, 'Correct'
     DEFAULT = 0, 'Default'
     SIMPLIFY = 1, 'Simplify'
     SELF_REFERENCE = 2, 'Self Reference'
@@ -185,7 +184,7 @@ class Feedback(models.Model):
         Contains a model of Feedback for students.
 
         @param models.Model The base model
-        """
+    """
 
     headline = models.CharField(max_length=50, default='Try Again!')
     feedback_type = models.IntegerField(choices=AlternateType.choices, blank=False, null=False)
