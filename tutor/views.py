@@ -151,77 +151,12 @@ def grader(request):
                 status = 'failure'
                 lines = []
             '''
-            status = 'failure'
+            status = 'success'
             lines = [3, 5]
 
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status)
 
-            """
-            let lines = mergeVCsAndLineNums(vcs, lineNums.vcs)
-            var
-            confirmLine
-            let
-            vcLine = parseInt(lineNums.vcs[0].lineNum, 10)
-
-            let
-            currentAttemptAnswers = '';
-            for (var i = 0; i < lines.lines.length; i++) {
-            if (lines.lines[i].status == "success") {
-            aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_correct");
-            confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace( / \s / g, '');
-            confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
-            allAnswers = allAnswers + confirmLine  + "<br>";
-            submitAnswers = submitAnswers + confirmLine;
-            currentAttemptAnswers += confirmLine + '\n'
-            }
-            else {
-            aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_error");
-            document.getElementById("answersCard").removeAttribute("hidden")
-            confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace( / \s / g, '');
-            confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
-            allAnswers = allAnswers + confirmLine  + "<br>";
-            submitAnswers = submitAnswers + confirmLine;
-            if (i == lines.lines.length - 1){
-            allAnswers += "<br><br>";
-            currentAttemptAnswers += confirmLine + '\n'
-            }
-            document.getElementById("pastAnswers").innerHTML = allAnswers;
-            }
-            }
-
-            // posting
-            back
-            end
-            data
-            to
-            log
-            let
-            data = {};
-            data.name = name;
-            data.answer = submitAnswers;
-            data.allAnswers = allAnswers;
-            data.code = code;
-            if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
-            else if (hasMC){data.explanation = multiAnswer;}
-            else {data.explanation = "No Explanation Requested";}
-
-            const
-            faces = document.querySelectorAll('input[name="smiley"]');
-            let
-            selectedValue;
-            for (const x of faces) {
-            if (x.checked) {
-            selectedValue = x.value;
-            data.face = selectedValue
-            }
-            }
-            // The
-            original
-            post
-            // $.postJSON("tutor", data, (results) = > {});
-            submitAnswers = '';
-"""
             if status == "success":
                 # Update assignment progress
                 has_next = assignment.advance_user(current_user.id)
@@ -235,7 +170,7 @@ def grader(request):
     return redirect("accounts:profile")
 
 
-def tutor(request, assignmentID, index=None):
+def tutor(request, assignmentID):
     # View that returns a lesson's code (split from tutor.grader).
     if request.method == 'GET':
         if assignment_auth(request, assignmentID):
@@ -246,7 +181,7 @@ def tutor(request, assignmentID, index=None):
                 assignment.get_user_lesson(current_user.id)
             num_done = finished_lesson_count(current_user)
             print("===============", num_done)
-            print("in if 1 - Current lesson: ", current_lesson)
+            print("in if 1 - Current lesson:", current_lesson)
 
             # Just as we are altering the code here with mutate, this will pull the previous answer
             # to put in place for sub lessons. What identifiers do we need?
