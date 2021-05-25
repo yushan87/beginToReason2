@@ -181,3 +181,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
+
+# Django 3.2 introduced a customization of primary keys. Since I don't believe that's a priority at the moment,
+# this setting makes all unset primary keys default to what replaced the only option before (i.e. no change)
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
