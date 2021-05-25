@@ -4,22 +4,20 @@ This module contains our Django views for the "tutor" application.
 import asyncio
 import json
 import re
-from asgiref.sync import async_to_sync, sync_to_async
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
-from core.models import Lesson, LessonSet, MainSet
+from core.models import MainSet
 from accounts.models import UserInformation
-from data_analysis.models import DataLog
-from data_analysis.py_helper_functions.datalog_helper import log_data, get_log_data, finished_lesson_count
-from instructor.models import Class, ClassMembership, AssignmentProgress, Assignment
+from data_analysis.py_helper_functions.datalog_helper import log_data, finished_lesson_count
+from instructor.models import Class, ClassMembership, Assignment
 from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth, assignment_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, \
-    check_type, alternate_set_check, replace_previous, send_to_verifier, overall_status
-from tutor.py_helper_functions.mutation import reverse_mutate, can_mutate
+from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier, \
+    overall_status
+from tutor.py_helper_functions.mutation import can_mutate
 
 User = get_user_model()
 
@@ -100,26 +98,7 @@ def grader(request):
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
     Returns:
-        HttpResponse: A generated http response object to the request depending on whether or not
-                      the user is authenticated.
-        lesson: Lesson object
-        lesson_code: string of code
-        concept: list of concepts
-        referenceSet: list of references
-        reason: string of question to ask or null
-        mc_set: multiple choice options or null
-        currLessonNum: int of index
-        completedLessonNum: int of index of last completed (this might be depreciated and can remove)
-        setLength: int of size of set
-        finished_count: int of lessons finished
-        orderedSet: list of lessons in order (this might be depreciated and can remove)
-        mood: string of mood of user
-        review: ?
-        screen_record: boolean of to screen record
-        audio_record: boolean of to audio record
-        audio_transcribe: boolean of to transcribe audio
-        user_email: string of user email
-        index: int of order in main set
+        JsonResponse: A JSON response informing the browser of the results and the user's current state
     """
 
     print(request)
@@ -134,32 +113,34 @@ def grader(request):
             data = json.loads(request.body.decode('utf-8'))
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             assignment = Assignment.objects.get(id=data['assignment'])
-            current_lesson_set, set_index, current_lesson, lesson_index, is_alternate = assignment.get_user_lesson(current_user.id)
+            current_lesson_set, _, current_lesson, _, is_alternate = assignment.get_user_lesson(current_user.id)
             print("lessons in set:", current_lesson_set.lessons())
             print("my lesson:", current_lesson)
             # Get submitted answer. No 'Confirm', no spaces, each ends w/ a semicolon
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
             submitted_answer = ''.join(submitted_answer)
 
-            # Send it off to the RESOLVE verifier
-            '''
-            response, vcs = asyncio.run(send_to_verifier(data['code']))
-            if response is not None:
-                lines = overall_status(response, vcs)
-                status = response['status']
-            else:
-                status = 'failure'
-                lines = []
-            '''
+            # Send it off to the RESOLVE verifier (commented out because RESOLVE is down currently)
+            # response, vcs = asyncio.run(send_to_verifier(data['code']))
+            # if response is not None:
+            #     lines = overall_status(response, vcs)
+            #     status = response['status']
+            # else:
+            #     status = 'failure'
+            #     lines = []
+
+            # Placeholder for verifier response
             status = 'success'
-            lines = [3, 5]
+            # TODO: Eventually uncomment line below when lines are implemented in
+            # lines = [3, 5]
 
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status)
 
             if status == "success":
                 # Update assignment progress
-                has_next = assignment.advance_user(current_user.id)
+                # TODO: Use return value from advance_user to communicate to browser that assignment is completed
+                assignment.advance_user(current_user.id)
                 return JsonResponse(browser_response(current_lesson, assignment, current_user, submitted_answer,
                                                      status, True))
             else:
@@ -171,13 +152,20 @@ def grader(request):
 
 
 def tutor(request, assignmentID):
-    # View that returns a lesson's code (split from tutor.grader).
+    """function tutor This function handles giving code to the browser.
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+        assignmentID (Integer): ID of the assignment that the user is requesting code for
+    Returns:
+        HttpResponse: A generated http response object to the request depending on whether or not
+                      the user is authenticated.
+    """
     if request.method == 'GET':
         if assignment_auth(request, assignmentID):
             # Case 2a: User is valid and is taking this assignment
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             assignment = Assignment.objects.get(id=assignmentID)
-            current_set, set_index, current_lesson, lesson_index, is_alternate = \
+            _, set_index, current_lesson, _, is_alternate = \
                 assignment.get_user_lesson(current_user.id)
             num_done = finished_lesson_count(current_user)
             print("===============", num_done)

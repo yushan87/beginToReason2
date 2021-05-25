@@ -8,7 +8,7 @@ from django.core.validators import MinLengthValidator
 from django.db import models
 
 from accounts.models import UserInformation
-from core.models import MainSet, LessonSet, Lesson
+from core.models import MainSet, LessonSet
 import tutor.py_helper_functions as tutor_helper
 
 
@@ -144,37 +144,40 @@ class Assignment(models.Model):
 
         return self.end_date.isoformat()
 
-    def get_user_lesson(self, user_id):
+    def get_user_lesson(self, userID):
         """function get_user_lesson a helper function to retrieve a user's current lesson set and lesson on an
         assignment
-
+        Args:
+            userID (Integer): ID of the user_info queried (not the user, but the user_info)
         Returns:
-            current lesson set, current set index, current lesson, current lesson index, is_alternate (whether current
-            lesson is an alternate or not)
+            tuple: current lesson set, current set index, current lesson, current lesson index, is_alternate (whether
+            current lesson is an alternate or not)
         """
-        if AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
-            progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=user_id)
+        if AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=userID).exists():
+            progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=userID)
             if AlternateProgress.objects.all().filter(progress=progress).exists():
                 # User is in an alt lesson
                 alt_progress = AlternateProgress.objects.all().filter(progress=progress).order_by('-alternate_level')[0]
                 return alt_progress.lesson_set, progress.current_set_index, \
-                       alt_progress.lesson_set.lesson_by_index(alt_progress.current_lesson_index), \
-                       alt_progress.current_lesson_index, True
+                    alt_progress.lesson_set.lesson_by_index(alt_progress.current_lesson_index), \
+                    alt_progress.current_lesson_index, True
             # User is not in an alt lesson
-            progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=user_id)
+            progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=userID)
             lesson_set = self.main_set.set_by_index(progress.current_set_index)
             return lesson_set, progress.current_set_index, lesson_set.lesson_by_index(progress.current_lesson_index), \
-                   progress.current_lesson_index, False
+                progress.current_lesson_index, False
         # Not in the assignment currently
         return None, -1, None, -1, False
 
-    def advance_user(self, user_id):
+    def advance_user(self, userID):
         """function advance_user a helper function to move a user on to the next lesson
+        Args:
+            userID (Integer): ID of the user_info queried (not the user, but the user_info)
         Returns:
-            if there's more to the assignment (false if complete, true if incomplete)
+            Boolean: if there's more to the assignment (false if complete, true if incomplete)
         """
-        if AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
-            progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=user_id)
+        if AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=userID).exists():
+            progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=userID)
             if AlternateProgress.objects.all().filter(progress=progress).exists():
                 # User is in an alt lesson
                 alt_progress = AlternateProgress.objects.all().filter(progress=progress).order_by('-alternate_level')[0]
@@ -208,23 +211,26 @@ class Assignment(models.Model):
         # Not in the assignment currently
         return False
 
-    def alternate_check(self, user_id, submitted_answer):
+    def alternate_check(self, userID, submittedAnswer):
         """function advance_user a helper function to move a user to an alternate lesson. Call whenever a user gets
         a question wrong.
+        Args:
+            userID (Integer): ID of the user_info queried (not the user, but the user_info)
+            submittedAnswer (String): all the code submitted to RESOLVE, mutated in the form presented to user
         Returns:
-            Boolean signifying whether an alternate lesson was activated (and therefore a page needs to be reloaded)
+            Boolean: whether an alternate lesson was activated (and therefore a page needs to be reloaded)
         """
-        if not AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=user_id).exists():
+        if not AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=userID).exists():
             # Not in the assignment currently
             return False
 
-        progress = AssignmentProgress.objects.get(assignment_key_id=self.id, user_info_key_id=user_id)
+        progress = AssignmentProgress.objects.get(assignment_key_id=self.id, user_info_key_id=userID)
         current_lesson = self.main_set.set_by_index(progress.current_set_index) \
             .lesson_by_index(progress.current_lesson_index)
 
         lesson_alternate = tutor_helper.tutor_helper.alternate_set_check(current_lesson,
                                                                          tutor_helper.tutor_helper.check_type(
-                                                                             current_lesson, submitted_answer))
+                                                                             current_lesson, submittedAnswer))
 
         if lesson_alternate is None:
             return False
@@ -232,7 +238,7 @@ class Assignment(models.Model):
         # Alt lesson activated! Update current state.
         if lesson_alternate.replace:
             # This alternate replaces the current lesson, so I've got to advance the user
-            self.advance_user(user_id)
+            self.advance_user(userID)
 
         # Get the depth of the next alternate level
         alt_progresses = AlternateProgress.objects.filter(progress=progress).order_by('-alternate_level')
@@ -246,6 +252,7 @@ class Assignment(models.Model):
         alt_progress = AlternateProgress(progress=progress, lesson_set=lesson_alternate.alternate_set,
                                          current_lesson_index=0, alternate_level=depth)
         alt_progress.save()
+        return True
 
 
 class AssignmentProgress(models.Model):

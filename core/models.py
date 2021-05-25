@@ -9,13 +9,13 @@ class AlternateType(models.IntegerChoices):
     """
     Note: this is NOT a table in the database! This is a helper class for enumeration of types.
     """
-    DEFAULT = 0, 'Default'
-    SIMPLIFY = 1, 'Simplify'
-    SELF_REFERENCE = 2, 'Self Reference'
-    CONCRETE = 3, "Used Concrete Value as Answer"
-    INITIAL = 4, 'Missing # Symbol'
-    ALGEBRA = 5, 'Algebra'
-    VARIABLE = 6, 'Variable'
+    default = 0, 'Default'
+    simplify = 1, 'Simplify'
+    self_reference = 2, 'Self Reference'
+    concrete = 3, "Used Concrete Value as Answer"
+    initial = 4, 'Missing # Symbol'
+    algebra = 5, 'Algebra'
+    variable = 6, 'Variable'
 
 
 class Code(models.Model):
@@ -261,8 +261,10 @@ class LessonSet(models.Model):
     def lesson_by_index(self, index):
         """"
         function lesson_by_index returns the lesson at the given index in the lesson set
+        Args:
+            index (int): Index of the lesson within the set, 0-indexed
         Returns:
-            Lesson
+            Lesson: Lesson within the set at given index
         """
         try:
             return LessonSetLessons.objects.get(lesson_set=self, index=index).lesson
@@ -273,7 +275,7 @@ class LessonSet(models.Model):
         """"
         function lessons returns ordered list of the lessons within the lesson set
         Returns:
-            Array of Lessons
+            array: List of lessons within set, ordered by index
         """
         lesson_list = []
         for relation in LessonSetLessons.objects.filter(lesson_set=self).order_by('index').all():
@@ -284,7 +286,7 @@ class LessonSet(models.Model):
         """"
         function length returns how many lessons a lesson set has
         Returns:
-            Integer representing length of set
+            int: length of set
         """
         return LessonSetLessons.objects.filter(lesson_set=self).count()
 
@@ -346,8 +348,10 @@ class MainSet(models.Model):
     def set_by_index(self, index):
         """"
         function set_by_index returns the lesson set at the given index in the main set
+        Args:
+            index (int): index of desired set
         Returns:
-            Lesson set
+            LessonSet: set at index in assignment's main set
         """
         try:
             return MainSetLessonSets.objects.get(main_set=self, index=index).lesson_set
@@ -358,7 +362,7 @@ class MainSet(models.Model):
         """"
         function set_by_index returns ordered list of the lesson sets within the main set
         Returns:
-            Array of Lesson sets
+            array: List of lesson sets
         """
         set_list = []
         for relation in MainSetLessonSets.objects.filter(main_set=self).order_by('index').all():
@@ -369,7 +373,7 @@ class MainSet(models.Model):
         """"
         function length returns how many lesson sets a main set has
         Returns:
-            Integer representing length of main set
+            Integer: number of sets in main set
         """
         return MainSetLessonSets.objects.filter(main_set=self).count()
 

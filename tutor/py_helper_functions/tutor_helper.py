@@ -96,8 +96,8 @@ def check_type(current_lesson, submitted_code):
     Only to be called on incorrect answers.
 
     Args:
-         current_lesson: a Lesson that is currently being completed
-         submitted_code: All the code submitted to RESOLVE, mutated in the form presented to user
+         current_lesson (Lesson): lesson that is currently being completed
+         submitted_code (String): all the code submitted to RESOLVE, mutated in the form presented to user
 
     Returns:
         type: type of lesson to use for lookup (integer enumeration). None if no incorrect answers were triggered.
@@ -153,7 +153,7 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
 
     text += '<br>You have attempted this lesson ' + \
             str(DataLog.objects.filter(assignment_key=current_assignment, user_key=current_user.user,
-                                   lesson_key=current_lesson).count()) + ' times.'
+                                       lesson_key=current_lesson).count()) + ' times.'
     return {'resultsHeader': headline,
             'resultDetails': text,
             'status': status,
