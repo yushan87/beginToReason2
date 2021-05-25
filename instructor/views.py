@@ -6,7 +6,7 @@ from datetime import date
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
@@ -18,7 +18,7 @@ from tutor.py_helper_functions.tutor_helper import user_auth
 
 
 # Create your views here.
-
+User = get_user_model()
 
 @login_required(login_url='/accounts/login/')
 def instructor(request):

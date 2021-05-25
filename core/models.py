@@ -9,13 +9,13 @@ class AlternateType(models.IntegerChoices):
     """
     Note: this is NOT a table in the database! This is a helper class for enumeration of types.
     """
-    default = 0, 'Default'
-    simplify = 1, 'Simplify'
-    self_reference = 2, 'Self Reference'
-    concrete = 3, "Used Concrete Value as Answer"
-    initial = 4, 'Missing # Symbol'
-    algebra = 5, 'Algebra'
-    variable = 6, 'Variable'
+    DEFAULT = 0, 'Default'
+    SIMPLIFY = 1, 'Simplify'
+    SELF_REFERENCE = 2, 'Self Reference'
+    CONCRETE = 3, "Used Concrete Value as Answer"
+    INITIAL = 4, 'Missing # Symbol'
+    ALGEBRA = 5, 'Algebra'
+    VARIABLE = 6, 'Variable'
 
 
 class Code(models.Model):
