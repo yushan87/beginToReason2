@@ -62,7 +62,7 @@ def profile(request):
         currentSet: current set user is working on
     """
     # Query for user in the 'User' table
-    print("GET IN  ACCOUNTS PROFILE")
+    print("GET IN ACCOUNTS PROFILE")
     user = User.objects.get(email=request.user.email)
 
     # Case 1: The user email exists in our user information table.
@@ -99,7 +99,7 @@ def settings(request):
 
     Returns:
         HTML Render of settings page
-        form: user information form for registering a user with some prepoulated fields
+        form: user information form for registering a user with some prepopulated fields
     """
     # Query for user in the 'User' table
     user = User.objects.get(email=request.user.email)

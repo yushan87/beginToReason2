@@ -1,0 +1,135 @@
+{% extends "core/base.html" %}
+{% load static compress %}
+
+{% block css %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/catalog.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
+    <style>
+    table, th, td {border: 1px solid black; border-collapse: collapse;}
+    th, td {padding: 5px;}
+    tr:nth-child(even) {background-color: #f2f2f2;}
+    </style>
+    {% endcompress %}
+{% endblock %}
+
+{% block main_content %}
+    <div class="jumbotron jumbotron-fluid py-5 mb-0">
+        <div class="container p-0">
+            <h1 class="font-weight-bold" id="jumbo-title">
+                    Members of {{class.class_name}}
+            </h1>
+        </div>
+    </div>
+
+    <div class="container px-0 py-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-section-heading my-3 row">
+                    <div class="col-12">
+                        <h3>Educators</h3>
+                    </div>
+                </div>
+                <table>
+                    <tr>
+                        <th>Educator Username</th>
+                        <th>Educator Email</th>
+                    </tr>
+                    {% for educator in class.get_educators %}
+                    <tr>
+                        <td>{{educator.user}}</td>
+                        <td>{{educator.user.email}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <div class="page-section-heading my-3 row">
+                    <div class="col-12">
+                        <h3>Students</h3>
+                    </div>
+                </div>
+                <table>
+                    <tr>
+                        <th>Student Username</th>
+                        <th>Student Email</th>
+                        <th>Last Logged In</th>
+                        <th>Promote</th>
+                    </tr>
+                    {% for student in class.get_students %}
+                    <tr>
+                        <td>{{student.user}}</td>
+                        <td>{{student.user.email}}</td>
+                        <td>{{student.user.last_login}}</td>
+                        <td><button class="btn select-btn" data-toggle="modal"data-target="#promoteStudentModal"
+                                    onclick="document.querySelector('#studentID').value={{student.id}}">
+                            Make Educator
+                        </button></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="promoteStudentModal" tabindex="-1" role="dialog" aria-labelledby="promoteStudentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'educator:promote-student' %}">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="promoteStudentModalLabel">Promote Student</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <p>Are you sure? This will give the student all the permissions over this class that you currently have.</p>
+                  <input type="number" name="class_id" value="{{class.id}}"hidden>
+                  <input type="number" id="studentID" name="student_id" hidden>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <input type="submit" id="submitPromote" value="Make Educator" class="btn select-btn">
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="application/javascript">
+        $(document).ready(function () {
+            document.getElementById("top").style.display = "none";
+        });
+
+        var mybutton = document.getElementById("top");
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {scrollFunction()};
+        function scrollFunction() {
+            if (document.body.scrollTop > 250 || document.documentElement.scrollTop > 250) {
+                mybutton.style.display = "block";
+            } else {
+            mybutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+    </script>
+{% endblock %}
+

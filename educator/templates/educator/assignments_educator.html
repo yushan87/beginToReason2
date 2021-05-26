@@ -1,0 +1,277 @@
+{% extends "core/base.html" %}
+{% load static compress %}
+
+{% block css %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/catalog.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
+    {% endcompress %}
+{% endblock %}
+
+{% block main_content %}
+    <div class="jumbotron jumbotron-fluid py-5 mb-0">
+        <div class="container p-0">
+            <h1 class="font-weight-bold" id="jumbo-title">
+                    {{class.class_name}}
+            </h1>
+        </div>
+    </div>
+
+    <div class="container px-0 py-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-section-heading my-3 row no-gutters">
+                    <div class="col-10">
+                        <h3>Current Assignments</h3>
+                    </div>
+                    <div class="col-2">
+                        <btn class="btn select-btn btn-block float-right" data-toggle="modal" data-target="#newAssignmentModal">New assignment</btn>
+                    </div>
+                </div>
+                {% for assignment in class.get_current_assignments %}
+                    <div class="my-4">
+                        <div class="card" style="background-color: inherit;">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                    <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
+                                </div>
+                                <div class="col-md-8 align-self-center">
+                                    <div class="card-body">
+                                        <div class="row no-gutters">
+                                            <div class="col-9">
+                                                <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
+                                            </div>
+                                            <div class="col-3">
+                                                <btn class="btn select-btn btn-block float-right" data-toggle="modal"
+                                                     data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }};
+                                                     document.querySelector('#new-start-date').value = '{{ assignment.start_date_iso }}';
+                                                     document.querySelector('#new-end-date').value = '{{ assignment.end_date_iso }}'">Edit assignment</btn>
+                                            </div>
+                                        </div>
+                                        <p class="card-text"><small class="text-muted">Opened {{ assignment.start_date }}, closes {{ assignment.end_date }}</small></p>
+                                        <p class="card-text">{{assignment.main_set.set_description}}</p>
+                                        <form action="{% url 'data_analysis:mainset-statistics' class.id assignment.main_set.id %}" method="GET">
+                                            {% csrf_token %}
+                                            <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
+                                                View Set Data
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% if class.get_future_assignments %}
+                <div class="page-section-heading my-3 row no-gutters">
+                    <h3>Future Assignments</h3>
+                </div>
+                {% for assignment in class.get_future_assignments %}
+                    <div class="my-4">
+                        <div class="card" style="background-color: inherit;">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                    <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
+                                </div>
+                                <div class="col-md-8 align-self-center">
+                                    <div class="card-body">
+                                        <div class="row no-gutters">
+                                            <div class="col-9">
+                                                <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
+                                            </div>
+                                            <div class="col-3">
+                                                <btn class="btn select-btn btn-block float-right" data-toggle="modal"
+                                                     data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }};
+                                                     document.querySelector('#new-start-date').value = '{{ assignment.start_date_iso }}';
+                                                     document.querySelector('#new-end-date').value = '{{ assignment.end_date_iso }}'">Edit assignment</btn>
+                                            </div>
+                                        </div>
+                                        <p class="card-text"><small class="text-muted">Opens {{ assignment.start_date }}, closes {{ assignment.end_date }}</small></p>
+                                        <p class="card-text">{{assignment.main_set.set_description}}</p>
+                                        <form action="{% url 'data_analysis:mainset-statistics' class.id assignment.main_set.id %}" method="GET">
+                                            {% csrf_token %}
+                                            <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
+                                                View Set Data
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% endif %}
+                {% if class.get_past_assignments %}
+                <div class="page-section-heading my-3 row no-gutters">
+                    <h3>Past Assignments</h3>
+                </div>
+                {% for assignment in class.get_past_assignments %}
+                    <div class="my-4">
+                        <div class="card" style="background-color: inherit;">
+                            <div class="row no-gutters">
+                                <div class="col-md-4">
+                                    <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
+                                </div>
+                                <div class="col-md-8 align-self-center">
+                                    <div class="card-body">
+                                        <div class="row no-gutters">
+                                            <div class="col-9">
+                                                <h5 class="card-title">{{assignment.main_set.set_name}}</h5>
+                                            </div>
+                                            <div class="col-3">
+                                                <btn class="btn select-btn btn-block float-right" data-toggle="modal"
+                                                     data-target="#editAssignmentModal" onclick="document.querySelector('#assignmentID').value = {{ assignment.id }};
+                                                     document.querySelector('#new-start-date').value = '{{ assignment.start_date_iso }}';
+                                                     document.querySelector('#new-end-date').value = '{{ assignment.end_date_iso }}'">Edit assignment</btn>
+                                            </div>
+                                        </div>
+                                        <p class="card-text"><small class="text-muted">Opened {{ assignment.start_date }}, closed {{ assignment.end_date }}</small></p>
+                                        <p class="card-text">{{assignment.main_set.set_description}}</p>
+                                        <form action="{% url 'data_analysis:mainset-statistics' class.id assignment.main_set.id %}" method="GET">
+                                            {% csrf_token %}
+                                            <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
+                                                View Set Data
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="newAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="newAssignmentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'educator:class-view' class.id %}">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="newAssignmentModalLabel">New assignment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <div class="form-group">
+                    <label for="main-set" class="col-form-label">Lesson Plan:</label>
+                    <select class="form-control" id="main-set" name="main_set" required>
+                        <option value="" selected disabled>--</option>
+                      {% for main_set in main_sets %}
+                      <option value="{{ main_set.id }}">{{ main_set }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="start-date" class="col-form-label">Start date:</label>
+                    <input type="date" class="form-control" id="start-date" name="start_date" value="{{ today }}">
+                  </div>
+                  <div class="form-group">
+                    <label for="end-date" class="col-form-label">Due date:</label>
+                    <input type="date" class="form-control" id="end-date" name="end_date" min="{{ today }}"required>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <input type="submit" value="Create assignment" class="btn select-btn">
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="editAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="editAssignmentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'educator:edit-assignment' %}">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="editAssignmentModalLabel">Edit assignment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <div class="form-group">
+                    <label for="new-start-date" class="col-form-label">New start date:</label>
+                    <input type="date" class="form-control" id="new-start-date" name="start_date" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="new-end-date" class="col-form-label">New due date:</label>
+                    <input type="date" class="form-control" id="new-end-date" name="end_date" required>
+                  </div>
+                  <input type="checkbox" id="deleteAssignment" name="delete_assignment" hidden>
+                  <input type="number" id="assignmentID" name="assignment_id" hidden>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" data-toggle="modal" data-target="#deleteAssignmentModal">Delete</button>
+                <input type="submit" id="submitEdit" value="Change assignment due date" class="btn select-btn">
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="deleteAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="deleteAssignmentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'educator:edit-assignment' %}">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteAssignmentModalLabel">Delete assignment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  Are you sure?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" onclick="document.querySelector('#deleteAssignment').checked = true; document.querySelector('#submitEdit').click()">Delete</button>
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="application/javascript">
+        $(document).ready(function () {
+            document.getElementById("top").style.display = "none";
+        });
+
+        var mybutton = document.getElementById("top");
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {scrollFunction()};
+        function scrollFunction() {
+            if (document.body.scrollTop > 250 || document.documentElement.scrollTop > 250) {
+                mybutton.style.display = "block";
+            } else {
+            mybutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+    </script>
+{% endblock %}
+

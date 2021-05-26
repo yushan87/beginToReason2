@@ -5,6 +5,19 @@ a new instance of a model will be made.
 from django.db import models
 
 
+class AlternateType(models.IntegerChoices):
+    """
+    Note: this is NOT a table in the database! This is a helper class for enumeration of types.
+    """
+    DEFAULT = 0, 'Default'
+    SIMPLIFY = 1, 'Simplify'
+    SELF_REFERENCE = 2, 'Self Reference'
+    CONCRETE = 3, "Used Concrete Value as Answer"
+    INITIAL = 4, 'Missing # Symbol'
+    ALGEBRA = 5, 'Algebra'
+    VARIABLE = 6, 'Variable'
+
+
 class Code(models.Model):
     """
     Contains a model of the code, allows for the ability to reuse.
@@ -146,87 +159,15 @@ class Reasoning(models.Model):
         return self.reasoning_name
 
 
-class IncorrectAnswer(models.Model):
-    """
-    Contains a model of Multiple Choice Answers. Each choice is attached to one Question.
-
-    @param models.Model The base model
-    """
-
-    lesson_text = models.CharField(max_length=200, default='Lesson2')
-
-    simplify = 'SIM'
-    self = 'SELF'
-    concrete = 'NUM'
-    initial = 'INIT'
-    algebra = 'ALG'
-    variable = 'VAR'
-
-    response_options = [
-        (simplify, 'Simplify'),
-        (self, 'Self Reference'),
-        (concrete, 'Used Concrete Value as Answer'),
-        (initial, 'Missing # Symbol'),
-        (algebra, 'Algebra'),
-        (variable, 'Variable')
-    ]
-
-    answer_type = models.CharField(
-        max_length=4,
-        choices=response_options,
-        default=simplify
-    )
-
-    answer_text = models.CharField(max_length=200)
-
-    def __str__(self):
-        """"
-        function __str__ is called to display the multiple choice texts. Helps for admin usability.
-
-        Returns:
-            str: choice text
-        """
-        return self.lesson_text + ': ' + self.answer_type + '-' + self.answer_text
-
-
-
 class Feedback(models.Model):
     """
         Contains a model of Feedback for students.
 
         @param models.Model The base model
-        """
+    """
 
     headline = models.CharField(max_length=50, default='Try Again!')
-
-    default = 'DEF'
-    correct = 'COR'
-    simplify = 'SIM'
-    self = 'SELF'
-    concrete = 'NUM'
-    initial = 'INIT'
-    algebra = 'ALG'
-    variable = 'VAR'
-    sub_lesson = 'SUB'
-
-    feedback_options = [
-        (default, 'Default'),
-        (correct, 'Correct'),
-        (simplify, 'Simplify'),
-        (self, 'Self Reference'),
-        (concrete, 'Used Concrete Value as Answer'),
-        (initial, 'Missing # Symbol'),
-        (algebra, 'Algebra'),
-        (variable, 'Variable'),
-        (sub_lesson, 'Sub_Lesson')
-    ]
-
-    feedback_type = models.CharField(
-        max_length=4,
-        choices=feedback_options,
-        default=default
-    )
-
+    feedback_type = models.IntegerField(choices=AlternateType.choices, blank=False, null=False)
     feedback_text = models.TextField(max_length=500)
 
     def __str__(self):
@@ -237,7 +178,6 @@ class Feedback(models.Model):
             str: choice text
         """
         return self.feedback_type + ': ' + self.feedback_text
-
 
 
 class Lesson(models.Model):
@@ -263,51 +203,15 @@ class Lesson(models.Model):
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
     reference_set = models.ManyToManyField(Reference, blank=True)
     reason = models.ForeignKey(Reasoning, on_delete=models.CASCADE, blank=True, null=True)
-
-    correct = models.CharField(max_length=50, default='Lesson To Go To')
+    correct = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
     correct_feedback = models.TextField(default='Proceeding to the next lesson.')
     feedback = models.ManyToManyField(Feedback, blank=True)
 
     is_walkthrough = models.BooleanField(default=False)
-    is_alternate = models.BooleanField(default=False)
     can_mutate = models.BooleanField(default=False)
-
-    sub_lessons_available = models.BooleanField(default=False)
-    incorrect_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
-
-
-    default = models.CharField(max_length=50, default='None')
-    simplify = models.CharField(max_length=50, default='None')
-    # simplify_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='simplify_answers')
-    self_reference = models.CharField(max_length=50, default='None')
-    # self_reference_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='self_answers')
-    use_of_concrete_values = models.CharField(max_length=50, default='None')
-    # use_of_concrete_values_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='concrete_answers')
-    not_using_initial_value = models.CharField(max_length=50, default='None')
-    # not_using_initial_value_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='initial_answers')
-    algebra = models.CharField(max_length=50, default='None')
-    # algebra_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='algebra_answers')
-
-    variable = models.CharField(max_length=50, default='None')
-    # variable_answers = models.ManyToManyField(IncorrectAnswer, blank=True, related_name='variable_answers')
-
-
-    # Tool already handles syntax,so I think this should be left out.
-    # syntax = models.CharField(max_length=50, default='Lesson To Go To')
-    # syntax_answers = models.ManyToManyField(IncorrectAnswer, blank=True)
-
     screen_record = models.BooleanField(default=False)
     audio_record = models.BooleanField(default=False)
     audio_transcribe = models.BooleanField(default=False)
-
-    # 0 correct
-    # 1 correct simplify
-    # 2 self reference
-    # 3 use of num
-    # 4 missing #
-    # 5 algebra
-    # 6 syntax
-    # 7 var
 
     def __str__(self):
         """"
@@ -318,25 +222,15 @@ class Lesson(models.Model):
         """
         return self.lesson_title
 
-class LessonIndex(models.Model):
+
+class IncorrectAnswer(models.Model):
     """
-        Contains a model that connects a Lesson with the order it should appear in a lesson.
-        Lessons - The linked lessons for the model
-        index - used for order in set
-
-        @param models.Model The base model
-        """
-    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
-    index = models.IntegerField(default=0)
-
-    def __str__(self):
-        """"
-            function __str__ is called to display the Lesson Index. This will be useful for admin/educators when
-            building the Lesson Plan
-            Returns:
-                str: Lesson Index: lesson name
-            """
-        return str(self.index) + ": " + str(self.lesson.lesson_name)
+    Model that is a one-to-many between lessons and their incorrect answers. Uses an enumeration so we can store
+    alternate types in the database in an efficient manner.
+    """
+    lesson = models.ForeignKey(Lesson, blank=False, null=False, on_delete=models.CASCADE)
+    answer_text = models.CharField(max_length=200, blank=False, null=False)  # Has a semicolon at the end!!!
+    type = models.IntegerField(choices=AlternateType.choices, blank=False, null=False)
 
 
 class LessonSet(models.Model):
@@ -351,11 +245,9 @@ class LessonSet(models.Model):
     @param models.Model The base model
     """
     set_name = models.CharField(max_length=50)
-    lessons = models.ManyToManyField(Lesson, blank=True)
-    first_in_set = models.ForeignKey(Lesson, related_name='first_in_set', on_delete=models.CASCADE, blank=True, null=True)
+    first_in_set = models.ForeignKey(Lesson, on_delete=models.PROTECT)
     set_description = models.TextField(default="This set is designed to further your understanding")
     index_in_set = models.IntegerField(default=0)
-    # number_normal_lessons = models.IntegerField(default=0)
 
     def __str__(self):
         """"
@@ -365,6 +257,69 @@ class LessonSet(models.Model):
             str: lesson name
         """
         return self.set_name
+
+    def lesson_by_index(self, index):
+        """"
+        function lesson_by_index returns the lesson at the given index in the lesson set
+        Args:
+            index (int): Index of the lesson within the set, 0-indexed
+        Returns:
+            Lesson: Lesson within the set at given index
+        """
+        try:
+            return LessonSetLessons.objects.get(lesson_set=self, index=index).lesson
+        except LessonSetLessons.DoesNotExist:
+            return None
+
+    def lessons(self):
+        """"
+        function lessons returns ordered list of the lessons within the lesson set
+        Returns:
+            array: List of lessons within set, ordered by index
+        """
+        lesson_list = []
+        for relation in LessonSetLessons.objects.filter(lesson_set=self).order_by('index').all():
+            lesson_list.append(relation.lesson)
+        return lesson_list
+
+    def length(self):
+        """"
+        function length returns how many lessons a lesson set has
+        Returns:
+            int: length of set
+        """
+        return LessonSetLessons.objects.filter(lesson_set=self).count()
+
+
+class LessonAlternate(models.Model):
+    """
+    A many-to-many between lessons (the primary, main lessons) and their alternate sets. Also includes an enumeration
+    of the incorrect answer type that should be linked to the set. If no relation is present for a type, there is no
+    alternate and progress is normal. If the relation exists, when a user triggers the type with an incorrect answer,
+    the user will progress through the alternate set referenced, and when the user is done with the alternate, they
+    will be at the NEXT lesson after the triggering lesson (i.e. alternates replace the triggering lesson)
+
+    @param models.Model The base model
+    """
+
+    lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=False)
+    alternate_set = models.ForeignKey(LessonSet, on_delete=models.PROTECT, null=False)
+    replace = models.BooleanField(null=False, blank=False)  # If true, if alt lesson A is called on lesson 1, after A
+    # is completed the user goes to lesson 2. If false, they would have to complete A, then 1, then 2.
+    type = models.IntegerField(choices=AlternateType.choices, blank=False, null=False)
+
+
+class LessonSetLessons(models.Model):
+    """
+    Many to Many between Lesson Sets
+    and Lessons.
+    Index - placement of lesson within lesson set
+
+    @param models.Model The base model
+    """
+    lesson_set = models.ForeignKey(LessonSet, on_delete=models.CASCADE)
+    lesson = models.ForeignKey(Lesson, on_delete=models.PROTECT)  # We do NOT want to cascade here - it will destroy indexing!
+    index = models.IntegerField()  # No defaults, never blank, never null.
 
 
 class MainSet(models.Model):
@@ -378,7 +333,6 @@ class MainSet(models.Model):
     @param models.Model The base model
     """
     set_name = models.CharField(max_length=50)
-    lessons = models.ManyToManyField(LessonSet, blank=True)
     set_description = models.TextField(default="This set is designed to further your understanding")
     show = models.BooleanField(default=False)
 
@@ -390,3 +344,49 @@ class MainSet(models.Model):
             str: lesson name
         """
         return self.set_name
+
+    def set_by_index(self, index):
+        """"
+        function set_by_index returns the lesson set at the given index in the main set
+        Args:
+            index (int): index of desired set
+        Returns:
+            LessonSet: set at index in assignment's main set
+        """
+        try:
+            return MainSetLessonSets.objects.get(main_set=self, index=index).lesson_set
+        except MainSetLessonSets.DoesNotExist:
+            return None
+
+    def sets(self):
+        """"
+        function set_by_index returns ordered list of the lesson sets within the main set
+        Returns:
+            array: List of lesson sets
+        """
+        set_list = []
+        for relation in MainSetLessonSets.objects.filter(main_set=self).order_by('index').all():
+            set_list.append(relation.lesson_set)
+        return set_list
+
+    def length(self):
+        """"
+        function length returns how many lesson sets a main set has
+        Returns:
+            Integer: number of sets in main set
+        """
+        return MainSetLessonSets.objects.filter(main_set=self).count()
+
+
+class MainSetLessonSets(models.Model):
+    """
+    Many to Many between Main Sets
+    and Lesson Sets.
+    Index - placement of lesson set within main set
+
+    @param models.Model The base model
+    """
+    main_set = models.ForeignKey(MainSet, on_delete=models.CASCADE)
+    lesson_set = models.ForeignKey(LessonSet, on_delete=models.PROTECT)  # We do NOT want to cascade here as
+    # it will destroy indexing!
+    index = models.IntegerField()  # No defaults, never blank, never null.

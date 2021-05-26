@@ -76,30 +76,30 @@ function withinBounds(point, type, highMeansHard) {
 //Make cards
 const container = document.querySelector("#lessonContainer")
 let addition
-const lessons = lessonSetData["lessons"]
-const bounds = lessonSetData["statBounds"]
+const lessonSets = mainSetData["lessonSets"]
+const bounds = mainSetData["statBounds"]
 let index = 0
-for (let lesson of lessons) {
-    addition = HTMLStringToElement(`<div class="col-3" style="margin: 20px 0px 20px 5px" id="lesson${lesson.lessonIndex}">
+for (let lessonSet of lessonSets) {
+    addition = HTMLStringToElement(`<div class="col-3" style="margin: 20px 0px 20px 5px" id="lessonSet${lessonSet.lessonIndex}">
     <div class="card">
         <div class="card-body">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="settings${lesson.lessonIndex}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style="float: right">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="settings${lessonSet.lessonIndex}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"  style="float: right">
                 <i class="fas fa-cog"></i>
             </button>
-            <div class="dropdown-menu" id="menu${lesson.lessonIndex}" aria-labelledby="settings${lesson.lessonIndex}">
+            <div class="dropdown-menu" id="menu${lessonSet.lessonIndex}" aria-labelledby="settings${lessonSet.lessonIndex}">
                 <a class="dropdown-item" href="#">Manage Users</a>
                 <a class="dropdown-item" href="#">Change Order</a>
                 <a class="dropdown-item" href="#">Set Alternate Lessons</a>
             </div>
-            <h5 class="card-title">${lesson.title}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">${lesson.name}</h6>
+            <h5 class="card-title">${lessonSet.name}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">${lessonSet.alternateCount} Alternate Lessons</h6>
             <div class="d-flex justify-content-between align-items-end">
                 <div class="card-text">
-                    Average attempts: ${lesson.averageAttempts.toString().substr(0, 4)}${withinBounds(lesson.averageAttempts, "averageAttempts", true)}<br>
-                    First try rate: ${(100*lesson.firstTryRate).toString().substr(0, 5)}%${withinBounds(lesson.firstTryRate, "firstTryRate", false)}<br>
-                    Completion rate: ${(100 * lesson.completionRate).toString().substr(0, 5)}%${withinBounds(lesson.completionRate, "completionRate", false)}<br>
+                    Average attempts: ${lessonSet.averageAttempts.toString().substr(0, 4)}${withinBounds(lessonSet.averageAttempts, "averageAttempts", true)}<br>
+                    First try rate: ${(100*lessonSet.firstTryRate).toString().substr(0, 5)}%${withinBounds(lessonSet.firstTryRate, "firstTryRate", false)}<br>
+                    Completion rate: ${(100 * lessonSet.completionRate).toString().substr(0, 5)}%${withinBounds(lessonSet.completionRate, "completionRate", false)}<br>
                     Current Users: ???<br>
-                    Users: ${lesson.userCount}
+                    Users: ${lessonSet.userCount}
                 </div>
                 <btn type="button" class="btn btn-primary float-right">View Graph</btn>
             </div>
@@ -107,14 +107,14 @@ for (let lesson of lessons) {
     </div>
 </div>`)
     addition.querySelector(".btn-primary").onclick = () => {
-        window.location.href = `/data_analysis/data/${lessonSetInfo["id"]}/${lesson.lessonIndex}`
+        window.location.href = window.location.href.split('?')[0] + `/${lessonSet.lessonSetIndex}`
     }
-    addition.querySelector(`#menu${lesson.lessonIndex}`).onclick = () => {
-        window.sessionStorage.setItem("selectedLesson", lesson.lessonIndex)
+    addition.querySelector(`#menu${lessonSet.lessonIndex}`).onclick = () => {
+        window.sessionStorage.setItem("selectedLesson", lessonSet.lessonIndex)
     }
     container.appendChild(addition)
     index++
-    if(index != lessons.length) { //so I don't add an arrow going nowhere
+    if(index != lessonSets.length) { //so I don't add an arrow going nowhere
         addition = HTMLStringToElement(`<div class="arrow"><svg width="60" height="12"><polygon points="0, 3 50, 3 50, 0 60, 6 50, 12 50, 9 0, 9" fill="gray" /></svg></div>`)
         container.appendChild(addition)
     }

@@ -1,0 +1,123 @@
+{% extends "core/base.html" %}
+{% load static compress %}
+
+{% block css %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/catalog.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
+    {% endcompress %}
+{% endblock %}
+
+{% block main_content %}
+    <div class="jumbotron jumbotron-fluid">
+        <div class="container">
+            <h1 class="font-weight-bold" id="jumbo-title">
+                    Classes
+            </h1>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-1 p-0">
+            </div>
+            <div class="col-10 p-0">
+                <h1 class="mb-0 page-section-heading row">
+                    <div class="col-10">
+                        <h3>My Classes</h3>
+                    </div>
+                    <div class="col-2">
+                        <btn class="btn select-btn btn-block float-right" data-toggle="modal" data-target="#joinClassModal">Join a class</btn>
+                    </div>
+                </h1>
+                {% for class in classes %}
+                    <div id="begin" class="card lesson-card">
+                        <div class="card-horizontal">
+                            <div class="img-square-wrapper">
+                                <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
+                            </div>
+                            <div class="card-body">
+                                <h5 class="card-title">{{class}}</h5>
+                                {% if class.next_lesson_due_date %}
+                                <p class="card-text">Next lesson due: {{ class.next_lesson_due_date }}</p>
+                                {% else %}
+                                <p class="card-text">No current assignments!</p>
+                                {% endif %}
+                                <a href="{% url 'tutor:class' classID=class.id %}">
+                                    <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
+                                        View Class
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="col-1 p-0">
+            </div>
+            <button onclick="topFunction()" id="top" title="Go to top"><i class="fas fa-arrow-up"></i></button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="joinClassModal" tabindex="-1" role="dialog" aria-labelledby="joinClassModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{% url 'tutor:classes' %}">{% csrf_token %}
+              <div class="modal-header">
+                <h5 class="modal-title" id="joinClassModalLabel">New class</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                  <div class="form-group">
+                    <label for="class-code" class="col-form-label">Class join code:</label>
+                    <input type="text" class="form-control" id="class-code" name="class-code" required maxlength="6">
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <input type="submit" value="Join" class="btn select-btn">
+              </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    <script type="application/javascript">
+        $(document).ready(function () {
+            document.getElementById("top").style.display = "none";
+        });
+
+        var mybutton = document.getElementById("top");
+        // When the user scrolls down 20px from the top of the document, show the button
+        window.onscroll = function() {scrollFunction()};
+        function scrollFunction() {
+            if (document.body.scrollTop > 250 || document.documentElement.scrollTop > 250) {
+                mybutton.style.display = "block";
+            } else {
+            mybutton.style.display = "none";
+            }
+        }
+
+        // When the user clicks on the button, scroll to the top of the document
+        function topFunction() {
+            document.body.scrollTop = 0;
+            document.documentElement.scrollTop = 0;
+        }
+
+        var acc = document.getElementsByClassName("accordion");
+        var i;
+
+        for (i = 0; i < acc.length; i++) {
+            acc[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var panel = this.nextElementSibling;
+                if (panel.style.display === "block") {
+                    panel.style.display = "none";
+                } else {
+                    panel.style.display = "block";
+                }
+            });
+        }
+    </script>
+{% endblock %}

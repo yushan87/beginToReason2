@@ -1,13 +1,13 @@
-document.querySelector('#graphTitle').innerHTML = `${graph.lesson.name}<br>${graph.lesson.title}`
+document.querySelector('#graphTitle').innerHTML = `${graph.lesson.lessonName}: ${graph.lesson.lessonTitle}<br>${graph.lesson.lessonSetName}`
 const urlSplit = window.location.href.split('/')
 document.querySelector('#prevLesson').disabled = graph.lesson.prevLesson < 0
 document.querySelector('#nextLesson').disabled = graph.lesson.nextLesson < 0
 document.querySelector('#prevLesson').onclick = () => {
-  urlSplit[urlSplit.length - 1] = graph.lesson.prevLesson
+  urlSplit[urlSplit.length - 1] = graph.lesson.prevLessonSet
   window.location.href = urlSplit.join('/')
 }
 document.querySelector('#nextLesson').onclick = () => {
-  urlSplit[urlSplit.length - 1] = graph.lesson.nextLesson
+  urlSplit[urlSplit.length - 1] = graph.lesson.nextLessonSet
   window.location.href = urlSplit.join('/')
 }
 document.querySelector("#setView").onclick = () => {
@@ -647,7 +647,7 @@ function color(d) {
   if (d.distance == "No completions") {
     return "#ff0000"
   }
-  if (d.distance == 0) {
+  if (d.distance < 1) {
     return "#00ffff"
   }
   const goodness = (maxDistance - (d.distance - 1) ** 0.7) / (maxDistance)
@@ -728,6 +728,9 @@ nodes.forEach((node, index) => {
 })
 maxDistance--
 maxDistance = maxDistance ** 0.7
+if (maxDistance <= 0) { //corner case for lessons corrupted by alternates
+    maxDistance = 1
+}
 const originalNodes = JSON.parse(JSON.stringify(nodes))
 const originalLinks = JSON.parse(JSON.stringify(links))
 // forces

@@ -1,21 +1,20 @@
 import json
 from data_analysis.models import DataLog
-from core.models import Lesson, LessonSet
+from core.models import MainSet
+from data_analysis.py_helper_functions.graph_viewer.lesson_reader import is_user_educator
 
 
-# Returns JSON array of lessons in the set
-def get_set_stats(lesson_set_id):
+# Returns stats for the mainset based around each lesson set
+def get_set_stats(class_id, mainset_id):
     lesson_set_list = []
-    for index, lesson in enumerate(LessonSet.objects.get(id=lesson_set_id).lessons.all()):
-        if not lesson.is_alternate:
-            # Throwing out alternate lessons
-            lesson_set_list.append(_get_lesson_stats(lesson, index))
-    return json.dumps({"lessons": lesson_set_list, "statBounds": _find_stat_ranges(lesson_set_list)})
+    for index, lesson_set in enumerate(MainSet.objects.get(id=mainset_id).lessons.all()):
+        lesson_set_list.append(_get_lesson_set_stats(class_id, lesson_set, index))
+    return json.dumps({"lessonSets": lesson_set_list, "statBounds": _find_stat_ranges(lesson_set_list)})
 
 
-# Returns the set's info (name, id)
-def get_set_info(lesson_set_id):
-    return {"name": LessonSet.objects.get(id=lesson_set_id).set_name, "id": lesson_set_id}
+# Returns the main set's info (name, id)
+def get_set_info(mainset_id):
+    return {"name": MainSet.objects.get(id=mainset_id).set_name, "id": mainset_id}
 
 
 """
@@ -23,35 +22,43 @@ Helper Methods
 """
 
 
-# Returns a dict of a single lesson for lesson statistics
-def _get_lesson_stats(lesson, index):
-    lesson_dict = {"name": lesson.lesson_name, "title": lesson.lesson_title}
-    lesson_dict.update(_get_user_stats(lesson, index))
+# Returns a dict of a single lesson set for main set statistics
+def _get_lesson_set_stats(class_id, lesson_set, index):
+    lesson_dict = {"name": lesson_set.set_name, "alternateCount": lesson_set.lessons.all().count() - 1}
+    lesson_dict.update(_get_user_stats(class_id, lesson_set, index))
     return lesson_dict
 
 
 # Returns a dictionary of the user-specific stats (e.g. avg. num of attempts)
-def _get_user_stats(lesson, index):
-    query = DataLog.objects.filter(
-        lesson_key_id=lesson.id).order_by('user_key', 'time_stamp')
+def _get_user_stats(class_id, lesson_set, index):
+    query = DataLog.objects.filter(lesson_set_key_id=lesson_set.id, class_key_id=class_id).order_by('user_key', 'time_stamp')
     if not query:
         # Means that no students have taken the lesson yet
-        return {"userCount": 0, "completionRate": 0, "firstTryRate": 0, "averageAttempts": 0, "lessonIndex": index}
-    user_count = 1
+        return {"userCount": 0, "completionRate": 0, "firstTryRate": 0, "averageAttempts": 0, "lessonSetIndex": index}
+    user_count = 0
     completions = 0
     attempts = 0
-    first_try = int(query[0].status == 'correct')
-    prev_student = query[0].user_key
+    first_try = 0
+    prev_log = None
     for log in query:
-        if log.user_key != prev_student:
+        # Throw out educators
+        if is_user_educator(log.user_key):
+            continue
+        if not prev_log or log.user_key != prev_log.user_key:
             # New student!
             user_count += 1
-            prev_student = log.user_key
             first_try += int(log.status == 'success')
-        completions += int(log.status == 'success')
+            if prev_log:
+                completions += int(prev_log.status == 'success')
         attempts += 1
+        prev_log = log
+
+    # Post iteration
+    if prev_log:
+        completions += int(prev_log.status == 'success')
+
     return {"userCount": user_count, "completionRate": completions / user_count, "firstTryRate": first_try / user_count,
-            "averageAttempts": attempts / user_count, "lessonIndex": index}
+            "averageAttempts": attempts / user_count, "lessonSetIndex": index}
 
 
 # Gets the ranges that outliers lie out of
@@ -74,9 +81,10 @@ def _find_stat_ranges(lesson_set_list):
 
 # Currently returning just the quartiles because 1.5*IQR was too lenient
 def _get_normal_range(data_list, list_length):
+    if list_length < 2:
+        return -1, 101
     data_list.sort()
     half_length = int(list_length / 2)
-
     if half_length % 2:
         # It's odd!
         quartile_1 = data_list[int(half_length / 2)]

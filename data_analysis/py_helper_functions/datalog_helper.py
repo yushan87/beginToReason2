@@ -10,27 +10,27 @@ from data_analysis.models import DataLog
 from tutor.py_helper_functions.mutation import reverse_mutate
 
 
-def log_data(request):
+def log_data(user_info, assignment, lesson_set, lesson, is_alternate, browser_data, status):
     """function log_data This function handles the logic for logging data
     Args:
-         request (HTTPRequest): A http request object created automatically by Django.
+         user_info: The user that input the code
+         assignment: Assignment this log was a part of
+         lesson_set: Lesson set this log was a part of
+         lesson: Lesson user was taking
+         is_alternate: Boolean for whether lesson is an alternate or not
+         browser_data: Data returned from JS (NOT RESOLVE data)
+         status: Either 'success' or 'failure'
     Returns:
     """
-    user = User.objects.get(email=request.user.email)
-    user_info = UserInformation.objects.get(user=user)
-    lesson_set = user_info.current_lesson_set
-    main_set = user_info.current_main_set
-    lesson = Lesson.objects.get(lesson_name=user_info.current_lesson_name)
+    user = user_info.user
     if lesson.can_mutate:
-        original_code = reverse_mutate(json.loads(request.body.decode('utf-8'))['code'])
+        original_code = reverse_mutate(browser_data['code'])
     else:
-        original_code = json.loads(request.body.decode('utf-8'))['code']
+        original_code = browser_data['code']
 
-    code = json.loads(request.body.decode('utf-8'))['code']
-    explanation = json.loads(request.body.decode('utf-8'))['explanation']
-    past_answers = json.loads(request.body.decode('utf-8'))['allAnswers']
-    status = json.loads(request.body.decode('utf-8'))['status']
-    face = json.loads(request.body.decode('utf-8'))['face']
+    code = browser_data['code']
+    explanation = browser_data['explanation']
+    face = browser_data['face']
     user_info.mood = face
     user_info.save()
 
@@ -39,12 +39,12 @@ def log_data(request):
     data_to_log = DataLog.objects.create(user_key=user,
                                          time_stamp=timezone.now(),
                                          lesson_set_key=lesson_set,
-                                         main_set_key=main_set,
+                                         assignment_key=assignment,
                                          lesson_key=lesson,
+                                         is_alternate=is_alternate,
                                          status=status,
                                          code=code,
                                          explanation=explanation,
-                                         past_answers = past_answers,
                                          face=face,
                                          original_code=original_code)
     data_to_log.save()
