@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('core', '0007_auto_20210509_1552'),
-        ('instructor', '0010_auto_20210509_0956'),
+        ('educator', '0010_auto_20210509_0956'),
     ]
 
     operations = [

@@ -6,7 +6,7 @@ from django.apps import AppConfig
 
 class EducatorConfig(AppConfig):
     """
-    The ThinkAloudConfig object stores the configuration for the "educator" application
+        The CoreConfig object stores the configuration for the "educator" application
     """
     # Override the name of the application in AppConfig
     name = 'educator'

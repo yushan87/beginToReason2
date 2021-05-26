@@ -51,12 +51,12 @@
                                         <p class="card-text"><small class="text-muted">Join code: {{ class.join_code }}</small></p>
                                         <div class="row">
                                             <div class="col-6">
-                                                <a class="btn select-btn btn-block" href="{% url 'instructor:members' class.id %}">
+                                                <a class="btn select-btn btn-block" href="{% url 'educator:members' class.id %}">
                                                     Manage Members
                                                 </a>
                                             </div>
                                             <div class="col-6">
-                                                <a class="btn select-btn btn-block" href="{% url 'instructor:class-view' class.id %}">
+                                                <a class="btn select-btn btn-block" href="{% url 'educator:class-view' class.id %}">
                                                     View Assignments
                                                 </a>
                                             </div>
@@ -74,7 +74,7 @@
     <div class="modal fade" id="newClassModal" tabindex="-1" role="dialog" aria-labelledby="newClassModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form method="POST" action="{% url 'instructor:main-view' %}">{% csrf_token %}
+            <form method="POST" action="{% url 'educator:main-view' %}">{% csrf_token %}
               <div class="modal-header">
                 <h5 class="modal-title" id="newClassModalLabel">New class</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -99,7 +99,7 @@
     <div class="modal fade" id="editClassModal" tabindex="-1" role="dialog" aria-labelledby="editClassModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form method="POST" action="{% url 'instructor:edit-class' %}">{% csrf_token %}
+            <form method="POST" action="{% url 'educator:edit-class' %}">{% csrf_token %}
               <div class="modal-header">
                 <h5 class="modal-title" id="editClassModalLabel">Edit assignment</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -127,7 +127,7 @@
     <div class="modal fade" id="deleteClassModal" tabindex="-1" role="dialog" aria-labelledby="deleteClassModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form method="POST" action="{% url 'instructor:edit-class' %}">{% csrf_token %}
+            <form method="POST" action="{% url 'educator:edit-class' %}">{% csrf_token %}
               <div class="modal-header">
                 <h5 class="modal-title" id="deleteClassModalLabel">Delete class</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">

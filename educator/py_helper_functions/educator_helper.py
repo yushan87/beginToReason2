@@ -1,13 +1,13 @@
 """
-This module contains our Django helper functions for the "instructor" application.
+This module contains our Django helper functions for the "educator" application.
 """
 from accounts.models import UserInformation, User
-from instructor.models import ClassMembership, Class, Assignment, AssignmentProgress
+from educator.models import ClassMembership, Class, Assignment, AssignmentProgress
 import tutor.py_helper_functions.tutor_helper as tutor_helper
 
 
-def user_is_instructor(user_info):
-    """function user_is_instructor This function handles the auth logic for an instructor
+def user_is_educator(user_info):
+    """function user_is_educator This function handles the auth logic for an educator
 
     Args:
         user_info: Model from accounts
@@ -15,11 +15,11 @@ def user_is_instructor(user_info):
     Returns:
         Boolean: A boolean to signal if the user instructs any class
     """
-    return user_info.user_instructor
+    return user_info.user_educator
 
 
 def user_auth_inst(user_info, class_id):
-    """function user_auth_inst This function handles the auth logic for an instructor of a class
+    """function user_auth_inst This function handles the auth logic for an educator of a class
 
     Args:
         user_info: Model from accounts
@@ -30,7 +30,7 @@ def user_auth_inst(user_info, class_id):
     """
     membership = user_in_class_auth(user_info, class_id)
     if membership is not None:
-        return membership.is_instructor
+        return membership.is_educator
     return False
 
 
@@ -80,7 +80,7 @@ def get_classes_taught(user_info):
         classes: List of classes the user teaches
     """
     class_ids = []
-    for membership in ClassMembership.objects.filter(user_id=user_info.id, is_instructor=1):
+    for membership in ClassMembership.objects.filter(user_id=user_info.id, is_educator=1):
         class_ids.append(membership.class_taking_id)
 
     classes = []

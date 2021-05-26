@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         ),
         migrations.RemoveField(
             model_name='userinformation',
-            name='user_instructor',
+            name='user_educator',
         ),
     ]

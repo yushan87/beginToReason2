@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('core', '0001_initial'),
         ('accounts', '0006_auto_20210509_0956'),
-        ('instructor', '0009_auto_20210420_1001'),
+        ('educator', '0009_auto_20210420_1001'),
     ]
 
     operations = [
@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('current_lesson_index', models.IntegerField(default=0)),
                 ('completed_lesson_index', models.IntegerField(default=0)),
-                ('assignment_key', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='instructor.assignment')),
+                ('assignment_key', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='educator.assignment')),
                 ('current_lesson_set', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, to='core.lessonset')),
                 ('user_info_key', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='accounts.userinformation')),
             ],

@@ -20,7 +20,7 @@ class UserInformation(models.Model):
     user_school = models.CharField("School", max_length=100, validators=[MinLengthValidator(1)])  # School field
     user_gender = models.CharField("Gender", max_length=50, validators=[MinLengthValidator(1)])  # Gender field
     user_race = models.CharField("Race", max_length=50, validators=[MinLengthValidator(1)])  # Race field
-    user_instructor = models.BooleanField(default=False)  # Whether user can create classes, view instructor tools
+    user_educator = models.BooleanField(default=False)  # Whether user can create classes, view educator tools
     mood = models.CharField(max_length=10, default="neutral")
 
     def __str__(self):

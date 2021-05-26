@@ -12,8 +12,8 @@ from django.http import JsonResponse
 from core.models import MainSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, finished_lesson_count
-from instructor.models import Class, ClassMembership, Assignment
-from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth, assignment_auth
+from educator.models import Class, ClassMembership, Assignment
+from educator.py_helper_functions.educator_helper import get_classes, user_in_class_auth, assignment_auth
 from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous
 from tutor.py_helper_functions.mutation import can_mutate
 
@@ -57,7 +57,7 @@ def classes(request):
                         messages.error(request, "You are already in " + str(class_to_join) + "!")
                     else:
                         new_relation = ClassMembership(user_id=current_user.id, class_taking_id=class_to_join.id,
-                                                       is_instructor=False)
+                                                       is_educator=False)
                         new_relation.save()
                         messages.info(request, "Successfully added you to " + str(class_to_join))
                 else:

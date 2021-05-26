@@ -25,7 +25,7 @@ class Migration(migrations.Migration):
                 ('user_class', models.CharField(max_length=100, validators=[django.core.validators.MinLengthValidator(1)], verbose_name='Class')),
                 ('user_gender', models.CharField(max_length=50, validators=[django.core.validators.MinLengthValidator(1)], verbose_name='Gender')),
                 ('user_race', models.CharField(max_length=50, validators=[django.core.validators.MinLengthValidator(1)], verbose_name='Race')),
-                ('user_instructor', models.BooleanField(default=False)),
+                ('user_educator', models.BooleanField(default=False)),
                 ('current_lesson_index', models.IntegerField(default=0)),
                 ('completed_lesson_index', models.IntegerField(default=0)),
                 ('current_lesson_name', models.CharField(default='None', max_length=200)),

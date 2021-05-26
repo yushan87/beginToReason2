@@ -57,8 +57,8 @@ def _lesson_to_graph(class_id, lesson, is_anonymous):
     nodes_in_chain.append(start_node)
     prev_student = -1
     for log in query:
-        # Throw out instructors
-        if is_user_instructor(log.user_key):
+        # Throw out educators
+        if is_user_educator(log.user_key):
             continue
         # Only need confirm statements
         log.code = _locate_confirms(log.code)
@@ -173,8 +173,8 @@ def _get_user_info(user):
     return UserInformation.objects.get(user=user.id)
 
 
-def is_user_instructor(user_id):
-    return _get_user_info(user_id).user_instructor
+def is_user_educator(user_id):
+    return _get_user_info(user_id).user_educator
 
 
 def _locate_confirms(code):

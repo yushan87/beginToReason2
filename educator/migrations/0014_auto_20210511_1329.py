@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('instructor', '0013_auto_20210511_1030'),
+        ('educator', '0013_auto_20210511_1030'),
     ]
 
     operations = [
@@ -22,6 +22,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='alternateprogress',
             name='progress',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='instructor.assignmentprogress'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.PROTECT, to='educator.assignmentprogress'),
         ),
     ]

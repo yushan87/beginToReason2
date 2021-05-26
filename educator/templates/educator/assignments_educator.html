@@ -147,7 +147,7 @@
     <div class="modal fade" id="newAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="newAssignmentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form method="POST" action="{% url 'instructor:class-view' class.id %}">{% csrf_token %}
+            <form method="POST" action="{% url 'educator:class-view' class.id %}">{% csrf_token %}
               <div class="modal-header">
                 <h5 class="modal-title" id="newAssignmentModalLabel">New assignment</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -185,7 +185,7 @@
     <div class="modal fade" id="editAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="editAssignmentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form method="POST" action="{% url 'instructor:edit-assignment' %}">{% csrf_token %}
+            <form method="POST" action="{% url 'educator:edit-assignment' %}">{% csrf_token %}
               <div class="modal-header">
                 <h5 class="modal-title" id="editAssignmentModalLabel">Edit assignment</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -217,7 +217,7 @@
     <div class="modal fade" id="deleteAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="deleteAssignmentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form method="POST" action="{% url 'instructor:edit-assignment' %}">{% csrf_token %}
+            <form method="POST" action="{% url 'educator:edit-assignment' %}">{% csrf_token %}
               <div class="modal-header">
                 <h5 class="modal-title" id="deleteAssignmentModalLabel">Delete assignment</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">

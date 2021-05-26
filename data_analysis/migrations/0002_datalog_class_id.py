@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('instructor', '0004_auto_20210413_1031'),
+        ('educator', '0004_auto_20210413_1031'),
         ('data_analysis', '0001_initial'),
     ]
 
@@ -15,6 +15,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='datalog',
             name='class_id',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='instructor.class'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='educator.class'),
         ),
     ]

@@ -1,7 +1,7 @@
 import json
 from data_analysis.models import DataLog
 from core.models import MainSet
-from data_analysis.py_helper_functions.graph_viewer.lesson_reader import is_user_instructor
+from data_analysis.py_helper_functions.graph_viewer.lesson_reader import is_user_educator
 
 
 # Returns stats for the mainset based around each lesson set
@@ -41,8 +41,8 @@ def _get_user_stats(class_id, lesson_set, index):
     first_try = 0
     prev_log = None
     for log in query:
-        # Throw out instructors
-        if is_user_instructor(log.user_key):
+        # Throw out educators
+        if is_user_educator(log.user_key):
             continue
         if not prev_log or log.user_key != prev_log.user_key:
             # New student!

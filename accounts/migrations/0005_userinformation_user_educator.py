@@ -12,7 +12,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name='userinformation',
-            name='user_instructor',
+            name='user_educator',
             field=models.BooleanField(default=False),
         ),
     ]

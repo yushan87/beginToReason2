@@ -27,18 +27,18 @@
             <div class="col-12">
                 <div class="page-section-heading my-3 row">
                     <div class="col-12">
-                        <h3>Instructors</h3>
+                        <h3>Educators</h3>
                     </div>
                 </div>
                 <table>
                     <tr>
-                        <th>Instructor Username</th>
-                        <th>Instructor Email</th>
+                        <th>Educator Username</th>
+                        <th>Educator Email</th>
                     </tr>
-                    {% for instructor in class.get_instructors %}
+                    {% for educator in class.get_educators %}
                     <tr>
-                        <td>{{instructor.user}}</td>
-                        <td>{{instructor.user.email}}</td>
+                        <td>{{educator.user}}</td>
+                        <td>{{educator.user.email}}</td>
                     </tr>
                     {% endfor %}
                 </table>
@@ -61,7 +61,7 @@
                         <td>{{student.user.last_login}}</td>
                         <td><button class="btn select-btn" data-toggle="modal"data-target="#promoteStudentModal"
                                     onclick="document.querySelector('#studentID').value={{student.id}}">
-                            Make Instructor
+                            Make Educator
                         </button></td>
                     </tr>
                     {% endfor %}
@@ -73,7 +73,7 @@
     <div class="modal fade" id="promoteStudentModal" tabindex="-1" role="dialog" aria-labelledby="promoteStudentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-            <form method="POST" action="{% url 'instructor:promote-student' %}">{% csrf_token %}
+            <form method="POST" action="{% url 'educator:promote-student' %}">{% csrf_token %}
               <div class="modal-header">
                 <h5 class="modal-title" id="promoteStudentModalLabel">Promote Student</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -87,7 +87,7 @@
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <input type="submit" id="submitPromote" value="Make Instructor" class="btn select-btn">
+                <input type="submit" id="submitPromote" value="Make Educator" class="btn select-btn">
               </div>
             </form>
         </div>

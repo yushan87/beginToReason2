@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('instructor', '0001_initial'),
+        ('educator', '0001_initial'),
         ('accounts', '0001_initial'),
     ]
 
@@ -18,6 +18,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='userinformation',
             name='user_classes',
-            field=models.ManyToManyField(blank=True, related_name='members', to='instructor.Class'),
+            field=models.ManyToManyField(blank=True, related_name='members', to='educator.Class'),
         ),
     ]

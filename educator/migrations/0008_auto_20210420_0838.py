@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('instructor', '0007_class_join_code'),
+        ('educator', '0007_class_join_code'),
     ]
 
     operations = [

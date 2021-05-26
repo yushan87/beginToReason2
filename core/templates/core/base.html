@@ -46,12 +46,12 @@
             <span id="site-title" class="pl-1 text-center align-bottom">BeginToReason</span>
         </a>
         <ul class="navbar-nav flex-row align-items-center text-center">
-            {% if user.userinformation.user_instructor %}
+            {% if user.userinformation.user_educator %}
             <li class="nav-item ml-3">
                 <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">Student View</a>
             </li>
             <li class="nav-item ml-3">
-                <a class="nav-link pb-0" href="{% url 'instructor:main-view' %}">Instructor Tools</a>
+                <a class="nav-link pb-0" href="{% url 'educator:main-view' %}">Educator Tools</a>
             </li>
             {% else %}
             <li class="nav-item ml-3">

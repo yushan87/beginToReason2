@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('core', '0001_initial'),
-        ('instructor', '0008_auto_20210420_0838'),
+        ('educator', '0008_auto_20210420_0838'),
     ]
 
     operations = [
@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('start_date', models.DateField(default=datetime.date.today)),
                 ('end_date', models.DateField(blank=True)),
-                ('class_key', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='instructor.class')),
+                ('class_key', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='educator.class')),
                 ('main_set', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='core.mainset')),
             ],
         ),
