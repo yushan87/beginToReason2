@@ -1,7 +1,6 @@
 """
 This module contains our Django views for the "tutor" application.
 """
-import asyncio
 import json
 import re
 
@@ -15,8 +14,7 @@ from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, finished_lesson_count
 from instructor.models import Class, ClassMembership, Assignment
 from instructor.py_helper_functions.instructor_helper import get_classes, user_in_class_auth, assignment_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier, \
-    overall_status
+from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous
 from tutor.py_helper_functions.mutation import can_mutate
 
 User = get_user_model()
@@ -120,7 +118,8 @@ def grader(request):
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
             submitted_answer = ''.join(submitted_answer)
 
-            # Send it off to the RESOLVE verifier (commented out because RESOLVE is down currently)
+            # Send it off to the RESOLVE verifier (commented out because RESOLVE is down currently). You will need
+            # to import these 3 things: asyncio (not the django.asyncio), overall_status, and send_to_verifier
             # response, vcs = asyncio.run(send_to_verifier(data['code']))
             # if response is not None:
             #     lines = overall_status(response, vcs)
@@ -131,7 +130,7 @@ def grader(request):
 
             # Placeholder for verifier response
             status = 'success'
-            # TODO: Eventually uncomment line below when lines are implemented in
+            # issue: Eventually uncomment line below when lines are implemented in
             # lines = [3, 5]
 
             # Log data
@@ -139,7 +138,7 @@ def grader(request):
 
             if status == "success":
                 # Update assignment progress
-                # TODO: Use return value from advance_user to communicate to browser that assignment is completed
+                # issue: Use return value from advance_user to communicate to browser that assignment is completed
                 assignment.advance_user(current_user.id)
                 return JsonResponse(browser_response(current_lesson, assignment, current_user, submitted_answer,
                                                      status, True))
