@@ -5,5 +5,5 @@ django-libsass==0.8
 social-auth-app-django==4.0.0
 django-crispy-forms==1.11.2
 django-mathfilters==1.0.0
-websockets==9.0.2
+websockets==9.1
 asgiref==3.3.4
