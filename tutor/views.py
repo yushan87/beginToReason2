@@ -1,6 +1,7 @@
 """
 This module contains our Django views for the "tutor" application.
 """
+import asyncio
 import json
 import re
 
@@ -14,7 +15,8 @@ from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, finished_lesson_count
 from educator.models import Class, ClassMembership, Assignment
 from educator.py_helper_functions.educator_helper import get_classes, user_in_class_auth, assignment_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous
+from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier, \
+    overall_status
 from tutor.py_helper_functions.mutation import can_mutate
 
 User = get_user_model()
@@ -114,24 +116,17 @@ def grader(request):
             current_lesson_set, _, current_lesson, _, is_alternate = assignment.get_user_lesson(current_user.id)
             print("lessons in set:", current_lesson_set.lessons())
             print("my lesson:", current_lesson)
-            # Get submitted answer. No 'Confirm', no spaces, each ends w/ a semicolon
+            # Get submitted answer. No 'Confirm', no spaces, each ends with a semicolon
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
             submitted_answer = ''.join(submitted_answer)
 
-            # Send it off to the RESOLVE verifier (commented out because RESOLVE is down currently). You will need
-            # to import these 3 things: asyncio (not the django.asyncio), overall_status, and send_to_verifier
-            # response, vcs = asyncio.run(send_to_verifier(data['code']))
-            # if response is not None:
-            #     lines = overall_status(response, vcs)
-            #     status = response['status']
-            # else:
-            #     status = 'failure'
-            #     lines = []
-
-            # Placeholder for verifier response
-            status = 'success'
-            # issue: Eventually uncomment line below when lines are implemented in
-            # lines = [3, 5]
+            response, vcs = asyncio.run(send_to_verifier(data['code']))
+            if response is not None:
+                lines = overall_status(response, vcs)
+                status = response['status']
+            else:
+                status = 'failure'
+                lines = []
 
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status)
