@@ -122,15 +122,17 @@ def grader(request):
 
             response, vcs = asyncio.run(send_to_verifier(data['code']))
             if response is not None:
-                # issue: Eventually send these line nums to the browser to highlight the lines that passed/failed
-                # lines = overall_status(response, vcs)
+                lines = overall_status(response, vcs)
                 status = response['status']
             else:
                 status = 'failure'
-                # lines = []
+                lines = []
 
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status)
+
+            # issue: Eventually send these line nums to the browser to highlight the lines that passed/failed
+            print("Line nums that will eventually be sent to browser:", lines)
 
             if status == "success":
                 # Update assignment progress
