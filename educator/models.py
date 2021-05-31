@@ -155,6 +155,7 @@ class Assignment(models.Model):
         """
         if AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=userID).exists():
             progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=userID)
+
             if AlternateProgress.objects.all().filter(progress=progress).exists():
                 # User is in an alt lesson
                 alt_progress = AlternateProgress.objects.all().filter(progress=progress).order_by('-alternate_level')[0]
@@ -164,8 +165,15 @@ class Assignment(models.Model):
             # User is not in an alt lesson
             progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=userID)
             lesson_set = self.main_set.set_by_index(progress.current_set_index)
+
+            if lesson_set is None:
+                # If lesson_set is None, that means the assignment is complete
+                # Return None, let the caller handle it
+                return None, -1, None, -1, False
+
             return lesson_set, progress.current_set_index, lesson_set.lesson_by_index(progress.current_lesson_index), \
                 progress.current_lesson_index, False
+
         # Not in the assignment currently
         return None, -1, None, -1, False
 
