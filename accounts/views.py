@@ -76,9 +76,11 @@ def profile(request):
             request.session.set_expiry(0)
             print("USER EXISTS IN ACCOUNTS   ", request.method)
             print(request)
+            print("completedAssignments:", user_info.get_completed_assignments())
             return render(request, "accounts/profile.html", {'name': user_info.user_nickname,
-                                                             'CompletedSet': user_info.completed_sets.all(),
-                                                             'CurrentSet': user_info.current_main_set})
+                                                             'currentAssignments': user_info.get_current_assignments(),
+                                                             'completedAssignments':
+                                                                 user_info.get_completed_assignments()})
         except ValidationError:
             # Case 1b: The user information model is invalid,
             #           we redirect to the settings page

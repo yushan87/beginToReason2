@@ -213,14 +213,16 @@ class Assignment(models.Model):
                 progress.current_lesson_index = 0
                 progress.save()
                 return True
+            # No! The user has completed the assignment. Set indices to -1 to mark completion.
+            progress.current_set_index = -1
+            progress.current_lesson_index = -1
             progress.save()
-            # No! The user has completed the assignment.
             return False
         # Not in the assignment currently
         return False
 
     def alternate_check(self, userID, submittedAnswer):
-        """function advance_user a helper function to move a user to an alternate lesson. Call whenever a user gets
+        """function alternate_check a helper function to move a user to an alternate lesson. Call whenever a user gets
         a question wrong.
         Args:
             userID (Integer): ID of the user_info queried (not the user, but the user_info)
