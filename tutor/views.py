@@ -36,7 +36,7 @@ def catalog(request):
 
 @login_required(login_url='/accounts/login/')
 def classes(request):
-    """function catalog This function handles the view for the classes page of the application.
+    """function classes This function handles the view for the classes page of the application.
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
     Returns:
@@ -73,7 +73,7 @@ def classes(request):
 
 
 def class_view(request, classID):
-    """function catalog This function handles the view for the class page of the application.
+    """function class_view This function handles the view for the class page of the application.
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
         classID (int): The ID of the class that's being viewed
@@ -122,11 +122,12 @@ def grader(request):
 
             response, vcs = asyncio.run(send_to_verifier(data['code']))
             if response is not None:
-                lines = overall_status(response, vcs)
+                # issue: Eventually send these line nums to the browser to highlight the lines that passed/failed
+                # lines = overall_status(response, vcs)
                 status = response['status']
             else:
                 status = 'failure'
-                lines = []
+                # lines = []
 
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status)
