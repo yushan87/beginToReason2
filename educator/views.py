@@ -20,6 +20,7 @@ from tutor.py_helper_functions.tutor_helper import user_auth
 # Create your views here.
 User = get_user_model()
 
+
 @login_required(login_url='/accounts/login/')
 def educator(request):
     """function educator This function handles the view for the educator page of the application.

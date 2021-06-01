@@ -1,6 +1,7 @@
 """
 This module contains our Django views for the "tutor" application.
 """
+import asyncio
 import json
 import re
 
@@ -9,32 +10,19 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
-from core.models import MainSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, finished_lesson_count
 from educator.models import Class, ClassMembership, Assignment
 from educator.py_helper_functions.educator_helper import get_classes, user_in_class_auth, assignment_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous
+from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier
 from tutor.py_helper_functions.mutation import can_mutate
 
 User = get_user_model()
 
 
-def catalog(request):
-    """function catalog This function handles the view for the catalog page of the application.
-    Args:
-        request (HTTPRequest): A http request object created automatically by Django.
-    Returns:
-        HttpResponse: A generated http response object to the request depending on whether or not
-                      the user is authenticated.
-    """
-    # get all lesson sets, display
-    return render(request, "tutor/catalog.html", {'LessonSet': MainSet.objects.all()})
-
-
 @login_required(login_url='/accounts/login/')
 def classes(request):
-    """function catalog This function handles the view for the classes page of the application.
+    """function classes This function handles the view for the classes page of the application.
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
     Returns:
@@ -71,7 +59,7 @@ def classes(request):
 
 
 def class_view(request, classID):
-    """function catalog This function handles the view for the class page of the application.
+    """function class_view This function handles the view for the class page of the application.
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
         classID (int): The ID of the class that's being viewed
@@ -114,24 +102,18 @@ def grader(request):
             current_lesson_set, _, current_lesson, _, is_alternate = assignment.get_user_lesson(current_user.id)
             print("lessons in set:", current_lesson_set.lessons())
             print("my lesson:", current_lesson)
-            # Get submitted answer. No 'Confirm', no spaces, each ends w/ a semicolon
+            # Get submitted answer. No 'Confirm', no spaces, each ends with a semicolon
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
             submitted_answer = ''.join(submitted_answer)
 
-            # Send it off to the RESOLVE verifier (commented out because RESOLVE is down currently). You will need
-            # to import these 3 things: asyncio (not the django.asyncio), overall_status, and send_to_verifier
-            # response, vcs = asyncio.run(send_to_verifier(data['code']))
-            # if response is not None:
-            #     lines = overall_status(response, vcs)
-            #     status = response['status']
-            # else:
-            #     status = 'failure'
-            #     lines = []
+            response, _ = asyncio.run(send_to_verifier(data['code']))
+            if response is not None:
+                status = response['status']
+            else:
+                status = 'failure'
 
-            # Placeholder for verifier response
-            status = 'success'
-            # issue: Eventually uncomment line below when lines are implemented in
-            # lines = [3, 5]
+            # issue: Eventually send line nums to the browser to highlight the lines that passed/failed. Can use the vcs
+            # returned from the send_to_verifier as well as the status in the overall_status function to get an array.
 
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status)

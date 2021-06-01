@@ -7,6 +7,8 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinLengthValidator
 from django.db import models
 
+import educator
+
 User = get_user_model()
 
 
@@ -38,5 +40,30 @@ class UserInformation(models.Model):
             str: user email
         """
         return self.user.email
+
+    def get_current_assignments(self):
+        """function get_current_assignments is an helper function to retrieve a user's non-completed assignments
+
+        Returns:
+            Array: List of all assignments user has started but has not completed
+        """
+        assignments = []
+        for progress in educator.models.AssignmentProgress.objects.filter(user_info_key=self, current_set_index__gt=-1):
+            assignments.append(progress.assignment_key)
+        return assignments
+
+    def get_completed_assignments(self):
+        """function get_completed_assignments is an helper function to retrieve a user's completed assignments
+
+        Returns:
+            Array: List of all assignments user has started and has not completed
+        """
+        assignments = []
+        for progress in educator.models.AssignmentProgress.objects.filter(user_info_key=self, current_set_index=-1):
+            # Check that there's no alternate lessons
+            if educator.models.AlternateProgress.objects.filter(progress=progress).count() == 0:
+                # No alternate lessons either, add to the list
+                assignments.append(progress.assignment_key)
+        return assignments
 
     get_user_email.short_description = 'User Email'  # Renames column head
