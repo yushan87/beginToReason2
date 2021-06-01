@@ -14,8 +14,7 @@ from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, finished_lesson_count
 from educator.models import Class, ClassMembership, Assignment
 from educator.py_helper_functions.educator_helper import get_classes, user_in_class_auth, assignment_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier, \
-    overall_status
+from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier
 from tutor.py_helper_functions.mutation import can_mutate
 
 User = get_user_model()
@@ -107,19 +106,17 @@ def grader(request):
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
             submitted_answer = ''.join(submitted_answer)
 
-            response, vcs = asyncio.run(send_to_verifier(data['code']))
+            response, _ = asyncio.run(send_to_verifier(data['code']))
             if response is not None:
-                lines = overall_status(response, vcs)
                 status = response['status']
             else:
                 status = 'failure'
-                lines = []
+
+            # issue: Eventually send line nums to the browser to highlight the lines that passed/failed. Can use the vcs
+            # returned from the send_to_verifier as well as the status in the overall_status function to get an array.
 
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status)
-
-            # issue: Eventually send these line nums to the browser to highlight the lines that passed/failed
-            print("Line nums that will eventually be sent to browser:", lines)
 
             if status == "success":
                 # Update assignment progress
