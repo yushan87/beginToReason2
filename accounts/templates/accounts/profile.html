@@ -92,9 +92,9 @@
                             </div>
                         </div>
                         <div class="page-section-heading my-3">
-                            <h3>Current Sets In Progress</h3>
+                            <h3>Assignments In Progress</h3>
                         </div>
-                            {% if CurrentSet is not None %}
+                            {% for assignment in currentAssignments %}
                                 <div class="my-4">
                                     <div class="card" style="background-color: inherit;">
                                         <div class="row no-gutters">
@@ -103,10 +103,10 @@
                                             </div>
                                             <div class="col-md-8 align-self-center">
                                                 <div class="card-body">
-                                                    <h5 class="card-title">{{CurrentSet.set_name}} <span class="badge recommended">In Progress</span></h5>
-                                                    <p class="card-text">{{CurrentSet.set_description}}</p>
+                                                    <h5 class="card-title">{{assignment.main_set.set_name}} <span class="badge recommended">In Progress</span></h5>
+                                                    <p class="card-text">{{assignment.main_set.set_description}}</p>
                                                     <p class="card-text"><small class="text-muted">Last attempted: {{ user.last_login }}</small></p>
-                                                    <form action="{% url 'tutor:tutor' %}" method="GET">
+                                                    <form action="{% url 'tutor:tutor' assignment.id %}" method="GET">
                                                         {% csrf_token %}
                                                         <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
                                                             Continue Training
@@ -117,15 +117,12 @@
                                         </div>
                                     </div>
                                 </div>
-                            {% endif %}
+                            {% endfor %}
                         <div class="page-section-heading my-3">
-                            <h3>Completed</h3>
+                            <h3>Completed Assignments</h3>
                         </div>
                         {% if user.is_authenticated %}
-                            {% if user.userinformation.completed_sets == None %}
-
-                            {% else %}
-                                {% for obj in CompletedSet %}
+                                {% for assignment in completedAssignments %}
                                     <div class="my-4">
                                         <div class="card" style="background-color: inherit;">
                                             <div class="row no-gutters">
@@ -134,17 +131,15 @@
                                                 </div>
                                                 <div class="col-md-8 align-self-center">
                                                     <div class="card-body">
-                                                        <h5 class="card-title">{{obj.set_name}} <span class="badge recommended">Completed</span></h5>
+                                                        <h5 class="card-title">{{assignment.main_set.set_name}} <span class="badge recommended">Completed</span></h5>
                                                         <h5 class="card-title"><span class="badge badge-success">Author ID: 869134018</span></h5>
-                                                        <p class="card-text">{{obj.set_description}}</p>
-                                                        <a href="{% url 'tutor:completed' 0 %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Review Activity</a>
+                                                        <p class="card-text">{{assignment.main_set.set_description}}</p>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 {% endfor %}
-                            {% endif %}
                         {% endif %}
                     </div>
                     <div class="tab-pane fade" id="nav-badges" role="tabpanel" aria-labelledby="nav-badges-tab">

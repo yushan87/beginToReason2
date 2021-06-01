@@ -155,6 +155,7 @@ class Assignment(models.Model):
         """
         if AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=userID).exists():
             progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=userID)
+
             if AlternateProgress.objects.all().filter(progress=progress).exists():
                 # User is in an alt lesson
                 alt_progress = AlternateProgress.objects.all().filter(progress=progress).order_by('-alternate_level')[0]
@@ -164,8 +165,15 @@ class Assignment(models.Model):
             # User is not in an alt lesson
             progress = AssignmentProgress.objects.all().get(assignment_key_id=self.id, user_info_key_id=userID)
             lesson_set = self.main_set.set_by_index(progress.current_set_index)
+
+            if lesson_set is None:
+                # If lesson_set is None, that means the assignment is complete
+                # Return None, let the caller handle it
+                return None, -1, None, -1, False
+
             return lesson_set, progress.current_set_index, lesson_set.lesson_by_index(progress.current_lesson_index), \
                 progress.current_lesson_index, False
+
         # Not in the assignment currently
         return None, -1, None, -1, False
 
@@ -205,14 +213,16 @@ class Assignment(models.Model):
                 progress.current_lesson_index = 0
                 progress.save()
                 return True
+            # No! The user has completed the assignment. Set indices to -1 to mark completion.
+            progress.current_set_index = -1
+            progress.current_lesson_index = -1
             progress.save()
-            # No! The user has completed the assignment.
             return False
         # Not in the assignment currently
         return False
 
     def alternate_check(self, userID, submittedAnswer):
-        """function advance_user a helper function to move a user to an alternate lesson. Call whenever a user gets
+        """function alternate_check a helper function to move a user to an alternate lesson. Call whenever a user gets
         a question wrong.
         Args:
             userID (Integer): ID of the user_info queried (not the user, but the user_info)
