@@ -22,18 +22,6 @@ from tutor.py_helper_functions.mutation import can_mutate
 User = get_user_model()
 
 
-def catalog(request):
-    """function catalog This function handles the view for the catalog page of the application.
-    Args:
-        request (HTTPRequest): A http request object created automatically by Django.
-    Returns:
-        HttpResponse: A generated http response object to the request depending on whether or not
-                      the user is authenticated.
-    """
-    # get all lesson sets, display
-    return render(request, "tutor/catalog.html", {'LessonSet': MainSet.objects.all()})
-
-
 @login_required(login_url='/accounts/login/')
 def classes(request):
     """function classes This function handles the view for the classes page of the application.
