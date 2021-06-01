@@ -10,7 +10,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
 from django.http import JsonResponse
-from core.models import MainSet
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, finished_lesson_count
 from educator.models import Class, ClassMembership, Assignment
