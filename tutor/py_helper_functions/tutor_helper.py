@@ -125,7 +125,7 @@ def check_status(status):
     return False
 
 
-def browser_response(current_lesson, current_assignment, current_user, submitted_answer, status, unlock_next):
+def browser_response(current_lesson, current_assignment, current_user, submitted_answer, status, lines, unlock_next):
     """function browser_response This function finds the feedback to show to the user
 
     Args:
@@ -134,6 +134,7 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
          current_user: The UserInfo that is attempting the lesson
          submitted_answer: string of code that user submitted
          status: string of result from compiler
+         lines: array of confirms and their statuses
          unlock_next: boolean for unlocking next button
 
     Returns:
@@ -151,12 +152,10 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
             headline = "Try Again!"
             text = "Did you read the reference material?"
 
-    text += '<br>You have attempted this lesson ' + \
-            str(DataLog.objects.filter(assignment_key=current_assignment, user_key=current_user.user,
-                                       lesson_key=current_lesson).count()) + ' times.'
     return {'resultsHeader': headline,
             'resultDetails': text,
             'status': status,
+            'lines': lines,
             'unlock_next': unlock_next
             }
 

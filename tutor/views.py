@@ -123,12 +123,12 @@ def grader(request):
                 # issue: Use return value from advance_user to communicate to browser that assignment is completed
                 assignment.advance_user(current_user.id)
                 return JsonResponse(browser_response(current_lesson, assignment, current_user, submitted_answer,
-                                                     status, True))
+                                                     status, lines, True))
             else:
                 # Activate alternate if needed
                 assignment.alternate_check(current_user.id, data['code'])
                 return JsonResponse(browser_response(current_lesson, assignment, current_user, submitted_answer,
-                                                     status, False))
+                                                     status, lines, False))
     return redirect("accounts:profile")
 
 
