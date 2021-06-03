@@ -19,7 +19,6 @@ let name;
 let overlayOpen = false;
 let allAnswers = "";
 let multiAnswer;
-let submitAnswers="";
 let instructOpen = true;
 
 
@@ -223,8 +222,6 @@ function checkForTrivials(content) {
         // Find the variables used on the left side. If there are none, mark it correct.
         var left = parts[0];
         var right = parts[1];
-        console.log("left " + left)
-        console.log("right " + right)
         regex = new RegExp("[a-np-zA-QS-Z]", "g") // Temporary fix to allow Reverse(#S) o #T on section2, lesson6
         var variables = left.match(regex);
         if (variables === null) {
@@ -381,15 +378,15 @@ $("#checkCorrectness").click(function () {
         //this will need to be fixed based on verifier return
         //log data
 
-        let currentAttemptAnswers = '';
+        if (allAnswers != '') {
+            allAnswers += "</br>";
+        }
+        let currentAttemptAnswers = ''
         for (var i = 0; i < trivials.confirms.length; i++) {
             aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
             document.getElementById("answersCard").removeAttribute("hidden")
-            allAnswers = allAnswers + aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'') + "<br>";
+            allAnswers += `${trivials.confirms[i].lineNum}: ${aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace('Confirm','').replace(';', '')}</br>`;
             currentAttemptAnswers += aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'') + '\n';
-            if (i == trivials.confirms.length - 1){
-                allAnswers += "<br><br>";
-            }
             document.getElementById("pastAnswers").innerHTML = allAnswers;
         }
 
@@ -699,31 +696,31 @@ $.postJSON = (url, data, callback) => {
 
             let lines = response.lines
             var confirmLine
-
-            let currentAttemptAnswers = '';
+            displayPast = response.status != "success"
+            if (displayPast && allAnswers != '') {
+                allAnswers += "</br>";
+            }
             for (var i = 0; i < lines.length; i++) {
-                if (lines[i].status == "success") {
-                    aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_correct");
-                    confirmLine = aceEditor.session.getLine(lines[i].lineNum-1).replace(/\s/g,'');
-                    confirmLine = aceEditor.session.getLine(lines[i].lineNum-1).replace("Confirm", "");
-                    allAnswers = allAnswers + confirmLine  + "<br>";
-                    submitAnswers = submitAnswers + confirmLine;
-                    currentAttemptAnswers += confirmLine + '\n'
+                if (displayPast) {
+                    confirmLine = `${lines[i].lineNum}: ${aceEditor.session.getLine(lines[i].lineNum-1).replace("Confirm", "").replace(";", "")}`
+                    if (lines[i].status == 'success') {
+                        confirmLine += ' <i class="fas fa-check"></i>'
+                    }
+                    if (!confirmLine.includes('Operation Main()')) {
+                        allAnswers += confirmLine  + "</br>";
+                    }
                 }
-                else {
-                    aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_error");
-                    document.getElementById("answersCard").removeAttribute("hidden")
-                    confirmLine = aceEditor.session.getLine(lines[i].lineNum-1).replace(/\s/g,'');
-                    confirmLine = aceEditor.session.getLine(lines[i].lineNum-1).replace("Confirm", "");
-                    allAnswers = allAnswers + confirmLine  + "<br>";
-                    submitAnswers = submitAnswers + confirmLine;
-                    if (i == lines.length - 1){
-                    allAnswers += "<br><br>";
-                    currentAttemptAnswers += confirmLine + '\n'
-                }
-                    document.getElementById("pastAnswers").innerHTML = allAnswers;
+                if (!confirmLine.includes('Operation Main()')) {
+                    if (lines[i].status == "success") {
+                        aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_correct")
+                    }
+                    else {
+                        aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_error");
+                        document.getElementById("answersCard").removeAttribute("hidden")
+                    }
                 }
             }
+            document.getElementById("pastAnswers").innerHTML = allAnswers;
 
             if (response.unlock_next){
                 $("#next").removeAttr("disabled", "disabled");
@@ -755,5 +752,4 @@ function verify(code){
     }
 
     $.postJSON("grader", data, (results) => {});
-    submitAnswers = '';
 }
