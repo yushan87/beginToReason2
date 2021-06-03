@@ -105,7 +105,6 @@ def grader(request):
             submitted_answer = ''.join(submitted_answer)
 
             status, lines, vcs, completion_time = asyncio.run(send_to_verifier(data['code']))
-
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status,
                      vcs, completion_time)

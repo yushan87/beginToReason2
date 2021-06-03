@@ -270,8 +270,23 @@ async def send_to_verifier(code):
         vcs_info = {}  # Actual strings of results for data logging
         while True:
             response = json.loads(await ws.recv())
-            if response.get('status') == 'error' or response.get('status') is None:
-                return None, None, None, time.time() - start_time
+            if response.get('status') == 'error':
+                # Need to do some crazy stuff because of the way RESOLVE's errors work
+                lines = []
+                for error_dict in response['errors']:
+                    for error_dict_sub in error_dict['errors']:
+                        error_dict_sub['error']['msg'] = decode(error_dict_sub['error']['msg'])
+                        unique = True
+                        line_num = error_dict_sub['error']['ln']
+                        for line in lines:
+                            if line['lineNum'] == line_num:
+                                unique = False
+                                break
+                        if unique:
+                            lines.append({'lineNum': line_num, 'status': 'failure'})
+                return 'error', lines, response['errors'], time.time() - start_time
+            if response.get('status') is None:
+                return 'failure', None, '', time.time() - start_time
             if response['status'] == 'processing':
                 result = response['result']
                 vcs_info[result['id']] = result['result']
@@ -280,7 +295,7 @@ async def send_to_verifier(code):
                 else:
                     vcs[result['id']] = 'failure'
             if response['status'] == 'complete':
-                response['result'] = decode(response['result'])
+                response['result'] = decode_json(response['result'])
                 lines = overall_status(response, vcs)
                 join_vc_info(response['result']['vcs'], vcs_info)
                 return response['status'], lines, response['result']['vcs'], time.time() - start_time
@@ -317,7 +332,11 @@ def decode(data):
     data = urllib.parse.unquote(data)
     data = urllib.parse.unquote(data)
     data = re.sub(r"\n", "", data)
-    return json.loads(data)
+    return data
+
+
+def decode_json(data):
+    return json.loads(decode(data))
 
 
 def overall_status(data, vcs):
