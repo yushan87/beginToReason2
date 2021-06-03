@@ -3,15 +3,15 @@ This module contains our Django helper functions for the "tutor" application.
 """
 import json
 import re
+import time
 import urllib
 import websockets
 
-from django.utils import timezone
 from django.contrib.auth.models import User
 
 import core.models
 from accounts.models import UserInformation
-from core.models import LessonSet, Lesson, MainSet
+from core.models import Lesson
 from data_analysis.models import DataLog
 from tutor.py_helper_functions.mutation import reverse_mutate
 
@@ -264,21 +264,37 @@ async def send_to_verifier(code):
     async with websockets.connect(
             'wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project', ping_interval=None) \
             as ws:
+        start_time = time.time()
         await ws.send(encode(code))
-        vcs = {}
+        vcs = {}  # Success vs failure
+        vcs_info = {}  # Actual strings of results for data logging
         while True:
             response = json.loads(await ws.recv())
             if response.get('status') == 'error' or response.get('status') is None:
-                return None, None
+                return None, None, None, time.time() - start_time
             if response['status'] == 'processing':
                 result = response['result']
+                vcs_info[result['id']] = result['result']
                 if re.search(r"^Proved", result['result']):
                     vcs[result['id']] = 'success'
                 else:
                     vcs[result['id']] = 'failure'
             if response['status'] == 'complete':
                 response['result'] = decode(response['result'])
-                return response, vcs
+                lines = overall_status(response, vcs)
+                join_vc_info(response['result']['vcs'], vcs_info)
+                return response['status'], lines, response['result']['vcs'], time.time() - start_time
+
+
+def join_vc_info(vcs, vcs_info):
+    """
+    Joins the vcs from RESOLVE's final response with the info from each of the processing responses for data logging
+    @param vcs: VCS from RESOLVE's final response
+    @param vcs_info: Dict of VC IDs to VC info generated from processing responses
+    @return: None
+    """
+    for vc in vcs:
+        vc['result'] = vcs_info[vc.get('vc')]
 
 
 def encode(data):
@@ -306,9 +322,9 @@ def decode(data):
 
 def overall_status(data, vcs):
     """
-    Takes the 'result' portion of RESOLVE's response, updates the status to be 'success' or 'failure', and returns an
-    array of lines and their statuses
-    @param data: RESOLVE's response['data']
+    Takes RESOLVE's response along with the processing VCs, updates the status to be 'success' or 'failure',
+    and returns an array of lines and their statuses.
+    @param data: RESOLVE's final response
     @param vcs: dict made from the processing responses from RESOLVE
     @return: individual line status array
     """
@@ -317,7 +333,7 @@ def overall_status(data, vcs):
     for vc in data['result']['vcs']:
         if vcs.get(vc.get('vc')) != 'success':
             overall = 'failure'
-        if lines.get(vc.get('lineNum')) != 'failure': # Don't overwrite an already failed line
+        if lines.get(vc.get('lineNum')) != 'failure':  # Don't overwrite an already failed line
             lines[vc.get('lineNum')] = vcs.get(vc.get('vc'))
 
     # Convert lines dict to array of dicts

@@ -10,7 +10,7 @@ from data_analysis.models import DataLog
 from tutor.py_helper_functions.mutation import reverse_mutate
 
 
-def log_data(user_info, assignment, lesson_set, lesson, is_alternate, browser_data, status):
+def log_data(user_info, assignment, lesson_set, lesson, is_alternate, browser_data, status, vcs, completion_time):
     """function log_data This function handles the logic for logging data
     Args:
          user_info: The user that input the code
@@ -20,7 +20,8 @@ def log_data(user_info, assignment, lesson_set, lesson, is_alternate, browser_da
          is_alternate: Boolean for whether lesson is an alternate or not
          browser_data: Data returned from JS (NOT RESOLVE data)
          status: Either 'success' or 'failure'
-    Returns:
+         vcs: Array containing info of RESOLVE vcs
+         completion_time: Time it took for RESOLVE to verify
     """
     user = user_info.user
     if lesson.can_mutate:
@@ -46,7 +47,9 @@ def log_data(user_info, assignment, lesson_set, lesson, is_alternate, browser_da
                                          code=code,
                                          explanation=explanation,
                                          face=face,
-                                         original_code=original_code)
+                                         original_code=original_code,
+                                         vcs=vcs,
+                                         time_took=completion_time)
     data_to_log.save()
 
 
