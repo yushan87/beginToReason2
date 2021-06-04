@@ -261,13 +261,18 @@ def replace_previous(user, code, is_alt):
 
 
 async def send_to_verifier(code):
+    """
+    Sends a string to RESOLVE verifier and interprets its response.
+    @param code: A string that the user submitted through the browser
+    @return: Tuple defined as (status string, lines dict, vcs dict, time taken)
+    """
     async with websockets.connect(
             'wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project', ping_interval=None) \
             as ws:
         start_time = time.time()
         await ws.send(encode(code))
-        vcs = {}  # Success vs failure
-        vcs_info = {}  # Actual strings of results for data logging
+        vcs = {}  # vc ID to 'success' or 'failure'
+        vcs_info = {}  # vc IDs to actual strings of results for data logging
         while True:
             response = json.loads(await ws.recv())
             if response.get('status') == 'error':
