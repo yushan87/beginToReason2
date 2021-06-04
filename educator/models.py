@@ -254,7 +254,7 @@ class Assignment(models.Model):
         alt_progresses = AlternateProgress.objects.filter(progress=progress).order_by('-alternate_level')
         if len(alt_progresses) > 0:
             # User is currently in an alt lesson!
-            depth = alt_progresses[0].depth + 1
+            depth = alt_progresses[0].alternate_level + 1
         else:
             # User is not currently in an alt lesson!
             depth = 0

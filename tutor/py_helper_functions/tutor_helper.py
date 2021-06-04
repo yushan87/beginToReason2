@@ -81,14 +81,27 @@ def alternate_set_check(current_lesson, alternate_type):
          in which case it will simply return None for the alternate lesson.
 
     Returns:
-        LessonAlternate model, or None no redirect needed
+        LessonAlternate model, or None if no redirect needed
     """
+    print("alt set check called!")
     if alternate_type is None:
+        # Nothing triggered, so nothing to activate
         return None
     try:
+        # Obvious attempt
         return core.models.LessonAlternate.objects.get(lesson=current_lesson, type=alternate_type)
     except core.models.LessonAlternate.DoesNotExist:
-        return None
+        if alternate_type != core.models.AlternateType.DEFAULT:
+            try:
+                # If what I was searching for type-wise doesn't exist as an alternate option, try the default
+                print("Lesson", current_lesson, "activated a type of", alternate_type, "but didn't supply a lesson to "
+                                                                                      "redirect to!")
+                return core.models.LessonAlternate.objects.get(lesson=current_lesson,
+                                                               type=core.models.AlternateType.DEFAULT)
+            except core.models.LessonAlternate.DoesNotExist:
+                pass
+    # If all else fails, don't redirect
+    return None
 
 
 def check_type(current_lesson, submitted_code):
@@ -100,7 +113,7 @@ def check_type(current_lesson, submitted_code):
          submitted_code (String): all the code submitted to RESOLVE, mutated in the form presented to user
 
     Returns:
-        type: type of lesson to use for lookup (integer enumeration). None if no incorrect answers were triggered.
+        type: type of lesson to use for lookup (integer enumeration). Default if no incorrect answers were triggered.
     """
     for answer in get_confirm_lines(reverse_mutate(submitted_code)):
         try:
@@ -108,7 +121,7 @@ def check_type(current_lesson, submitted_code):
         except core.models.IncorrectAnswer.DoesNotExist:
             continue
 
-    return None
+    return core.models.AlternateType.DEFAULT
 
 
 def check_status(status):
