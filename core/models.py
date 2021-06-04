@@ -197,13 +197,11 @@ class Lesson(models.Model):
     """
     lesson_name = models.CharField(max_length=50)
     lesson_title = models.CharField(max_length=50, default='default')
-    lesson_index = models.IntegerField(default=0)
     lesson_concept = models.ManyToManyField(Concept, blank=True)
     instruction = models.TextField(default='Please complete the Confirm assertion(s) and check correctness.')
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
     reference_set = models.ManyToManyField(Reference, blank=True)
     reason = models.ForeignKey(Reasoning, on_delete=models.CASCADE, blank=True, null=True)
-    correct = models.ForeignKey("self", on_delete=models.SET_NULL, null=True)
     correct_feedback = models.TextField(default='Proceeding to the next lesson.')
     feedback = models.ManyToManyField(Feedback, blank=True)
 
@@ -245,9 +243,7 @@ class LessonSet(models.Model):
     @param models.Model The base model
     """
     set_name = models.CharField(max_length=50)
-    first_in_set = models.ForeignKey(Lesson, on_delete=models.PROTECT)
     set_description = models.TextField(default="This set is designed to further your understanding")
-    index_in_set = models.IntegerField(default=0)
 
     def __str__(self):
         """"
@@ -318,7 +314,8 @@ class LessonSetLessons(models.Model):
     @param models.Model The base model
     """
     lesson_set = models.ForeignKey(LessonSet, on_delete=models.CASCADE)
-    lesson = models.ForeignKey(Lesson, on_delete=models.PROTECT)  # We do NOT want to cascade here - it will destroy indexing!
+    lesson = models.ForeignKey(Lesson, on_delete=models.PROTECT)  # We do NOT want to cascade here - it will destroy
+    # indexing!
     index = models.IntegerField()  # No defaults, never blank, never null.
 
 
