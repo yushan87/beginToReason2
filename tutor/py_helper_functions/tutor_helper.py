@@ -83,7 +83,6 @@ def alternate_set_check(current_lesson, alternate_type):
     Returns:
         LessonAlternate model, or None if no redirect needed
     """
-    print("alt set check called!")
     if alternate_type is None:
         # Nothing triggered, so nothing to activate
         return None
