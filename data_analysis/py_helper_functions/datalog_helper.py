@@ -4,8 +4,7 @@ This module contains our Django helper functions for the "data analysis" applica
 import json
 from django.utils import timezone
 from django.contrib.auth.models import User
-from accounts.models import UserInformation
-from core.models import LessonSet, Lesson
+from core.models import LessonSet
 from data_analysis.models import DataLog
 from tutor.py_helper_functions.mutation import reverse_mutate
 
@@ -48,7 +47,7 @@ def log_data(user_info, assignment, lesson_set, lesson, is_alternate, browser_da
                                          explanation=explanation,
                                          face=face,
                                          original_code=original_code,
-                                         vcs=vcs,
+                                         vcs=json.dumps(vcs),
                                          time_took=completion_time)
     data_to_log.save()
 
