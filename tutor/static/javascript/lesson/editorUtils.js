@@ -327,7 +327,7 @@ $("#checkCorrectness").click(function () {
 
 
 
-    //is explaination long enough
+    //is explanation long enough
     if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
         if (boxVal.length < 10) {
@@ -355,7 +355,7 @@ $("#checkCorrectness").click(function () {
             return;
         }
     }
-    document.getElementById("resultCard").style.display = "block";let results = "";
+    document.getElementById("resultCard").style.display = "block";
     let code = aceEditor.session.getValue();
 
     // Check for trivials
