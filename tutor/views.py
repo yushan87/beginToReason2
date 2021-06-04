@@ -93,8 +93,6 @@ def grader(request):
     if request.method == 'POST':
         # Case 1a: if the user exists
         if user_auth(request):
-            # if success, return next lesson
-            # if fail, do something
 
             data = json.loads(request.body.decode('utf-8'))
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
@@ -106,21 +104,14 @@ def grader(request):
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
             submitted_answer = ''.join(submitted_answer)
 
-            response, _ = asyncio.run(send_to_verifier(data['code']))
-            if response is not None:
-                status = response['status']
-            else:
-                status = 'failure'
-
-            # issue: Eventually send line nums to the browser to highlight the lines that passed/failed. Can use the vcs
-            # returned from the send_to_verifier as well as the status in the overall_status function to get an array.
-
+            status, _, vcs, completion_time = asyncio.run(send_to_verifier(data['code']))
             # Log data
-            log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status)
+            log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status,
+                     vcs, completion_time)
 
             if status == "success":
                 # Update assignment progress
-                # issue: Use return value from advance_user to communicate to browser that assignment is completed
+                # Can use return value from advance_user to communicate to browser that assignment is completed
                 assignment.advance_user(current_user.id)
                 return JsonResponse(browser_response(current_lesson, assignment, current_user, submitted_answer,
                                                      status, True))

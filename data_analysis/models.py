@@ -28,6 +28,8 @@ class DataLog(models.Model):
     explanation = models.TextField()
     face = models.TextField(default="null")
     original_code = models.TextField(default="null")
+    vcs = models.TextField(default="null")
+    time_took = models.FloatField(null=True)
 
     def __str__(self):
         """
