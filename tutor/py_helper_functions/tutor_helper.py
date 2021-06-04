@@ -32,46 +32,6 @@ def user_auth(request):
     return False
 
 
-def set_not_complete(request):
-    """function set_not_complete This function handles the logic for a if a set has not been completed
-
-    Args:
-         request (HTTPRequest): A http request object created automatically by Django.
-
-    Returns:
-        Boolean: A boolean to signal if the set has been completed
-    """
-    current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-    print("Set not complete: ", request)
-    if current_user.current_lesson_set is None:
-        return False
-
-    current_set = current_user.current_lesson_set.lessons.all()
-    if current_set.exists():
-
-        if request.method == 'POST':
-            print("Not complete call from POST")
-            # need a variation of what to do if the last lesson was completed
-            if current_user.current_lesson_index < len(current_set) - 1:
-                # increase index of lesson set depending on if user is on a previously completed lesson
-                if current_user.current_lesson_index < current_user.completed_lesson_index:
-                    current_user.current_lesson_index = current_user.current_lesson_index + 1
-                else:
-                    current_user.completed_lesson_index = current_user.completed_lesson_index + 1
-                    current_user.current_lesson_index = current_user.current_lesson_index + 1
-                current_user.save()
-                return True
-            else:
-                # remove set from current set
-                return False
-        elif request.method == 'GET':
-            print("Not complete call from GET")
-            if current_user.current_lesson_index < len(current_set):
-                print("TEST PRINT")
-                return True
-    return False
-
-
 def alternate_set_check(current_lesson, alternate_type):
     """function alternate_set_check This function handles the logic for a if a lesson has an alternate
 
@@ -94,7 +54,7 @@ def alternate_set_check(current_lesson, alternate_type):
             try:
                 # If what I was searching for type-wise doesn't exist as an alternate option, try the default
                 print("Lesson", current_lesson, "activated a type of", alternate_type, "but didn't supply a lesson to "
-                                                                                      "redirect to!")
+                                                                                       "redirect to!")
                 return core.models.LessonAlternate.objects.get(lesson=current_lesson,
                                                                type=core.models.AlternateType.DEFAULT)
             except core.models.LessonAlternate.DoesNotExist:
@@ -121,20 +81,6 @@ def check_type(current_lesson, submitted_code):
             continue
 
     return core.models.AlternateType.DEFAULT
-
-
-def check_status(status):
-    """function check_status This function converts a string to a boolean
-
-        Args:
-            status: string of result from compiler
-
-        Returns:
-            boolean
-        """
-    if status == 'success':
-        return True
-    return False
 
 
 def browser_response(current_lesson, current_assignment, current_user, submitted_answer, status, lines, unlock_next):
