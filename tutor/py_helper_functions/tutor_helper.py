@@ -350,3 +350,14 @@ def get_confirm_lines(code):
                 # Get rid of all spaces
                 lines.append(re.sub(" ", "", group))
     return lines
+
+
+def clean_variable(variable):
+    """
+    Makes a string safe to use in an HTML template by escaping newlines
+    @param variable: A string (most likely code submitted by user)
+    @return: Escaped string
+    """
+    variable = re.sub("\r\n", r"\\r\\n", variable)
+    variable = re.sub("\r", r"\\r", variable)
+    return re.sub("\n", r"\\n", variable)

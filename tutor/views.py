@@ -14,7 +14,8 @@ from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, finished_lesson_count
 from educator.models import Class, ClassMembership, Assignment
 from educator.py_helper_functions.educator_helper import get_classes, user_in_class_auth, assignment_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier
+from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier, \
+    clean_variable
 from tutor.py_helper_functions.mutation import can_mutate
 
 User = get_user_model()
@@ -158,7 +159,7 @@ def tutor(request, assignmentID):
             current_lesson.code.lesson_code = can_mutate(current_lesson)
             current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
                                                                is_alternate)
-
+            current_lesson.code.lesson_code = clean_variable(current_lesson.code.lesson_code)
             # Case 2aa: if questions if MC or Both
             if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                 return render(request, "tutor/tutor.html",
