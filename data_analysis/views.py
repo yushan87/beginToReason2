@@ -2,7 +2,7 @@
 This module contains our Django views for the "data_analysis" application.
 """
 from django.shortcuts import render
-from data_analysis.py_helper_functions.lesson_stats import get_set_stats, get_set_info
+from data_analysis.py_helper_functions.lesson_stats import get_main_set_stats, get_main_set_info
 from data_analysis.py_helper_functions.graph_viewer.lesson_reader import lesson_to_json, lesson_info
 
 
@@ -37,4 +37,4 @@ def assignment_statistics(request, assignmentID):
     """
     print(request)
     return render(request, "data_analysis/mainSetStatistics.html", {
-        'mainSetData': get_set_stats(assignmentID), 'mainSetInfo': get_set_info(assignmentID)})
+        'mainSetData': get_main_set_stats(assignmentID), 'mainSetInfo': get_main_set_info(assignmentID)})
