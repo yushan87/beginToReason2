@@ -151,7 +151,7 @@ def _find_prev_lesson(lesson_sets, lesson_set_index, lesson_index):
         # Can decrement lesson
         lesson_index -= 1
 
-    return '/' + str(lesson_set_index) + '/' + str(lesson_index)
+    return str(lesson_set_index) + '/' + str(lesson_index)
 
 
 # Returns the URL addon for getting the next lesson's info
@@ -171,7 +171,7 @@ def _find_next_lesson(lesson_sets, lesson_set_index, lesson_index):
             # Last lesson overall
             return None
 
-    return '/' + str(lesson_set_index) + '/' + str(lesson_index)
+    return str(lesson_set_index) + '/' + str(lesson_index)
 
 
 def _user_to_dict(user, user_number, is_anonymous):
