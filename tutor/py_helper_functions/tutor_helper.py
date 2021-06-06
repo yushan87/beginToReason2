@@ -83,7 +83,8 @@ def check_type(current_lesson, submitted_code):
     return core.models.AlternateType.DEFAULT
 
 
-def browser_response(current_lesson, current_assignment, current_user, submitted_answer, status, lines, unlock_next):
+def browser_response(current_lesson, current_assignment, current_user, submitted_answer, status, lines, unlock_next,
+                     alt_activated):
     """function browser_response This function finds the feedback to show to the user
 
     Args:
@@ -94,21 +95,26 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
          status: string of result from compiler
          lines: array of confirms and their statuses
          unlock_next: boolean for unlocking next button
+         alt_activated: boolean changing feedback for whether a wrong answer has activated an alternate
 
     Returns:
-        dict that should be send to JS
+        dict that should be send to front-end JS
     """
-    if status == 'success':
-        headline = 'Correct'
-        text = current_lesson.correct_feedback
+    if not alt_activated:
+        if status == 'success':
+            headline = 'Correct'
+            text = current_lesson.correct_feedback
+        else:
+            try:
+                feedback = current_lesson.feedback.get(feedback_type=check_type(current_lesson, submitted_answer))
+                headline = feedback.headline
+                text = feedback.feedback_text
+            except core.models.Feedback.DoesNotExist:
+                headline = "Try Again!"
+                text = "Did you read the reference material?"
     else:
-        try:
-            feedback = current_lesson.feedback.get(feedback_type=check_type(current_lesson, submitted_answer))
-            headline = feedback.headline
-            text = feedback.feedback_text
-        except core.models.Feedback.DoesNotExist:
-            headline = "Try Again!"
-            text = "Did you read the reference material?"
+        headline = "ALT!"
+        text = "[explanation about alt, directions to hit next lesson]"
 
     return {'resultsHeader': headline,
             'resultDetails': text,
