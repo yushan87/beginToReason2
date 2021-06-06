@@ -1,13 +1,13 @@
 document.querySelector('#graphTitle').innerHTML = `${graph.lesson.lessonName}: ${graph.lesson.lessonTitle}<br>${graph.lesson.lessonSetName}`
 const urlSplit = window.location.href.split('/')
-document.querySelector('#prevLesson').disabled = graph.lesson.prevLesson < 0
-document.querySelector('#nextLesson').disabled = graph.lesson.nextLesson < 0
+document.querySelector('#prevLesson').disabled = graph.lesson.prevLesson
+document.querySelector('#nextLesson').disabled = graph.lesson.nextLesson
 document.querySelector('#prevLesson').onclick = () => {
-  urlSplit[urlSplit.length - 1] = graph.lesson.prevLessonSet
+  urlSplit[urlSplit.length - 1] = graph.lesson.prevLesson
   window.location.href = urlSplit.join('/')
 }
 document.querySelector('#nextLesson').onclick = () => {
-  urlSplit[urlSplit.length - 1] = graph.lesson.nextLessonSet
+  urlSplit[urlSplit.length - 1] = graph.lesson.nextLesson
   window.location.href = urlSplit.join('/')
 }
 document.querySelector("#setView").onclick = () => {
