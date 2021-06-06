@@ -6,7 +6,7 @@ from data_analysis.py_helper_functions.graph_viewer.lesson_reader import is_user
 
 
 # Returns stats for the mainset based around each lesson set
-from educator.models import Assignment
+from educator.models import Assignment, AssignmentProgress
 
 
 def get_main_set_stats(assignment_id):
@@ -33,6 +33,7 @@ Helper Methods
 def _get_lesson_stats(assignment_id, lesson_set, set_index, lesson, lesson_index):
     lesson_dict = {"name": lesson_set.set_name, "set_index": set_index, "lesson_index": lesson_index}
     lesson_dict.update(_get_user_stats(assignment_id, lesson_set, lesson))
+    lesson_dict.update(_count_current_users(assignment_id, set_index, lesson_index))
     return lesson_dict
 
 
@@ -67,6 +68,12 @@ def _get_user_stats(assignment_id, lesson_set, lesson):
 
     return {"userCount": user_count, "completionRate": completions / user_count, "firstTryRate": first_try / user_count,
             "averageAttempts": attempts / user_count}
+
+
+def _count_current_users(assignment_id, set_index, lesson_index):
+    count = AssignmentProgress.objects.filter(assignment_key_id=assignment_id, current_set_index=set_index,
+                                              current_lesson_index=lesson_index).count()
+    return {"currentUsers": count}
 
 
 # Gets the ranges that outliers lie out of
