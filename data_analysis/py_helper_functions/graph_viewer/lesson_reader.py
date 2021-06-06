@@ -10,7 +10,10 @@ from data_analysis.py_helper_functions.graph_viewer.node import Node
 
 
 # Takes a lesson index and returns a JSON representation fit for D3
-def lesson_to_json(class_id, mainset_id, lessonset_index, is_anonymous):
+from educator.models import Assignment
+
+
+def lesson_to_json(assignment_id, lessonset_index, is_anonymous):
     lesson = _find_main_lesson(MainSet.objects.get(id=mainset_id).lessons.all()[lessonset_index].lessons.all())
     (root, users) = _lesson_to_graph(class_id, lesson, is_anonymous)
     nodes = []
@@ -26,8 +29,8 @@ def lesson_to_json(class_id, mainset_id, lessonset_index, is_anonymous):
 
 
 # Returns JSON containing info that graph needs to display about the lesson
-def lesson_info(mainset_id, lessonset_index):
-    lesson_sets = MainSet.objects.get(id=mainset_id).lessons.all()
+def lesson_info(assignment_id, lessonset_index):
+    lesson_sets = Assignment.objects.get(id=assignment_id).main_set.sets()
     lesson_set = lesson_sets[lessonset_index]
     lesson = _find_main_lesson(lesson_set.lessons.all())
     return json.dumps({"lessonName": lesson.lesson_name, "lessonTitle": lesson.lesson_title,

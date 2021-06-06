@@ -12,9 +12,9 @@ from educator.models import Assignment
 def get_main_set_stats(assignment_id):
     main_set = Assignment.objects.get(id=assignment_id).main_set
     lesson_list = []
-    for lesson_set in main_set.sets():
-        for lesson in lesson_set.lessons():
-            lesson_list.append(_get_lesson_stats(assignment_id, lesson_set, lesson))
+    for set_index, lesson_set in enumerate(main_set.sets()):
+        for lesson_index, lesson in enumerate(lesson_set.lessons()):
+            lesson_list.append(_get_lesson_stats(assignment_id, lesson_set, set_index, lesson, lesson_index))
     return json.dumps({"lessonSets": lesson_list, "statBounds": _find_stat_ranges(lesson_list)})
 
 
@@ -30,8 +30,8 @@ Helper Methods
 
 
 # Returns a dict representing a single lesson for main set statistics
-def _get_lesson_stats(assignment_id, lesson_set, lesson):
-    lesson_dict = {"name": lesson_set.set_name}
+def _get_lesson_stats(assignment_id, lesson_set, set_index, lesson, lesson_index):
+    lesson_dict = {"name": lesson_set.set_name, "set_index": set_index, "lesson_index": lesson_index}
     lesson_dict.update(_get_user_stats(assignment_id, lesson_set, lesson))
     return lesson_dict
 
@@ -42,7 +42,7 @@ def _get_user_stats(assignment_id, lesson_set, lesson):
         .order_by('user_key', 'time_stamp')
     if not query:
         # Means that no students have taken the lesson yet
-        return {"userCount": 0, "completionRate": 0, "firstTryRate": 0, "averageAttempts": 0, "lessonSetIndex": index}
+        return {"userCount": 0, "completionRate": 0, "firstTryRate": 0, "averageAttempts": 0}
     user_count = 0
     completions = 0
     attempts = 0
