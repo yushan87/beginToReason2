@@ -21,8 +21,8 @@ def d3_graph(request, assignmentID, lessonSetIndex, lessonIndex):
     """
     print(request)
     return render(request, "data_analysis/d3graph.html",
-                  {'graphData': lesson_to_json(assignmentID, lessonSetIndex, True),
-                   'lessonData': lesson_info(assignmentID, lessonSetIndex)})
+                  {'graphData': lesson_to_json(assignmentID, lessonSetIndex, lessonIndex, True),
+                   'lessonData': lesson_info(assignmentID, lessonSetIndex, lessonIndex)})
 
 
 def assignment_statistics(request, assignmentID):
