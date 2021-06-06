@@ -50,7 +50,7 @@
                                         </div>
                                         <p class="card-text"><small class="text-muted">Opened {{ assignment.start_date }}, closes {{ assignment.end_date }}</small></p>
                                         <p class="card-text">{{assignment.main_set.set_description}}</p>
-                                        <form action="{% url 'data_analysis:mainset-statistics' class.id assignment.main_set.id %}" method="GET">
+                                        <form action="{% url 'data_analysis:assignment-statistics' assignment.id %}" method="GET">
                                             {% csrf_token %}
                                             <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
                                                 View Set Data

@@ -25,17 +25,16 @@ def d3_graph(request, classID, mainSetID, lessonSetIndex):
                    'lessonData': lesson_info(mainSetID, lessonSetIndex)})
 
 
-def mainset_statistics(request, classID, mainSetID):
+def assignment_statistics(request, assignmentID):
     """function d3_graph This function handles the view for lesson set-wide stats
 
     Args:
         request (HTTPRequest): A http request object created automatically by Django.
-        classID (int): ID of the class that user is interested in
-        mainSetID (int): ID of the main set in the database
+        assignmentID (int): ID of the assignment that user is interested in
 
     Returns:
         HttpResponse: A generated http response object to the request to show the lesson set
     """
     print(request)
-    return render(request, "data_analysis/mainSetStatistics.html", {'mainSetData': get_set_stats(classID, mainSetID),
-                                                                    'mainSetInfo': get_set_info(mainSetID)})
+    return render(request, "data_analysis/mainSetStatistics.html", {
+        'mainSetData': get_set_stats(assignmentID), 'mainSetInfo': get_set_info(assignmentID)})

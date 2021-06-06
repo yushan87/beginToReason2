@@ -1,20 +1,26 @@
 import json
+
 from data_analysis.models import DataLog
-from core.models import MainSet
+from core.models import MainSetLessonSets, LessonSetLessons, MainSet
 from data_analysis.py_helper_functions.graph_viewer.lesson_reader import is_user_educator
 
 
 # Returns stats for the mainset based around each lesson set
-def get_set_stats(class_id, mainset_id):
+from educator.models import Assignment
+
+
+def get_set_stats(assignment_id):
+    main_set_id = Assignment.objects.get(id=assignment_id).main_set.id
     lesson_set_list = []
-    for index, lesson_set in enumerate(MainSet.objects.get(id=mainset_id).lessons.all()):
-        lesson_set_list.append(_get_lesson_set_stats(class_id, lesson_set, index))
+    for relation in MainSetLessonSets.objects.filter(main_set_id=main_set_id).order_by('index'):
+        lesson_set_list.append(_get_lesson_set_stats(assignment_id, relation.lesson_set, relation.index))
     return json.dumps({"lessonSets": lesson_set_list, "statBounds": _find_stat_ranges(lesson_set_list)})
 
 
 # Returns the main set's info (name, id)
-def get_set_info(mainset_id):
-    return {"name": MainSet.objects.get(id=mainset_id).set_name, "id": mainset_id}
+def get_set_info(assignment_id):
+    assignment = Assignment.objects.get(id=assignment_id)
+    return {"name": assignment.main_set.set_name, "id": assignment.main_set.id}
 
 
 """
@@ -23,15 +29,17 @@ Helper Methods
 
 
 # Returns a dict of a single lesson set for main set statistics
-def _get_lesson_set_stats(class_id, lesson_set, index):
-    lesson_dict = {"name": lesson_set.set_name, "alternateCount": lesson_set.lessons.all().count() - 1}
-    lesson_dict.update(_get_user_stats(class_id, lesson_set, index))
+def _get_lesson_set_stats(assignment_id, lesson_set, index):
+    alt_count = LessonSetLessons.objects.filter(lesson_set=lesson_set).count()
+    lesson_dict = {"name": lesson_set.set_name, "alternateCount": alt_count}
+    lesson_dict.update(_get_user_stats(assignment_id, lesson_set, index))
     return lesson_dict
 
 
 # Returns a dictionary of the user-specific stats (e.g. avg. num of attempts)
-def _get_user_stats(class_id, lesson_set, index):
-    query = DataLog.objects.filter(lesson_set_key_id=lesson_set.id, class_key_id=class_id).order_by('user_key', 'time_stamp')
+def _get_user_stats(assignment_id, lesson_set, index):
+    query = DataLog.objects.filter(lesson_set_key_id=lesson_set.id, assignment_key_id=assignment_id).order_by(
+        'user_key', 'time_stamp')
     if not query:
         # Means that no students have taken the lesson yet
         return {"userCount": 0, "completionRate": 0, "firstTryRate": 0, "averageAttempts": 0, "lessonSetIndex": index}
