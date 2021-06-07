@@ -228,15 +228,14 @@ class Assignment(models.Model):
             userID (Integer): ID of the user_info queried (not the user, but the user_info)
             submittedAnswer (String): all the code submitted to RESOLVE, mutated in the form presented to user
         Returns:
-            Boolean: whether an alternate lesson was activated (and therefore a page needs to be reloaded)
+            Boolean: whether an alternate lesson was activated (and therefore whether a page needs to be reloaded)
         """
         if not AssignmentProgress.objects.all().filter(assignment_key_id=self.id, user_info_key_id=userID).exists():
             # Not in the assignment currently
             return False
 
         progress = AssignmentProgress.objects.get(assignment_key_id=self.id, user_info_key_id=userID)
-        current_lesson = self.main_set.set_by_index(progress.current_set_index) \
-            .lesson_by_index(progress.current_lesson_index)
+        _, _, current_lesson, _, is_alternate = self.get_user_lesson(userID)
 
         lesson_alternate = tutor_helper.tutor_helper.alternate_set_check(current_lesson,
                                                                          tutor_helper.tutor_helper.check_type(
@@ -250,11 +249,11 @@ class Assignment(models.Model):
             # This alternate replaces the current lesson, so I've got to advance the user
             self.advance_user(userID)
 
-        # Get the depth of the next alternate level
-        alt_progresses = AlternateProgress.objects.filter(progress=progress).order_by('-alternate_level')
-        if len(alt_progresses) > 0:
+        if is_alternate:
             # User is currently in an alt lesson!
-            depth = alt_progresses[0].depth + 1
+            # Get the depth of the next alternate level
+            alt_progresses = AlternateProgress.objects.filter(progress=progress).order_by('-alternate_level')
+            depth = alt_progresses[0].alternate_level + 1
         else:
             # User is not currently in an alt lesson!
             depth = 0

@@ -14,7 +14,8 @@ from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import log_data, finished_lesson_count
 from educator.models import Class, ClassMembership, Assignment
 from educator.py_helper_functions.educator_helper import get_classes, user_in_class_auth, assignment_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier
+from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier, \
+    clean_variable
 from tutor.py_helper_functions.mutation import can_mutate
 
 User = get_user_model()
@@ -104,7 +105,7 @@ def grader(request):
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
             submitted_answer = ''.join(submitted_answer)
 
-            status, _, vcs, completion_time = asyncio.run(send_to_verifier(data['code']))
+            status, lines, vcs, completion_time = asyncio.run(send_to_verifier(data['code']))
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status,
                      vcs, completion_time)
@@ -114,12 +115,12 @@ def grader(request):
                 # Can use return value from advance_user to communicate to browser that assignment is completed
                 assignment.advance_user(current_user.id)
                 return JsonResponse(browser_response(current_lesson, assignment, current_user, submitted_answer,
-                                                     status, True))
+                                                     status, lines, True, False))
             else:
                 # Activate alternate if needed
-                assignment.alternate_check(current_user.id, data['code'])
+                changed = assignment.alternate_check(current_user.id, data['code'])
                 return JsonResponse(browser_response(current_lesson, assignment, current_user, submitted_answer,
-                                                     status, False))
+                                                     status, lines, changed, changed))
     return redirect("accounts:profile")
 
 
@@ -149,7 +150,7 @@ def tutor(request, assignmentID):
             current_lesson.code.lesson_code = can_mutate(current_lesson)
             current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
                                                                is_alternate)
-
+            current_lesson.code.lesson_code = clean_variable(current_lesson.code.lesson_code)
             # Case 2aa: if questions if MC or Both
             if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                 return render(request, "tutor/tutor.html",
