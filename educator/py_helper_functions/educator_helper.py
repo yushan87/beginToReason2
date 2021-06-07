@@ -50,6 +50,23 @@ def user_in_class_auth(user_info, class_id):
         return None
 
 
+def user_educates_class_auth(user_info, class_id):
+    """function user_educates_class_auth This function handles the auth logic for whether a user has educator privileges
+    over a class
+
+    Args:
+        user_info: Model from accounts
+        class_id (int): ID of the class in question
+
+    Returns:
+        ClassMembership: The relationship between the two, or None if doesn't exist
+    """
+    try:
+        return ClassMembership.objects.get(user_id=user_info.id, class_taking=class_id, is_educator=True)
+    except ClassMembership.DoesNotExist:
+        return None
+
+
 def get_classes(user_info):
     """function get_classes This function gives classes a user is in
 
@@ -91,7 +108,7 @@ def get_classes_taught(user_info):
 
 
 def assignment_auth(request, assignment_id=None):
-    """function lesson_auth This function handles the auth logic for an assignment
+    """function lesson_auth This function handles the auth logic for whether a student can take an assignment
 
     Args:
          request (HTTPRequest): A http request object created automatically by Django.
