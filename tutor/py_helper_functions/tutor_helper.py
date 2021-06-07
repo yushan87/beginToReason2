@@ -32,46 +32,6 @@ def user_auth(request):
     return False
 
 
-def set_not_complete(request):
-    """function set_not_complete This function handles the logic for a if a set has not been completed
-
-    Args:
-         request (HTTPRequest): A http request object created automatically by Django.
-
-    Returns:
-        Boolean: A boolean to signal if the set has been completed
-    """
-    current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
-    print("Set not complete: ", request)
-    if current_user.current_lesson_set is None:
-        return False
-
-    current_set = current_user.current_lesson_set.lessons.all()
-    if current_set.exists():
-
-        if request.method == 'POST':
-            print("Not complete call from POST")
-            # need a variation of what to do if the last lesson was completed
-            if current_user.current_lesson_index < len(current_set) - 1:
-                # increase index of lesson set depending on if user is on a previously completed lesson
-                if current_user.current_lesson_index < current_user.completed_lesson_index:
-                    current_user.current_lesson_index = current_user.current_lesson_index + 1
-                else:
-                    current_user.completed_lesson_index = current_user.completed_lesson_index + 1
-                    current_user.current_lesson_index = current_user.current_lesson_index + 1
-                current_user.save()
-                return True
-            else:
-                # remove set from current set
-                return False
-        elif request.method == 'GET':
-            print("Not complete call from GET")
-            if current_user.current_lesson_index < len(current_set):
-                print("TEST PRINT")
-                return True
-    return False
-
-
 def alternate_set_check(current_lesson, alternate_type):
     """function alternate_set_check This function handles the logic for a if a lesson has an alternate
 
@@ -81,14 +41,26 @@ def alternate_set_check(current_lesson, alternate_type):
          in which case it will simply return None for the alternate lesson.
 
     Returns:
-        LessonAlternate model, or None no redirect needed
+        LessonAlternate model, or None if no redirect needed
     """
     if alternate_type is None:
+        # Nothing triggered, so nothing to activate
         return None
     try:
+        # Obvious attempt
         return core.models.LessonAlternate.objects.get(lesson=current_lesson, type=alternate_type)
     except core.models.LessonAlternate.DoesNotExist:
-        return None
+        if alternate_type != core.models.AlternateType.DEFAULT:
+            try:
+                # If what I was searching for type-wise doesn't exist as an alternate option, try the default
+                print("Lesson", current_lesson, "activated a type of", alternate_type, "but didn't supply a lesson to "
+                                                                                       "redirect to!")
+                return core.models.LessonAlternate.objects.get(lesson=current_lesson,
+                                                               type=core.models.AlternateType.DEFAULT)
+            except core.models.LessonAlternate.DoesNotExist:
+                pass
+    # If all else fails, don't redirect
+    return None
 
 
 def check_type(current_lesson, submitted_code):
@@ -100,7 +72,7 @@ def check_type(current_lesson, submitted_code):
          submitted_code (String): all the code submitted to RESOLVE, mutated in the form presented to user
 
     Returns:
-        type: type of lesson to use for lookup (integer enumeration). None if no incorrect answers were triggered.
+        type: type of lesson to use for lookup (integer enumeration). Default if no incorrect answers were triggered.
     """
     for answer in get_confirm_lines(reverse_mutate(submitted_code)):
         try:
@@ -108,24 +80,11 @@ def check_type(current_lesson, submitted_code):
         except core.models.IncorrectAnswer.DoesNotExist:
             continue
 
-    return None
+    return core.models.AlternateType.DEFAULT
 
 
-def check_status(status):
-    """function check_status This function converts a string to a boolean
-
-        Args:
-            status: string of result from compiler
-
-        Returns:
-            boolean
-        """
-    if status == 'success':
-        return True
-    return False
-
-
-def browser_response(current_lesson, current_assignment, current_user, submitted_answer, status, unlock_next):
+def browser_response(current_lesson, current_assignment, current_user, submitted_answer, status, lines, unlock_next,
+                     alt_activated):
     """function browser_response This function finds the feedback to show to the user
 
     Args:
@@ -134,29 +93,33 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
          current_user: The UserInfo that is attempting the lesson
          submitted_answer: string of code that user submitted
          status: string of result from compiler
+         lines: array of confirms and their statuses
          unlock_next: boolean for unlocking next button
+         alt_activated: boolean changing feedback for whether a wrong answer has activated an alternate
 
     Returns:
-        dict that should be send to JS
+        dict that should be send to front-end JS
     """
-    if status == 'success':
-        headline = 'Correct'
-        text = current_lesson.correct_feedback
+    if not alt_activated:
+        if status == 'success':
+            headline = 'Correct'
+            text = current_lesson.correct_feedback
+        else:
+            try:
+                feedback = current_lesson.feedback.get(feedback_type=check_type(current_lesson, submitted_answer))
+                headline = feedback.headline
+                text = feedback.feedback_text
+            except core.models.Feedback.DoesNotExist:
+                headline = "Try Again!"
+                text = "Did you read the reference material?"
     else:
-        try:
-            feedback = current_lesson.feedback.get(feedback_type=check_type(current_lesson, submitted_answer))
-            headline = feedback.headline
-            text = feedback.feedback_text
-        except core.models.Feedback.DoesNotExist:
-            headline = "Try Again!"
-            text = "Did you read the reference material?"
+        headline = "ALT!"
+        text = "[explanation about alt, directions to hit next lesson]"
 
-    text += '<br>You have attempted this lesson ' + \
-            str(DataLog.objects.filter(assignment_key=current_assignment, user_key=current_user.user,
-                                       lesson_key=current_lesson).count()) + ' times.'
     return {'resultsHeader': headline,
             'resultDetails': text,
             'status': status,
+            'lines': lines,
             'unlock_next': unlock_next
             }
 
@@ -391,3 +354,14 @@ def get_confirm_lines(code):
                 # Get rid of all spaces
                 lines.append(re.sub(" ", "", group))
     return lines
+
+
+def clean_variable(variable):
+    """
+    Makes a string safe to use in an HTML template by escaping newlines
+    @param variable: A string (most likely code submitted by user)
+    @return: Escaped string
+    """
+    variable = re.sub("\r\n", r"\\r\\n", variable)
+    variable = re.sub("\r", r"\\r", variable)
+    return re.sub("\n", r"\\n", variable)

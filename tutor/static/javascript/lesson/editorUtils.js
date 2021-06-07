@@ -19,7 +19,6 @@ let name;
 let overlayOpen = false;
 let allAnswers = "";
 let multiAnswer;
-let submitAnswers="";
 let instructOpen = true;
 
 
@@ -223,8 +222,6 @@ function checkForTrivials(content) {
         // Find the variables used on the left side. If there are none, mark it correct.
         var left = parts[0];
         var right = parts[1];
-        console.log("left " + left)
-        console.log("right " + right)
         regex = new RegExp("[a-np-zA-QS-Z]", "g") // Temporary fix to allow Reverse(#S) o #T on section2, lesson6
         var variables = left.match(regex);
         if (variables === null) {
@@ -330,7 +327,7 @@ $("#checkCorrectness").click(function () {
 
 
 
-    //is explaination long enough
+    //is explanation long enough
     if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
         if (boxVal.length < 10) {
@@ -358,7 +355,7 @@ $("#checkCorrectness").click(function () {
             return;
         }
     }
-    document.getElementById("resultCard").style.display = "block";let results = "";
+    document.getElementById("resultCard").style.display = "block";
     let code = aceEditor.session.getValue();
 
     // Check for trivials
@@ -381,15 +378,15 @@ $("#checkCorrectness").click(function () {
         //this will need to be fixed based on verifier return
         //log data
 
-        let currentAttemptAnswers = '';
+        if (allAnswers != '') {
+            allAnswers += "</br>";
+        }
+        let currentAttemptAnswers = ''
         for (var i = 0; i < trivials.confirms.length; i++) {
             aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
             document.getElementById("answersCard").removeAttribute("hidden")
-            allAnswers = allAnswers + aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'') + "<br>";
+            allAnswers += `${trivials.confirms[i].lineNum}: ${aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace('Confirm','').replace(';', '')}</br>`;
             currentAttemptAnswers += aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'') + '\n';
-            if (i == trivials.confirms.length - 1){
-                allAnswers += "<br><br>";
-            }
             document.getElementById("pastAnswers").innerHTML = allAnswers;
         }
 
@@ -660,24 +657,6 @@ $("#prev").click(function () {
     location.reload();
 });
 
-
-/*
-$.ajax({
-  type: "POST",
-  url: "/python/verify.py",
-  data: { param: text}
-}).done(function( o ) {
-   // do something
-});
-*/
-
-/*
-function getTime() {
-    var endTime = new Date();
-    var result = endTime.getTime() - time.getTime();
-    time = endTime;
-    return result;
-}*/
 /////////////////////////////////////////
 // POST result from Resolve to backend //
 /////////////////////////////////////////
@@ -714,6 +693,35 @@ $.postJSON = (url, data, callback) => {
                 closeThinkAloudFunctions(false, 'something went wrong',  data.answer, data.code); // for the think-aloud recording
                 unlock();
             }
+
+            let lines = response.lines
+            var confirmLine
+            displayPast = response.status != "success"
+            if (displayPast && allAnswers != '') {
+                allAnswers += "</br>";
+            }
+            for (var i = 0; i < lines.length; i++) {
+                if (displayPast) {
+                    confirmLine = `${lines[i].lineNum}: ${aceEditor.session.getLine(lines[i].lineNum-1).replace("Confirm", "").replace(";", "")}`
+                    if (lines[i].status == 'success') {
+                        confirmLine += ' <i class="fas fa-check"></i>'
+                    }
+                    if (!confirmLine.includes('Operation Main()')) {
+                        allAnswers += confirmLine  + "</br>";
+                    }
+                }
+                if (!confirmLine.includes('Operation Main()')) {
+                    if (lines[i].status == "success") {
+                        aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_correct")
+                    }
+                    else {
+                        aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_error");
+                        document.getElementById("answersCard").removeAttribute("hidden")
+                    }
+                }
+            }
+            document.getElementById("pastAnswers").innerHTML = allAnswers;
+
             if (response.unlock_next){
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
@@ -723,89 +731,15 @@ $.postJSON = (url, data, callback) => {
     });
 };
 
-
-function mergeVCsAndLineNums(provedList, lineNums) {
-    var overall = 'success';
-    var lines = {};
-
-    for (var vc of lineNums) {
-        if (provedList[vc.vc] != 'success') {
-            overall = 'failure';
-        }
-
-        if (lines[vc.lineNum] != 'failure') {
-            lines[vc.lineNum] = provedList[vc.vc];
-        }
-    }
-
-    // Convert from hashtable to array
-    var lineArray = [];
-    for (var entry of Object.entries(lines)) {
-        lineArray.push({'lineNum': entry[0], 'status': entry[1]});
-    }
-
-    return {'overall': overall, 'lines': lineArray}
-}
-
-
 /*
-    Don't ask, just accept. This is how the Resolve Web API works at the
-    moment. If you want to fix this, PLEASE DO.
-*/
-function encode(data) {
-    var regex1 = new RegExp(" ", "g");
-    var regex2 = new RegExp("/+", "g");
-
-    var content = encodeURIComponent(data);
-    content = content.replace(regex1, "%20");
-    content = content.replace(regex2, "%2B");
-
-    var json = {};
-
-    json.name = "BeginToReason";
-    json.pkg = "User";
-    json.project = "Teaching_Project";
-    json.content = content;
-    json.parent = "undefined";
-    json.type = "f";
-
-    return JSON.stringify(json)
-}
-
-
-function decode(data) {
-    var regex1 = new RegExp("%20", "g");
-    var regex2 = new RegExp("%2B", "g");
-    var regex3 = new RegExp("<vcFile>(.*)</vcFile>", "g");
-    var regex4 = new RegExp("\n", "g");
-
-    var content = decodeURIComponent(data)
-    content = content.replace(regex1, " ");
-    content = content.replace(regex2, "+");
-    content = content.replace(regex3, "$1");
-    content = decodeURIComponent(content);
-    content = decodeURIComponent(content);
-    content = content.replace(regex4, "");
-
-    var obj = JSON.parse(content);
-
-    return obj;
-}
-
-/*
-    connecting socket to resolve. we want to remove this whole thing eventually
-    This handles the listeners for result
+    Sends to backend for verification
 */
 function verify(code){
 
-    /*
-    * posting data to back end to log
-    * */
     let data = {};
     data.assignment = assignment;
-    //data.answer = submitAnswers; just the confirms - I can do on backend
     data.pastAnswers = allAnswers; //Doesn't include the current one!!!
-    data.code = code; // def need this
+    data.code = code;
     if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
     else if (hasMC){data.explanation = multiAnswer;}
     else {data.explanation = "No Explanation Requested";}
@@ -818,108 +752,4 @@ function verify(code){
     }
 
     $.postJSON("grader", data, (results) => {});
-    submitAnswers = '';
-    // Old code to comm with RESOLVE verifier
-    /*
-    var vcs = {}
-    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project');
-    // Connection opened
-    ws.addEventListener('open', function (event) {
-        ws.send(encode(code));
-    });
-
-    // Listen for messages
-    ws.addEventListener('message', function (event) {
-        message = JSON.parse(event.data)
-        console.log('message :>> ', message);
-        if (message.status == 'error' || message.status == '') {
-            unlock();
-            document.getElementById("resultsHeader").innerHTML = "<h3>Syntax error";
-            document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
-            $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-            $("#resultCard").attr("class", "card bg-danger text-white");
-            let currentAttemptAnswers = '';
-            //add line errors
-            //this will need to be fixed based on verifier return
-            for (var i = 0; i < message.errors[0].errors.length; i++) {
-                aceEditor.session.addGutterDecoration(message.errors[0].errors[i].error.ln - 1, "ace_error")
-                document.getElementById("answersCard").removeAttribute("hidden")
-                currentAttemptAnswers += aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')  + "\n";
-                var confirmLine = aceEditor.session.getLine(message.errors[0].errors[i].error.ln - 1).replace(/\t/g,'')  + "<br>";
-                console.log('allAnswers :>> ', allAnswers);
-                allAnswers = allAnswers + confirmLine;
-                if (i == message.errors[0].errors.length - 1){
-                    allAnswers += "<br><br>";
-                }
-                document.getElementById("pastAnswers").innerHTML = allAnswers;
-            }
-
-            closeThinkAloudFunctions(false, 'syntax', currentAttemptAnswers, code); // for the think-aloud recording
-        }
-        else if (message.status == 'processing') {
-            var regex = new RegExp('^Proved')
-            if (regex.test(message.result.result)) {
-                vcs[message.result.id] = 'success'
-            } else {
-                vcs[message.result.id] = 'failure'
-            }
-        }
-        else if (message.status == 'complete') {
-            ws.close()
-
-            let lineNums = decode(message.result)
-            let lines = mergeVCsAndLineNums(vcs, lineNums.vcs)
-            var confirmLine
-            let vcLine = parseInt(lineNums.vcs[0].lineNum, 10)
-
-            let currentAttemptAnswers = '';
-            for (var i = 0; i < lines.lines.length; i++) {
-                if (lines.lines[i].status == "success") {
-                    aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_correct");
-                    confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\s/g,'');
-                    confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
-                    allAnswers = allAnswers + confirmLine  + "<br>";
-                    submitAnswers = submitAnswers + confirmLine;
-                    currentAttemptAnswers += confirmLine + '\n'
-                }
-                else {
-                    aceEditor.session.addGutterDecoration(lines.lines[i].lineNum-1, "ace_error");
-                    document.getElementById("answersCard").removeAttribute("hidden")
-                    confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace(/\s/g,'');
-                    confirmLine = aceEditor.session.getLine(lines.lines[i].lineNum-1).replace("Confirm", "");
-                    allAnswers = allAnswers + confirmLine  + "<br>";
-                    submitAnswers = submitAnswers + confirmLine;
-                    if (i == lines.lines.length - 1){
-                    allAnswers += "<br><br>";
-                    currentAttemptAnswers += confirmLine + '\n'
-                }
-                    document.getElementById("pastAnswers").innerHTML = allAnswers;
-                }
-            }
-
-            // posting back end data to log
-            let data = {};
-            data.name = name;
-            data.answer = submitAnswers;
-            data.allAnswers = allAnswers;
-            data.code = code;
-            if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
-            else if (hasMC){data.explanation = multiAnswer;}
-            else {data.explanation = "No Explanation Requested";}
-
-            const faces = document.querySelectorAll('input[name="smiley"]');
-            let selectedValue;
-            for (const x of faces) {
-                if (x.checked) {
-                    selectedValue = x.value;
-                    data.face = selectedValue
-                }
-            }
-            //The original post
-            //$.postJSON("tutor", data, (results) => {});
-            submitAnswers = '';
-
-        }
-    });
-    */
 }
