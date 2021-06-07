@@ -10,9 +10,14 @@ from data_analysis.py_helper_functions.graph_viewer.node import Node
 
 
 # Takes a lesson index and returns a JSON representation fit for D3
-def lesson_to_json(class_id, mainset_id, lessonset_index, is_anonymous):
-    lesson = _find_main_lesson(MainSet.objects.get(id=mainset_id).lessons.all()[lessonset_index].lessons.all())
-    (root, users) = _lesson_to_graph(class_id, lesson, is_anonymous)
+from educator.models import Assignment
+
+
+def lesson_to_json(assignment_id, lesson_set_index, lesson_index, is_anonymous):
+    assignment = Assignment.objects.get(id=assignment_id)
+    lesson_set = assignment.main_set.set_by_index(lesson_set_index)
+    lesson = lesson_set.lesson_by_index(lesson_index)
+    (root, users) = _lesson_to_graph(assignment, lesson_set, lesson, is_anonymous)
     nodes = []
     edges = []
     allowed = _filter_by_appearances(root.return_family())
@@ -26,14 +31,14 @@ def lesson_to_json(class_id, mainset_id, lessonset_index, is_anonymous):
 
 
 # Returns JSON containing info that graph needs to display about the lesson
-def lesson_info(mainset_id, lessonset_index):
-    lesson_sets = MainSet.objects.get(id=mainset_id).lessons.all()
-    lesson_set = lesson_sets[lessonset_index]
-    lesson = _find_main_lesson(lesson_set.lessons.all())
+def lesson_info(assignment_id, lesson_set_index, lesson_index):
+    lesson_sets = Assignment.objects.get(id=assignment_id).main_set.sets()
+    lesson_set = lesson_sets[lesson_set_index]
+    lesson = lesson_set.lesson_by_index(lesson_index)
     return json.dumps({"lessonName": lesson.lesson_name, "lessonTitle": lesson.lesson_title,
                        "lessonSetName": lesson_set.set_name, "code": lesson.code.lesson_code,
-                       "prevLessonSet": _find_prev_lesson_set(lessonset_index),
-                       "nextLessonSet": _find_next_lesson_set(lessonset_index, lesson_sets),
+                       "prevLesson": _find_prev_lesson(lesson_sets, lesson_set_index, lesson_index),
+                       "nextLesson": _find_next_lesson(lesson_sets, lesson_set_index, lesson_index),
                        "confirms": _locate_confirm_indices(lesson.code.lesson_code)})
 
 
@@ -43,9 +48,10 @@ Helper methods
 
 
 # Takes a lesson index and returns the START node of its graph representation
-def _lesson_to_graph(class_id, lesson, is_anonymous):
+def _lesson_to_graph(assignment, lesson_set, lesson, is_anonymous):
     user_number = 0
-    query = DataLog.objects.filter(lesson_key=lesson.id, class_key=class_id).order_by('user_key', 'time_stamp')
+    query = DataLog.objects.filter(assignment_key=assignment, lesson_set_key=lesson_set, lesson_key=lesson)\
+        .order_by('user_key', 'time_stamp')
     start_node = Node(Node.START_NAME, False)
     if not query:
         # Nobody has taken this lesson yet!
@@ -129,31 +135,43 @@ def _find_optimal_min(node_list):
     return 0
 
 
-# Returns the index of the previous lesson set
-def _find_prev_lesson_set(current_lesson_set_index):
-    if current_lesson_set_index == 0:
-        # First lesson set in main set
-        return -1
+# Returns the URL addon for getting the preceding lesson's info
+def _find_prev_lesson(lesson_sets, lesson_set_index, lesson_index):
+    if lesson_index == 0:
+        # First lesson in set
+        if lesson_set_index == 0:
+            # First overall, no previous!
+            return None
+        else:
+            # Can decrement set
+            lesson_set_index -= 1
+            # Set to last lesson of current set
+            lesson_index = len(lesson_sets[lesson_set_index].lessons()) - 1
+    else:
+        # Can decrement lesson
+        lesson_index -= 1
 
-    return current_lesson_set_index - 1
+    return str(lesson_set_index) + '/' + str(lesson_index)
 
 
-# Returns index in the main set of the next lesson set
-def _find_next_lesson_set(current_lesson_set_index, lesson_sets):
-    if current_lesson_set_index + 1 == len(lesson_sets):
-        # Last lesson in lesson set
-        return -1
+# Returns the URL addon for getting the next lesson's info
+def _find_next_lesson(lesson_sets, lesson_set_index, lesson_index):
+    # Can we increment lesson_index?
+    if lesson_index < len(lesson_sets[lesson_set_index].lessons()) - 1:
+        # Yes!
+        lesson_index += 1
+    else:
+        # No, then can we increment lesson_set_index?
+        if lesson_set_index < len(lesson_sets) - 1:
+            # We can do that!
+            lesson_set_index += 1
+            # Set to first lesson
+            lesson_index = 0
+        else:
+            # Last lesson overall
+            return None
 
-    return current_lesson_set_index + 1
-
-
-# Find the non-alternate lesson in the array of lessons
-def _find_main_lesson(lessons):
-    for lesson in lessons:
-        if not lesson.is_alternate:
-            return lesson
-    print("Couldn't find a non-alternate lesson! Defaulting to the first one...")
-    return lessons[0]
+    return str(lesson_set_index) + '/' + str(lesson_index)
 
 
 def _user_to_dict(user, user_number, is_anonymous):

@@ -98,7 +98,7 @@ for (let lessonSet of lessonSets) {
                     Average attempts: ${lessonSet.averageAttempts.toString().substr(0, 4)}${withinBounds(lessonSet.averageAttempts, "averageAttempts", true)}<br>
                     First try rate: ${(100*lessonSet.firstTryRate).toString().substr(0, 5)}%${withinBounds(lessonSet.firstTryRate, "firstTryRate", false)}<br>
                     Completion rate: ${(100 * lessonSet.completionRate).toString().substr(0, 5)}%${withinBounds(lessonSet.completionRate, "completionRate", false)}<br>
-                    Current Users: ???<br>
+                    Current Users: ${lessonSet.currentUsers}<br>
                     Users: ${lessonSet.userCount}
                 </div>
                 <btn type="button" class="btn btn-primary float-right">View Graph</btn>
@@ -107,7 +107,7 @@ for (let lessonSet of lessonSets) {
     </div>
 </div>`)
     addition.querySelector(".btn-primary").onclick = () => {
-        window.location.href = window.location.href.split('?')[0] + `/${lessonSet.lessonSetIndex}`
+        window.location.href = window.location.href.split('?')[0] + `/${lessonSet.set_index}/${lessonSet.lesson_index}`
     }
     addition.querySelector(`#menu${lessonSet.lessonIndex}`).onclick = () => {
         window.sessionStorage.setItem("selectedLesson", lessonSet.lessonIndex)

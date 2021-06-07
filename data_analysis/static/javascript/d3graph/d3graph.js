@@ -1,17 +1,17 @@
 document.querySelector('#graphTitle').innerHTML = `${graph.lesson.lessonName}: ${graph.lesson.lessonTitle}<br>${graph.lesson.lessonSetName}`
 const urlSplit = window.location.href.split('/')
-document.querySelector('#prevLesson').disabled = graph.lesson.prevLesson < 0
-document.querySelector('#nextLesson').disabled = graph.lesson.nextLesson < 0
+document.querySelector('#prevLesson').disabled = !graph.lesson.prevLesson
+document.querySelector('#nextLesson').disabled = !graph.lesson.nextLesson
 document.querySelector('#prevLesson').onclick = () => {
-  urlSplit[urlSplit.length - 1] = graph.lesson.prevLessonSet
-  window.location.href = urlSplit.join('/')
+  urlSplit[urlSplit.length - 2] = graph.lesson.prevLesson
+  window.location.href = urlSplit.splice(0, urlSplit.length - 1).join('/')
 }
 document.querySelector('#nextLesson').onclick = () => {
-  urlSplit[urlSplit.length - 1] = graph.lesson.nextLessonSet
-  window.location.href = urlSplit.join('/')
+  urlSplit[urlSplit.length - 2] = graph.lesson.nextLesson
+  window.location.href = urlSplit.splice(0, urlSplit.length - 1).join('/')
 }
 document.querySelector("#setView").onclick = () => {
-  window.location.href = urlSplit.splice(0, urlSplit.length - 1).join('/')
+  window.location.href = urlSplit.splice(0, urlSplit.length - 2).join('/')
 }
 const filter = {}
 //users that are checked
