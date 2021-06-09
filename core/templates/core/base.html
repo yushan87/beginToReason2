@@ -14,7 +14,8 @@
     <link rel="icon" type="image/png" href="{% static 'images/logo3.png' %}">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" integrity="sha256-hHKA3d/HttC8OW3Sl093W8DoZudhHJDj++kZYo6MLzA=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css"
+          integrity="sha256-hHKA3d/HttC8OW3Sl093W8DoZudhHJDj++kZYo6MLzA=" crossorigin="anonymous">
     {% block css %}
     {% endblock %}
 
@@ -25,7 +26,8 @@
 </head>
 <body>
 <!-- JavaScript Libraries -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha256-edRDsV9ULIqKzKjpN/KjyQ7Lp4vUn9usbJuHjH8Sk+k=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha256-edRDsV9ULIqKzKjpN/KjyQ7Lp4vUn9usbJuHjH8Sk+k=" crossorigin="anonymous"></script>
 {% block body_js %}
 {% endblock %}
 
@@ -38,16 +40,16 @@
         </a>
         <ul class="navbar-nav flex-row align-items-center text-center">
             {% if user.userinformation.user_educator %}
-            <li class="nav-item ml-3">
-                <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">Student View</a>
-            </li>
-            <li class="nav-item ml-3">
-                <a class="nav-link pb-0" href="{% url 'educator:main-view' %}">Educator Tools</a>
-            </li>
+                <li class="nav-item ml-3">
+                    <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">Student View</a>
+                </li>
+                <li class="nav-item ml-3">
+                    <a class="nav-link pb-0" href="{% url 'educator:main-view' %}">Educator Tools</a>
+                </li>
             {% else %}
-            <li class="nav-item ml-3">
-                <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">My Classes</a>
-            </li>
+                <li class="nav-item ml-3">
+                    <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">My Classes</a>
+                </li>
             {% endif %}
             <li class="nav-item ml-3">
                 <a class="nav-link pb-0" href="{% url 'accounts:privacy' %}">Privacy Policy</a>
@@ -74,7 +76,8 @@
                     <button class="btn btn-auth dropdown-toggle" type="button" id="accountDropdownButton"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <i class="far fa-user-circle"></i>
-                        <span class="d-none d-sm-inline-flex">&nbsp; </span>{% if user.userinformation.user_nickname %}{{ user.userinformation.user_nickname }}{% else %}{{ user.username }}{% endif %}
+                        <span class="d-none d-sm-inline-flex">&nbsp; </span>{% if user.userinformation.user_nickname %}
+                        {{ user.userinformation.user_nickname }}{% else %}{{ user.username }}{% endif %}
                     </button>
                     <div class="dropdown-menu dropdown-menu-right m-0" aria-labelledby="accountDropdownButton">
                         <a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a>
@@ -93,28 +96,29 @@
         </ul>
     </nav>
     {% if messages %}
-    <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Messages</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
-                {{ message }}
-            </li>
-            {% endfor %}
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
+        <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Messages</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                                {{ message }}
+                            </li>
+                        {% endfor %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
     {% endif %}
 </header>
 
@@ -125,8 +129,8 @@
 </main>
 </body>
 {% if messages %}
-<script type="text/javascript">
-    $('#messageModal').modal()
-</script>
+    <script type="text/javascript">
+        $('#messageModal').modal()
+    </script>
 {% endif %}
 </html>
