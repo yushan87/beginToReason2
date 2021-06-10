@@ -33,67 +33,71 @@
 
 <!-- Page Header -->
 <header id="page-header" class="d-flex flex-column">
-    <nav class="navbar navbar-expand-md navbar-dark flex-column flex-md-row py-0" role="navigation">
-        <a class="navbar-brand" href="{% url 'index' %}">
-            <img src="{% static 'images/logo3.png' %}" alt="Clemson RESOLVE Logo" width="40" height="40">
-            <span id="site-title" class="pl-1 text-center align-bottom">BeginToReason</span>
-        </a>
-        <ul class="navbar-nav flex-row align-items-center text-center">
-            {% if user.userinformation.user_educator %}
-                <li class="nav-item ml-3">
-                    <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">Student View</a>
+    <nav class="navbar navbar-expand-md navbar-dark py-0" role="navigation">
+        <div class="container-fluid flex-column flex-md-row">
+            <a class="navbar-brand me-2" href="{% url 'index' %}">
+                <img src="{% static 'images/logo3.png' %}" alt="Clemson RESOLVE Logo" width="40" height="40">
+                <span id="site-title" class="ps-1 text-center align-bottom">BeginToReason</span>
+            </a>
+            <ul class="navbar-nav flex-row me-md-auto align-items-center text-center">
+                {% if user.userinformation.user_educator %}
+                    <li class="nav-item ms-3">
+                        <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">Student View</a>
+                    </li>
+                    <li class="nav-item ms-3">
+                        <a class="nav-link pb-0" href="{% url 'educator:main-view' %}">Educator Tools</a>
+                    </li>
+                {% else %}
+                    <li class="nav-item ms-3">
+                        <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">My Classes</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item ms-3">
+                    <a class="nav-link pb-0" href="{% url 'accounts:privacy' %}">Privacy Policy</a>
                 </li>
-                <li class="nav-item ml-3">
-                    <a class="nav-link pb-0" href="{% url 'educator:main-view' %}">Educator Tools</a>
-                </li>
-            {% else %}
-                <li class="nav-item ml-3">
-                    <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">My Classes</a>
-                </li>
-            {% endif %}
-            <li class="nav-item ml-3">
-                <a class="nav-link pb-0" href="{% url 'accounts:privacy' %}">Privacy Policy</a>
-            </li>
-            {% block header_navigation_links %}
-            {% endblock %}
+                {% block header_navigation_links %}
+                {% endblock %}
 
-            <li class="nav-item dropdown ml-3">
-                <a id="otherLinksDropdown" class="nav-link dropdown-toggle pb-0" href="#" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">External Links</a>
-                <div class="dropdown-menu dropdown-menu-left m-0" aria-labelledby="otherLinksDropdown">
-                    <a class="dropdown-item" href="https://www.cs.clemson.edu/resolve/" target="_blank">RSRG Home</a>
-                    <a class="dropdown-item" href="https://resolve.cs.clemson.edu/" target="_blank">WebIDE</a>
-                    <a class="dropdown-item" href="https://www.nsf.gov/" target="_blank">NSF.gov</a>
-                </div>
-            </li>
-            <li class="nav-item ml-3">
-                <img src="{% static 'images/nsf.png' %}" alt="Clemson RESOLVE Logo" width="40" height="40">
-            </li>
-        </ul>
-        <ul class="navbar-nav flex-row my-3 ml-md-auto align-items-center text-center">
-            {% if user.is_authenticated %}
-                <li class="nav-item dropdown">
-                    <button class="btn btn-auth dropdown-toggle" type="button" id="accountDropdownButton"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="far fa-user-circle"></i>
-                        <span class="d-none d-sm-inline-flex">&nbsp; </span>{% if user.userinformation.user_nickname %}
-                        {{ user.userinformation.user_nickname }}{% else %}{{ user.username }}{% endif %}
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-right m-0" aria-labelledby="accountDropdownButton">
-                        <a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a>
-                        <a class="dropdown-item" href="{% url 'accounts:settings' %}">Settings</a>
-                        <a class="dropdown-item" href="{% url 'accounts:logout' %}">Log out</a>
+                <li class="nav-item dropdown ms-3">
+                    <a id="otherLinksDropdown" class="nav-link dropdown-toggle pb-0" href="#" data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">External Links</a>
+                    <div class="dropdown-menu dropdown-menu-left m-0" aria-labelledby="otherLinksDropdown">
+                        <a class="dropdown-item" href="https://www.cs.clemson.edu/resolve/" target="_blank">RSRG
+                            Home</a>
+                        <a class="dropdown-item" href="https://resolve.cs.clemson.edu/" target="_blank">WebIDE</a>
+                        <a class="dropdown-item" href="https://www.nsf.gov/" target="_blank">NSF.gov</a>
                     </div>
                 </li>
-            {% else %}
-                <li class="nav-item">
-                    <a class="btn btn-auth" href="{% url 'accounts:login' %}" role="button">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span class="d-none d-sm-inline-flex">&nbsp; </span>Log in
-                    </a>
+                <li class="nav-item ms-3">
+                    <img src="{% static 'images/nsf.png' %}" alt="Clemson RESOLVE Logo" width="40" height="40">
                 </li>
-            {% endif %}
-        </ul>
+            </ul>
+            <ul class="navbar-nav flex-row my-3 ms-md-auto align-items-center text-center">
+                {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <button class="btn btn-auth dropdown-toggle" type="button" id="accountDropdownButton"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="far fa-user-circle"></i>
+                            <span class="d-none d-sm-inline-flex">&nbsp; </span>
+                            {% if user.userinformation.user_nickname %}
+                                {{ user.userinformation.user_nickname }}{% else %}{{ user.username }}{% endif %}
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right m-0" aria-labelledby="accountDropdownButton">
+                            <a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a>
+                            <a class="dropdown-item" href="{% url 'accounts:settings' %}">Settings</a>
+                            <a class="dropdown-item" href="{% url 'accounts:logout' %}">Log out</a>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-auth" href="{% url 'accounts:login' %}" role="button">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span class="d-none d-sm-inline-flex">&nbsp; </span>Log in
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
     </nav>
     {% if messages %}
         <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
