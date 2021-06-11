@@ -8,19 +8,19 @@
 {% endblock %}
 
 {% block main_content %}
-    <!--- Jumbotron -->
-    <div class="jumbotron jumbotron-fluid">
+    <!--- Custom Jumbotron -->
+    <div class="container-fluid jumbotron py-5">
         <div class="container">
             <h1>Learn to reason through code using our interactive tutor</h1>
             <p>Not sure where to begin?</p>
             {% if user.is_authenticated %}
-            <a href="{% url 'tutor:classes' %}" class="btn btn-lg btn-jumbotron" role="button"
-               aria-pressed="true">View Classes</a>
+                <a href="{% url 'tutor:classes' %}" class="btn btn-lg btn-jumbotron" role="button"
+                   aria-pressed="true">View Classes</a>
             {% else %}
-            <a href="{% url 'accounts:login' %}" class="btn btn-lg btn-jumbotron" role="button">
-                        <i class="fas fa-sign-in-alt"></i>
-                        <span class="d-none d-sm-inline-flex">&nbsp; </span>Log in
-            </a>
+                <a href="{% url 'accounts:login' %}" class="btn btn-lg btn-jumbotron" role="button">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span class="d-none d-sm-inline-flex">&nbsp; </span>Log in
+                </a>
             {% endif %}
         </div>
     </div>
