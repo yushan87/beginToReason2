@@ -34,12 +34,12 @@
 <!-- Page Header -->
 <header id="page-header" class="d-flex flex-column">
     <nav class="navbar navbar-expand-md navbar-dark py-0" role="navigation">
-        <div class="container-fluid flex-column flex-md-row">
+        <div class="container-fluid flex-column flex-lg-row">
             <a class="navbar-brand me-2" href="{% url 'index' %}">
                 <img src="{% static 'images/logo3.png' %}" alt="Clemson RESOLVE Logo" width="40" height="40">
                 <span id="site-title" class="ps-1 text-center align-bottom">BeginToReason</span>
             </a>
-            <ul class="navbar-nav flex-row me-md-auto align-items-center text-center">
+            <ul class="navbar-nav flex-row me-lg-auto align-items-center text-center">
                 {% if user.userinformation.user_educator %}
                     <li class="nav-item ms-3">
                         <a class="nav-link pb-0" href="{% url 'tutor:classes' %}">Student View</a>
@@ -59,20 +59,28 @@
                 {% endblock %}
 
                 <li class="nav-item dropdown ms-3">
-                    <a id="otherLinksDropdown" class="nav-link dropdown-toggle pb-0" href="#" data-toggle="dropdown"
-                       aria-haspopup="true" aria-expanded="false">External Links</a>
-                    <div class="dropdown-menu dropdown-menu-left m-0" aria-labelledby="otherLinksDropdown">
-                        <a class="dropdown-item" href="https://www.cs.clemson.edu/resolve/" target="_blank">RSRG
-                            Home</a>
-                        <a class="dropdown-item" href="https://resolve.cs.clemson.edu/" target="_blank">WebIDE</a>
-                        <a class="dropdown-item" href="https://www.nsf.gov/" target="_blank">NSF.gov</a>
-                    </div>
+                    <a class="nav-link dropdown-toggle pb-0" href="#" id="otherLinksDropdown" role="button"
+                       data-bs-toggle="dropdown"
+                       aria-expanded="false">External Links</a>
+                    <ul class="dropdown-menu m-0" aria-labelledby="otherLinksDropdown">
+                        <li>
+                            <a class="dropdown-item" href="https://www.cs.clemson.edu/resolve/" target="_blank">Clemson
+                                RSRG Home</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="https://resolve.cs.clemson.edu/teaching" target="_blank">RESOLVE
+                                WebIDE</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="https://www.nsf.gov/" target="_blank">NSF.gov</a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item ms-3">
                     <img src="{% static 'images/nsf.png' %}" alt="Clemson RESOLVE Logo" width="40" height="40">
                 </li>
             </ul>
-            <ul class="navbar-nav flex-row my-3 ms-md-auto align-items-center text-center">
+            <ul class="navbar-nav flex-row my-3 ms-lg-auto align-items-center text-center">
                 {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <button class="btn btn-auth dropdown-toggle" type="button" id="accountDropdownButton"
