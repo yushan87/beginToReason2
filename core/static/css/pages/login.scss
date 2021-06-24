@@ -1,4 +1,4 @@
-// signin.scss
+// login.scss
 // This file extends _base to generate all the CSS required to render the sign-in page
 @import "../base/_base";
 @import "../components/_fade";
@@ -6,5 +6,11 @@
 
 /* Main Layout-Related CSS */
 #page-content {
-    min-height: calc(100vh - #{$page-header-min-height} - 1rem);
+    min-height: calc(100vh - #{$page-header-min-height});
+    color: $page-content-text-color-dark;
+
+    // Links
+    a {
+        text-decoration: none;
+    }
 }

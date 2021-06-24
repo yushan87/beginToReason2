@@ -3,21 +3,20 @@
 
 {% block css %}
     {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/signin.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/login.scss' %}" media="screen">
     {% endcompress %}
 {% endblock %}
 
 {% block main_content %}
-    <div class="container">
-        <div class="card w-50 mt-3 mx-auto shadow-lg rounded fadeInDown text-center">
+    <div class="d-flex justify-content-center">
+        <div class="card w-50 mt-5 border-0 text-center">
             <div class="card-body">
-                <img class="mb-4" src="{% static 'images/logo4.png' %}" width="300" height="125"
-                     alt="RSRG Logo 3">
+                <img class="mb-4" src="{% static 'images/logo4.png' %}" width="300" height="125" alt="RSRG Logo 3">
                 {% if user.is_authenticated %}
-                    <h2 class="card-title mb-3">Logged in as {{ user.email }}</h2>
+                    <h3 class="card-title mb-3">Logged in as {{ user.email }}</h3>
                     <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Logout</a>
                 {% else %}
-                    <h2 class="card-title mb-3">Log In to BeginToReason</h2>
+                    <h3 class="card-title mb-3">Log in to BeginToReason</h3>
                     <a href="{% url 'social:begin' 'google-oauth2' %}?next={% if request.GET.next %}{{ request.GET.next }}{% else %}{% url 'accounts:profile' %}{% endif %}">
                         <input type="image" src="{% static 'other_images/google.png' %}" width="240"
                                height="55" alt="Sign in with Google"/>
@@ -26,4 +25,7 @@
             </div>
         </div>
     </div>
+
+    <!-- Page Footer -->
+    {% include "core/footer.html" %}
 {% endblock %}
