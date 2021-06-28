@@ -6,4 +6,4 @@ social-auth-app-django==4.0.0
 django-crispy-forms==1.12.0
 django-mathfilters==1.0.0
 websockets==9.1
-asgiref==3.3.4
+asgiref==3.4.0
