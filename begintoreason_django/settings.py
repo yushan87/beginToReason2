@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'educator',
     'think_aloud',
     'tutor',
+    'parsons',
 
     # External Plugins
     'social_django',
@@ -100,7 +101,7 @@ WSGI_APPLICATION = 'begintoreason_django.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db_curr.sqlite3'),
     }
 }
 

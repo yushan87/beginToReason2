@@ -25,6 +25,7 @@ urlpatterns = [
     path('educator/', include('educator.urls', namespace='educator')),
     path('think_aloud/', include('think_aloud.urls', namespace='think_aloud')),
     path('tutor/', include('tutor.urls', namespace='tutor')),
+    path('parsons/', include('parsons.urls', namespace='parsons')),
 
     # Django admin
     path('admin/', admin.site.urls),

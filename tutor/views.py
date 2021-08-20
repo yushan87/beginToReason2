@@ -18,6 +18,8 @@ from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, 
     clean_variable
 from tutor.py_helper_functions.mutation import can_mutate
 
+from parsons.views import parsons_problem
+
 User = get_user_model()
 
 
@@ -106,6 +108,8 @@ def grader(request):
             submitted_answer = ''.join(submitted_answer)
 
             status, lines, vcs, completion_time = asyncio.run(send_to_verifier(data['code']))
+            print(status)
+            print(vcs)
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status,
                      vcs, completion_time)
@@ -151,12 +155,19 @@ def tutor(request, assignmentID):
             current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
                                                                is_alternate)
             current_lesson.code.lesson_code = clean_variable(current_lesson.code.lesson_code)
+
+            if current_lesson.is_parsons:
+                lessonCode = parsons_problem(request, current_lesson)
+                webpage="parsons/parsons_problem.html"
+            else:
+                webpage="tutor/tutor.html"
+            
             # Case 2aa: if questions if MC or Both
             if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
-                return render(request, "tutor/tutor.html",
+                return render(request, webpage,
                               {'lesson': current_lesson,
                                'assignment': assignment,
-                               'lesson_code': current_lesson.code.lesson_code,
+                               'lesson_code': lessonCode['set'],
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'reason': current_lesson.reason.reasoning_question,
@@ -170,13 +181,14 @@ def tutor(request, assignmentID):
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': set_index})
+                               'index': set_index,
+                               'sortCode': lessonCode['sort']})
             # Case 2ab: if question is of type Text
             elif current_lesson.reason.reasoning_type == 'Text':
-                return render(request, "tutor/tutor.html",
+                return render(request, webpage,
                               {'lesson': current_lesson,
                                'assignment': assignment,
-                               'lesson_code': current_lesson.code.lesson_code,
+                               'lesson_code': lessonCode['set'],
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'reason': current_lesson.reason.reasoning_question,
@@ -189,13 +201,14 @@ def tutor(request, assignmentID):
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': set_index})
+                               'index': set_index,
+                               'sortCode': lessonCode['sort']})
 
             # Case 2ac: if question is of type none
-            return render(request, "tutor/tutor.html",
+            return render(request, webpage,
                           {'lesson': current_lesson,
                            'assignment': assignment,
-                           'lesson_code': current_lesson.code.lesson_code,
+                           'lesson_code': lessonCode['set'],
                            'concept': current_lesson.lesson_concept.all(),
                            'referenceSet': current_lesson.reference_set.all(),
                            'setLength': assignment.main_set.length(),
@@ -207,5 +220,6 @@ def tutor(request, assignmentID):
                            'audio_record': current_lesson.audio_record,
                            'audio_transcribe': current_lesson.audio_transcribe,
                            'user_email': request.user.email,
-                           'index': set_index})
+                           'index': set_index,
+                            'sortCode': lessonCode['sort']})
     return redirect("accounts:profile")
