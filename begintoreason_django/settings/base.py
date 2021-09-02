@@ -1,5 +1,5 @@
 """
-Django settings for begintoreason_django project.
+Django base settings for begintoreason_django project.
 
 This file contains the settings that are shared in development
 and production modes. See `development.py` and `production.py`
@@ -23,11 +23,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'l46i#coubyfrpmlk2%h#kp^t_^w_kv8xpwtxm&5#x361wieb@f'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
 
 # client keys and secret for google auth
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '611944294175-bbmqfpu7gemb6bjeacgrdtqg0qq6arcg.apps.googleusercontent.com'
