@@ -13,3 +13,15 @@ DEBUG = True
 
 # In debug mode, subdomains of `localhost` are allowed.
 ALLOWED_HOSTS = []
+
+# Database
+# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+#
+# We will be using SQLite for development mode.
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    }
+}
