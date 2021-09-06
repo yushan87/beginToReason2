@@ -3,7 +3,9 @@ Django base settings for begintoreason_django project.
 
 This file contains the settings that are shared in development
 and production modes. See `development.py` and `production.py`
-for specific settings.
+for specific settings. See
+https://www.digitalocean.com/community/tutorials/how-to-harden-your-production-django-project
+for how we split these into separate files.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/3.2/topics/settings/
@@ -14,19 +16,19 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# Create a base directory variable so that we can use it
+# inside the project like this: os.path.join(BASE_DIR, ...)
+# NOTE: We are several levels deep, so we need to back up a bit.
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
+# Load the secret key from our .env file
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'l46i#coubyfrpmlk2%h#kp^t_^w_kv8xpwtxm&5#x361wieb@f'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
-# client keys and secret for google auth
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '611944294175-bbmqfpu7gemb6bjeacgrdtqg0qq6arcg.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'tqfQvS7M_TnxDTM0PO4T_GAe'
+# Load the client keys and secret for Google Auth2
+# SECURITY WARNING: keep these private!
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
 
 # Application definition
 
@@ -91,16 +93,6 @@ TEMPLATES = [
 WSGI_APPLICATION = 'begintoreason_django.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, '../../db.sqlite3'),
-    }
-}
-
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin
     'django.contrib.auth.backends.ModelBackend',
@@ -147,7 +139,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, '../../static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # django-compressor
 # https://django-compressor.readthedocs.io/en/stable/

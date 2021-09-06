@@ -13,7 +13,7 @@ DEBUG = False
 
 # In production mode, we need to provide the qualified domain
 # we are hosting this application.
-ALLOWED_HOSTS = [os.environ.get('ALLOWED_HOSTS')]
+ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS')]
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases#
@@ -41,6 +41,18 @@ SECURE_SSL_REDIRECT = True
 # Enable X-XSS-Protection for HTTP header on old browsers.
 
 SECURE_BROWSER_XSS_FILTER = True
+
+# HTTP Strict Transport Security
+# https://docs.djangoproject.com/en/3.2/ref/settings/#secure-hsts-include-subdomains
+# https://docs.djangoproject.com/en/3.2/ref/settings/#secure-hsts-preload
+# https://docs.djangoproject.com/en/3.2/ref/settings/#secure-hsts-seconds
+# https://docs.djangoproject.com/en/3.2/ref/middleware/#http-strict-transport-security
+#
+# Reduces your exposure to some SSL-stripping man-in-the-middle (MITM) attacks.
+
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_SECONDS = 31536000
 
 # Secure Session Cookie
 # https://docs.djangoproject.com/en/3.2/ref/settings/#session-cookie-secure
