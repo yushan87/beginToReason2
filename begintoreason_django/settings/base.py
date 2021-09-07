@@ -129,6 +129,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Login URL, Redirect URL and Logout URL
+# https://docs.djangoproject.com/en/3.2/ref/settings/#login-redirect-url
+LOGIN_REDIRECT_URL = '/'   # The requests are redirected after login when the LoginView doesn't get a `next` parameter
+LOGOUT_REDIRECT_URL = '/'  # The requests are redirected after logout if LogoutView doesn't have a `next_page` attribute
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 LANGUAGE_CODE = 'en-us'
@@ -164,9 +169,6 @@ COMPRESS_PRECOMPILERS = [
 
 # python-social-auth
 # https://python-social-auth.readthedocs.io/en/latest/
-LOGIN_URL = '/auth/login/google-oauth2/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
 # Load the client keys and secret for Google OAuth2
