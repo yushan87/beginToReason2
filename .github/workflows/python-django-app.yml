@@ -67,6 +67,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r dev-requirements.txt
+      - name: Create .env file
+        run: |
+          touch .env
+          echo DJANGO_SETTINGS_MODULE=${{ secrets.DJANGO_SETTINGS_MODULE }} >> .env
+          echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+          echo SOCIAL_AUTH_GOOGLE_OAUTH2_KEY=${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY }} >> .env
+          echo SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET=${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET }} >> .env
       - name: Test with pytest
         run: |
           python manage.py makemigrations accounts core data_analysis educator think_aloud tutor
