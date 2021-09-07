@@ -70,10 +70,10 @@ jobs:
       - name: Create .env file
         uses: SpicyPizza/create-envfile@v1.1
         with:
-          envkey_DJANGO_SETTINGS_MODULE: "${{ secrets.DJANGO_SETTINGS_MODULE }}"
-          envkey_SECRET_KEY: "${{ secrets.SECRET_KEY }}"
-          envkey_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY: "${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY }}"
-          envkey_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET: "${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET }}"
+          envkey_DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
+          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          envkey_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY: ${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY }}
+          envkey_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET: ${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET }}
           file_name: .env
       - name: Test with pytest
         run: |
