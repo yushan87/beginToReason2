@@ -63,3 +63,9 @@ SESSION_COOKIE_SECURE = True
 # Use a secure cookie for the CSRF cookie, so that browsers may ensure it
 # is only sent with an HTTPS connection.
 CSRF_COOKIE_SECURE = True
+
+# python-social-auth
+# https://python-social-auth.readthedocs.io/en/latest/
+#
+# Use HTTPS to create redirect URIs.
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
