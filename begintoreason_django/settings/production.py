@@ -20,7 +20,6 @@ ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS')]
 #
 # We are temporarily using SQLite, but we should switch to something
 # that is more for production mode.
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -32,14 +31,12 @@ DATABASES = {
 # https://docs.djangoproject.com/en/3.2/ref/settings/#secure-ssl-redirect
 #
 # Redirect all non-HTTPS requests to HTTPS
-
 SECURE_SSL_REDIRECT = True
 
 # X-XSS-Protection
 # https://docs.djangoproject.com/en/3.2/ref/settings/#secure-browser-xss-filter
 #
 # Enable X-XSS-Protection for HTTP header on old browsers.
-
 SECURE_BROWSER_XSS_FILTER = True
 
 # HTTP Strict Transport Security
@@ -49,7 +46,6 @@ SECURE_BROWSER_XSS_FILTER = True
 # https://docs.djangoproject.com/en/3.2/ref/middleware/#http-strict-transport-security
 #
 # Reduces your exposure to some SSL-stripping man-in-the-middle (MITM) attacks.
-
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 SECURE_HSTS_PRELOAD = True
 SECURE_HSTS_SECONDS = 31536000
@@ -59,7 +55,6 @@ SECURE_HSTS_SECONDS = 31536000
 #
 # Use a secure cookie for the session cookie, so that browsers may ensure it
 # is only sent with an HTTPS connection.
-
 SESSION_COOKIE_SECURE = True
 
 # Secure CSRF Cookie
@@ -67,5 +62,4 @@ SESSION_COOKIE_SECURE = True
 #
 # Use a secure cookie for the CSRF cookie, so that browsers may ensure it
 # is only sent with an HTTPS connection.
-
 CSRF_COOKIE_SECURE = True

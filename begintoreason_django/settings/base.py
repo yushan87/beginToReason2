@@ -21,17 +21,31 @@ import os
 # NOTE: We are several levels deep, so we need to back up a bit.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+# ID for the current application in the django_site database.
+# https://docs.djangoproject.com/en/3.2/ref/settings/#site-id
+SITE_ID = 1
+
+# Location for the root URLconf
+# https://docs.djangoproject.com/en/3.2/ref/settings/#root-urlconf
+ROOT_URLCONF = 'begintoreason_django.urls'
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# Path to the WSGI application object for Django's built-in servers will use
+# https://docs.djangoproject.com/en/3.2/ref/settings/#wsgi-application
+WSGI_APPLICATION = 'begintoreason_django.wsgi.application'
+
 # Load the secret key from our .env file
 # SECURITY WARNING: keep the secret key used in production secret!
+# https://docs.djangoproject.com/en/3.2/ref/settings/#secret-key
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-# Load the client keys and secret for Google Auth2
-# SECURITY WARNING: keep these private!
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')
-
-# Application definition
-
+# A list of installed application and plugins we will be
+# using in our application.
+# https://docs.djangoproject.com/en/3.2/ref/settings/#installed-apps
 INSTALLED_APPS = [
     # Django Applications
     'django.contrib.admin',
@@ -58,10 +72,8 @@ INSTALLED_APPS = [
     'mathfilters'
 ]
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-SITE_ID = 1
-
+# A framework of hooks into Django's request/response processing
+# https://docs.djangoproject.com/en/3.2/topics/http/middleware/
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -72,8 +84,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'begintoreason_django.urls'
-
+# Template Engine
+# https://docs.djangoproject.com/en/3.2/ref/settings/#templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -90,21 +102,18 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'begintoreason_django.wsgi.application'
-
-
+# Authentication backends
+# https://docs.djangoproject.com/en/3.2/topics/auth/customizing/#authentication-backends
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin
     'django.contrib.auth.backends.ModelBackend',
 
-    # google oauth2
+    # Google OAuth2
     'social_core.backends.google.GoogleOAuth2',
 ]
 
-
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -120,30 +129,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'EST'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # django-compressor
 # https://django-compressor.readthedocs.io/en/stable/
-
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -152,24 +147,29 @@ STATICFILES_FINDERS = [
     'compressor.finders.CompressorFinder'
 ]
 
+# Django 3.2 introduced a customization of primary keys. Since I don't believe that's a priority at the moment,
+# this setting makes all unset primary keys default to what replaced the only option before (i.e. no change)
+# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
+# django-crispy-forms
+# https://django-crispy-forms.readthedocs.io/en/latest/
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
 # django-libsass
 # https://github.com/torchbox/django-libsass
-
 COMPRESS_PRECOMPILERS = [
     ('text/x-scss', 'django_libsass.SassCompiler')
 ]
 
-# Python Social Auth
+# python-social-auth
 # https://python-social-auth.readthedocs.io/en/latest/
-
 LOGIN_URL = '/auth/login/google-oauth2/'
-
 LOGIN_REDIRECT_URL = '/'
-
 LOGOUT_REDIRECT_URL = '/'
-
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
 
-# Django 3.2 introduced a customization of primary keys. Since I don't believe that's a priority at the moment,
-# this setting makes all unset primary keys default to what replaced the only option before (i.e. no change)
-DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+# Load the client keys and secret for Google OAuth2
+# SECURITY WARNING: keep these private!
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_KEY')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv('SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET')

@@ -18,7 +18,6 @@ ALLOWED_HOSTS = []
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 #
 # We will be using SQLite for development mode.
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
