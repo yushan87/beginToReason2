@@ -76,8 +76,6 @@ jobs:
           ^SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET: '${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET }}'
       - name: Test with pytest
         run: |
-          ls
-          cat .env
           python manage.py makemigrations accounts core data_analysis educator think_aloud tutor
           python manage.py migrate
           python manage.py test accounts core data_analysis educator think_aloud tutor
