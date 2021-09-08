@@ -67,14 +67,13 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r dev-requirements.txt
-      - name: Create .env file
-        uses: SpicyPizza/create-envfile@v1.1
-        with:
-          envkey_DJANGO_SETTINGS_MODULE: ${{ secrets.DJANGO_SETTINGS_MODULE }}
-          envkey_SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          envkey_SOCIAL_AUTH_GOOGLE_OAUTH2_KEY: ${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY }}
-          envkey_SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET: ${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET }}
-          file_name: .env
+      - name: Create .env file for GitHub Actions
+        uses: weyheyhey/create-dotenv-action@v1
+        env:
+          ^DJANGO_SETTINGS_MODULE: "${{ secrets.DJANGO_SETTINGS_MODULE }}"
+          ^SECRET_KEY: "${{ secrets.SECRET_KEY }}"
+          ^SOCIAL_AUTH_GOOGLE_OAUTH2_KEY: "${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_KEY }}"
+          ^SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET: "${{ secrets.SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET }}"
       - name: Test with pytest
         run: |
           python manage.py makemigrations accounts core data_analysis educator think_aloud tutor
