@@ -6,13 +6,14 @@ name: Python Django Application
 on:
   push:
     branches: [ master ]
-  pull_request:
+  pull_request_target:
     branches: [ master ]
+    types: [labeled]
 
 jobs:
   pylint:
     runs-on: ubuntu-latest
-
+    if: contains(github.event.pull_request.labels.*.name, 'safe to test')
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
@@ -43,7 +44,7 @@ jobs:
       # For example, pypy2 and pypy3
       matrix:
         python-version: [ 3.6, 3.7, 3.8, 3.9 ]
-
+    if: contains(github.event.pull_request.labels.*.name, 'safe to test')
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
