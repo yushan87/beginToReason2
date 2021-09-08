@@ -1,19 +1,17 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# This workflow will install Python dependencies, run tests and lint with a single version of Python. Note that this
+# will only run when we `push` to the master branch.
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+# and https://dev.to/petrsvihlik/using-environment-protection-rules-to-secure-secrets-when-building-external-forks-with-pullrequesttarget-hci
 
-name: Python Django Application
+name: Build & Test for Integration
 
 on:
   push:
     branches: [ master ]
-  pull_request_target:
-    branches: [ master ]
-    types: [labeled]
 
 jobs:
   pylint:
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'safe to test')
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python 3.9
@@ -44,7 +42,6 @@ jobs:
       # For example, pypy2 and pypy3
       matrix:
         python-version: [ 3.6, 3.7, 3.8, 3.9 ]
-    if: contains(github.event.pull_request.labels.*.name, 'safe to test')
     steps:
       - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
