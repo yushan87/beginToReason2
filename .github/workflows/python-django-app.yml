@@ -72,7 +72,11 @@ jobs:
           touch .env
           SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
           echo DJANGO_SETTINGS_MODULE="begintoreason_django.settings.development" >> .env
+          echo ALLOWED_HOSTS="" >> .env
           echo SECRET_KEY="$SECRET_KEY" >> .env
+          echo SECRET_ADMIN_URL="" >> .env
+          echo SOCIAL_AUTH_GOOGLE_OAUTH2_KEY="" >> .env
+          echo SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET="" >> .env
       - name: Test with pytest
         run: |
           python manage.py makemigrations accounts core data_analysis educator think_aloud tutor
