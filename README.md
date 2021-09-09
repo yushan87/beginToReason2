@@ -1,6 +1,5 @@
 # BeginToReason2
-[![Python Django Application](https://github.com/ClemsonRSRG/beginToReason2/actions/workflows/python-django-app.yml/badge.svg?branch=master)](https://github.com/ClemsonRSRG/beginToReason2/actions/workflows/python-django-app.yml)
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=ClemsonRSRG/beginToReason2)](https://dependabot.com)
+[![Lint & Test BeginToReason2](https://github.com/ClemsonRSRG/beginToReason2/actions/workflows/python-django-app.yml/badge.svg?branch=master)](https://github.com/ClemsonRSRG/beginToReason2/actions/workflows/python-django-app.yml)
 [![License](https://img.shields.io/badge/license-BSD-blue.svg)](https://raw.githubusercontent.com/ClemsonRSRG/beginToReason2/master/LICENSE.txt)
 
 `BeginToReason2` is a tutor that utilizes the RESOLVE programming language to pinpoint difficulties and help CS students as they learn how to rigorously trace the code they encounter. This version is a transformation to a tutor and it features a new back-end build using Python and Django and a front-end that incorporates Bootstrap and communicates with the RESOLVE verification engine.
@@ -18,8 +17,8 @@ All phases of the verification process spanning verification condition (VC) gene
 ## Installation and Running the Application
 
 ### Requirements
-- ![Python Version](https://img.shields.io/pypi/pyversions/Django)
-- ![Django Version](https://img.shields.io/badge/django-3%2B-blue)
+- ![Python Version](https://img.shields.io/pypi/pyversions/websockets)
+- ![Django Version](https://img.shields.io/badge/django%20version-3%2B-blue)
 
 ### Steps
 1. Clone this repository: `git clone https://github.com/ClemsonRSRG/beginToReason2.git`
