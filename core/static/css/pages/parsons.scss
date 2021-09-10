@@ -2,7 +2,13 @@
 
 .parsons_container {
     display: flex;
-    column-gap: 30%;
+    column-gap: 20%;
+    z-index: 10;
+    position: absolute;
+    top: 35%;
+    left: 9%;
+    width: 89%;
+    color: white;
 }
 
 .sortable-code {
@@ -19,11 +25,11 @@
     font-size: 80%;
     font-family: monospace;
     list-style: none;
-    background-color: #efefff;
+    // background-color: #efefff;
     padding-bottom: 10px;
     padding-left: 0;
     margin-left: 0;
-    border: 1px solid #efefff;
+    // border: 1px solid #efefff;
 }
 
 .sortable-code ul:empty {
@@ -35,15 +41,14 @@
 }
 
 ul.output {
-    background-color: #FFA;
+    background-color: rgba(48, 52, 63, 0.9);
 }
 
 .sortable-code li {
     -moz-border-radius:10px;
     -webkit-border-radius:10px;
     border-radius: 10px;
-    background-color:#EFEFEF;
-    border:1px solid lightgray;
+    background-color:#8a8787;
     padding:10px;
     margin-top: 5px;
     white-space: nowrap;
@@ -57,12 +62,12 @@ ul.output {
 
 ul.incorrect {
     border: 1px solid red;
-    background-color: #ffefef;
+    background-color: #cc3333;
 }
 
 ul.correct {
     background-color: #efffef;
-    background-color: #DFF2BF;
+    background-color: #339933;
 }
 
 li.incorrectIndent {
@@ -76,13 +81,13 @@ li.correctIndent {
 }
 
 li.incorrectPosition, .testcase.fail, .testcase.error {
-    background-color: #FFBABA;
-    border:1px solid red;
+    background-color: #rgba(48, 52, 63, 0.9);
+    border:3px solid red;
 }
 
 li.correctPosition, .testcase.pass {
-    background-color: #DFF2BF;
-    border:1px solid green;
+    background-color: #rgba(48, 52, 63, 0.9);
+    border:3px solid green;
 }
 
 .testcase { padding: 10px; margin-bottom: 10px;}

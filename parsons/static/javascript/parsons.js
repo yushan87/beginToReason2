@@ -59,7 +59,7 @@
        block_close_mismatch: function(closeLine, closeBlock, openLine, inBlock) {
          return "Cannot end block " + closeBlock + " on line " + closeLine + " when still inside block " + inBlock + " started on line " + openLine;
        },
-       block_structure: function(lineNro) { return "The highlighted fragment " + lineNro + " belongs to a wrong block (i.e. indentation)."; },
+       block_structure: function(lineNro) { return "Remember to use proper code style and indentation."; },
        unittest_error: function(errormsg) {
          return "<span class='msg'>Error in parsing/executing your program</span><br/> <span class='errormsg'>" + errormsg + "</span>";
        },

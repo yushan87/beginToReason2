@@ -148,6 +148,9 @@ def tutor(request, assignmentID):
             print("===============", num_done)
             print("in if 1 - Current lesson:", current_lesson)
 
+            if current_lesson.is_parsons:
+                return redirect('parsons:parsons', assignmentID)
+
             # Just as we are altering the code here with mutate, this will pull the previous answer
             # to put in place for sub lessons. What identifiers do we need?
 
@@ -155,19 +158,13 @@ def tutor(request, assignmentID):
             current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
                                                                is_alternate)
             current_lesson.code.lesson_code = clean_variable(current_lesson.code.lesson_code)
-
-            if current_lesson.is_parsons:
-                lessonCode = parsons_problem(request, current_lesson)
-                webpage="parsons/parsons_problem.html"
-            else:
-                webpage="tutor/tutor.html"
             
             # Case 2aa: if questions if MC or Both
             if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
-                return render(request, webpage,
+                return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
                                'assignment': assignment,
-                               'lesson_code': lessonCode['set'],
+                               'lesson_code': current_lesson.code.lesson_code,
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'reason': current_lesson.reason.reasoning_question,
@@ -181,14 +178,13 @@ def tutor(request, assignmentID):
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': set_index,
-                               'sortCode': lessonCode['sort']})
+                               'index': set_index})
             # Case 2ab: if question is of type Text
             elif current_lesson.reason.reasoning_type == 'Text':
-                return render(request, webpage,
+                return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
                                'assignment': assignment,
-                               'lesson_code': lessonCode['set'],
+                               'lesson_code': current_lesson.code.lesson_code,
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'reason': current_lesson.reason.reasoning_question,
@@ -201,14 +197,13 @@ def tutor(request, assignmentID):
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': set_index,
-                               'sortCode': lessonCode['sort']})
+                               'index': set_index})
 
             # Case 2ac: if question is of type none
-            return render(request, webpage,
+            return render(request, "tutor/tutor.html",
                           {'lesson': current_lesson,
                            'assignment': assignment,
-                           'lesson_code': lessonCode['set'],
+                           'lesson_code': current_lesson.code.lesson_code,
                            'concept': current_lesson.lesson_concept.all(),
                            'referenceSet': current_lesson.reference_set.all(),
                            'setLength': assignment.main_set.length(),
@@ -220,6 +215,5 @@ def tutor(request, assignmentID):
                            'audio_record': current_lesson.audio_record,
                            'audio_transcribe': current_lesson.audio_transcribe,
                            'user_email': request.user.email,
-                           'index': set_index,
-                            'sortCode': lessonCode['sort']})
+                           'index': set_index})
     return redirect("accounts:profile")

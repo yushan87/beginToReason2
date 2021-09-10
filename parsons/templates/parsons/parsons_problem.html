@@ -55,14 +55,14 @@
 
     <script>
         var initial = "";
-        {% for line in sort %}
-            initial = initial + "{{ line }}";
+        {% for line in sortCode %}
+            initial = initial + "{{ line | safe}}";
             initial = initial + '\n';
         {% endfor %}
 
         function displayErrors(fb) {
             if(fb.errors.length > 0) {
-                alert(fb.errors[0]);
+                //alert(fb.errors[0]);
             }
         } 
 
@@ -80,9 +80,60 @@
                 parson.shuffleLines();
             });
             $("#feedbackLink.btn.btn-success").click(function(event){
-                event.preventDefault();
-                parson.getFeedback();
-                return true;
+                let answeredQuestion = true;
+
+                if (hasFR) {
+                    let boxVal = document.forms["usrform"]["comment"].value;
+                    if (boxVal.length < 10) {
+                        // Create the appropriate alert box
+                        let msg = "You must provide a long enough explanation to the right";
+                        createAlertBox(true, msg);
+                        $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
+
+                        answeredQuestion = false;
+                    }
+                }
+                let blank = true;
+                if (hasMC) {
+                    let radios = document.getElementsByName('selectExplain');
+                    for (let i = 0, length = radios.length; i < length; i++) {
+                        if (radios[i].checked) {
+                            blank = false;
+                            multiAnswer = radios[i].value;
+                            
+                            answeredQuestion = true
+                        }
+                    }
+                    if (blank){
+                        let msg = "You must choose an answer to the right";
+                        createAlertBox(true, msg);
+                        answeredQuestion = false;
+                    }
+                }
+
+                if (answeredQuestion) {
+                    event.preventDefault();
+                    feedback = parson.getFeedback();
+
+                    if (feedback.length == 0) {
+                        document.getElementById("resultCard").style.display = "block";
+                        document.getElementById("resultsHeader").innerHTML = "Correct!";
+                        document.getElementById("resultDetails").innerHTML = "Click Next to proceed to the next lesson.";
+                        $("#resultCard").attr("class", "card bg-success text-white");
+
+                        $.get("{% url 'parsons:parsonsAdvance' assignmentID=assignment.id %}");
+
+                        $("#next").removeAttr("disabled", "disabled");
+                        $("#checkCorrectness").attr("disabled", "disabled");
+                    }
+
+                    else {
+                        document.getElementById("resultCard").style.display = "block";
+                        document.getElementById("resultsHeader").innerHTML = "Try Again!";
+                        document.getElementById("resultDetails").innerHTML = feedback[0];
+                        $("#resultCard").attr("class", "card bg-danger text-white");
+                    }
+                }
             });
         });
     </script>
@@ -105,7 +156,8 @@
                         </h3>
                         <br>
                         <div class="" id="activity">
-                            {{ lesson.instruction|safe }}
+                            <p>Drag code fragments from the right box to left to reconstruct the code in the correct order to make the Confirm statement true.</p>
+                            <p>Make sure proper indentation is used.</p>
                         </div>
                         <br>
                         <div id="answersCard" hidden>
@@ -171,14 +223,14 @@
             </div>
 
             <div class="col-6 p-0" id="content">
-                <div id="editorCol" class="d-flex flex-column h-100">
+                <div id="editorCol" class="d-flex flex-column h-100" style="position:relative">
                     <!-- Ace Editor -->
-                    <div id="editor" class="flex-grow-1 p-0"></div>
-                    <div id="parsons_container" class="parsons_container">
-                        <p>test</p>
-                        <!-- <div id="sortable" class="sortable-code"></div>
-                        <div id="sortableTrash" class="sortable-code"></div> -->
-                    </div>
+                        <div id="editor" class="flex-grow-1 p-0"></div>
+                        <div id="parsons_container" class="parsons_container">
+                            <div id="sortable" class="sortable-code"></div>
+                            <div id="sortableTrash" class="sortable-code"></div>
+                        </div>
+                    
                     <!-- Error Card -->
                     <div id="compilerResult"></div>
 

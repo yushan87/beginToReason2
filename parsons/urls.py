@@ -10,5 +10,6 @@ app_name = 'parsons'
 
 # URL patterns to be matched.
 urlpatterns = [
-    path('parsons', views.parsons_problem, name='parsons'),
+    path('parsons/<int:assignmentID>', views.parsons_problem, name='parsons'),
+    path('parsonsAdvance/<int:assignmentID>', views.advanceParsonsLesson, name='parsonsAdvance'),
 ]
