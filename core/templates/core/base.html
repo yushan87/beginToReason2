@@ -68,15 +68,25 @@
                        aria-expanded="false">External Links</a>
                     <ul class="dropdown-menu m-0" aria-labelledby="otherLinksDropdown">
                         <li>
-                            <a class="dropdown-item" href="https://www.cs.clemson.edu/resolve/" target="_blank">Clemson
-                                RSRG Home</a>
+                            <a class="dropdown-item" href="https://www.cs.clemson.edu/resolve/" target="_blank">
+                                <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                                <span class="d-none d-sm-inline-flex">&nbsp; </span>
+                                Clemson RSRG Home
+                            </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="https://resolve.cs.clemson.edu/teaching" target="_blank">RESOLVE
-                                WebIDE</a>
+                            <a class="dropdown-item" href="https://resolve.cs.clemson.edu/teaching" target="_blank">
+                                <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                                <span class="d-none d-sm-inline-flex">&nbsp; </span>
+                                RESOLVE WebIDE
+                            </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="https://www.nsf.gov/" target="_blank">NSF.gov</a>
+                            <a class="dropdown-item" href="https://www.nsf.gov/" target="_blank">
+                                <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+                                <span class="d-none d-sm-inline-flex">&nbsp; </span>
+                                NSF.gov
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -88,22 +98,43 @@
                 {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
                         <button class="btn btn-auth dropdown-toggle" type="button" id="accountDropdownButton"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="far fa-user-circle"></i>
+                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="far fa-user-circle" aria-hidden="true"></i>
                             <span class="d-none d-sm-inline-flex">&nbsp; </span>
                             {% if user.userinformation.user_nickname %}
-                                {{ user.userinformation.user_nickname }}{% else %}{{ user.username }}{% endif %}
+                                {{ user.userinformation.user_nickname }}
+                            {% else %}
+                                {{ user.username }}
+                            {% endif %}
                         </button>
-                        <div class="dropdown-menu dropdown-menu-right m-0" aria-labelledby="accountDropdownButton">
-                            <a class="dropdown-item" href="{% url 'accounts:profile' %}">My Profile</a>
-                            <a class="dropdown-item" href="{% url 'accounts:settings' %}">Settings</a>
-                            <a class="dropdown-item" href="{% url 'accounts:logout' %}">Log out</a>
-                        </div>
+                        <ul class="dropdown-menu dropdown-menu-end m-0" aria-labelledby="accountDropdownButton">
+                            <li>
+                                <a class="dropdown-item" href="{% url 'accounts:profile' %}">
+                                    <i class="fas fa-id-badge" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline-flex">&nbsp; </span>
+                                    &nbsp; My Profile
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'accounts:settings' %}">
+                                    <i class="fas fa-user-cog" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline-flex">&nbsp; </span>
+                                    Settings
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{% url 'accounts:logout' %}">
+                                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline-flex">&nbsp; </span>
+                                    &nbsp;Log out
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 {% else %}
                     <li class="nav-item">
                         <a class="btn btn-auth" href="{% url 'accounts:login' %}" role="button">
-                            <i class="fas fa-sign-in-alt"></i>
+                            <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
                             <span class="d-none d-sm-inline-flex">&nbsp; </span>Log in
                         </a>
                     </li>
