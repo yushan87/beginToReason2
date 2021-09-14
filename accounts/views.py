@@ -50,7 +50,6 @@ def profile(request):
         currentSet: current set user is working on
     """
     # Query for user in the 'User' table
-    print("GET IN ACCOUNTS PROFILE")
     user = User.objects.get(email=request.user.email)
 
     # Case 1: The user email exists in our user information table.
@@ -62,9 +61,6 @@ def profile(request):
 
             # Case 1a: The user information model is valid, therefore we can render the profile page.
             request.session.set_expiry(0)
-            print("USER EXISTS IN ACCOUNTS   ", request.method)
-            print(request)
-            print("completedAssignments:", user_info.get_completed_assignments())
             return render(request, "accounts/profile.html", {'name': user_info.user_nickname,
                                                              'currentAssignments': user_info.get_current_assignments(),
                                                              'completedAssignments':

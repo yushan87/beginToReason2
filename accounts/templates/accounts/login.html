@@ -26,8 +26,7 @@
                                 services.</p>
                             <div class="d-inline-flex flex-lg-column">
                                 <a class="btn btn-login mb-lg-3 mb-0 me-lg-0 me-3" aria-label="Sign in with Google"
-                                   href="{% url 'social:begin' 'google-oauth2' %}?next=
-                                           {% if request.GET.next %}{{ request.GET.next }}{% else %}{% url 'accounts:profile' %}{% endif %}">
+                                   href="{% url 'social:begin' 'google-oauth2' %}?next={% if request.GET.next %}{{ request.GET.next }}{% else %}{% url 'accounts:profile' %}{% endif %}">
                                     <i class="fab fa-google" aria-hidden="true"></i>
                                     <span class="d-none d-sm-inline-flex"
                                           aria-hidden="true">&nbsp; Sign in with Google</span>
