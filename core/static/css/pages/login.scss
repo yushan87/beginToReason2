@@ -1,12 +1,32 @@
 // login.scss
-// This file extends _base to generate all the CSS required to render the sign-in page
+// This file generates all the CSS required to render the sign-in page
 @import "../base/_base";
 @import "../components/_fade";
 @import "../utils/_variables";
 
+/* General CSS */
+html {
+    position: relative;
+    height: 100%;
+}
+
+body {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: $page-content-bg-color-1;
+    font-family: $body-font;
+    font-size: 1.5rem;
+}
+
 /* Main Layout-Related CSS */
 #page-content {
-    min-height: calc(100vh - #{$page-header-min-height});
+    width: 100%;
+    max-width: 700px;
+    padding: 15px;
+    margin: auto;
     color: $page-content-text-color-dark;
 
     // Links
@@ -15,22 +35,14 @@
     }
 }
 
-/* Sign In-Related CSS */
-#sign-in-hero {
-    background-color: $page-content-bg-color-1;
+/* Site Title CSS */
+#site-title {
+    font-family: $page-header-site-title-font;
+    font-size: 2rem;
+    font-weight: 200 !important;
 }
 
+/* Sign In-Related CSS */
 #sign-in-card {
     background-color: $page-content-bg-color-1;
-
-    .btn-login {
-        color: $page-content-border-color-2;
-        border-color: $page-content-border-color-2;
-    }
-
-    .btn-login:hover {
-        color: $page-content-text-color-light;
-        background-color: $page-content-border-color-2;
-        border-color: $page-content-border-color-2;
-    }
 }

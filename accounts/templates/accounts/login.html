@@ -1,56 +1,69 @@
-{% extends "core/base.html" %}
 {% load static compress %}
 
-{% block css %}
-    {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/login.scss' %}" media="screen">
-    {% endcompress %}
-{% endblock %}
+<!DOCTYPE html>
 
-{% block main_content %}
-    <div class="container col-xl-10 col-xxl-8 px-4 py-5">
-        <div class="row align-items-center border border-secondary rounded-3 py-5" id="sign-in-hero">
-            <div class="col-lg-5 text-lg-end text-center">
-                <img class="mb-4" src="{% static 'images/logo4.png' %}" width="300" height="125" alt="RSRG Logo 3">
+<html lang="en">
+<head>
+    <!-- Meta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <!-- Meta: Google Domain Verification -->
+    <meta name="google-site-verification" content="K5BYC_ZBxIJ7SxIeM6qSHAYmIvILEQuDSFJvxNFMOVg" />
+
+    <title>BeginToReason</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{% static 'images/logo3.png' %}">
+
+    <!-- CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    {% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/login.scss' %}" media="screen">
+    {% endcompress %}
+
+    <!-- JavaScript -->
+    <script src="https://kit.fontawesome.com/d50a2fb57f.js"></script>
+</head>
+<body class="text-center">
+<!-- JavaScript Libraries -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+        crossorigin="anonymous"></script>
+
+<!-- Main Content Block -->
+<main id="page-content" class="flex-shrink-0" role="main">
+    <div id="sign-in-card" class="card text-center border-light rounded-3">
+        <div class="card-body">
+            <div class="card-title text-white">
+                <img src="{% static 'images/logo3.png' %}" alt="Clemson RESOLVE Logo" width="40" height="40">
+                <span id="site-title" class="ps-1 text-center align-bottom">BeginToReason</span>
             </div>
-            <div class="col-md-10 mx-auto col-lg-7">
-                <div class="card text-center border-light rounded-3 w-75 mx-xl-0 mx-auto" id="sign-in-card">
-                    <div class="card-body">
-                        {% if user.is_authenticated %}
-                            <h3 class="card-title text-light fw-bold">Logged in as:</h3>
-                            <p class="card-text text-white-50 mb-3">{{ user.email }}</p>
-                            <a class="btn btn-login" href="{% url 'accounts:logout' %}">Logout</a>
-                        {% else %}
-                            <h3 class="card-title text-light fw-bold">Log in to BeginToReason</h3>
-                            <p class="card-text text-white-50 mb-3">To continue, sign in using one of the following
-                                services.</p>
-                            <div class="d-inline-flex flex-lg-column">
-                                <a class="btn btn-login mb-lg-3 mb-0 me-lg-0 me-3" aria-label="Sign in with Google"
-                                   href="{% url 'social:begin' 'google-oauth2' %}?next={% if request.GET.next %}{{ request.GET.next }}{% else %}{% url 'accounts:profile' %}{% endif %}">
-                                    <i class="fab fa-google" aria-hidden="true"></i>
-                                    <span class="d-none d-sm-inline-flex"
-                                          aria-hidden="true">&nbsp; Sign in with Google</span>
-                                </a>
-                                <a class="btn btn-login mb-lg-3 mb-0 me-lg-0 me-3 position-relative disabled"
-                                   aria-disabled="true"
-                                   aria-label="Sign in with GitHub"
-                                   href="#">
-                                    <i class="fab fa-github" aria-hidden="true"></i>
-                                    <span class="d-none d-sm-inline-flex"
-                                          aria-hidden="true">&nbsp; Sign in with GitHub</span>
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info">
-                                        Coming Soon!
-                                        <span class="visually-hidden">Coming Soon!</span>
-                                    </span>
-                                </a>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
+            <p class="card-text text-white-50 mb-3">Sign in using one of the following services.</p>
+            <div class="d-inline-flex flex-lg-column">
+                <a class="btn btn-primary mb-lg-3 mb-0 me-lg-0 me-3" aria-label="Sign in with Google"
+                    href="{% url 'social:begin' 'google-oauth2' %}?next={% if request.GET.next %}{{ request.GET.next }}{% else %}{% url 'accounts:profile' %}{% endif %}">
+                    <img src="{% static 'images/Google_G_Logo.png' %}" alt="Google G Logo" width="20" height="20">
+                    <span class="d-none d-sm-inline-flex"
+                            aria-hidden="true">&nbsp; Sign in with Google</span>
+                </a>
+                <a class="btn btn-dark mb-lg-3 mb-0 me-lg-0 me-3 position-relative disabled"
+                    aria-disabled="true"
+                    aria-label="Sign in with GitHub"
+                    href="#">
+                    <img src="{% static 'images/GitHub-Mark-Light-120px-plus.png' %}" alt="GitHub Mark Logo" width="20" height="20">
+                    <span class="d-none d-sm-inline-flex"
+                            aria-hidden="true">&nbsp; Sign in with GitHub</span>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info">
+                        Coming Soon!
+                        <span class="visually-hidden">Coming Soon!</span>
+                    </span>
+                </a>
             </div>
         </div>
     </div>
-
-    <!-- Page Footer -->
-    {% include "core/footer.html" %}
-{% endblock %}
+</main>
+</body>
+</html>
