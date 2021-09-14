@@ -14,3 +14,23 @@
         text-decoration: none;
     }
 }
+
+/* Sign In-Related CSS */
+#sign-in-hero {
+    background-color: $page-content-bg-color-1;
+}
+
+#sign-in-card {
+    background-color: $page-content-bg-color-1;
+
+    .btn-login {
+        color: $page-content-border-color-2;
+        border-color: $page-content-border-color-2;
+    }
+
+    .btn-login:hover {
+        color: $page-content-text-color-light;
+        background-color: $page-content-border-color-2;
+        border-color: $page-content-border-color-2;
+    }
+}

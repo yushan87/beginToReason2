@@ -8,20 +8,45 @@
 {% endblock %}
 
 {% block main_content %}
-    <div class="d-flex justify-content-center">
-        <div class="card w-50 mt-5 border-0 text-center">
-            <div class="card-body">
+    <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+        <div class="row align-items-center border border-secondary rounded-3 py-5" id="sign-in-hero">
+            <div class="col-lg-5 text-lg-end text-center">
                 <img class="mb-4" src="{% static 'images/logo4.png' %}" width="300" height="125" alt="RSRG Logo 3">
-                {% if user.is_authenticated %}
-                    <h3 class="card-title mb-3">Logged in as {{ user.email }}</h3>
-                    <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Logout</a>
-                {% else %}
-                    <h3 class="card-title mb-3">Log in to BeginToReason</h3>
-                    <a href="{% url 'social:begin' 'google-oauth2' %}?next={% if request.GET.next %}{{ request.GET.next }}{% else %}{% url 'accounts:profile' %}{% endif %}">
-                        <input type="image" src="{% static 'other_images/google.png' %}" width="240"
-                               height="55" alt="Sign in with Google"/>
-                    </a>
-                {% endif %}
+            </div>
+            <div class="col-md-10 mx-auto col-lg-7">
+                <div class="card text-center border-light rounded-3 w-75 mx-xl-0 mx-auto" id="sign-in-card">
+                    <div class="card-body">
+                        {% if user.is_authenticated %}
+                            <h3 class="card-title text-light mb-3">Logged in as {{ user.email }}</h3>
+                            <a class="btn btn-primary" href="{% url 'accounts:logout' %}">Logout</a>
+                        {% else %}
+                            <h3 class="card-title text-light fw-bold">Log in to BeginToReason</h3>
+                            <p class="card-title text-white-50 mb-3">To continue, sign in using one of the following
+                                services.</p>
+                            <div class="d-inline-flex flex-lg-column">
+                                <a class="btn btn-login mb-lg-3 mb-0 me-lg-0 me-3" aria-label="Sign in with Google"
+                                   href="{% url 'social:begin' 'google-oauth2' %}?next=
+                                           {% if request.GET.next %}{{ request.GET.next }}{% else %}{% url 'accounts:profile' %}{% endif %}">
+                                    <i class="fab fa-google" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline-flex"
+                                          aria-hidden="true">&nbsp; Sign in with Google</span>
+                                </a>
+                                <a class="btn btn-login mb-lg-3 mb-0 me-lg-0 me-3 position-relative disabled"
+                                   aria-disabled="true"
+                                   aria-label="Sign in with GitHub"
+                                   href="#">
+                                    <i class="fab fa-github" aria-hidden="true"></i>
+                                    <span class="d-none d-sm-inline-flex"
+                                          aria-hidden="true">&nbsp; Sign in with GitHub</span>
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info">
+                                        Coming Soon!
+                                        <span class="visually-hidden">Coming Soon!</span>
+                                    </span>
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
