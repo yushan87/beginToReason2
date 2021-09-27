@@ -5,10 +5,10 @@
     column-gap: 20%;
     z-index: 10;
     position: absolute;
-    top: 35%;
     left: 9%;
-    width: 89%;
+    width:75%;
     color: white;
+    background-color: #161616
 }
 
 .sortable-code {
@@ -19,7 +19,7 @@
 #sortableTrash { width: 30%; 
                 float: right;}
 
-#sortable { width: 30%;}
+#sortable { width: 35%;}
 
 .sortable-code ul {
     font-size: 80%;

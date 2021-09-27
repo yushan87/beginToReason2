@@ -15,6 +15,7 @@ from tutor.py_helper_functions.mutation import can_mutate
 from django.http import HttpResponse
 
 import re
+import math
 
 User = get_user_model()
 
@@ -62,7 +63,8 @@ def parsons_problem(request, assignmentID):
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
                                'index': set_index,
-                               'sortCode': lessonCode['sort']})
+                               'sortCode': lessonCode['sort'],
+                            'parsonsContainer': lessonCode['parsons']})
             # Case 2ab: if question is of type Text
             elif current_lesson.reason.reasoning_type == 'Text':
                 return render(request, 'parsons/parsons_problem.html',
@@ -82,7 +84,8 @@ def parsons_problem(request, assignmentID):
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
                                'index': set_index,
-                               'sortCode': lessonCode['sort']})
+                               'sortCode': lessonCode['sort'],
+                            'parsonsContainer': lessonCode['parsons']})
 
             # Case 2ac: if question is of type none
             return render(request, 'parsons/parsons_problem.html',
@@ -101,7 +104,8 @@ def parsons_problem(request, assignmentID):
                            'audio_transcribe': current_lesson.audio_transcribe,
                            'user_email': request.user.email,
                            'index': set_index,
-                            'sortCode': lessonCode['sort']})
+                            'sortCode': lessonCode['sort'],
+                            'parsonsContainer': lessonCode['parsons']})
     return redirect("accounts:profile")
 
 
@@ -151,6 +155,25 @@ def split_lesson_code(current_lesson):
     setCode = ""
     sortableCode = []
 
+    parsonsContainerPoint = firstCodeEndPointInd + 1 + 2
+    parsonsContainerTop = 29
+    i = 12
+
+    if i < parsonsContainerPoint:
+        while i < parsonsContainerPoint:
+            parsonsContainerTop += 2
+            i += 1
+        #parsonsContainerTop += 1
+    
+    elif i > parsonsContainerPoint:
+        while i > parsonsContainerPoint:
+            parsonsContainerTop -= 2
+            i -= 2
+        parsonsContainerTop -= 1
+
+    print(parsonsContainerTop)
+
+
     firstCodeEndPoint = current_lesson.code.lesson_code.find(code[firstCodeEndPointInd])
     beginSet = current_lesson.code.lesson_code[0:firstCodeEndPoint + len(code[firstCodeEndPointInd]) + 2]
 
@@ -183,7 +206,14 @@ def split_lesson_code(current_lesson):
     
     #Combine and format set code for editor
     setCode = beginSet
-    for _ in range(18):
+    setCode += r'\n'
+    for line in sortableCode:
+        setCode += r'\t' + line
+        setCode += r'\n'
+
+    numSortLines = len(sortableCode)
+    numLines = 2 + math.ceil(float(2.5 * numSortLines)) + 1 - numSortLines
+    for _ in range(numLines):
         setCode += r'\r\n'
 
     j = 0
@@ -204,7 +234,8 @@ def split_lesson_code(current_lesson):
     setCode += endSet
 
     lessonCode = {'set': setCode, 
-                'sort': sortableCode}
+                'sort': sortableCode,
+                'parsons': parsonsContainerTop}
     
     return lessonCode
 

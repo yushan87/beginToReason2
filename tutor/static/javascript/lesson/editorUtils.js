@@ -703,6 +703,9 @@ $.postJSON = (url, data, callback) => {
             for (var i = 0; i < lines.length; i++) {
                 if (displayPast) {
                     confirmLine = `${lines[i].lineNum}: ${aceEditor.session.getLine(lines[i].lineNum-1).replace("Confirm", "").replace(";", "")}`
+                    
+                    console.log(confirmLine);
+                    
                     if (lines[i].status == 'success') {
                         confirmLine += ' <i class="fas fa-check"></i>'
                     }

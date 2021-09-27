@@ -52,6 +52,7 @@
     <script src="{% static 'javascript/parsons/underscore-min.js' %}"></script>
     <script src="{% static 'javascript/parsons/lis.js' %}"></script>
     <script src="{% static 'javascript/parsons.js' %}"></script>
+    <script src="{% static 'javascript/parsonsUtils.js' %}"></script>
 
     <script>
         var initial = "";
@@ -80,60 +81,7 @@
                 parson.shuffleLines();
             });
             $("#feedbackLink.btn.btn-success").click(function(event){
-                let answeredQuestion = true;
-
-                if (hasFR) {
-                    let boxVal = document.forms["usrform"]["comment"].value;
-                    if (boxVal.length < 10) {
-                        // Create the appropriate alert box
-                        let msg = "You must provide a long enough explanation to the right";
-                        createAlertBox(true, msg);
-                        $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
-
-                        answeredQuestion = false;
-                    }
-                }
-                let blank = true;
-                if (hasMC) {
-                    let radios = document.getElementsByName('selectExplain');
-                    for (let i = 0, length = radios.length; i < length; i++) {
-                        if (radios[i].checked) {
-                            blank = false;
-                            multiAnswer = radios[i].value;
-                            
-                            answeredQuestion = true
-                        }
-                    }
-                    if (blank){
-                        let msg = "You must choose an answer to the right";
-                        createAlertBox(true, msg);
-                        answeredQuestion = false;
-                    }
-                }
-
-                if (answeredQuestion) {
-                    event.preventDefault();
-                    feedback = parson.getFeedback();
-
-                    if (feedback.length == 0) {
-                        document.getElementById("resultCard").style.display = "block";
-                        document.getElementById("resultsHeader").innerHTML = "Correct!";
-                        document.getElementById("resultDetails").innerHTML = "Click Next to proceed to the next lesson.";
-                        $("#resultCard").attr("class", "card bg-success text-white");
-
-                        $.get("{% url 'parsons:parsonsAdvance' assignmentID=assignment.id %}");
-
-                        $("#next").removeAttr("disabled", "disabled");
-                        $("#checkCorrectness").attr("disabled", "disabled");
-                    }
-
-                    else {
-                        document.getElementById("resultCard").style.display = "block";
-                        document.getElementById("resultsHeader").innerHTML = "Try Again!";
-                        document.getElementById("resultDetails").innerHTML = feedback[0];
-                        $("#resultCard").attr("class", "card bg-danger text-white");
-                    }
-                }
+                getParsonsFeedback(event);
             });
         });
     </script>
@@ -226,7 +174,7 @@
                 <div id="editorCol" class="d-flex flex-column h-100" style="position:relative">
                     <!-- Ace Editor -->
                         <div id="editor" class="flex-grow-1 p-0"></div>
-                        <div id="parsons_container" class="parsons_container">
+                        <div id="parsons_container" class="parsons_container" style="top: {{ parsonsContainer }}%;">
                             <div id="sortable" class="sortable-code"></div>
                             <div id="sortableTrash" class="sortable-code"></div>
                         </div>
@@ -291,7 +239,7 @@
                                     <i class="fa">&#xf021;</i>
                                 </button>
                                 <button id="feedbackLink" class="btn btn-success" type="button"
-                                        data-toggle="tooltip" data-placement="top">
+                                        data-toggle="tooltip" data-placement="top" title="Feedback Link">
                                     <i class="fas fa-clipboard-check"></i>
                                     Verify
                                     <div id="getIndex"></div>
