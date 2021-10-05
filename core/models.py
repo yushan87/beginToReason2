@@ -210,8 +210,10 @@ class Lesson(models.Model):
     screen_record = models.BooleanField(default=False)
     audio_record = models.BooleanField(default=False)
     audio_transcribe = models.BooleanField(default=False)
-    correctExpression = models.TextField(default="/*expression*/")
+
     is_parsons = models.BooleanField(default=False)
+    sortable_lines = models.TextField(default="")
+    multi_confirms = models.BooleanField(default=False)
 
     def __str__(self):
         """"

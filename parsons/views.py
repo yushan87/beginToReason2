@@ -113,125 +113,82 @@ def split_lesson_code(current_lesson):
     print(current_lesson.code.lesson_code)
     #Split code on newlines
     code = current_lesson.code.lesson_code.split(r'\n')
-
-    #Split list of correct assertions
-    correctExpressions = current_lesson.correctExpression.split('; ')
-    for i in range(len(correctExpressions)):
-        if ';' not in correctExpressions[i]:
-            correctExpressions[i] = correctExpressions[i] + ';'
-
-        correctExpressions[i] = correctExpressions[i] + r'\n'
+    sortableLines = current_lesson.sortable_lines.split(r'\n')
 
     firstCodeEndPointInd = 0
     finishedSetCode = False
-    confirmInds = []
-    lastConfirmInd = 0
     i = 0
-    while i < len(code):
+    while i < len(code) and not finishedSetCode:
         #Get last line of code that is supposed to be set
-        if not finishedSetCode:
-            if 'Var' in code[i] or 'Read' in code[i] or 'Remember' in code[i] or (re.search(r'\d', code[i]) and ':=' in code[i]):
+        if 'Confirm' not in code[i]:
+            if code[i] != r'\r':
                 firstCodeEndPointInd = i
-
-        if 'If' in code[i] or 'While' in code[i]:
+            
+        else:
             finishedSetCode = True
-
-        #Get last confirm statement
-        if 'Confirm' in code[i]:
-            lastConfirmInd = i
-
-            confirmInds.append(i)
-
-            #Get the last confirm statement for ech variable
-            j = 0
-            while j < len(confirmInds) - 1:
-                if code[confirmInds[j]][16] == code[i][16]:
-                    confirmInds.pop(0)
-
-                j += 1
-
         i += 1
 
     setCode = ""
     sortableCode = []
 
-    parsonsContainerPoint = firstCodeEndPointInd + 1 + 2
+    parsonsContainerPoint = firstCodeEndPointInd
     parsonsContainerTop = 29
     i = 12
 
     if i < parsonsContainerPoint:
-        while i < parsonsContainerPoint:
+        while i <= parsonsContainerPoint:
             parsonsContainerTop += 2
             i += 1
-        #parsonsContainerTop += 1
+        parsonsContainerTop += 1
     
     elif i > parsonsContainerPoint:
-        while i > parsonsContainerPoint:
+        while i >= parsonsContainerPoint:
             parsonsContainerTop -= 2
             i -= 2
         parsonsContainerTop -= 1
 
-    print(parsonsContainerTop)
 
-
+    print(firstCodeEndPointInd)
+    print(code[firstCodeEndPointInd])
     firstCodeEndPoint = current_lesson.code.lesson_code.find(code[firstCodeEndPointInd])
     beginSet = current_lesson.code.lesson_code[0:firstCodeEndPoint + len(code[firstCodeEndPointInd]) + 2]
 
+    endSet = current_lesson.code.lesson_code[firstCodeEndPoint + len(code[firstCodeEndPointInd]) + 2: len(current_lesson.code.lesson_code)]
+
     #Get sortable lines of code
-    i = firstCodeEndPointInd + 1
-    while i < lastConfirmInd:
-        if code[i] != r'\r' and 'Confirm' not in code[i] and '--' not in code[i] and 'do' not in code[i]:
+    i = 0
+    while i < len(sortableLines):
+        if sortableLines[i] != r'\r':
             #Get line of code with proper indentation
-            line = code[i].strip()
-            # print(code[i])
-            # print(line)
+            line = sortableLines[i].strip()
             numTabs = 0
-            if len(code[i]) > len(line):
-                numTabs = ((len(code[i]) - len(line)) - 8) / 4
+            if len(sortableLines[i]) > len(line):
+                numTabs = ((len(sortableLines[i]) - len(line)) - 8) / 4
             tabs = ""
             for _ in range(int(numTabs)):
                 tabs += r'\t'
                 
-            code[i] = tabs + line
-            print(code[i])
-            sortableCode.append(code[i])
+            sortableLines[i] = tabs + line
+            sortableCode.append(sortableLines[i])
         i += 1
-    
-
-    #Get rest of set code
-    endPoint = current_lesson.code.lesson_code.rfind(code[lastConfirmInd + 2])
-    endSet = current_lesson.code.lesson_code[endPoint: len(current_lesson.code.lesson_code)]
-
-    print(endSet)
     
     #Combine and format set code for editor
     setCode = beginSet
     setCode += r'\n'
-    for line in sortableCode:
-        setCode += r'\t' + line
-        setCode += r'\n'
 
     numSortLines = len(sortableCode)
     numLines = 2 + math.ceil(float(2.5 * numSortLines)) + 1 - numSortLines
     for _ in range(numLines):
         setCode += r'\r\n'
-
-    j = 0
-    k = 0
-    while j < len(confirmInds):
-        confirmPoint = current_lesson.code.lesson_code.rfind(code[confirmInds[j]])
-        confirm = current_lesson.code.lesson_code[confirmPoint: confirmPoint + len(code[confirmInds[j]]) + 2]
-
-        replacePoint = confirm.find('Confirm')
-        replacePoint += 8
-        confirm = confirm[:replacePoint] + correctExpressions[k]
-
-        setCode += confirm
-
-        j += 1
-        k += 1
     
     setCode += endSet
+
+    print(beginSet)
+    print("End set")
+    print(endSet)
+
+    print(setCode)
+    print(current_lesson.code.lesson_code)
 
     lessonCode = {'set': setCode, 
                 'sort': sortableCode,

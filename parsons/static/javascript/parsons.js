@@ -1290,7 +1290,8 @@
      if ('html' in fb) { // unittest/vartests type feedback
        this.addLogEntry({type: "feedback", tests: fb.tests, success: fb.success});
        return { feedback: fb.html, success: fb.success };
-     } else {
+     } 
+     else {
        this.addLogEntry({type: "feedback", errors: fb.log_errors, success: fb.success});
        return fb.errors;
      }

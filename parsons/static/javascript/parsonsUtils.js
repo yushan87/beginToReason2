@@ -1,5 +1,4 @@
-function getParsonsFeedback (event) {
-    console.log("js file");
+function getParsonsFeedback (event, setCode, parson) {
     let answeredQuestion = true;
 
     if (hasFR) {
@@ -33,11 +32,8 @@ function getParsonsFeedback (event) {
 
     if (answeredQuestion) {
         event.preventDefault();
-        // feedback = parson.getFeedback();
 
         let organizedCode = document.getElementById("ul-sortable").querySelectorAll('li');
-
-        let setCode = "{{ lesson_code }}";
         
         let answers = [];
         organizedCode.forEach((item, index) => {
@@ -54,21 +50,27 @@ function getParsonsFeedback (event) {
 
         let breakLoop = false;
         let studentCode = "";
-        for (var i = 0; i < setCode.length - 10 || !breakLoop; ++i) {
+        for (var i = 0; i < setCode.length - 10 && !breakLoop; ++i) {
             for (var j = 0; j < answers.length; ++j) {
-                if (setCode.substring(i, i + answers[j].length).trim() === answers[j].toString().trim()) {
+                if (setCode.substring(i, i + answers[j].length).trim() == answers[j].trim()) {
                     studentCode = setCode.substring(0, i - 1);
                     for (var k = 0; k < answers.length; ++k) {
                         studentCode = studentCode + answers[k];
                         i = i + answers[k].length;
                     }
-                    studentCode = studentCode + setCode.substring(i + 5, setCode.length);
+                    studentCode = studentCode + "\n" + "\n" + setCode.substring(i + 10, setCode.length);
 
                     breakLoop = true;
                     break;
                 }
             }
         }
+
+        studentCode = studentCode.replace("&gt;", ">");
+        studentCode = studentCode.replace("&lt;", "<");
+
+        console.log(setCode);
+        console.log(studentCode);
 
         document.getElementById("resultsHeader").innerHTML = "<h3>Checking Correctness...</h3>";
         document.getElementById("resultDetails").innerHTML = '<div class="sk-chase">\n' +
@@ -82,26 +84,17 @@ function getParsonsFeedback (event) {
         $("#resultCard").attr("class", "card text-light");
         $("#resultCard").attr("style", "background: #4C6085");
 
-        console.log("Verify code");
-        verify(studentCode);
+        feedback = parson.getFeedback();
 
-        if (feedback.length == 0) {
-            document.getElementById("resultCard").style.display = "block";
-            document.getElementById("resultsHeader").innerHTML = "Correct!";
-            document.getElementById("resultDetails").innerHTML = "Click Next to proceed to the next lesson.";
-            $("#resultCard").attr("class", "card bg-success text-white");
-
-            $.get("{% url 'parsons:parsonsAdvance' assignmentID=assignment.id %}");
-
-            $("#next").removeAttr("disabled", "disabled");
-            $("#checkCorrectness").attr("disabled", "disabled");
-        }
-
-        else {
+        if (feedback[0] == "Remember to use proper code style and indentation.") {
             document.getElementById("resultCard").style.display = "block";
             document.getElementById("resultsHeader").innerHTML = "Try Again!";
             document.getElementById("resultDetails").innerHTML = feedback[0];
             $("#resultCard").attr("class", "card bg-danger text-white");
+        }
+
+        else {
+            verify(studentCode);
         }
     }
 }

@@ -14,6 +14,7 @@
 .sortable-code {
     padding-left: 0px;
     margin-left: 2%; 
+    color: white
 }
 
 #sortableTrash { width: 30%; 
@@ -62,32 +63,26 @@ ul.output {
 
 ul.incorrect {
     border: 1px solid red;
-    background-color: #cc3333;
 }
 
 ul.correct {
     background-color: #efffef;
-    background-color: #339933;
 }
 
 li.incorrectIndent {
-    border: 1px solid red;
     border-left: 10px solid red;
 }
 
 li.correctIndent {
-    border: 1px solid green;
     border-left: 10px solid green;
 }
 
 li.incorrectPosition, .testcase.fail, .testcase.error {
     background-color: #rgba(48, 52, 63, 0.9);
-    border:3px solid red;
 }
 
 li.correctPosition, .testcase.pass {
     background-color: #rgba(48, 52, 63, 0.9);
-    border:3px solid green;
 }
 
 .testcase { padding: 10px; margin-bottom: 10px;}

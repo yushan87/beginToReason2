@@ -81,7 +81,7 @@
                 parson.shuffleLines();
             });
             $("#feedbackLink.btn.btn-success").click(function(event){
-                getParsonsFeedback(event);
+                getParsonsFeedback(event, "{{ lesson_code }}", parson);
             });
         });
     </script>
@@ -175,6 +175,7 @@
                     <!-- Ace Editor -->
                         <div id="editor" class="flex-grow-1 p-0"></div>
                         <div id="parsons_container" class="parsons_container" style="top: {{ parsonsContainer }}%;">
+                            <div id="sortable" class="sortable-code"></div>
                             <div id="sortable" class="sortable-code"></div>
                             <div id="sortableTrash" class="sortable-code"></div>
                         </div>

@@ -676,20 +676,25 @@ $.postJSON = (url, data, callback) => {
             document.getElementById("resultDetails").innerHTML = response.resultDetails;
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
 
+            console.log(response.status);
+
             if (response.status == "success") {
                 $("#resultCard").attr("class", "card bg-success text-white");
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
+                $("#ul-sortable").attr("style", "background-color: #20a001d7;");
                 closeThinkAloudFunctions(true, 'correct solution', data.answer, data.code); // for the think-aloud recording
                 unlock();
             } else if (response.status == 'failure'){
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
+                $("#ul-sortable").attr("style", "background-color: #ce0000bb;");
                 closeThinkAloudFunctions(false, 'incorrect solution', data.answer, data.code); // for the think-aloud recording
                 unlock();
             } else {
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
+                $("#ul-sortable").attr("style", "background-color: #161616;");
                 closeThinkAloudFunctions(false, 'something went wrong',  data.answer, data.code); // for the think-aloud recording
                 unlock();
             }
@@ -717,7 +722,7 @@ $.postJSON = (url, data, callback) => {
                     if (lines[i].status == "success") {
                         aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_correct")
                     }
-                    else {
+                    else if (response.status != "error") {
                         aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_error");
                         document.getElementById("answersCard").removeAttribute("hidden")
                     }
@@ -730,7 +735,6 @@ $.postJSON = (url, data, callback) => {
                 $("#checkCorrectness").attr("disabled", "disabled");
             }
         }
-
     });
 };
 
@@ -738,7 +742,7 @@ $.postJSON = (url, data, callback) => {
     Sends to backend for verification
 */
 function verify(code){
-
+verifying = true;
     let data = {};
     data.assignment = assignment;
     data.pastAnswers = allAnswers; //Doesn't include the current one!!!
@@ -754,5 +758,5 @@ function verify(code){
         }
     }
 
-    $.postJSON("grader", data, (results) => {});
+    $.postJSON("grader", data, (results) => {test});
 }

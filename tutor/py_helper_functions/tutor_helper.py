@@ -92,15 +92,26 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
     Returns:
         dict that should be send to front-end JS
     """
+
+    print(status)
+    print(current_lesson.code.lesson_code)
+
     if not alt_activated:
         if status == 'success':
             headline = 'Correct'
             text = current_lesson.correct_feedback
         else:
             try:
-                feedback = current_lesson.feedback.get(feedback_type=check_type(current_lesson, submitted_answer))
-                headline = feedback.headline
-                text = feedback.feedback_text
+                if current_lesson.is_parsons:
+                    headline = "Try Again!"
+                    if status == "error":
+                        text = "The code fragments are producing a syntax error. Ensure that if/else statments and loops have and end statement to complete them and they have content."
+                    else:
+                        text = "Code fragments in your program are wrong, or in wrong order. Move, remove, or replace fragments to meet the highlighted incorrect confirm statements."
+                else: 
+                    feedback = current_lesson.feedback.get(feedback_type=check_type(current_lesson, submitted_answer))
+                    headline = feedback.headline
+                    text = feedback.feedback_text
             except core.models.Feedback.DoesNotExist:
                 headline = "Try Again!"
                 text = "Did you read the reference material?"
