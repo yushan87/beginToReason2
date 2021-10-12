@@ -18,7 +18,7 @@
     </div>
 
     <!-- Account Settings -->
-    <div class="container px-3 py-0">
+    <div class="container pb-5 mb-5">
         <form action="{% url 'accounts:settings' %}" method="POST">
             {% csrf_token %}
             <div class="page-section-heading my-3">
@@ -54,4 +54,7 @@
         </form>
         <br>
     </div>
+
+    <!-- Page Footer -->
+    {% include "core/footer.html" %}
 {% endblock %}
