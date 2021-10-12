@@ -8,10 +8,11 @@ setCode = """Facility BeginToReason;
         Read(J);
 
 	
-	K := J;
-	If I &gt;= K then
-		K := I;
-	end;
+	
+    
+
+
+    
 
 
 
@@ -57,24 +58,41 @@ end BeginToReason;"""
 answers = ["end;", "If I &gt;= K then", "K := I;", "K := J;"]
 
 def test():
-    breakLoop = False
+    foundBreak = False
     studentCode = ""
     i = 0
-    while i < len(setCode) - 10 and not breakLoop:
+    while i < len(setCode) - 10:
+        #print("First loop")
         j = 0
-        while j < len(answers):
-            if (setCode[i: i + len(answers[j])] == answers[j]):
-                studentCode = setCode[0: i - 1]
-                k = 0
-                while k < len(answers):
-                    studentCode = studentCode + answers[k]
-                    i = i + len(answers[k])
-                    k += 1
-                studentCode = studentCode + setCode[i + len(answers[k - 1]): len(setCode)]
-
-                breakLoop = True
+        while j < 10:
+            #print("Second loop")
+            print(ord(setCode[i]))
+            print(ord(setCode[i + j]))
+            if setCode[i] != setCode[i + j]:
+                #print("Unequal chars")
+                foundBreak = False
+                i += 1
+                j += 1
                 break
-            j += 1
+            else:
+                #print("Equals chars")
+                foundBreak = True
+                j += 1
+                continue
+            
+            
+
+        if foundBreak and j == 10:
+            #print("Found break")
+            studentCode = setCode[0: i]
+            k = 0
+            while k < len(answers):
+                #print("Answers while loop")
+                studentCode += answers[k]
+                k += 1
+            studentCode += setCode[i + 1: len(setCode)]
+            break
+        
         i += 1
 
     print(studentCode)

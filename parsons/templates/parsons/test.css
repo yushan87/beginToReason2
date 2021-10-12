@@ -1,0 +1,22 @@
+.keyword
+.operation
+.number
+.text{
+    font: 12px/normal 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+}
+
+.keyword{
+    color: red;
+}
+
+.operation{
+    color: rgb(0, 81, 255);
+}
+
+.number{
+    color: green;
+}
+
+.text{
+    color: black;
+}

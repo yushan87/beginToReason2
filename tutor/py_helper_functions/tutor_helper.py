@@ -107,7 +107,7 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
                     if status == "error":
                         text = "The code fragments are producing a syntax error. Ensure that if/else statments and loops have and end statement to complete them and they have content."
                     else:
-                        text = "Code fragments in your program are wrong, or in wrong order. Move, remove, or replace fragments to meet the highlighted incorrect confirm statements."
+                        text = "Code fragments in your program are wrong, or in wrong order. Move, remove, or replace fragments to meet the all of the confirm statements."
                 else: 
                     feedback = current_lesson.feedback.get(feedback_type=check_type(current_lesson, submitted_answer))
                     headline = feedback.headline

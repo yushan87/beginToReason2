@@ -178,7 +178,8 @@ def tutor(request, assignmentID):
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': set_index})
+                               'index': set_index,
+                               'isParsons': current_lesson.is_parsons})
             # Case 2ab: if question is of type Text
             elif current_lesson.reason.reasoning_type == 'Text':
                 return render(request, "tutor/tutor.html",
@@ -197,7 +198,8 @@ def tutor(request, assignmentID):
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': set_index})
+                               'index': set_index,
+                               'isParsons': current_lesson.is_parsons})
 
             # Case 2ac: if question is of type none
             return render(request, "tutor/tutor.html",
@@ -215,5 +217,6 @@ def tutor(request, assignmentID):
                            'audio_record': current_lesson.audio_record,
                            'audio_transcribe': current_lesson.audio_transcribe,
                            'user_email': request.user.email,
-                           'index': set_index})
+                           'index': set_index,
+                            'isParsons': current_lesson.is_parsons})
     return redirect("accounts:profile")

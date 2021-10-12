@@ -63,8 +63,13 @@ def parsons_problem(request, assignmentID):
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
                                'index': set_index,
-                               'sortCode': lessonCode['sort'],
-                            'parsonsContainer': lessonCode['parsons']})
+                           'beginSetCode': lessonCode['beginSet'],
+                           'endSetCode': lessonCode['endSet'],
+                            'sortCode': lessonCode['sort'],
+                            'comments': lessonCode['comments'],
+                            'confirms': lessonCode['confirms'],
+                               'multiConfirms': current_lesson.multi_confirms,
+                               'isParsons': current_lesson.is_parsons})
             # Case 2ab: if question is of type Text
             elif current_lesson.reason.reasoning_type == 'Text':
                 return render(request, 'parsons/parsons_problem.html',
@@ -84,8 +89,13 @@ def parsons_problem(request, assignmentID):
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
                                'index': set_index,
-                               'sortCode': lessonCode['sort'],
-                            'parsonsContainer': lessonCode['parsons']})
+                           'beginSetCode': lessonCode['beginSet'],
+                           'endSetCode': lessonCode['endSet'],
+                            'sortCode': lessonCode['sort'],
+                            'comments': lessonCode['comments'],
+                            'confirms': lessonCode['confirms'],
+                               'multiConfirms': current_lesson.multi_confirms,
+                               'isParsons': current_lesson.is_parsons})
 
             # Case 2ac: if question is of type none
             return render(request, 'parsons/parsons_problem.html',
@@ -104,13 +114,17 @@ def parsons_problem(request, assignmentID):
                            'audio_transcribe': current_lesson.audio_transcribe,
                            'user_email': request.user.email,
                            'index': set_index,
+                           'beginSetCode': lessonCode['beginSet'],
+                           'endSetCode': lessonCode['endSet'],
                             'sortCode': lessonCode['sort'],
-                            'parsonsContainer': lessonCode['parsons']})
+                            'comments': lessonCode['comments'],
+                            'confirms': lessonCode['confirms'],
+                            'multiConfirms': current_lesson.multi_confirms,
+                               'isParsons': current_lesson.is_parsons})
     return redirect("accounts:profile")
 
 
 def split_lesson_code(current_lesson):
-    print(current_lesson.code.lesson_code)
     #Split code on newlines
     code = current_lesson.code.lesson_code.split(r'\n')
     sortableLines = current_lesson.sortable_lines.split(r'\n')
@@ -128,38 +142,42 @@ def split_lesson_code(current_lesson):
             finishedSetCode = True
         i += 1
 
+    i = 0
+    while i < len(code):
+        #Find last confirm
+        if 'Confirm' in code[i]:
+            lastConfirm = i
+        i += 1
+
     setCode = ""
     sortableCode = []
-
-    parsonsContainerPoint = firstCodeEndPointInd
-    parsonsContainerTop = 29
-    i = 12
-
-    if i < parsonsContainerPoint:
-        while i <= parsonsContainerPoint:
-            parsonsContainerTop += 2
-            i += 1
-        parsonsContainerTop += 1
-    
-    elif i > parsonsContainerPoint:
-        while i >= parsonsContainerPoint:
-            parsonsContainerTop -= 2
-            i -= 2
-        parsonsContainerTop -= 1
+    confirms = []
 
 
-    print(firstCodeEndPointInd)
-    print(code[firstCodeEndPointInd])
     firstCodeEndPoint = current_lesson.code.lesson_code.find(code[firstCodeEndPointInd])
     beginSet = current_lesson.code.lesson_code[0:firstCodeEndPoint + len(code[firstCodeEndPointInd]) + 2]
 
-    endSet = current_lesson.code.lesson_code[firstCodeEndPoint + len(code[firstCodeEndPointInd]) + 2: len(current_lesson.code.lesson_code)]
+    endPoint = current_lesson.code.lesson_code.find(code[lastConfirm])
+    endSet = current_lesson.code.lesson_code[endPoint: len(current_lesson.code.lesson_code)]
 
     #Get sortable lines of code
+    loopIndex = -1
+    comments = []
     i = 0
     while i < len(sortableLines):
-        if sortableLines[i] != r'\r':
+        if 'While' in sortableLines[i] or 'For' in sortableLines[i]:
+            loopIndex += 1
+            comments.append("")
+        
+
+        if 'increasing' in sortableLines[i] or 'decreasing' in sortableLines[i] or 'changing' in sortableLines[i]:
+            sortableLines[i] = sortableLines[i].replace(r"\r", "")
+            comments[loopIndex] += sortableLines[i].strip()
+
+        
+        elif sortableLines[i] != r'\r':
             #Get line of code with proper indentation
+            sortableLines[i] = sortableLines[i].replace(r"\r", "")
             line = sortableLines[i].strip()
             numTabs = 0
             if len(sortableLines[i]) > len(line):
@@ -169,30 +187,56 @@ def split_lesson_code(current_lesson):
                 tabs += r'\t'
                 
             sortableLines[i] = tabs + line
-            sortableCode.append(sortableLines[i])
+            if sortableLines[i] != "":
+                sortableCode.append(sortableLines[i])
         i += 1
     
     #Combine and format set code for editor
+    parsonsContainer = []
+
     setCode = beginSet
     setCode += r'\n'
 
-    numSortLines = len(sortableCode)
-    numLines = 2 + math.ceil(float(2.5 * numSortLines)) + 1 - numSortLines
-    for _ in range(numLines):
-        setCode += r'\r\n'
+    if not current_lesson.multi_confirms:
+        for line in sortableCode:
+            setCode += r'\n'
+        
+
+        numSortLines = len(sortableCode)
+        numLines = 2 + math.ceil(float(2.5 * numSortLines)) + 1 - numSortLines
+        for _ in range(numLines):
+            setCode += r'\r\n'
+
+        parsonsContainer.append(firstCodeEndPointInd * 3)
+    
+    else:
+        
+        i = firstCodeEndPointInd
+        parsonsContainer.append(((i - 1) * 3) + 1)
+        while i < len(code):
+            if 'Confirm' in code[i] and 'Confirm' not in code[i - 1]:
+                confirmInd = current_lesson.code.lesson_code.find(code[i])
+                confirm = current_lesson.code.lesson_code[confirmInd: confirmInd + len(code[i])]
+                confirm = confirm.replace(r'\r', "")
+                confirms.append(confirm)
+
+            i += 1
     
     setCode += endSet
 
-    print(beginSet)
-    print("End set")
-    print(endSet)
+    beginSet = beginSet.replace("    ", r"\t")
+    endSet = endSet.replace("    ", r"\t")
+    i = 0
+    while i < len(confirms):
+        confirms[i] = confirms[i].replace("    ", r"\t")
+        i += 1
 
-    print(setCode)
-    print(current_lesson.code.lesson_code)
-
-    lessonCode = {'set': setCode, 
+    lessonCode = {'beginSet': beginSet,
+                  'endSet': endSet,
+                  'set': setCode,
                 'sort': sortableCode,
-                'parsons': parsonsContainerTop}
+                'confirms': confirms,
+                'comments': comments,}
     
     return lessonCode
 

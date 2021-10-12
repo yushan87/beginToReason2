@@ -1,26 +1,70 @@
 /** Stylesheet for the puzzles */
+.keyword
+.operation
+.number
+.text{
+    white-space: break-spaces;  
+}
+
+.keyword{
+    color: rgb(255, 232, 0);
+}
+
+.operation{
+    color: #4085b7;
+}
+
+.number{
+    color: #58C554;
+}
+
+.text{
+    color: white;
+}
 
 .parsons_container {
     display: flex;
-    column-gap: 20%;
-    z-index: 10;
-    position: absolute;
-    left: 9%;
-    width:75%;
+    position: relative;
+    column-gap: 30%;
+    width: 75%;
     color: white;
-    background-color: #161616
+}
+
+.codeContainer {
+    display: column;
+    z-index: 4;
+    position: absolute;
+    color: white;
+    background-color: #161616;
+    overflow: auto;
+    font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", monospace;
+    font-size: 19px;
+    font-style: normal;
+}
+
+.sortable_container {
+    display: flex;
+    flex-direction: column;
 }
 
 .sortable-code {
     padding-left: 0px;
     margin-left: 2%; 
-    color: white
+    color: white;
+    width: 30%;
+    position: relative;
+    left: 35%;
 }
 
-#sortableTrash { width: 30%; 
-                float: right;}
+#sortableTrash { position: absolute;
+                left: 80%;
+                width: 30%;
+}
 
-#sortable { width: 35%;}
+#sortable { width: 35%;
+            left: 10%;
+            position: relative;
+}
 
 .sortable-code ul {
     font-size: 80%;

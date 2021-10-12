@@ -25,11 +25,11 @@ SECRET_KEY = 'l46i#coubyfrpmlk2%h#kp^t_^w_kv8xpwtxm&5#x361wieb@f'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['45fd-67-21-186-248.ngrok.io', 'localhost', '127.0.0.1']
 
 # client keys and secret for google auth
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '611944294175-bbmqfpu7gemb6bjeacgrdtqg0qq6arcg.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'tqfQvS7M_TnxDTM0PO4T_GAe'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '627288134-evv1g4i8dhquo4atpfe3n4utqhug1078.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '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'
 
 # Application definition
 

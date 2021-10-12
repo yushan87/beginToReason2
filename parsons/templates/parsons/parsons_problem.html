@@ -28,7 +28,7 @@
     <script type="application/javascript">
         $(document).ready(function () {
             //this will be done in a load lesson function call
-            createEditor("{{ lesson_code | safe }}", "{{ lesson.reason.reasoning_type | safe }}", "{{ lesson.lesson_title | safe }}", "{{ review | safe }}", "{{ past | safe }}");
+            createEditor("{{ lesson_code | safe }}", "{{ lesson.reason.reasoning_type | safe }}", "{{ lesson.lesson_title | safe }}", "{{ review | safe }}", "{{ past | safe }}", true);
             $("#tutor").attr("class", "nav-item active");
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
 
@@ -54,7 +54,9 @@
     <script src="{% static 'javascript/parsons.js' %}"></script>
     <script src="{% static 'javascript/parsonsUtils.js' %}"></script>
 
-    <script>
+    <script type="text/javascript">
+        let confirms = "{{ confirms }}";
+
         var initial = "";
         {% for line in sortCode %}
             initial = initial + "{{ line | safe}}";
@@ -67,23 +69,195 @@
             }
         } 
 
-        $(document).ready(function(){
-            var parson = new ParsonsWidget({
-                'sortableId': 'sortable',
-                'trashId': 'sortableTrash',
-                'max_wrong_lines': 1,
-                'feedback_cb' : displayErrors
-            });
-            parson.init(initial);
-            parson.shuffleLines();
-            $("#newInstanceLink.btn.btn-danger.btn-inline").click(function(event){
-                event.preventDefault();
+
+        {% if not multiConfirms %}
+            $(document).ready(function(){
+                var parson = new ParsonsWidget({
+                    'sortableId': 'sortable',
+                    'trashId': 'sortableTrash',
+                    'max_wrong_lines': 1,
+                    'feedback_cb' : displayErrors
+                });
+                parson.init(initial);
                 parson.shuffleLines();
+                $("#newInstanceLink.btn.btn-danger.btn-inline").click(function(event){
+                    event.preventDefault();
+                    parson.shuffleLines();
+                });
+                $("#feedbackLink.btn.btn-success").click(function(event){
+                    getParsonsFeedback(event, "{{ beginSetCode }}", "{{ endSetCode }}",parson, "{{ comments }}");
+                });
             });
-            $("#feedbackLink.btn.btn-success").click(function(event){
-                getParsonsFeedback(event, "{{ lesson_code }}", parson);
-            });
+
+        {% endif %}
+        $(document).ready(function() {
+            let listItems = document.getElementsByTagName("li");
+
+            placeholderInd = 0;
+            codelineInd = 0;
+            for (var i = 0; i < listItems.length; ++i) {
+                if (listItems[i].id == "placeholder") {
+                    listItems[i].id = "placeholder" + placeholderInd;
+                    placeholderInd++;
+                }
+
+                if (listItems[i].id == "codeline") {
+                    listItems[i].id = "codeline" + codelineInd;
+                    codelineInd++;
+                }
+            }
+
+            {% if multiConfirms %}
+            let lists = document.getElementsByTagName("ul");
+            ind = 0;
+            for (var i = 0; i < lists.length; ++i) {
+                if (lists[i].id == "ul-sortable") {
+                    lists[i].id = "ul-sortable" + ind;
+                    ind++;
+                }
+            }
+            {% endif %}
+
+            let confirms = document.getElementsByTagName("div");
+            ind = 0;
+            for (var i = 0; i < confirms.length; ++i) {
+                if (confirms[i].id == "confirm") {
+                    confirms[i].id = "confirm" + ind;
+                    ind++
+                }
+            }
+
+            let divs = document.getElementsByTagName("div");
+
+            for (var i = 0; i < divs.length; ++i) {
+                if (divs[i].id == "firstSetCode" || divs[i].id.includes("confirm") || divs[i].id == "endSetCode") {
+                    colorCodeText(divs[i].id);
+                }
+            }
+
+            let leftWidth = document.getElementById("tutorialCol").offsetWidth;
+            let rightWidth = document.getElementById("right-col").offsetWidth;
+            let width = window.innerWidth - leftWidth - rightWidth - 10;
+            let widthString = "width:" + width + "px";
+
+            let bottomHeight = document.getElementById("editorToolbar").offsetHeight;
+            bottomHeight += document.getElementById("percent").offsetHeight + 71;
+            let height = window.innerHeight - bottomHeight;
+            let heightString = "height:" + height + "px";
+            let styleString = widthString + ";" + heightString;
+            document.getElementById("codeContainer").setAttribute("style", styleString);
         });
+
+
+        $(window).resize(function () {
+            let leftWidth = document.getElementById("tutorialCol").offsetWidth;
+            let rightWidth = document.getElementById("right-col").offsetWidth;
+            let width = window.innerWidth - leftWidth - rightWidth - 10;
+            let widthString = "width:" + width + "px";
+
+            let bottomHeight = document.getElementById("editorToolbar").offsetHeight;
+            bottomHeight += document.getElementById("percent").offsetHeight + 71;
+            let height = window.innerHeight - bottomHeight;
+            let heightString = "height:" + height + "px";
+            let styleString = widthString + ";" + heightString;
+            document.getElementById("codeContainer").setAttribute("style", styleString);
+        });
+        
+
+
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+        function drop(event) {
+            event.preventDefault();
+            var data = event.dataTransfer.getData("text");
+
+            //Clear placeholders
+            let listElements = document.getElementById(event.target.id).getElementsByTagName('li');
+            if (listElements[0].id.includes("placeholder")) {
+                while (event.target.firstChild) {
+                    event.target.removeChild(event.target.firstChild);
+                }
+            }
+
+            if (event.target.tagName == "LI") {
+                event.target.parentNode.appendChild(document.getElementById(data))
+            }
+            else {
+                event.target.appendChild(document.getElementById(data));
+            }
+        }
+
+        let keywords = ["Facility", "uses", "Operation", "Var", "Remember", "Confirm", "end", "If", "then", "do", "changing", "decreasing", "increasing", "While", "For", "ProcedureVar"];
+        let operations = ["<", ">", "<=",">=", "/=", "=", "+", "-", "*", "/", ":="];
+
+        let lineNumber = 1;
+
+        function colorCodeText(divID) {
+            let code = document.getElementById(divID).textContent;
+            code = code.replaceAll(/\\r/g, "");
+            code = code.replaceAll(/\\n/g, "<br/>");
+            code = code.replaceAll(/\\t/g, "&nbsp&nbsp&nbsp&nbsp");
+            document.getElementById(divID).innerHTML = "";
+
+            document.getElementById(divID).innerHTML += "<span class=\"text\"> " + lineNumber + "</span>";
+            ++lineNumber;
+
+            let lines = code.split(";");
+            for (var i = 0; i < lines.length; ++i) {
+                let words = lines[i].split(" ");
+                for (var j = 0; j < words.length; j++) {
+                    let breakCount = words[j].split("<br/>").length - 1;
+                    words[j] = words[j].replaceAll("<br/>", "");
+                    for (var breaks = 0; breaks < breakCount; ++breaks) {
+                        document.getElementById(divID).innerHTML += "<span class=\"text\"><br/>" + lineNumber + "</span>";
+                        ++lineNumber;
+                    }
+
+                    if (keywords.includes(words[j].replaceAll("<br/>", "").replaceAll("&nbsp", ''))) {
+                        if (words[j].includes("Procedure")) {
+                            let ind = words[j].indexOf('Procedure');
+                            document.getElementById(divID).innerHTML += "<span class=\"keyword\"> " + words[j].substring(0, ind + 9) + "<br/></span>";
+
+                            document.getElementById(divID).innerHTML += "<span class=\"text\">" + lineNumber + "</span>";
+                            ++lineNumber;
+                            document.getElementById(divID).innerHTML += "<span class=\"keyword\">" + words[j].substring(ind + 9, words[j].length) + "</span>";
+                            
+                        }
+
+                        else {
+                            document.getElementById(divID).innerHTML += "<span class=\"keyword\"> " + words[j] + "</span>";
+                        }
+                    }
+
+                    else if (operations.includes(words[j].replaceAll("<br/>", "").replaceAll("&nbsp", ''))) {
+                        document.getElementById(divID).innerHTML += "<span class=\"operation\"> " + words[j] + "</span";
+                    }
+
+                    else if (/\d/.test(words[j])) {
+                        for (var k = 0; k < words[j].length; ++k) {
+                            if (words[j][k] >= '0' && words[j][k] <= '9') {
+                                document.getElementById(divID).innerHTML += "<span class=\"number\">" + words[j][k] + "</span>";
+                            }
+
+                            else {
+                                document.getElementById(divID).innerHTML += "<span class=\"text\">" + words[j][k] + "</span>";
+                            }
+                        }
+                    }
+
+                    else {
+                        document.getElementById(divID).innerHTML += "<span class=\"text\"> " + words[j] + "</span>";
+                    }
+                }
+                if (lines[i] != "" && !lines[i].includes("do") && lines[i].trim() != "<br/>" && lines[i].trim().length != 0) {
+                    document.getElementById(divID).innerHTML += "<span class=\"text\">;</span>";
+                }
+            }
+        }
     </script>
 {% endblock %}
 
@@ -174,11 +348,50 @@
                 <div id="editorCol" class="d-flex flex-column h-100" style="position:relative">
                     <!-- Ace Editor -->
                         <div id="editor" class="flex-grow-1 p-0"></div>
-                        <div id="parsons_container" class="parsons_container" style="top: {{ parsonsContainer }}%;">
-                            <div id="sortable" class="sortable-code"></div>
-                            <div id="sortable" class="sortable-code"></div>
-                            <div id="sortableTrash" class="sortable-code"></div>
-                        </div>
+                            <div id="codeContainer" class="codeContainer">
+                                    <div id="firstSetCode" class="code">
+                                        {{ beginSetCode | safe }}
+                                    </div>
+                                    
+                                    <div id="parsons_container" class="parsons_container">
+                                        {% if multiConfirms %}
+                                            <div id="sortable_container">
+                                            {% for confirm in confirms %}
+                                                <div id="sortable" class="sortable-code">
+                                                    <ul id="ul-sortable" class="ui-sortable output" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                                        <li id="placeholder" style="visibility: hidden;">
+                                                            Placeholder
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div id="confirm">
+                                                    {{ confirm | safe }}
+                                                </div>
+                                            {% endfor %}
+                                            </div>
+
+                                        <div id="sortableTrash" class="sortable-code">
+                                            <ul id="ul-sortableTrash" class="ui-sortable">
+                                                {% for line in sortCode %}
+                                                    <li id="codeline" draggable="true" ondragstart="drag(event)">
+                                                        {{line}}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+
+                                        {% else %}
+                                            <div id="sortable" class="sortable-code"></div>
+                                            <div id="sortableTrash" class="sortable-code"></div>
+                                        {% endif %}
+                                    </div>
+
+                                    
+
+                                    <div id="endSetCode">
+                                        {{ endSetCode | safe }}
+                                    </div>
+                            </div>
                     
                     <!-- Error Card -->
                     <div id="compilerResult"></div>
@@ -239,8 +452,13 @@
                                         data-target="#areYouSure">
                                     <i class="fa">&#xf021;</i>
                                 </button>
-                                <button id="feedbackLink" class="btn btn-success" type="button"
-                                        data-toggle="tooltip" data-placement="top" title="Feedback Link">
+                                {% if multiConfirms %}
+                                    <button id="feedbackLink" class="btn btn-success" type="button"
+                                            data-toggle="tooltip" data-placement="top" title="Feedback Link" onclick="getMulitConfirmFeedback(event, '{{ beginSetCode }}', '{{ endSetCode }}', confirms, '{{ comments}}')">
+                                {% else %}
+                                    <button id="feedbackLink" class="btn btn-success" type="button"
+                                            data-toggle="tooltip" data-placement="top" title="Feedback Link">
+                                {% endif %}
                                     <i class="fas fa-clipboard-check"></i>
                                     Verify
                                     <div id="getIndex"></div>
