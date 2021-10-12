@@ -8,36 +8,43 @@
 {% endblock %}
 
 {% block main_content %}
-    <div class="jumbotron jumbotron-fluid py-5 mb-0">
-        <div class="container p-0">
+    <!--- Custom Jumbotron -->
+    <div class="container-fluid jumbotron mb-0 py-5">
+        <div class="container align-items-center p-0">
             <div class="row">
-                <div class="col-8 col-lg-6">
+                <div class="col-xl-6 col-9">
                     <div class="card border-0" style="background-color: inherit;">
                         <div class="row no-gutters">
                             <div class="col-md-4 align-self-center">
-                                <img src="{% static 'images/logo4.png' %}" class="card-img" alt="RSRG Logo 4">
+                                <div class="d-flex justify-content-center">
+                                    <i class="fas fa-user-circle fa-5x text-white-50"></i>
+                                </div>
                                 <div class="d-flex py-2 justify-content-center">
                                     <a href="{% url 'accounts:settings' %}" class="btn btn-sm btn-jumbotron"
                                        role="button"
-                                       aria-pressed="true">Edit Profile</a>
+                                       aria-pressed="true">
+                                       <i class="fas fa-user-cog" aria-hidden="true"></i>
+                                       <span class="d-none d-sm-inline-flex">&nbsp; </span>
+                                       Edit Profile
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
                                     <h2 class="card-title m-0 text-white text-uppercase font-weight-bolder">{{ name }}</h2>
                                     <p class="card-text m-0 text-white">
-                                        <i class="far fa-envelope mr-2"></i>
-                                        {{ user.email }}
+                                        <i class="far fa-envelope me-2 text-white-50"></i>
+                                        <span>{{ user.email }}</span>
                                     </p>
                                     <p class="card-text m-0 text-white">
-                                        <i class="far fa-calendar-alt mr-2"></i>
-                                        {{ user.date_joined | date:"F j, Y" }}
-                                        <span class="badge badge-info ml-2">Date Joined</span>
+                                        <i class="far fa-calendar-alt me-2 text-white-50"></i>
+                                        {{ user.date_joined | date:"m/d/Y P" }}
+                                        <span class="badge bg-info rounded-3 ms-2">Date Joined</span>
                                     </p>
                                     <p class="card-text m-0 text-white">
-                                        <i class="far fa-calendar-alt mr-2"></i>
-                                        {{ user.last_login }}
-                                        <span class="badge badge-info ml-2">Last Logged In</span>
+                                        <i class="far fa-calendar-alt me-2 text-white-50"></i>
+                                        {{ user.last_login | date:"m/d/Y P" }}
+                                        <span class="badge bg-success rounded-3 ms-2">Last Logged In</span>
                                     </p>
                                 </div>
                             </div>
@@ -45,23 +52,13 @@
                     </div>
                     <h2></h2>
                 </div>
-                <div class="col-4 col-lg-6 align-self-center">
+                <div class="col-xl-6 col-3 align-self-center">
                     <div class="card border-0 float-right" style="background-color: inherit;">
                         <p class="card-text m-0 text-white">
-                            <span class="text-white-50">Lessons Completed:</span> 0
+                            <span class="text-white-50">Assignments In Progress:</span> {{ currentAssignments|length }}
                         </p>
                         <p class="card-text m-0 text-white">
-                            <span class="text-white-50">Sets Completed:</span>
-                            {% if user.is_authenticated %}
-                                {% if user.userinformation.completed_sets == None %}
-                                    0
-                                {% else %}
-                                    1
-                                {% endif %}
-                            {% endif %}
-                        </p>
-                        <p class="card-text m-0 text-white">
-                            <span class="text-white-50">Current Daily Streak:</span> 0
+                            <span class="text-white-50">Assignments Completed:</span> {{ completedAssignments|length }}
                         </p>
                     </div>
                 </div>
@@ -73,96 +70,65 @@
             <div class="col-12">
                 <nav>
                     <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                        <a class="nav-item nav-link active" id="nav-courses-tab" data-toggle="tab"
-                           href="#nav-courses"
-                           role="tab" aria-controls="nav-courses" aria-selected="true">Courses</a>
-                        <a class="nav-item nav-link" id="nav-badges-tab" data-toggle="tab" href="#nav-badges"
-                           role="tab" aria-controls="nav-badges" aria-selected="false">Badges</a>
+                        <button class="nav-item nav-link active" id="nav-courses-tab" data-bs-toggle="tab" data-bs-target="#nav-courses" 
+                            type="button" role="tab" aria-controls="nav-courses" aria-selected="true">Courses</button>
+                        <button class="nav-item nav-link" id="nav-badges-tab" data-bs-toggle="tab" data-bs-target="#nav-badges" 
+                            type="button" role="tab" aria-controls="nav-badges" aria-selected="false">Badges</button>
                     </div>
                 </nav>
                 <div class="tab-content py-3 px-3" id="nav-tabContent">
-                    <div class="tab-pane fade show active" id="nav-courses" role="tabpanel"
-                         aria-labelledby="nav-courses-tab">
-                        <div class="page-section-heading my-3">
-                            <h3>Manage Classes</h3>
-                        </div>
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <a href="{% url 'tutor:classes' %}" class="btn select-btn btn-block" role="button" aria-pressed="true">Go To My Classes</a>
-                            </div>
-                        </div>
+                    <div class="tab-pane fade show active" id="nav-courses" role="tabpanel" aria-labelledby="nav-courses-tab">
                         <div class="page-section-heading my-3">
                             <h3>Assignments In Progress</h3>
                         </div>
-                            {% for assignment in currentAssignments %}
-                                <div class="my-4">
-                                    <div class="card" style="background-color: inherit;">
-                                        <div class="row no-gutters">
-                                            <div class="col-md-4">
-                                                <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
-                                            </div>
-                                            <div class="col-md-8 align-self-center">
-                                                <div class="card-body">
-                                                    <h5 class="card-title">{{assignment.main_set.set_name}} <span class="badge recommended">In Progress</span></h5>
-                                                    <p class="card-text">{{assignment.main_set.set_description}}</p>
-                                                    <p class="card-text"><small class="text-muted">Last attempted: {{ user.last_login }}</small></p>
-                                                    <form action="{% url 'tutor:tutor' assignment.id %}" method="GET">
-                                                        {% csrf_token %}
-                                                        <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
-                                                            Continue Training
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                        {% if currentAssignments|length == 0 %}
+                            <div class="card mb-3" style="background-color: inherit;">
+                                <div class="card-body">
+                                    <h4 class="card-title mb-3 text-secondary">No Assignments In Progress</h4>
+                                    <a href="{% url 'tutor:classes' %}" class="btn btn-success btn-block" role="button" aria-pressed="true">Go To My Classes</a>
                                 </div>
+                            </div>
+                        {% else %}
+                            {% for assignment in currentAssignments %}
+                            <div class="card mb-3" style="background-color: inherit;">
+                                <div class="card-body">
+                                    <h4 class="card-title mb-3 text-secondary">{{assignment.main_set.set_name}} <span class="badge bg-info rounded-3 ms-2">In Progress</span></h4>
+                                    <p class="card-text">{{assignment.main_set.set_description}}</p>
+                                    <form action="{% url 'tutor:tutor' assignment.id %}" method="GET">
+                                        {% csrf_token %}
+                                        <button class="btn btn-success btn-block" type="submit" aria-pressed="true">
+                                            Continue Training
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                             {% endfor %}
+                        {% endif %}
+                        {% if completedAssignments|length > 1 %}
                         <div class="page-section-heading my-3">
                             <h3>Completed Assignments</h3>
                         </div>
-                        {% if user.is_authenticated %}
-                                {% for assignment in completedAssignments %}
-                                    <div class="my-4">
-                                        <div class="card" style="background-color: inherit;">
-                                            <div class="row no-gutters">
-                                                <div class="col-md-4">
-                                                    <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
-                                                </div>
-                                                <div class="col-md-8 align-self-center">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title">{{assignment.main_set.set_name}} <span class="badge recommended">Completed</span></h5>
-                                                        <h5 class="card-title"><span class="badge badge-success">Author ID: 869134018</span></h5>
-                                                        <p class="card-text">{{assignment.main_set.set_description}}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endfor %}
+                            {% for assignment in completedAssignments %}
+                            <div class="card mb-3" style="background-color: inherit;">
+                                <div class="card-body">
+                                    <h4 class="card-title mb-3 text-secondary">{{assignment.main_set.set_name}} <span class="badge bg-info rounded-3 ms-2">Completed</span></h4>
+                                    <p class="card-text">{{assignment.main_set.set_description}}</p>
+                                </div>
+                            </div>
+                            {% endfor %}
                         {% endif %}
                     </div>
                     <div class="tab-pane fade" id="nav-badges" role="tabpanel" aria-labelledby="nav-badges-tab">
-                        <div class="card-deck">
-                            {% if user.is_authenticated %}
-                                {% if user.userinformation.completed_sets == None %}
-
-                                {% else %}
-                                    <div class="my-4">
-                                        <div class="card" style="background-color: inherit;">
-                                            <div class="row no-gutters">
-                                                <div class="col-md-4">
-                                                    <img src="{% static 'images/begin.png' %}" class="card-img" alt="Lesson Logo">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                {% endif %}
-                            {% endif %}
+                        <div class="page-section-heading my-3">
+                            <h3>Badges Earned</h3>
                         </div>
+                        <h5>COMING SOON!</h5>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Page Footer -->
+    {% include "core/footer.html" %}
 {% endblock %}
