@@ -22,10 +22,13 @@
     color: white;
 }
 
+.spacing {
+    display: flex;
+}
+
 .parsons_container {
     display: flex;
     position: relative;
-    column-gap: 30%;
     width: 75%;
     color: white;
 }
@@ -62,7 +65,7 @@
 }
 
 #sortable { width: 35%;
-            left: 10%;
+            left: 0%;
             position: relative;
 }
 
@@ -87,13 +90,15 @@
 
 ul.output {
     background-color: rgba(48, 52, 63, 0.9);
+    top: 0%;
+    postion: relative;
 }
 
 .sortable-code li {
     -moz-border-radius:10px;
     -webkit-border-radius:10px;
     border-radius: 10px;
-    background-color:#8a8787;
+    background-color:rgba(48, 52, 63, 0.9);
     padding:10px;
     margin-top: 5px;
     white-space: nowrap;

@@ -134,7 +134,7 @@ def split_lesson_code(current_lesson):
     i = 0
     while i < len(code) and not finishedSetCode:
         #Get last line of code that is supposed to be set
-        if 'Confirm' not in code[i]:
+        if 'Confirm' not in code[i] and 'end' not in code[i]:
             if code[i] != r'\r':
                 firstCodeEndPointInd = i
             
@@ -144,10 +144,17 @@ def split_lesson_code(current_lesson):
 
     i = 0
     while i < len(code):
-        #Find last confirm
-        if 'Confirm' in code[i]:
-            lastConfirm = i
-        i += 1
+        if not current_lesson.multi_confirms:
+            #Find first confirm
+            if 'Confirm' in code[i] or 'end' in code[i]:
+                endPointInd = i
+                break
+            i += 1
+        else:
+            #Find last confirm
+            if 'Confirm' in code[i]:
+                endPointInd = i
+            i += 1
 
     setCode = ""
     sortableCode = []
@@ -157,7 +164,7 @@ def split_lesson_code(current_lesson):
     firstCodeEndPoint = current_lesson.code.lesson_code.find(code[firstCodeEndPointInd])
     beginSet = current_lesson.code.lesson_code[0:firstCodeEndPoint + len(code[firstCodeEndPointInd]) + 2]
 
-    endPoint = current_lesson.code.lesson_code.find(code[lastConfirm])
+    endPoint = current_lesson.code.lesson_code.rfind(code[endPointInd])
     endSet = current_lesson.code.lesson_code[endPoint: len(current_lesson.code.lesson_code)]
 
     #Get sortable lines of code
@@ -213,10 +220,17 @@ def split_lesson_code(current_lesson):
         
         i = firstCodeEndPointInd
         parsonsContainer.append(((i - 1) * 3) + 1)
-        while i < len(code):
-            if 'Confirm' in code[i] and 'Confirm' not in code[i - 1]:
+        while i < endPointInd:
+            if 'Confirm' in code[i]:
                 confirmInd = current_lesson.code.lesson_code.find(code[i])
                 confirm = current_lesson.code.lesson_code[confirmInd: confirmInd + len(code[i])]
+
+                if 'Confirm' in code[i + 1] and i + 1 != endPointInd:
+                    confirmInd = current_lesson.code.lesson_code.find(code[i + 1])
+                    confirm += r"\n"
+                    confirm += current_lesson.code.lesson_code[confirmInd: confirmInd + len(code[i + 1])]
+                    i += 1
+                    
                 confirm = confirm.replace(r'\r', "")
                 confirms.append(confirm)
 

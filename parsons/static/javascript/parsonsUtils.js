@@ -1,5 +1,4 @@
 function getParsonsFeedback (event, beginSet, endSet, parson, comments) {
-    console.log("Getting feedback");
     let answeredQuestion = true;
 
     if (hasFR) {
@@ -182,6 +181,7 @@ function getMulitConfirmFeedback (event, beginSet, endSet, confirms, comments) {
 
         studentCode = studentCode.split("&gt;").join(">");
         studentCode = studentCode.split("&lt;").join("<");
+        studentCode = studentCode.replaceAll(/\\n/g, "");
 
         console.log(studentCode);
 

@@ -42,7 +42,7 @@
      },
      en: {
        trash_label: 'Drag from here',
-       solution_label: 'Construct your solution here',
+       solution_label: ' ',
        order: function() {
          return "Code fragments in your program are wrong, or in wrong order. This can be fixed by moving, removing, or replacing highlighted fragments.";},
        lines_missing: function() {

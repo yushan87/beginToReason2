@@ -56,6 +56,11 @@
 
     <script type="text/javascript">
         let confirms = "{{ confirms }}";
+        
+
+        console.log("{{beginSetCode}}");
+        console.log("{{endSetCode}}");
+        console.log("{{confirms}}");
 
         var initial = "";
         {% for line in sortCode %}
@@ -83,6 +88,13 @@
                 $("#newInstanceLink.btn.btn-danger.btn-inline").click(function(event){
                     event.preventDefault();
                     parson.shuffleLines();
+
+                    let listItems = document.getElementsByTagName("li");
+                    for (var i = 0; i < listItems.length; ++i) {
+                        if (listItems[i].id.includes("codeline")) {
+                            colorCodeSortable(listItems[i].id);
+                        }
+                    }
                 });
                 $("#feedbackLink.btn.btn-success").click(function(event){
                     getParsonsFeedback(event, "{{ beginSetCode }}", "{{ endSetCode }}",parson, "{{ comments }}");
@@ -104,6 +116,12 @@
                 if (listItems[i].id == "codeline") {
                     listItems[i].id = "codeline" + codelineInd;
                     codelineInd++;
+                }
+            }
+
+            for (var i = 0; i < listItems.length; ++i) {
+                if (listItems[i].id.includes("codeline")) {
+                    colorCodeSortable(listItems[i].id);
                 }
             }
 
@@ -135,6 +153,14 @@
                 }
             }
 
+            let spacings = document.getElementsByClassName("spacing");
+            for (var i = 0; i < spacings.length; ++i) {
+                spacings[i].id = "spacing" + i;
+                let parsonsHTML = document.getElementById(spacings[i].id).innerHTML;
+                document.getElementById(spacings[i].id).innerHTML = "";
+                document.getElementById(spacings[i].id).innerHTML = parsonsSpaces + parsonsHTML;
+            }
+
             let leftWidth = document.getElementById("tutorialCol").offsetWidth;
             let rightWidth = document.getElementById("right-col").offsetWidth;
             let width = window.innerWidth - leftWidth - rightWidth - 10;
@@ -146,6 +172,12 @@
             let heightString = "height:" + height + "px";
             let styleString = widthString + ";" + heightString;
             document.getElementById("codeContainer").setAttribute("style", styleString);
+
+            {% if not multiConfirms %}
+                let parsonsHeight = document.getElementById("sortableTrash").offsetHeight;
+                let parsonString = "height:" + parsonsHeight + "px";
+                document.getElementById("parsons_container").setAttribute("style", parsonString);
+            {% endif %}
         });
 
 
@@ -174,10 +206,12 @@
         function drop(event) {
             event.preventDefault();
             var data = event.dataTransfer.getData("text");
+            console.log(event.target);
+
 
             //Clear placeholders
             let listElements = document.getElementById(event.target.id).getElementsByTagName('li');
-            if (listElements[0].id.includes("placeholder")) {
+            if (listElements.length != 0 && listElements[0].id.includes("placeholder")) {
                 while (event.target.firstChild) {
                     event.target.removeChild(event.target.firstChild);
                 }
@@ -191,10 +225,11 @@
             }
         }
 
-        let keywords = ["Facility", "uses", "Operation", "Var", "Remember", "Confirm", "end", "If", "then", "do", "changing", "decreasing", "increasing", "While", "For", "ProcedureVar"];
-        let operations = ["<", ">", "<=",">=", "/=", "=", "+", "-", "*", "/", ":="];
+        let keywords = ["Facility", "uses", "Operation", "Var", "Remember", "Confirm", "end", "If", "then", "else", "do", "changing", "decreasing", "increasing", "While", "For", "ProcedureVar"];
+        let operations = ["<", "&gt;", ">", "&lt;" , "<=",">=", "&gt;=", "&lt;=", "/=", "=", "+", "-", "*", "/", ":=", ":", "="];
 
         let lineNumber = 1;
+        let parsonsSpaces = "";
 
         function colorCodeText(divID) {
             let code = document.getElementById(divID).textContent;
@@ -210,8 +245,23 @@
             for (var i = 0; i < lines.length; ++i) {
                 let words = lines[i].split(" ");
                 for (var j = 0; j < words.length; j++) {
+                    console.log(words[j]);
+
+                    if (words[j].includes("then")) {
+                        document.getElementById(divID).innerHTML += "<span class=\"keyword\"> " + words[j] + "S</span>";
+                        continue;
+                    }
+
+                    if (words[j].trim() == "<br/>") {
+                        continue;
+                    }
                     let breakCount = words[j].split("<br/>").length - 1;
                     words[j] = words[j].replaceAll("<br/>", "");
+
+                    if (lineNumber >= 10) {
+                        words[j] = words[j].replace("&nbsp", "");
+                    }
+
                     for (var breaks = 0; breaks < breakCount; ++breaks) {
                         document.getElementById(divID).innerHTML += "<span class=\"text\"><br/>" + lineNumber + "</span>";
                         ++lineNumber;
@@ -234,7 +284,7 @@
                     }
 
                     else if (operations.includes(words[j].replaceAll("<br/>", "").replaceAll("&nbsp", ''))) {
-                        document.getElementById(divID).innerHTML += "<span class=\"operation\"> " + words[j] + "</span";
+                        document.getElementById(divID).innerHTML += "<span class=\"operation\"> " + words[j] + " </span";
                     }
 
                     else if (/\d/.test(words[j])) {
@@ -253,10 +303,73 @@
                         document.getElementById(divID).innerHTML += "<span class=\"text\"> " + words[j] + "</span>";
                     }
                 }
-                if (lines[i] != "" && !lines[i].includes("do") && lines[i].trim() != "<br/>" && lines[i].trim().length != 0) {
+                if (divID == "firstSetCode") {
+                    let numSpaces = lines[i].split("&nbsp").length - 1;
+                    if (numSpaces != 0) {
+                        parsonsSpaces = "";
+                        for (var spaces = 0; spaces < numSpaces; ++spaces) {
+                            parsonsSpaces += "&nbsp";
+                        }
+                    }
+                }
+
+                if (lines[i] != "" && !lines[i].includes("do") && !lines[i].includes("then") && lines[i].trim() != "<br/>" && lines[i].trim().length != 0) {
                     document.getElementById(divID).innerHTML += "<span class=\"text\">;</span>";
                 }
             }
+        }
+
+        function colorCodeSortable(listID) {
+            let codeLine = document.getElementById(listID).innerHTML;
+            document.getElementById(listID).innerHTML = "";
+            {% if multiConfirms %}
+            codeLine = codeLine.trim().split(" ");
+            for (var i = 0; i < codeLine.length; ++i) {
+                if (keywords.includes(codeLine[i].trim())) {
+                    document.getElementById(listID).innerHTML += "<span class=\"keyword\">" + codeLine[i] + "</span>";
+                }
+
+                else {
+                    for (var j = 0; j < codeLine[i].length; ++j) {
+                        if (operations.includes(codeLine[i][j])) {
+                            document.getElementById(listID).innerHTML += "<span class=\"operation\">" + codeLine[i][j] + "</span>";
+                        }
+
+                        else if (/\d/.test(codeLine[i][j])) {
+                            document.getElementById(listID).innerHTML += "<span class=\"number\">" + codeLine[i][j] + "</span>";
+                        }
+
+                        else {
+                            document.getElementById(listID).innerHTML += "<span class=\"text\">" + codeLine[i][j] + "</span>";
+                        }
+                    }
+                }
+                
+                document.getElementById(listID).innerHTML += "<span class=\"text\"> </span>";
+            }
+
+            {% else %}
+            codeLine = codeLine.split("</span>");
+            for (var i = 0; i < codeLine.length; ++i) {
+                codeLine[i] = codeLine[i].substring(codeLine[i].indexOf(">") + 1, codeLine[i].indexOf(">") + codeLine.length + 5);
+                if (keywords.includes(codeLine[i].trim())) {
+                    document.getElementById(listID).innerHTML += "<span class=\"keyword\">" + codeLine[i] + "</span>";
+                }
+
+                else if (operations.includes(codeLine[i].trim())) {
+                    document.getElementById(listID).innerHTML += "<span class=\"operation\">" + codeLine[i] + "</span>";
+                }
+
+                else if (/\d/.test(codeLine[i])) {
+                    document.getElementById(listID).innerHTML += "<span class=\"number\">" + codeLine[i] + "</span>";
+                }
+
+                else {
+                    document.getElementById(listID).innerHTML += "<span class=\"text\">" + codeLine[i] + "</span>";
+                }
+            }
+
+            {% endif %}
         }
     </script>
 {% endblock %}
@@ -358,11 +471,13 @@
                                             <div id="sortable_container">
                                             {% for confirm in confirms %}
                                                 <div id="sortable" class="sortable-code">
-                                                    <ul id="ul-sortable" class="ui-sortable output" ondrop="drop(event)" ondragover="allowDrop(event)">
-                                                        <li id="placeholder" style="visibility: hidden;">
-                                                            Placeholder
-                                                        </li>
-                                                    </ul>
+                                                    <div id="spacing" class="spacing">
+                                                        <ul id="ul-sortable" class="ui-sortable output" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                                            <li id="placeholder" style="visibility: hidden;">
+                                                                Placeholder
+                                                            </li>
+                                                        </ul>
+                                                    </div>
                                                 </div>
                                                 <div id="confirm">
                                                     {{ confirm | safe }}
@@ -371,7 +486,7 @@
                                             </div>
 
                                         <div id="sortableTrash" class="sortable-code">
-                                            <ul id="ul-sortableTrash" class="ui-sortable">
+                                            <ul id="ul-sortableTrash" class="ui-sortable output" ondrop="drop(event)" ondragover="allowDrop(event)">
                                                 {% for line in sortCode %}
                                                     <li id="codeline" draggable="true" ondragstart="drag(event)">
                                                         {{line}}
@@ -381,6 +496,7 @@
                                         </div>
 
                                         {% else %}
+                                            <div id="spacing" class="spacing"></div>
                                             <div id="sortable" class="sortable-code"></div>
                                             <div id="sortableTrash" class="sortable-code"></div>
                                         {% endif %}
