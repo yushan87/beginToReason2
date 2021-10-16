@@ -26,11 +26,14 @@
     display: flex;
 }
 
+.placeholder {
+    visibility: hidden;
+}
+
 .parsons_container {
     display: flex;
     position: relative;
     width: 75%;
-    color: white;
 }
 
 .codeContainer {
@@ -73,11 +76,9 @@
     font-size: 80%;
     font-family: monospace;
     list-style: none;
-    // background-color: #efefff;
     padding-bottom: 10px;
     padding-left: 0;
     margin-left: 0;
-    // border: 1px solid #efefff;
 }
 
 .sortable-code ul:empty {
@@ -91,7 +92,6 @@
 ul.output {
     background-color: rgba(48, 52, 63, 0.9);
     top: 0%;
-    postion: relative;
 }
 
 .sortable-code li {

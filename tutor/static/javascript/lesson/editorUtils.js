@@ -492,6 +492,8 @@ $("#changeMode").click(function () {
 
     // Unlock editor for further user edits
     unlock();
+
+    changeTheme();
 });
 
 
@@ -500,9 +502,11 @@ $("#changeMode").click(function () {
  */
 $("#fontIncrease").click(function () {
     // Increase font size
-    let currentFontSize = $("#editor").css("font-size");
-    currentFontSize = parseFloat(currentFontSize) * 1.2;
-    $("#editor").css("font-size", currentFontSize);
+    if (!is_parsons) {
+        let currentFontSize = $("#editor").css("font-size");
+        currentFontSize = parseFloat(currentFontSize) * 1.2;
+        $("#editor").css("font-size", currentFontSize);
+    }
 
     return false;
 });
@@ -559,9 +563,11 @@ $("#closeOverlay").click(function () {
  */
 $("#fontDecrease").click(function () {
     // Decrease font size
-    let currentFontSize = $("#editor").css("font-size");
-    currentFontSize = parseFloat(currentFontSize) / 1.2;
-    $("#editor").css("font-size", currentFontSize);
+    if (!is_parsons) {
+        let currentFontSize = $("#editor").css("font-size");
+        currentFontSize = parseFloat(currentFontSize) / 1.2;
+        $("#editor").css("font-size", currentFontSize);
+    }
 
     return false;
 });
@@ -710,7 +716,7 @@ $.postJSON = (url, data, callback) => {
             }
 
             if (!is_parsons) {
-                    let lines = response.lines
+                let lines = response.lines
                 var confirmLine
                 displayPast = response.status != "success"
                 if (displayPast && allAnswers != '') {
@@ -740,6 +746,10 @@ $.postJSON = (url, data, callback) => {
                     }
                 }
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
+            }
+            else {
+            document.getElementById("answersCard").removeAttribute("hidden");
+            document.getElementById("pastAnswers").innerHTML = previousAnswers;
             }
 
             if (response.unlock_next){
