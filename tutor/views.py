@@ -158,7 +158,7 @@ def tutor(request, assignmentID):
             current_lesson.code.lesson_code = clean_variable(current_lesson.code.lesson_code)
 
             # Case 2aa: if questions if MC or Both
-            if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
+            if current_lesson.reason.reasoning_type in ('MC', 'Both'):
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
                                'assignment': assignment,
