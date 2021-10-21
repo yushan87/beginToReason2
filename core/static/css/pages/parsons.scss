@@ -37,13 +37,13 @@
 }
 
 .codeContainer {
-    display: column;
-    z-index: 4;
     position: absolute;
+    z-index: 4;
+    display: column;
     color: #fff;
-    background-color: #161616;
     overflow: auto;
-    font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", monospace;
+    background-color: #161616;
+    font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, monospace;
     font-size: 19px;
     font-style: normal;
 }
@@ -55,16 +55,16 @@
 
 #text_container {
     display: flex;
-    flex-direction: column
+    flex-direction: column;
 }
 
 .sortable-code {
     padding-left: 0;
-    margin-left: 2%;
     position: relative;
+    margin-left: 2%;
     width: 30%;
-    color: #fff;
     left: 35%;
+    color: #fff;
 }
 
 #sortableTrash {
@@ -80,12 +80,12 @@
 }
 
 .sortable-code ul {
-    font-family: monospace;
     padding-bottom: 10px;
-    font-size: 80%;
     padding-left: 0;
-    list-style: none;
+    font-family: monospace;
+    font-size: 80%;
     margin-left: 0;
+    list-style: none;
 }
 
 .sortable-code ul:empty {
@@ -107,11 +107,11 @@ ul.output {
     padding: 10px;
     margin-top: 5px;
     background-color: rgba(48, 52, 63, 0.9);
+    overflow: hidden;
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
-    overflow: hidden;
-    border-radius: 10px;
     white-space: nowrap;
+    border-radius: 10px;
     cursor: move;
 }
 
@@ -155,10 +155,10 @@ li.correctPosition,
     display: block;
     padding: 5px;
     font-size: 12px;
-    color: #fff;
     margin: 5px;
-    white-space: pre;
+    color: #fff;
     line-height: 15px;
+    white-space: pre;
     background-color: #555;
 }
 
