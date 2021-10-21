@@ -40,7 +40,7 @@
     display: column;
     z-index: 4;
     position: absolute;
-    color: white;
+    color: #fff;
     background-color: #161616;
     overflow: auto;
     font-family: "Monaco", "Menlo", "Ubuntu Mono", "Consolas", monospace;
@@ -49,14 +49,19 @@
 }
 
 .sortable_container {
-    display: flex;
+    display: column;
     flex-direction: column;
+}
+
+#text_container {
+    display: flex;
+    flex-direction: column
 }
 
 .sortable-code {
     padding-left: 0px;
     margin-left: 2%; 
-    color: white;
+    color: #fff;
     width: 30%;
     position: relative;
     left: 35%;
@@ -110,20 +115,12 @@ ul.output {
     overflow: visible;
 }
 
-ul.incorrect {
-    border: 1px solid red;
-}
-
-ul.correct {
-    background-color: #efffef;
-}
-
 li.incorrectIndent {
-    border-left: 10px solid red;
+    border-left: 10px solid #f00;
 }
 
 li.correctIndent {
-    border-left: 10px solid green;
+    //border-left: 10px solid rgb(253, 253, 253);
 }
 
 li.incorrectPosition, .testcase.fail, .testcase.error {
@@ -135,38 +132,47 @@ li.correctPosition, .testcase.pass {
 }
 
 .testcase { padding: 10px; margin-bottom: 10px;}
+
 .testcase .msg { font-weight: bold; }
-.testcase .error { color: red;}
+
+.testcase .error { color: #f00;}
+
 .testcase .feedback { font-weight: bolder;}
+
 .testcase .fail .expected, .testcase .fail .actual {
-    color: red; 
+    color: #f00; 
     font-weight: bolder;
 }
+
 .testcase .output { 
     display: block; 
     white-space: pre; 
-    background-color: #555555;
-    color: white;
     font-size: 12px;
-    line-height: 15px;
-    margin: 5px;
+    color: #fff;
+    background-color: #555;
     padding: 5px;
+    margin: 5px;
+    line-height: 15px;
+
 }
+
 /** For styling the toggleable elements */
 .jsparson-toggle {
-    padding: 0 15px;
     display: inline-block;
-    border: 1px dashed black;
+    padding: 0 15px;
     z-index: 500;
-    cursor: pointer;
+    border: 1px dashed #000;
     min-width: 10px;
     min-height: 15px;
+    cursor: pointer;
 }
+
 .jsparson-toggle:empty {
-    border-color: red;
+    border-color: #f00;
 }
-.jsparson-toggle:empty:before {
-    content: "??";
+
+.jsparson-toggle:empty::before {
     display: block;
-    color: red;
+    content: "??";
+    color: #f00;
 }

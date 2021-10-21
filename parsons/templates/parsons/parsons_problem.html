@@ -57,6 +57,16 @@
     <script type="text/javascript">
         let confirms = "{{ confirms }}";
         let sortCode = "{{ sortCode }}";
+        let beginCode = "{{ beginSetCode }}";
+        let endCode = "{{ endSetCode }}";
+        let comments = "{{ comments }}";
+        let parsonsLabel = ""
+
+        {% if hasDistractors %}
+            parsonsLabel = "Drag some from here";
+        {% else %}
+            parsonsLabel = "Drag from here";
+        {% endif %}
 
         var initial = "";
         {% for line in sortCode %}
@@ -77,7 +87,12 @@
                     'sortableId': 'sortable',
                     'trashId': 'sortableTrash',
                     'max_wrong_lines': 1,
-                    'feedback_cb' : displayErrors
+                    'feedback_cb' : displayErrors,
+                    {% if hasDistractors %}
+                        'lang': 'di',
+                    {% else %}
+                        'lang': 'en',
+                    {% endif %}
                 });
                 parson.init(initial);
                 parson.shuffleLines();
@@ -290,6 +305,7 @@
                                             </div>
 
                                         <div id="sortableTrash" class="sortable-code">
+                                            <p><script>document.write(parsonsLabel)</script></p>
                                             <ul id="ul-sortableTrash" class="ui-sortable output" ondrop="drop(event)" ondragover="allowDrop(event)">
                                                 {% for line in sortCode %}
                                                     <li id="codeline" draggable="true" ondragstart="drag(event)">
@@ -378,7 +394,7 @@
                                 </button>
                                 {% if multiConfirms %}
                                     <button id="feedbackLink" class="btn btn-success" type="button"
-                                            data-toggle="tooltip" data-placement="top" title="Feedback Link" onclick="getMulitConfirmFeedback(event, '{{ beginSetCode }}', '{{ endSetCode }}', confirms, '{{ comments}}')">
+                                            data-toggle="tooltip" data-placement="top" title="Feedback Link" onclick="getMulitConfirmFeedback(event, beginCode, endCode, confirms, comments)">
                                 {% else %}
                                     <button id="feedbackLink" class="btn btn-success" type="button"
                                             data-toggle="tooltip" data-placement="top" title="Feedback Link">

@@ -1,3 +1,5 @@
+import random
+
 from django.http import HttpResponse
 from django.shortcuts import render
 
@@ -40,7 +42,6 @@ def parsons_problem(request, assignmentID):
                 return render(request, 'parsons/parsons_problem.html',
                               {'lesson': current_lesson,
                                'assignment': assignment,
-                               'lesson_code': lesson_code['set'],
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'reason': current_lesson.reason.reasoning_question,
@@ -61,13 +62,13 @@ def parsons_problem(request, assignmentID):
                                'comments': lesson_code['comments'],
                                'confirms': lesson_code['confirms'],
                                'multiConfirms': current_lesson.multi_confirms,
-                               'isParsons': current_lesson.is_parsons})
+                               'isParsons': current_lesson.is_parsons,
+                               'hasDistractors': current_lesson.has_distractors})
             # Case 2ab: if question is of type Text
             elif current_lesson.reason.reasoning_type == 'Text':
                 return render(request, 'parsons/parsons_problem.html',
                               {'lesson': current_lesson,
                                'assignment': assignment,
-                               'lesson_code': lesson_code['set'],
                                'concept': current_lesson.lesson_concept.all(),
                                'referenceSet': current_lesson.reference_set.all(),
                                'reason': current_lesson.reason.reasoning_question,
@@ -87,13 +88,13 @@ def parsons_problem(request, assignmentID):
                                'comments': lesson_code['comments'],
                                'confirms': lesson_code['confirms'],
                                'multiConfirms': current_lesson.multi_confirms,
-                               'isParsons': current_lesson.is_parsons})
+                               'isParsons': current_lesson.is_parsons,
+                               'hasDistractors': current_lesson.has_distractors})
 
             # Case 2ac: if question is of type none
             return render(request, 'parsons/parsons_problem.html',
                           {'lesson': current_lesson,
                            'assignment': assignment,
-                           'lesson_code': lesson_code['set'],
                            'concept': current_lesson.lesson_concept.all(),
                            'referenceSet': current_lesson.reference_set.all(),
                            'setLength': assignment.main_set.length(),
@@ -112,7 +113,8 @@ def parsons_problem(request, assignmentID):
                            'comments': lesson_code['comments'],
                            'confirms': lesson_code['confirms'],
                            'multiConfirms': current_lesson.multi_confirms,
-                           'isParsons': current_lesson.is_parsons})
+                           'isParsons': current_lesson.is_parsons,
+                           'hasDistractors': current_lesson.has_distractors})
     return redirect("accounts:profile")
 
 
@@ -129,21 +131,21 @@ def split_lesson_code(current_lesson):
         if 'Confirm' not in code[i] and 'end' not in code[i]:
             if code[i] != r'\r':
                 first_code_end_point_ind = i
-            else:
-                finished_set_code = True
+        else:
+            finished_set_code = True
         i += 1
 
     i = 0
     while i < len(code):
         if not current_lesson.multi_confirms:
             #Find first confirm
-            if 'Confirm' in code[i] or 'end' in code[i]:
+            if 'Confirm' in code[i] or code[i].replace(r'\r', "").replace(r'\n', "").strip() == "end;":
                 end_point_ind = i
                 break
             i += 1
         else:
             #Find last confirm
-            if 'Confirm' in code[i]:
+            if 'Confirm' in code[i] or code[i].replace(r'\r', "").replace(r'\n', "").strip() == "end;":
                 end_point_ind = i
             i += 1
 
@@ -154,7 +156,7 @@ def split_lesson_code(current_lesson):
     begin_set = current_lesson.code.lesson_code[0:first_code_end_point + len(code[first_code_end_point_ind]) + 2]
 
     end_point = current_lesson.code.lesson_code.rfind(code[end_point_ind])
-    end_set = current_lesson.code.lesson_code[end_point: len(current_lesson.code.lesson_code)]
+    end_set = current_lesson.code.lesson_code[end_point: end_point + len(current_lesson.code.lesson_code)]
 
     #Get sortable lines of code
     loop_index = -1
@@ -186,14 +188,26 @@ def split_lesson_code(current_lesson):
                 sortable_code.append(sortables_lines[i])
         i += 1
     
+    confirm = ""
     if current_lesson.multi_confirms:
-        i = first_code_end_point_ind
+        i = first_code_end_point_ind + 1
         while i < end_point_ind:
+            if len(code[i].replace(r'\r', "").replace(r'\n', "").strip()) != 0 and 'Confirm' not in code[i]:
+                confirm_ind = current_lesson.code.lesson_code.find(code[i])
+                confirm += current_lesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i])]
+                confirm += r"\n"
+
             if 'Confirm' in code[i]:
                 confirm_ind = current_lesson.code.lesson_code.find(code[i])
-                confirm = current_lesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i])]
+                confirm += current_lesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i])]
 
-                if 'Confirm' in code[i + 1] and i + 1 != end_point_ind:
+                if 'Confirm' in code[i + 1]:
+                    confirm_ind = current_lesson.code.lesson_code.find(code[i + 1])
+                    confirm += r"\n"
+                    confirm += current_lesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i + 1])]
+                    i += 1
+
+                elif len(code[i + 1].replace(r'\r', "").replace(r'\n', "").strip()) != 0 and i + 1 != end_point_ind:
                     confirm_ind = current_lesson.code.lesson_code.find(code[i + 1])
                     confirm += r"\n"
                     confirm += current_lesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i + 1])]
@@ -201,6 +215,8 @@ def split_lesson_code(current_lesson):
                     
                 confirm = confirm.replace(r'\r', "")
                 confirms.append(confirm)
+                confirm = ""
+
             i += 1
 
     begin_set = begin_set.replace("    ", r"\t")
@@ -209,6 +225,8 @@ def split_lesson_code(current_lesson):
     while i < len(confirms):
         confirms[i] = confirms[i].replace("    ", r"\t")
         i += 1
+
+    random.shuffle(sortable_code)
 
     lesson_code = {'begin_set': begin_set,
                   'end_set': end_set,

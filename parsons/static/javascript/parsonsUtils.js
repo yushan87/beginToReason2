@@ -75,7 +75,8 @@ function getParsonsFeedback (event, beginSet, endSet, parson, comments) {
         answers.forEach((element, index) => {
             console.log(index);
             if (answers[index].includes("While") || answers[index].includes("For")) {
-                answers.splice(index + 1, 0, commentArr[commentInd]);
+                doInd = answers[index].indexOf(" do");
+                answers[index] = answers[index].substring(0, doInd) + commentArr[commentInd] + answers[index].substring(doInd, answers[index].len);
                 commentInd++;
             }
         })
@@ -182,8 +183,12 @@ function getMulitConfirmFeedback (event, beginSet, endSet, confirms, comments) {
             for (var j = 0; j < sortables[i].childElementCount; ++j) {
                 if (sortables[i].childNodes[j].innerText != undefined) {
                     if (sortables[i].childNodes[j].innerText.includes("While") || sortables[i].childNodes[j].innerText.includes("For")) {
-                        answers[i] += commentArr[commentInd];
-                        commnetInd++;
+                        doInd = sortables[i].childNodes[j].innerText.indexOf(" do");
+                        answer = sortables[i].childNodes[j].innerText.substring(0, doInd) + '\n' + commentArr[commentInd] + '\n' + sortables[i].childNodes[j].innerText.substring(doInd, sortables[i].childNodes[j].innerText.len);
+                        commentInd++;
+                    }
+                    else {
+                        answer = sortables[i].childNodes[j].innerText;
                     }
                     answers[i] += sortables[i].childNodes[j].innerText + "\n";
 
@@ -411,6 +416,11 @@ function colorCodeText(divID) {
                 continue;
             }
 
+            if (words[j].includes("else")) {
+                document.getElementById(divID).innerHTML += "<span class=\"keyword\"> " + words[j] + "</span>";
+                continue;
+            }
+
             if (words[j].trim() == "<br/>") {
                 continue;
             }
@@ -472,7 +482,7 @@ function colorCodeText(divID) {
             }
         }
 
-        if (lines[i] != "" && !lines[i].includes("do") && !lines[i].includes("then") && lines[i].trim() != "<br/>" && lines[i].trim().length != 0) {
+        if (lines[i] != "" && !lines[i].includes("do") && !lines[i].includes("else") && !lines[i].includes("then") && lines[i].trim() != "<br/>" && lines[i].trim().length != 0) {
             document.getElementById(divID).innerHTML += "<span class=\"text\">;</span>";
         }
     }
@@ -482,6 +492,7 @@ function colorCodeSortable(listID, isMultiConfirms) {
     let codeLine = document.getElementById(listID).innerHTML;
     document.getElementById(listID).innerHTML = "";
     if (isMultiConfirms) {
+        codeLine = codeLine.replace(/\\t/g, "");
         codeLine = codeLine.trim().split(" ");
         for (var i = 0; i < codeLine.length; ++i) {
             if (keywords.includes(codeLine[i].trim())) {

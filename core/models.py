@@ -212,6 +212,7 @@ class Lesson(models.Model):
     audio_transcribe = models.BooleanField(default=False)
 
     is_parsons = models.BooleanField(default=False)
+    has_distractors = models.BooleanField(default=False)
     sortable_lines = models.TextField(default="")
     multi_confirms = models.BooleanField(default=False)
 
