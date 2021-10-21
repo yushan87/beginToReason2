@@ -201,7 +201,7 @@ def split_lesson_code(current_lesson):
                 confirm_ind = current_lesson.code.lesson_code.find(code[i])
                 confirm += current_lesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i])]
 
-                if 'Confirm' in code[i + 1]:
+                if 'Confirm' in code[i + 1] and i + 1 != end_point_ind:
                     confirm_ind = current_lesson.code.lesson_code.find(code[i + 1])
                     confirm += r"\n"
                     confirm += current_lesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i + 1])]
@@ -210,7 +210,9 @@ def split_lesson_code(current_lesson):
                 elif len(code[i + 1].replace(r'\r', "").replace(r'\n', "").strip()) != 0 and i + 1 != end_point_ind:
                     confirm_ind = current_lesson.code.lesson_code.find(code[i + 1])
                     confirm += r"\n"
-                    confirm += current_lesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i + 1])]
+                    confirm += current_lesson.code.lesson_code[confirm_ind: 
+                    confirm_ind + len(code[i + 1])]
+                    confirm += r"\n"
                     i += 1
                     
                 confirm = confirm.replace(r'\r', "")
@@ -227,6 +229,7 @@ def split_lesson_code(current_lesson):
         i += 1
 
     random.shuffle(sortable_code)
+    print(confirms)
 
     lesson_code = {'begin_set': begin_set,
                   'end_set': end_set,

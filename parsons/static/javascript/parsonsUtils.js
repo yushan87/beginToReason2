@@ -184,13 +184,13 @@ function getMulitConfirmFeedback (event, beginSet, endSet, confirms, comments) {
                 if (sortables[i].childNodes[j].innerText != undefined) {
                     if (sortables[i].childNodes[j].innerText.includes("While") || sortables[i].childNodes[j].innerText.includes("For")) {
                         doInd = sortables[i].childNodes[j].innerText.indexOf(" do");
-                        answer = sortables[i].childNodes[j].innerText.substring(0, doInd) + '\n' + commentArr[commentInd] + '\n' + sortables[i].childNodes[j].innerText.substring(doInd, sortables[i].childNodes[j].innerText.len);
+                        answer = sortables[i].childNodes[j].innerText.substring(0, doInd) + commentArr[commentInd] + sortables[i].childNodes[j].innerText.substring(doInd, sortables[i].childNodes[j].innerText.len);
                         commentInd++;
                     }
                     else {
                         answer = sortables[i].childNodes[j].innerText;
                     }
-                    answers[i] += sortables[i].childNodes[j].innerText + "\n";
+                    answers[i] += answer + "\n";
 
                     if (i != 0 || j != 0) {
                         previousAnswers += "&nbsp&nbsp&nbsp" + sortables[i].childNodes[j].innerText + "<br/>";
@@ -204,6 +204,7 @@ function getMulitConfirmFeedback (event, beginSet, endSet, confirms, comments) {
 
         confirms = confirms.replaceAll("&#x27;", "");
         confirms = confirms.replaceAll(/\\t/g, "");
+        confirms = confirms.replaceAll(/\\n/g, '\n');
         confirms = confirms.replace("[", "");
         confirms = confirms.replace("]", "");
         let confirmArr = confirms.split(',');

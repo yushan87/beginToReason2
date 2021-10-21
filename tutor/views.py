@@ -18,8 +18,6 @@ from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, 
     clean_variable
 from tutor.py_helper_functions.mutation import can_mutate
 
-from parsons.views import parsons_problem
-
 User = get_user_model()
 
 
@@ -158,7 +156,7 @@ def tutor(request, assignmentID):
             current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
                                                                is_alternate)
             current_lesson.code.lesson_code = clean_variable(current_lesson.code.lesson_code)
-            
+
             # Case 2aa: if questions if MC or Both
             if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
                 return render(request, "tutor/tutor.html",

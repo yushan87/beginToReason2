@@ -211,7 +211,9 @@
                         <br>
                         <div class="" id="activity">
                             <p>Drag code fragments from the right box to left to reconstruct the code in the correct order to make the Confirm statement true.</p>
-                            <p>Make sure proper indentation is used.</p>
+                            {% if not multiConfirms %}
+                                <p>Make sure proper indentation is used.</p>
+                            {% endif %}
                         </div>
                         <br>
                         <div id="answersCard" hidden>

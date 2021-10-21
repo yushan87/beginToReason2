@@ -67,47 +67,49 @@
     left: 35%;
 }
 
-#sortableTrash { position: absolute;
-                left: 80%;
-                width: 30%;
+#sortableTrash {
+    position: absolute;
+    left: 80%;
+    width: 30%;
 }
 
-#sortable { width: 35%;
-            left: 0%;
-            position: relative;
+#sortable {
+    position: relative;
+    left: 0%;
+    width: 35%;
 }
 
 .sortable-code ul {
-    font-size: 80%;
     font-family: monospace;
-    list-style: none;
+    font-size: 80%;
     padding-bottom: 10px;
+    list-style: none;
     padding-left: 0;
     margin-left: 0;
 }
 
 .sortable-code ul:empty {
-  padding-bottom: 30px;
+    padding-bottom: 30px;
 }
 
-.sortable-code li, .sortable-code li:before, .sortable-code li:after {
-  box-sizing: content-box;
+.sortable-code li, .sortable-code li::before, .sortable-code li::after {
+    box-sizing: content-box;
 }
 
 ul.output {
-    background-color: rgba(48, 52, 63, 0.9);
     top: 0%;
+    background-color: rgba(48, 52, 63, 0.9);
 }
 
 .sortable-code li {
-    -moz-border-radius:10px;
-    -webkit-border-radius:10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    padding: 10px;
+    background-color: rgba(48, 52, 63, 0.9);
     border-radius: 10px;
-    background-color:rgba(48, 52, 63, 0.9);
-    padding:10px;
     margin-top: 5px;
-    white-space: nowrap;
     overflow: hidden;
+    white-space: nowrap;
     cursor: move;
 }
 
@@ -119,51 +121,52 @@ li.incorrectIndent {
     border-left: 10px solid #f00;
 }
 
-li.correctIndent {
-    //border-left: 10px solid rgb(253, 253, 253);
-}
-
-li.incorrectPosition, .testcase.fail, .testcase.error {
+li.incorrectPosition,
+ .testcase.fail, .testcase.error {
     background-color: #rgba(48, 52, 63, 0.9);
 }
 
-li.correctPosition, .testcase.pass {
+li.correctPosition,
+ .testcase.pass {
     background-color: #rgba(48, 52, 63, 0.9);
 }
 
-.testcase { padding: 10px; margin-bottom: 10px;}
-
-.testcase .msg { font-weight: bold; }
-
-.testcase .error { color: #f00;}
-
-.testcase .feedback { font-weight: bolder;}
-
-.testcase .fail .expected, .testcase .fail .actual {
-    color: #f00; 
-    font-weight: bolder;
+.testcase {
+    padding: 10px; 
+    margin-bottom: 10px;
 }
 
-.testcase .output { 
-    display: block; 
-    white-space: pre; 
+.testcase .msg { font-weight: 700 }
+
+.testcase .error { color: #f00 }
+
+.testcase .feedback { font-weight: 700 }
+
+.testcase .fail .expected, 
+.testcase .fail .actual {
+    font-weight: 700;
+    color: #f00;
+}
+
+.testcase .output {
+    display: block;
     font-size: 12px;
+    white-space: pre;
     color: #fff;
-    background-color: #555;
     padding: 5px;
+    background-color: #555;
     margin: 5px;
     line-height: 15px;
-
 }
 
 /** For styling the toggleable elements */
 .jsparson-toggle {
     display: inline-block;
-    padding: 0 15px;
     z-index: 500;
-    border: 1px dashed #000;
+    padding: 0 15px;
     min-width: 10px;
     min-height: 15px;
+    border: 1px dashed #000;
     cursor: pointer;
 }
 
@@ -173,6 +176,6 @@ li.correctPosition, .testcase.pass {
 
 .jsparson-toggle:empty::before {
     display: block;
-    content: "??";
     color: #f00;
+    content: "??";
 }
