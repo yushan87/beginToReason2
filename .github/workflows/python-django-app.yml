@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Python Django Application
+name: Lint & Test BeginToReason2
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
       # You can use PyPy versions in python-version.
       # For example, pypy2 and pypy3
       matrix:
-        python-version: [ 3.6, 3.7, 3.8, 3.9 ]
+        python-version: [ 3.7, 3.8, 3.9 ]
 
     steps:
       - uses: actions/checkout@v2
@@ -67,6 +67,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r dev-requirements.txt
+      - name: Create .env for testing
+        run: |
+          touch .env
+          SECRET_KEY=$(python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())')
+          echo DJANGO_SETTINGS_MODULE="begintoreason_django.settings.development" >> .env
+          echo ALLOWED_HOSTS="" >> .env
+          echo SECRET_KEY="$SECRET_KEY" >> .env
+          echo SECRET_ADMIN_URL="" >> .env
+          echo SOCIAL_AUTH_GOOGLE_OAUTH2_KEY="" >> .env
+          echo SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET="" >> .env
       - name: Test with pytest
         run: |
           python manage.py makemigrations accounts core data_analysis educator think_aloud tutor
