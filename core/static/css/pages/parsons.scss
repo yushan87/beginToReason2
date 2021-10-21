@@ -58,8 +58,8 @@
 .sortable-code {
     position: relative;
     left: 35%;
-    padding-left: 0;
     width: 30%;
+    padding-left: 0;
     margin-left: 2%;
     color: #fff;
 }
@@ -105,11 +105,9 @@ ul.output {
     margin-top: 5px;
     overflow: hidden;
     white-space: nowrap;
-    background-color: rgba(48, 52, 63, 0.9);
     cursor: move;
-    -moz-border-radius: 10px;
+    background-color: rgba(48, 52, 63, 0.9);
     border-radius: 10px;
-    -webkit-border-radius: 10px;
 }
 
 .sortable-code li:hover {
