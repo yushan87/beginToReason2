@@ -1,9 +1,6 @@
 /** Stylesheet for the puzzles */
-.keyword
-.operation
-.number
-.text {
-    white-space: break-spaces;  
+.keyword .operation .number .text {
+    white-space: break-spaces;
 }
 
 .keyword {
@@ -15,7 +12,7 @@
 }
 
 .number {
-    color: #58C554;
+    color: #58c554;
 }
 
 .text {
@@ -41,10 +38,10 @@
     z-index: 4;
     display: column;
     overflow: auto;
-    color: #fff;
     font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, monospace;
     font-size: 19px;
     font-style: normal;
+    color: #fff;
     background-color: #161616;
 }
 
@@ -60,8 +57,8 @@
 
 .sortable-code {
     position: relative;
-    padding-left: 0;
     left: 35%;
+    padding-left: 0;
     width: 30%;
     margin-left: 2%;
     color: #fff;
@@ -82,8 +79,8 @@
 .sortable-code ul {
     padding-bottom: 10px;
     padding-left: 0;
-    font-family: monospace;
     margin-left: 0;
+    font-family: monospace;
     font-size: 80%;
     list-style: none;
 }
@@ -107,11 +104,11 @@ ul.output {
     padding: 10px;
     margin-top: 5px;
     overflow: hidden;
-    background-color: rgba(48, 52, 63, 0.9);
     white-space: nowrap;
+    background-color: rgba(48, 52, 63, 0.9);
     cursor: move;
-    border-radius: 10px;
     -moz-border-radius: 10px;
+    border-radius: 10px;
     -webkit-border-radius: 10px;
 }
 
