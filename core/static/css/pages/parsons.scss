@@ -59,11 +59,11 @@
 }
 
 .sortable-code {
-    padding-left: 0px;
-    margin-left: 2%; 
-    color: #fff;
-    width: 30%;
+    padding-left: 0;
+    margin-left: 2%;
     position: relative;
+    width: 30%;
+    color: #fff;
     left: 35%;
 }
 
@@ -81,10 +81,10 @@
 
 .sortable-code ul {
     font-family: monospace;
-    font-size: 80%;
     padding-bottom: 10px;
-    list-style: none;
+    font-size: 80%;
     padding-left: 0;
+    list-style: none;
     margin-left: 0;
 }
 
@@ -92,7 +92,8 @@
     padding-bottom: 30px;
 }
 
-.sortable-code li, .sortable-code li::before,
+.sortable-code li,
+.sortable-code li::before,
 .sortable-code li::after {
     box-sizing: content-box;
 }
@@ -104,12 +105,12 @@ ul.output {
 
 .sortable-code li {
     padding: 10px;
+    margin-top: 5px;
+    background-color: rgba(48, 52, 63, 0.9);
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
-    background-color: rgba(48, 52, 63, 0.9);
-    margin-top: 5px;
-    border-radius: 10px;
     overflow: hidden;
+    border-radius: 10px;
     white-space: nowrap;
     cursor: move;
 }
@@ -123,7 +124,8 @@ li.incorrectIndent {
 }
 
 li.incorrectPosition,
-.testcase.fail, .testcase.error {
+.testcase.fail,
+.testcase.error {
     background-color: #rgba(48, 52, 63, 0.9);
 }
 
@@ -151,13 +153,13 @@ li.correctPosition,
 
 .testcase .output {
     display: block;
-    font-size: 12px;
     padding: 5px;
+    font-size: 12px;
     color: #fff;
-    white-space: pre;
     margin: 5px;
-    background-color: #555;
+    white-space: pre;
     line-height: 15px;
+    background-color: #555;
 }
 
 /** For styling the toggleable elements */
