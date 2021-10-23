@@ -211,6 +211,11 @@ class Lesson(models.Model):
     audio_record = models.BooleanField(default=False)
     audio_transcribe = models.BooleanField(default=False)
 
+    is_parsons = models.BooleanField(default=False)
+    has_distractors = models.BooleanField(default=False)
+    sortable_lines = models.TextField(default="")
+    multi_confirms = models.BooleanField(default=False)
+
     def __str__(self):
         """"
         function __str__ is called to display the Lesson name. This will be useful for admin/educators when

@@ -144,6 +144,9 @@ def tutor(request, assignmentID):
             print("===============", num_done)
             print("in if 1 - Current lesson:", current_lesson)
 
+            if current_lesson.is_parsons:
+                return redirect('parsons:parsons', assignmentID)
+
             # Just as we are altering the code here with mutate, this will pull the previous answer
             # to put in place for sub lessons. What identifiers do we need?
 
@@ -151,6 +154,7 @@ def tutor(request, assignmentID):
             current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
                                                                is_alternate)
             current_lesson.code.lesson_code = clean_variable(current_lesson.code.lesson_code)
+
             # Case 2aa: if questions if MC or Both
             if current_lesson.reason.reasoning_type in ('MC', 'Both'):
                 return render(request, "tutor/tutor.html",
@@ -170,7 +174,8 @@ def tutor(request, assignmentID):
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': set_index})
+                               'index': set_index,
+                               'isParsons': current_lesson.is_parsons})
             # Case 2ab: if question is of type Text
             elif current_lesson.reason.reasoning_type == 'Text':
                 return render(request, "tutor/tutor.html",
@@ -189,7 +194,8 @@ def tutor(request, assignmentID):
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': set_index})
+                               'index': set_index,
+                               'isParsons': current_lesson.is_parsons})
 
             # Case 2ac: if question is of type none
             return render(request, "tutor/tutor.html",
@@ -207,5 +213,6 @@ def tutor(request, assignmentID):
                            'audio_record': current_lesson.audio_record,
                            'audio_transcribe': current_lesson.audio_transcribe,
                            'user_email': request.user.email,
-                           'index': set_index})
+                           'index': set_index,
+                            'isParsons': current_lesson.is_parsons})
     return redirect("accounts:profile")

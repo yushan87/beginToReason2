@@ -1,0 +1,60 @@
+.str { color: #080; }
+
+.kwd { color: #008; }
+
+.com { color: #800; }
+
+.typ { color: #606; }
+
+.lit { color: #066; }
+
+.pun { color: #000; }
+
+.pln { color: #000; }
+
+.tag { color: #008; }
+
+.atn { color: #606; }
+
+.atv { color: rgb(145, 161, 145); }
+
+.dec { color: #606; }
+
+pre.prettyprint {
+    padding: 2px;
+    border: 1px solid #000;
+}
+
+@media print {
+    .str { color: #060; }
+
+    .kwd {
+        font-weight: 700;
+        color: #006;
+    }
+
+    .com {
+        font-style: italic;
+        color: #600;
+    }
+
+    .typ {
+        font-weight: 700;
+        color: #404;
+    }
+
+    .lit { color: #044; }
+
+    .pun { color: #000; }
+
+    .pln { color: #000; }
+
+    .tag {
+        font-weight: 700;
+        color: #006;
+    }
+
+    .atn { color: #404; }
+
+    .atv { color: #060; }
+}

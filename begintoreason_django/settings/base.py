@@ -63,6 +63,7 @@ INSTALLED_APPS = [
     'educator',
     'think_aloud',
     'tutor',
+    'parsons',
 
     # External Plugins
     'social_django',

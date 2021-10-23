@@ -18,10 +18,8 @@ from tutor.py_helper_functions.mutation import reverse_mutate
 
 def user_auth(request):
     """function user_auth This function handles the auth logic for a user in both django users and UserInformation
-
     Args:
          request (HTTPRequest): A http request object created automatically by Django.
-
     Returns:
         Boolean: A boolean to signal if the user has been found in our database
     """
@@ -34,12 +32,10 @@ def user_auth(request):
 
 def alternate_set_check(current_lesson, alternate_type):
     """function alternate_set_check This function handles the logic for a if a lesson has an alternate
-
     Args:
          current_lesson: a Lesson that is currently being completed
          alternate_type: type of lesson to use for lookup, enum found in core.models.LessonAlternate. Supports None,
          in which case it will simply return None for the alternate lesson.
-
     Returns:
         LessonAlternate model, or None if no redirect needed
     """
@@ -66,11 +62,9 @@ def alternate_set_check(current_lesson, alternate_type):
 def check_type(current_lesson, submitted_code):
     """function check_type This function finds the type of alternate to look for.
     Only to be called on incorrect answers.
-
     Args:
          current_lesson (Lesson): lesson that is currently being completed
          submitted_code (String): all the code submitted to RESOLVE, mutated in the form presented to user
-
     Returns:
         type: type of lesson to use for lookup (integer enumeration). Default if no incorrect answers were triggered.
     """
@@ -86,7 +80,6 @@ def check_type(current_lesson, submitted_code):
 def browser_response(current_lesson, current_assignment, current_user, submitted_answer, status, lines, unlock_next,
                      alt_activated):
     """function browser_response This function finds the feedback to show to the user
-
     Args:
          current_lesson: a Lesson that is currently being completed
          current_assignment: The assignment containing the lesson
@@ -96,19 +89,26 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
          lines: array of confirms and their statuses
          unlock_next: boolean for unlocking next button
          alt_activated: boolean changing feedback for whether a wrong answer has activated an alternate
-
     Returns:
         dict that should be send to front-end JS
     """
+
     if not alt_activated:
         if status == 'success':
             headline = 'Correct'
             text = current_lesson.correct_feedback
         else:
             try:
-                feedback = current_lesson.feedback.get(feedback_type=check_type(current_lesson, submitted_answer))
-                headline = feedback.headline
-                text = feedback.feedback_text
+                if current_lesson.is_parsons:
+                    headline = "Try Again!"
+                    if status == "error":
+                        text = "The code fragments are producing a syntax error. Ensure that if/else statments and loops have and end statement to complete them and they have content."
+                    else:
+                        text = "Code fragments in your program are wrong, or in wrong order. Move, remove, or replace fragments to meet the all of the confirm statements."
+                else: 
+                    feedback = current_lesson.feedback.get(feedback_type=check_type(current_lesson, submitted_answer))
+                    headline = feedback.headline
+                    text = feedback.feedback_text
             except core.models.Feedback.DoesNotExist:
                 headline = "Try Again!"
                 text = "Did you read the reference material?"
@@ -126,11 +126,9 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
 
 def align_with_previous_lesson(user, code):
     """function align_with_previous_lesson This function changes the mutation to match the last lesson they did
-
     Args:
          user: user model using tutor
          code: code that user submitted in last lesson
-
     Returns:
         code: code with variables matching letters of that from their last lesson
     """
@@ -165,12 +163,10 @@ def align_with_previous_lesson(user, code):
 
 def replace_previous(user, code, is_alt):
     """function replace_previous This function changes the previous lesson code
-
     Args:
          user: user model using tutor
          code: code that user submitted in last lesson
          is_alt: boolean for if alternate lesson
-
     Returns:
         code: ? string of code
     """

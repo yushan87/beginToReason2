@@ -20,6 +20,7 @@ let overlayOpen = false;
 let allAnswers = "";
 let multiAnswer;
 let instructOpen = true;
+let is_parsons;
 
 
 ///////////////////////////////////////
@@ -29,7 +30,8 @@ let instructOpen = true;
 /*
  * Function for creating and embedding the ACE Editor into our page.
  */
-function createEditor(code, explain, lessonName, review, past) {
+function createEditor(code, explain, lessonName, review, past, isParsons) {
+    is_parsons = isParsons;
     // RESOLVE mode
     let ResolveMode = ace.require("ace/mode/resolve").Mode;
     Range = ace.require("ace/range").Range;
@@ -55,8 +57,12 @@ function createEditor(code, explain, lessonName, review, past) {
         document.getElementById("resultDetails").innerHTML = review;
         $("#resultCard").attr("class", "card bg-success text-white");
 
-        document.getElementById("answersCard").removeAttribute("hidden")
-        document.getElementById("pastAnswers").innerHTML = past;
+        if (!is_parsons) {
+            console.log(is_parsons);
+            document.getElementById("answersCard").removeAttribute("hidden")
+            document.getElementById("pastAnswers").innerHTML = past;
+        }
+        
 
         $("#resetCode").attr("disabled", "disabled");
         $("#checkCorrectness").attr("disabled", "disabled");
@@ -272,6 +278,7 @@ function createAlertBox(hasError, message) {
     // New HTML Object #1: Alert Box
     let alertDiv = document.createElement("div");
     alertDiv.setAttribute("id", "resultAlertBox");
+    alertDiv.setAttribute("style", "z-index: 10");
 
     // Change alert box color depending if it has error
     if (hasError) {
@@ -381,13 +388,16 @@ $("#checkCorrectness").click(function () {
         if (allAnswers != '') {
             allAnswers += "</br>";
         }
-        let currentAttemptAnswers = ''
-        for (var i = 0; i < trivials.confirms.length; i++) {
-            aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
-            document.getElementById("answersCard").removeAttribute("hidden")
-            allAnswers += `${trivials.confirms[i].lineNum}: ${aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace('Confirm','').replace(';', '')}</br>`;
-            currentAttemptAnswers += aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'') + '\n';
-            document.getElementById("pastAnswers").innerHTML = allAnswers;
+
+        if (!is_parsons) {
+                let currentAttemptAnswers = ''
+            for (var i = 0; i < trivials.confirms.length; i++) {
+                aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
+                document.getElementById("answersCard").removeAttribute("hidden")
+                allAnswers += `${trivials.confirms[i].lineNum}: ${aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace('Confirm','').replace(';', '')}</br>`;
+                currentAttemptAnswers += aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'') + '\n';
+                document.getElementById("pastAnswers").innerHTML = allAnswers;
+            }
         }
 
         closeThinkAloudFunctions(false, 'trivial', currentAttemptAnswers, code); // for the think-aloud recording
@@ -482,6 +492,8 @@ $("#changeMode").click(function () {
 
     // Unlock editor for further user edits
     unlock();
+
+    changeTheme();
 });
 
 
@@ -490,9 +502,11 @@ $("#changeMode").click(function () {
  */
 $("#fontIncrease").click(function () {
     // Increase font size
-    let currentFontSize = $("#editor").css("font-size");
-    currentFontSize = parseFloat(currentFontSize) * 1.2;
-    $("#editor").css("font-size", currentFontSize);
+    if (!is_parsons) {
+        let currentFontSize = $("#editor").css("font-size");
+        currentFontSize = parseFloat(currentFontSize) * 1.2;
+        $("#editor").css("font-size", currentFontSize);
+    }
 
     return false;
 });
@@ -549,9 +563,11 @@ $("#closeOverlay").click(function () {
  */
 $("#fontDecrease").click(function () {
     // Decrease font size
-    let currentFontSize = $("#editor").css("font-size");
-    currentFontSize = parseFloat(currentFontSize) / 1.2;
-    $("#editor").css("font-size", currentFontSize);
+    if (!is_parsons) {
+        let currentFontSize = $("#editor").css("font-size");
+        currentFontSize = parseFloat(currentFontSize) / 1.2;
+        $("#editor").css("font-size", currentFontSize);
+    }
 
     return false;
 });
@@ -676,58 +692,71 @@ $.postJSON = (url, data, callback) => {
             document.getElementById("resultDetails").innerHTML = response.resultDetails;
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
 
+            console.log(response.status);
+
             if (response.status == "success") {
                 $("#resultCard").attr("class", "card bg-success text-white");
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
+                $("#ul-sortable").attr("style", "background-color: #20a001d7;");
                 closeThinkAloudFunctions(true, 'correct solution', data.answer, data.code); // for the think-aloud recording
                 unlock();
             } else if (response.status == 'failure'){
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
+                $("#ul-sortable").attr("style", "background-color: #ce0000bb;");
                 closeThinkAloudFunctions(false, 'incorrect solution', data.answer, data.code); // for the think-aloud recording
                 unlock();
             } else {
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
+                $("#ul-sortable").attr("style", "background-color: #161616;");
                 closeThinkAloudFunctions(false, 'something went wrong',  data.answer, data.code); // for the think-aloud recording
                 unlock();
             }
 
-            let lines = response.lines
-            var confirmLine
-            displayPast = response.status != "success"
-            if (displayPast && allAnswers != '') {
-                allAnswers += "</br>";
-            }
-            for (var i = 0; i < lines.length; i++) {
-                if (displayPast) {
-                    confirmLine = `${lines[i].lineNum}: ${aceEditor.session.getLine(lines[i].lineNum-1).replace("Confirm", "").replace(";", "")}`
-                    if (lines[i].status == 'success') {
-                        confirmLine += ' <i class="fas fa-check"></i>'
+            if (!is_parsons) {
+                let lines = response.lines
+                var confirmLine
+                displayPast = response.status != "success"
+                if (displayPast && allAnswers != '') {
+                    allAnswers += "</br>";
+                }
+                for (var i = 0; i < lines.length; i++) {
+                    if (displayPast) {
+                        confirmLine = `${lines[i].lineNum}: ${aceEditor.session.getLine(lines[i].lineNum-1).replace("Confirm", "").replace(";", "")}`
+                        
+                        console.log(confirmLine);
+                        
+                        if (lines[i].status == 'success') {
+                            confirmLine += ' <i class="fas fa-check"></i>'
+                        }
+                        if (!confirmLine.includes('Operation Main()')) {
+                            allAnswers += confirmLine  + "</br>";
+                        }
                     }
                     if (!confirmLine.includes('Operation Main()')) {
-                        allAnswers += confirmLine  + "</br>";
+                        if (lines[i].status == "success") {
+                            aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_correct")
+                        }
+                        else if (response.status != "error") {
+                            aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_error");
+                            document.getElementById("answersCard").removeAttribute("hidden")
+                        }
                     }
                 }
-                if (!confirmLine.includes('Operation Main()')) {
-                    if (lines[i].status == "success") {
-                        aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_correct")
-                    }
-                    else {
-                        aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_error");
-                        document.getElementById("answersCard").removeAttribute("hidden")
-                    }
-                }
+                document.getElementById("pastAnswers").innerHTML = allAnswers;
             }
-            document.getElementById("pastAnswers").innerHTML = allAnswers;
+            else {
+            document.getElementById("answersCard").removeAttribute("hidden");
+            document.getElementById("pastAnswers").innerHTML = previousAnswers;
+            }
 
             if (response.unlock_next){
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
             }
         }
-
     });
 };
 
@@ -735,7 +764,7 @@ $.postJSON = (url, data, callback) => {
     Sends to backend for verification
 */
 function verify(code){
-
+verifying = true;
     let data = {};
     data.assignment = assignment;
     data.pastAnswers = allAnswers; //Doesn't include the current one!!!
@@ -751,5 +780,5 @@ function verify(code){
         }
     }
 
-    $.postJSON("grader", data, (results) => {});
+    $.postJSON("grader", data, (results) => {test});
 }
