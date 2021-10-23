@@ -93,9 +93,6 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
         dict that should be send to front-end JS
     """
 
-    print(status)
-    print(current_lesson.code.lesson_code)
-
     if not alt_activated:
         if status == 'success':
             headline = 'Correct'

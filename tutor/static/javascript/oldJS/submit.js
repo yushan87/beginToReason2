@@ -43,7 +43,6 @@ function submit() {
     //data.explanation = explanation;
     //need to get the answer from the multiple choice
     $.postJSON("/verify", data, (results) => {
-        console.log("Specific post json");
         if (results.lines !== undefined) {
             addLines(results.lines);
         }
