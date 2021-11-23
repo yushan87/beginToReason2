@@ -145,8 +145,6 @@ def align_with_previous_lesson(user, code):
             variables.append(last_attempt[index])
             index = index + 1
 
-    print(variables)
-
     for i in range(0, len(variables)):
         code = code.replace(original[i], variables[i])
 

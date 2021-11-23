@@ -339,7 +339,7 @@ $("#checkCorrectness").click(function () {
         let boxVal = document.forms["usrform"]["comment"].value;
         if (boxVal.length < 10) {
             // Create the appropriate alert box
-            let msg = "You must provide a long enough explanation to the right";
+            let msg = "Please provide a long enough explanation to the right";
             createAlertBox(true, msg);
             $("#explainBox").attr("style", "border: solid red; display: block; width: 100%; resize: none;");
             unlock();
@@ -371,7 +371,7 @@ $("#checkCorrectness").click(function () {
         console.log("trivial: " + trivials.trivial )
         if(trivials.missing){
             document.getElementById("resultsHeader").innerHTML = "<h3>Try again</h3>";
-            document.getElementById("resultDetails").innerHTML = "Think about the variables in terms of initial values";
+            document.getElementById("resultDetails").innerHTML = "Consider using initial values of variables.";
 
         }
         else{

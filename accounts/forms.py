@@ -18,6 +18,7 @@ class UserInformationForm(forms.ModelForm):
     fau = 'Florida Atlantic University'
     osu = 'The Ohio State University'
     rhit = 'Rose-Hulman Institute of Technology'
+    howard = 'Howard University'
     other = 'Other'
     schools = [
         (blank, ''),
@@ -25,6 +26,7 @@ class UserInformationForm(forms.ModelForm):
         (fau, 'Florida Atlantic University'),
         (osu, 'The Ohio State University'),
         (rhit, 'Rose-Hulman Institute of Technology'),
+        (howard, 'Howard University'),
         (other, 'Other')
     ]
 

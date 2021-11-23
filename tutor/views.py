@@ -88,8 +88,6 @@ def grader(request):
         JsonResponse: A JSON response informing the browser of the results and the user's current state
     """
 
-    print(request)
-
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
         # Case 1a: if the user exists
@@ -99,8 +97,7 @@ def grader(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             assignment = Assignment.objects.get(id=data['assignment'])
             current_lesson_set, _, current_lesson, _, is_alternate = assignment.get_user_lesson(current_user.id)
-            print("lessons in set:", current_lesson_set.lessons())
-            print("my lesson:", current_lesson)
+
             # Get submitted answer. No 'Confirm', no spaces, each ends with a semicolon
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
             submitted_answer = ''.join(submitted_answer)
@@ -141,8 +138,6 @@ def tutor(request, assignmentID):
             _, set_index, current_lesson, _, is_alternate = \
                 assignment.get_user_lesson(current_user.id)
             num_done = finished_lesson_count(current_user)
-            print("===============", num_done)
-            print("in if 1 - Current lesson:", current_lesson)
 
             if current_lesson.is_parsons:
                 return redirect('parsons:parsons', assignmentID)
