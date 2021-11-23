@@ -15,6 +15,16 @@ DEBUG = False
 # we are hosting this application.
 ALLOWED_HOSTS = [os.getenv('ALLOWED_HOSTS')]
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
+STATIC_URL = '/static/'
+STATIC_ROOT = os.getenv('STATIC_ROOT')
+
+# Media files (User-uploaded files)
+# https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-MEDIA_ROOT
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.getenv('MEDIA_ROOT')
+
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases#
 #
