@@ -136,17 +136,24 @@ def align_with_previous_lesson(user, code):
 
     occurrence = 3
     original = ["I", "J", "K"]
+    fruit = ["Apple", "Banana", "Orange"]
     variables = []
     index = 0
 
-    for i in range(0, occurrence):
-        if last_attempt.find("Read(", index) != -1:
-            index = last_attempt.find("Read(", index) + 5
-            variables.append(last_attempt[index])
-            index = index + 1
+    start = last_attempt.find("Var", index) + 3
+    end = last_attempt.find(":", start)
+
+    variables = last_attempt[start:end]
+    variables = variables.split()
 
     for i in range(0, len(variables)):
-        code = code.replace(original[i], variables[i])
+        variables[i] = variables[i][:1]
+
+    for i in range(0, len(variables)):
+        code = code.replace(original[i], fruit[i])
+
+    for i in range(0, len(variables)):
+        code = code.replace(fruit[i], variables[i])
 
     change = variables[0] + "nteger"
 
