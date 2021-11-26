@@ -88,8 +88,6 @@ def grader(request):
         JsonResponse: A JSON response informing the browser of the results and the user's current state
     """
 
-    print(request)
-
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
         # Case 1a: if the user exists
@@ -99,8 +97,7 @@ def grader(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             assignment = Assignment.objects.get(id=data['assignment'])
             current_lesson_set, _, current_lesson, _, is_alternate = assignment.get_user_lesson(current_user.id)
-            print("lessons in set:", current_lesson_set.lessons())
-            print("my lesson:", current_lesson)
+
             # Get submitted answer. No 'Confirm', no spaces, each ends with a semicolon
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
             submitted_answer = ''.join(submitted_answer)
@@ -141,8 +138,9 @@ def tutor(request, assignmentID):
             _, set_index, current_lesson, _, is_alternate = \
                 assignment.get_user_lesson(current_user.id)
             num_done = finished_lesson_count(current_user)
-            print("===============", num_done)
-            print("in if 1 - Current lesson:", current_lesson)
+
+            if current_lesson.is_parsons:
+                return redirect('parsons:parsons', assignmentID)
 
             # Just as we are altering the code here with mutate, this will pull the previous answer
             # to put in place for sub lessons. What identifiers do we need?
@@ -151,8 +149,9 @@ def tutor(request, assignmentID):
             current_lesson.code.lesson_code = replace_previous(current_user, current_lesson.code.lesson_code,
                                                                is_alternate)
             current_lesson.code.lesson_code = clean_variable(current_lesson.code.lesson_code)
+
             # Case 2aa: if questions if MC or Both
-            if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
+            if current_lesson.reason.reasoning_type in ('MC', 'Both'):
                 return render(request, "tutor/tutor.html",
                               {'lesson': current_lesson,
                                'assignment': assignment,
@@ -170,7 +169,8 @@ def tutor(request, assignmentID):
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': set_index})
+                               'index': set_index,
+                               'isParsons': current_lesson.is_parsons})
             # Case 2ab: if question is of type Text
             elif current_lesson.reason.reasoning_type == 'Text':
                 return render(request, "tutor/tutor.html",
@@ -189,7 +189,8 @@ def tutor(request, assignmentID):
                                'audio_record': current_lesson.audio_record,
                                'audio_transcribe': current_lesson.audio_transcribe,
                                'user_email': request.user.email,
-                               'index': set_index})
+                               'index': set_index,
+                               'isParsons': current_lesson.is_parsons})
 
             # Case 2ac: if question is of type none
             return render(request, "tutor/tutor.html",
@@ -207,5 +208,6 @@ def tutor(request, assignmentID):
                            'audio_record': current_lesson.audio_record,
                            'audio_transcribe': current_lesson.audio_transcribe,
                            'user_email': request.user.email,
-                           'index': set_index})
+                           'index': set_index,
+                            'isParsons': current_lesson.is_parsons})
     return redirect("accounts:profile")

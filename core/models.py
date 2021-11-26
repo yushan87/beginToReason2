@@ -45,7 +45,7 @@ class Reference(models.Model):
     @param models.Model The base model
     """
     reference_key = models.CharField(max_length=30)
-    reference_text = models.TextField(max_length=250)
+    reference_text = models.TextField(max_length=500)
 
     def __str__(self):
         """"
@@ -82,7 +82,7 @@ class Question(models.Model):
 
     @param models.Model The base model
     """
-    question_text = models.CharField(max_length=200)
+    question_text = models.CharField(max_length=500)
 
     def __str__(self):
         """"
@@ -101,7 +101,7 @@ class McChoice(models.Model):
     @param models.Model The base model
     """
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.TextField(max_length=200)
+    choice_text = models.TextField(max_length=500)
 
     def __str__(self):
         """"
@@ -210,6 +210,11 @@ class Lesson(models.Model):
     screen_record = models.BooleanField(default=False)
     audio_record = models.BooleanField(default=False)
     audio_transcribe = models.BooleanField(default=False)
+
+    is_parsons = models.BooleanField(default=False)
+    has_distractors = models.BooleanField(default=False)
+    sortable_lines = models.TextField(default="")
+    multi_confirms = models.BooleanField(default=False)
 
     def __str__(self):
         """"

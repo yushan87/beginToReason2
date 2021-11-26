@@ -1,0 +1,179 @@
+/** Stylesheet for the puzzles */
+.keyword .operation .number .text {
+    white-space: break-spaces;
+}
+
+.keyword {
+    color: rgb(255, 232, 0);
+}
+
+.operation {
+    color: #4085b7;
+}
+
+.number {
+    color: #58c554;
+}
+
+.text {
+    color: #fff;
+}
+
+.spacing {
+    display: flex;
+}
+
+.placeholder {
+    visibility: hidden;
+}
+
+.parsons_container {
+    position: relative;
+    display: flex;
+    width: 75%;
+}
+
+.codeContainer {
+    position: absolute;
+    z-index: 4;
+    display: column;
+    overflow: auto;
+    font-family: Monaco, Menlo, "Ubuntu Mono", Consolas, monospace;
+    font-size: 19px;
+    font-style: normal;
+    color: #fff;
+    background-color: #161616;
+}
+
+.sortable_container {
+    display: column;
+    flex-direction: column;
+}
+
+#text_container {
+    display: flex;
+    flex-direction: column;
+}
+
+.sortable-code {
+    position: relative;
+    left: 35%;
+    width: 30%;
+    padding-left: 0;
+    margin-left: 2%;
+    color: #fff;
+}
+
+#sortableTrash {
+    position: absolute;
+    left: 80%;
+    width: 30%;
+}
+
+#sortable {
+    position: relative;
+    left: 0%;
+    width: 35%;
+}
+
+.sortable-code ul {
+    padding-bottom: 10px;
+    padding-left: 0;
+    margin-left: 0;
+    font-family: monospace;
+    font-size: 80%;
+    list-style: none;
+}
+
+.sortable-code ul:empty {
+    padding-bottom: 30px;
+}
+
+.sortable-code li,
+.sortable-code li::before,
+.sortable-code li::after {
+    box-sizing: content-box;
+}
+
+ul.output {
+    top: 0%;
+    background-color: rgba(48, 52, 63, 0.9);
+}
+
+.sortable-code li {
+    padding: 10px;
+    margin-top: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: move;
+    background-color: rgba(48, 52, 63, 0.9);
+    border-radius: 10px;
+}
+
+.sortable-code li:hover {
+    overflow: visible;
+}
+
+li.incorrectIndent {
+    border-left: 10px solid #f00;
+}
+
+li.incorrectPosition,
+.testcase.fail,
+.testcase.error {
+    background-color: #rgba(48, 52, 63, 0.9);
+}
+
+li.correctPosition,
+.testcase.pass {
+    background-color: #rgba(48, 52, 63, 0.9);
+}
+
+.testcase {
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.testcase .msg { font-weight: 700; }
+
+.testcase .error { color: #f00; }
+
+.testcase .feedback { font-weight: 700; }
+
+.testcase .fail .expected,
+.testcase .fail .actual {
+    font-weight: 700;
+    color: #f00;
+}
+
+.testcase .output {
+    display: block;
+    padding: 5px;
+    margin: 5px;
+    font-size: 12px;
+    line-height: 15px;
+    color: #fff;
+    white-space: pre;
+    background-color: #555;
+}
+
+/** For styling the toggleable elements */
+.jsparson-toggle {
+    z-index: 500;
+    display: inline-block;
+    min-width: 10px;
+    min-height: 15px;
+    padding: 0 15px;
+    cursor: pointer;
+    border: 1px dashed #000;
+}
+
+.jsparson-toggle:empty {
+    border-color: #f00;
+}
+
+.jsparson-toggle:empty::before {
+    display: block;
+    color: #f00;
+    content: "??";
+}

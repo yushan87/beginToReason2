@@ -29,11 +29,6 @@ SITE_ID = 1
 # https://docs.djangoproject.com/en/3.2/ref/settings/#root-urlconf
 ROOT_URLCONF = 'begintoreason_django.urls'
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-
 # Path to the WSGI application object for Django's built-in servers will use
 # https://docs.djangoproject.com/en/3.2/ref/settings/#wsgi-application
 WSGI_APPLICATION = 'begintoreason_django.wsgi.application'
@@ -63,6 +58,7 @@ INSTALLED_APPS = [
     'educator',
     'think_aloud',
     'tutor',
+    'parsons',
 
     # External Plugins
     'social_django',

@@ -5,6 +5,8 @@
 {% block css %}
     {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/lesson.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/parsons.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/prettify.scss' %}" media="screen">
     {% endcompress %}
 {% endblock %}
 
@@ -26,7 +28,7 @@
     <script type="application/javascript">
         $(document).ready(function () {
             //this will be done in a load lesson function call
-            createEditor("{{ lesson_code | safe }}", "{{ lesson.reason.reasoning_type | safe }}", "{{ lesson.lesson_title | safe }}", "{{ review | safe }}", "{{ past | safe }}", false);
+            createEditor("{{ lesson_code | safe }}", "{{ lesson.reason.reasoning_type | safe }}", "{{ lesson.lesson_title | safe }}", "{{ review | safe }}", "{{ past | safe }}", true);
             $("#tutor").attr("class", "nav-item active");
             $("#navbarColor").attr("class", "navbar navbar-expand-lg navbar-dark bg-dark");
 
@@ -42,10 +44,157 @@
         //const updateValue = e => document.querySelector('#result').innerHTML = e.target.value;
         //INPUTS.forEach(el => el.addEventListener('click', e => updateValue(e)));
     </script>
+
+    <script src="{% static 'javascript/parsons/prettify.js' %}"></script>
+    <script src="{% static 'javascript/parsons/jquery.min.js' %}"></script>
+    <script src="{% static 'javascript/parsons/jquery-ui.min.js' %}"></script>
+    <script src="{% static 'javascript\parsons\jquery.ui.touch-punch.min.js' %}"></script>
+    <script src="{% static 'javascript/parsons/underscore-min.js' %}"></script>
+    <script src="{% static 'javascript/parsons/lis.js' %}"></script>
+    <script src="{% static 'javascript/parsons.js' %}"></script>
+    <script src="{% static 'javascript/parsonsUtils.js' %}"></script>
+
+    <script type="text/javascript">
+        let confirms = "{{ confirms }}";
+        let sortCode = "{{ sortCode }}";
+        let beginCode = "{{ beginSetCode }}";
+        let endCode = "{{ endSetCode }}";
+        let comments = "{{ comments }}";
+        let parsonsLabel = ""
+
+        {% if hasDistractors %}
+            parsonsLabel = "Drag some from here";
+        {% else %}
+            parsonsLabel = "Drag from here";
+        {% endif %}
+
+        var initial = "";
+        {% for line in sortCode %}
+            initial = initial + "{{ line | safe}}";
+            initial = initial + '\n';
+        {% endfor %}
+
+        function displayErrors(fb) {
+            if(fb.errors.length > 0) {
+                //alert(fb.errors[0]);
+            }
+        } 
+
+
+        {% if not multiConfirms %}
+            $(document).ready(function(){
+                var parson = new ParsonsWidget({
+                    'sortableId': 'sortable',
+                    'trashId': 'sortableTrash',
+                    'max_wrong_lines': 1,
+                    'feedback_cb' : displayErrors,
+                    {% if hasDistractors %}
+                        'lang': 'di',
+                    {% else %}
+                        'lang': 'en',
+                    {% endif %}
+                });
+                parson.init(initial);
+                parson.shuffleLines();
+                $("#newInstanceLink.btn.btn-danger.btn-inline").click(function(event){
+                    event.preventDefault();
+                    parson.shuffleLines();
+
+                    let listItems = document.getElementsByTagName("li");
+                    for (var i = 0; i < listItems.length; ++i) {
+                        if (listItems[i].id.includes("codeline")) {
+                            colorCodeSortable(listItems[i].id, false);
+                        }
+                    }
+                });
+                $("#feedbackLink.btn.btn-success").click(function(event){
+                    getParsonsFeedback(event, "{{ beginSetCode }}", "{{ endSetCode }}",parson, "{{ comments }}");
+                });
+            });
+
+        {% endif %}
+        $(document).ready(function() {
+            let listItems = document.getElementsByTagName("li");
+
+            placeholderInd = 0;
+            codelineInd = 0;
+            for (var i = 0; i < listItems.length; ++i) {
+                if (listItems[i].id == "placeholder") {
+                    listItems[i].id = "placeholder" + placeholderInd;
+                    placeholderInd++;
+                }
+
+                if (listItems[i].id == "codeline") {
+                    listItems[i].id = "codeline" + codelineInd;
+                    codelineInd++;
+                }
+            }
+
+            for (var i = 0; i < listItems.length; ++i) {
+                if (listItems[i].id.includes("codeline")) {
+                    {% if multiConfirms %}
+                        colorCodeSortable(listItems[i].id, true);
+                    {% else %}
+                        colorCodeSortable(listItems[i].id, false);
+                    {% endif %}
+                }
+            }
+
+            {% if multiConfirms %}
+            let lists = document.getElementsByTagName("ul");
+            ind = 0;
+            for (var i = 0; i < lists.length; ++i) {
+                if (lists[i].id == "ul-sortable") {
+                    lists[i].id = "ul-sortable" + ind;
+                    ind++;
+                }
+            }
+            {% endif %}
+
+            let confirms = document.getElementsByTagName("div");
+            ind = 0;
+            for (var i = 0; i < confirms.length; ++i) {
+                if (confirms[i].id == "confirm") {
+                    confirms[i].id = "confirm" + ind;
+                    ind++
+                }
+            }
+
+            let divs = document.getElementsByTagName("div");
+
+            for (var i = 0; i < divs.length; ++i) {
+                if (divs[i].id == "firstSetCode" || divs[i].id.includes("confirm") || divs[i].id == "endSetCode") {
+                    colorCodeText(divs[i].id);
+                }
+            }
+
+            let spacings = document.getElementsByClassName("spacing");
+            for (var i = 0; i < spacings.length; ++i) {
+                spacings[i].id = "spacing" + i;
+                let parsonsHTML = document.getElementById(spacings[i].id).innerHTML;
+                document.getElementById(spacings[i].id).innerHTML = "";
+                document.getElementById(spacings[i].id).innerHTML = parsonsSpaces + parsonsHTML;
+            }
+
+
+            resizeCodeContainer();
+
+            {% if not multiConfirms %}
+                let parsonsHeight = document.getElementById("sortableTrash").offsetHeight;
+                let parsonString = "height:" + parsonsHeight + "px";
+                document.getElementById("parsons_container").setAttribute("style", parsonString);
+            {% endif %}
+        });
+
+
+        $(window).resize(function () {
+            resizeCodeContainer();
+        });
+    </script>
 {% endblock %}
 
 {% block main_content %}
-    <div class="container-fluid" id="main">
+     <div class="container-fluid" id="main">
         <div class="row" id="row-main">
             <div class="col-3 p-0" id="sidebar">
                 <div id="tutorialCol" class="d-flex flex-column">
@@ -61,7 +210,10 @@
                         </h3>
                         <br>
                         <div class="" id="activity">
-                            {{ lesson.instruction|safe }}
+                            <p>Drag code fragments from the right box to left to reconstruct the code in the correct order to make the Confirm statement true.</p>
+                            {% if not multiConfirms %}
+                                <p>Make sure proper indentation is used.</p>
+                            {% endif %}
                         </div>
                         <br>
                         <div id="answersCard" hidden>
@@ -109,7 +261,7 @@
                 <a id="closeOverlay" class="closebtn">&times;</a>
                 <div class="overlay-content">
                     <ol>
-                        {% for obj in orderedSet%}
+                       {% for obj in orderedSet%}
                             {% if forloop.counter0 == index and not obj.is_alternate%}
                                     <li id="lessonList" style=" color: white"><a style="color: #3A4958; font-size: 150%"><b>{{ obj | safe }}</b></a></li><br>
                             {% elif not obj.is_alternate %}
@@ -127,10 +279,58 @@
             </div>
 
             <div class="col-6 p-0" id="content">
-                <div id="editorCol" class="d-flex flex-column h-100">
+                <div id="editorCol" class="d-flex flex-column h-100" style="position:relative">
                     <!-- Ace Editor -->
-                    <div id="editor" class="flex-grow-1 p-0"></div>
+                        <div id="editor" class="flex-grow-1 p-0"></div>
+                            <div id="codeContainer" class="codeContainer">
+                                    <div id="firstSetCode" class="code">
+                                        {{ beginSetCode | safe }}
+                                    </div>
+                                    
+                                    <div id="parsons_container" class="parsons_container">
+                                        {% if multiConfirms %}
+                                            <div id="sortable_container">
+                                            {% for confirm in confirms %}
+                                                <div id="sortable" class="sortable-code">
+                                                    <div id="spacing" class="spacing">
+                                                        <ul id="ul-sortable" class="ui-sortable output" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                                            <li id="placeholder" class="placeholder">
+                                                                Placeholder
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div id="confirm">
+                                                    {{ confirm | safe }}
+                                                </div>
+                                            {% endfor %}
+                                            </div>
 
+                                        <div id="sortableTrash" class="sortable-code">
+                                            <p><script>document.write(parsonsLabel)</script></p>
+                                            <ul id="ul-sortableTrash" class="ui-sortable output" ondrop="drop(event)" ondragover="allowDrop(event)">
+                                                {% for line in sortCode %}
+                                                    <li id="codeline" draggable="true" ondragstart="drag(event)">
+                                                        {{line}}
+                                                    </li>
+                                                {% endfor %}
+                                            </ul>
+                                        </div>
+
+                                        {% else %}
+                                            <div id="spacing" class="spacing"></div>
+                                            <div id="sortable" class="sortable-code"></div>
+                                            <div id="sortableTrash" class="sortable-code"></div>
+                                        {% endif %}
+                                    </div>
+
+                                    
+
+                                    <div id="endSetCode">
+                                        {{ endSetCode | safe }}
+                                    </div>
+                            </div>
+                    
                     <!-- Error Card -->
                     <div id="compilerResult"></div>
 
@@ -139,10 +339,10 @@
                         <div class="btn-toolbar font-weight-light" role="toolbar" aria-label="Editor Toolbar">
                             <div id="fontButtons" class="d-inline-flex border border-white p-1">
                                 <span class="d-none d-md-block my-auto mr-2">Font:</span>
-                                <button id="fontIncrease" class="btn btn-sm btn-light mr-1" type="button">
+                                <button id="fontIncrease" class="btn btn-sm btn-light mr-1" type="button" onclick="increaseFont()">
                                     <i class="fas fa-plus fa-fw" aria-hidden="true" title="+"></i>
                                 </button>
-                                <button id="fontDecrease" class="btn btn-sm btn-light mr-1" type="button">
+                                <button id="fontDecrease" class="btn btn-sm btn-light mr-1" type="button" onclick="decreaseFont()">
                                     <i class="fas fa-minus fa-fw" aria-hidden="true" title="-"></i>
                                 </button>
                                 <button class="btn btn-sm btn-light" id="changeMode" type="button" title="Change Mode" data-toggle="tooltip" data-placement="top" title="Change theme">
@@ -168,7 +368,11 @@
                                                 <h5>Are you sure you want to reset back to the default code template? You will lose your current code.</h5>
                                             </div>
                                             <div class="modal-footer">
-                                                <button id="resetCode" class="btn btn-danger btn-inline" style="width: 225px" type="button" data-toggle="tooltip" data-placement="top" title="Reset">
+                                                {% if multiConfirms %}
+                                                    <button id="newInstanceLink" class="btn btn-danger btn-inline" style="width: 225px" type="button" data-toggle="tooltip" data-dismiss="modal" title="Reset" onclick="reset(sortCode);">
+                                                {% else %}
+                                                    <button id="newInstanceLink" class="btn btn-danger btn-inline" style="width: 225px" type="button" data-toggle="tooltip" data-dismiss="modal" title="Reset">
+                                                {% endif %}
                                                     Reset
                                                 </button>
                                                 <button type="button" class="btn btn-inline btn-outline-dark " style="width: 225px" data-dismiss="modal">
@@ -190,8 +394,13 @@
                                         data-target="#areYouSure">
                                     <i class="fa">&#xf021;</i>
                                 </button>
-                                <button id="checkCorrectness" class="btn btn-success" type="button"
-                                        data-toggle="tooltip" data-placement="top" title="Check Correctness">
+                                {% if multiConfirms %}
+                                    <button id="feedbackLink" class="btn btn-success" type="button"
+                                            data-toggle="tooltip" data-placement="top" title="Feedback Link" onclick="getMulitConfirmFeedback(event, beginCode, endCode, confirms, comments)">
+                                {% else %}
+                                    <button id="feedbackLink" class="btn btn-success" type="button"
+                                            data-toggle="tooltip" data-placement="top" title="Feedback Link">
+                                {% endif %}
                                     <i class="fas fa-clipboard-check"></i>
                                     Verify
                                     <div id="getIndex"></div>
@@ -242,7 +451,7 @@
                         </div>
                     </div>
                 <div class="progress">
-                    <div class="progress-bar bg-success" id="percent" role="progressbar" style="width: {{index|div:setLength|mul:100}}%;" aria-valuemin="0" aria-valuemax="100">{{index|div:setLength|mul:100|floatformat }}%</div>
+                    <div class="progress-bar bg-success" id="percent" role="progressbar" style="width: 0%;" aria-valuemin="0" aria-valuemax="100">{{index|div:setLength|mul:100|floatformat }}%</div>
                 </div>
                     <script src="{% static 'javascript/lesson/editorUtils.js' %}"></script>
                 </div>
@@ -303,7 +512,7 @@
                     {% endif %}
                     <div id="results">
                         <b>
-                            How do you feel about verification now? Click one
+                            Represent your attitude towards code verification:
                         </b>
                         <a href="#" data-toggle="tooltip" title="This is to help identify which topics you need more help with!">
                             <i class="fa fa-question-circle" aria-hidden="true"></i>
@@ -315,7 +524,7 @@
                         </script>
                     </div>
                     <form id="smileys" style="text-align: center;">
-                        {% if mood == "upset" %}
+                            {% if mood == "upset" %}
                             <input type="radio" name="smiley" value="upset" class="upset" checked="checked">
                             <input type="radio" name="smiley" value="sad" class="sad">
                             <input type="radio" name="smiley" value="neutral" class="neutral">
@@ -351,4 +560,5 @@
             </div>
         </div>
     </div>
+    
 {% endblock %}

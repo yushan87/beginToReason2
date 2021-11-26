@@ -171,6 +171,8 @@ class Assignment(models.Model):
                 # Return None, let the caller handle it
                 return None, -1, None, -1, False
 
+            print(lesson_set)
+
             return lesson_set, progress.current_set_index, lesson_set.lesson_by_index(progress.current_lesson_index), \
                 progress.current_lesson_index, False
 
