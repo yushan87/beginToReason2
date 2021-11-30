@@ -228,7 +228,8 @@ def split_lesson_code(current_lesson):
         confirms[i] = confirms[i].replace("    ", r"\t")
         i += 1
 
-    random.shuffle(sortable_code)
+    if current_lesson.multi_confirms:
+        random.shuffle(sortable_code)
     print(confirms)
 
     lesson_code = {'begin_set': begin_set,

@@ -500,6 +500,11 @@ function colorCodeSortable(listID, isMultiConfirms) {
                 document.getElementById(listID).innerHTML += "<span class=\"keyword\">" + codeLine[i] + "</span>";
             }
 
+            else if (codeLine[i].trim().includes("end;")) {
+                document.getElementById(listID).innerHTML += "<span class=\"keyword\">end</span>";
+                document.getElementById(listID).innerHTML += "<span class=\"text\">;</span>"; 
+            }
+
             else {
                 for (var j = 0; j < codeLine[i].length; ++j) {
                     if (operations.includes(codeLine[i][j])) {
