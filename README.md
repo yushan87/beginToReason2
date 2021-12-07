@@ -17,8 +17,8 @@ All phases of the verification process spanning verification condition (VC) gene
 ## Installation and Running the Application
 
 ### Requirements
-- ![Python Version](https://img.shields.io/pypi/pyversions/websockets)
-- ![Django Version](https://img.shields.io/badge/django%20version-3%2B-blue)
+- ![Python Version](https://img.shields.io/pypi/pyversions/Django)
+- ![Django Version](https://img.shields.io/badge/django%20version-4%2B-blue)
 
 ### Steps
 1. Clone this repository: `git clone https://github.com/ClemsonRSRG/beginToReason2.git`
