@@ -9,19 +9,11 @@
 {% endblock %}
 
 {% block body_js %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/ace.min.js"
-            integrity="sha256-qCCcAHv/Z0u7K344shsZKUF2NR+59ooA3XWRj0LPGIQ=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-chaos.min.js"
-            integrity="sha256-ck2clJ3aqYWprrGnnBxu1OCoEh54qkccsXRguhaZyuo=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.11/theme-solarized_light.min.js"
-            integrity="sha256-wkmiQVrgQL4Fyvl50xeBpdR27forCEggA78Up2pu3xs=" crossorigin="anonymous"></script>
-    <script src="{% static 'javascript/lesson/mode-resolve.js' %}"></script>
-    <script src="{% static 'javascript/lesson/editorUpdate.js' %}"></script>
+    <!-- ACE Editor Library -->
+    {% include "core/ace_lib.html" %}
 
-    <script src="{% static 'javascript/sessionRecording/thinkAloudMain.utils.js' %}"></script>
-    <script src="{% static 'javascript/sessionRecording/sessionRecording.api.js' %}"></script>
-    <script src="{% static 'javascript/sessionRecording/sessionRecording.utils.js' %}"></script>
-    <script src="{% static 'javascript/sessionRecording/speechToText.utils.js' %}"></script>
+    <!-- Custom Think-Aloud Library -->
+    {% include "core/think_aloud.html" %}
 
     <script type="application/javascript">
         $(document).ready(function () {
@@ -35,12 +27,6 @@
                 "{{ user_email }}", "{{ index }}", "{{ lesson.lesson_title }}");
         });
         const assignment = {{ assignment.id }};
-    </script>
-
-    <script>
-        //const INPUTS = document.querySelectorAll('#smileys input');
-        //const updateValue = e => document.querySelector('#result').innerHTML = e.target.value;
-        //INPUTS.forEach(el => el.addEventListener('click', e => updateValue(e)));
     </script>
 {% endblock %}
 
