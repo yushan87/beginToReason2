@@ -43,12 +43,12 @@ def classes(request):
                 if class_to_join is not None:
                     if ClassMembership.objects.filter(user_id=current_user.id,
                                                       class_taking_id=class_to_join.id).exists():
-                        messages.error(request, "You are already in " + str(class_to_join) + "!")
+                        messages.info(request, "You are already in " + str(class_to_join) + "!")
                     else:
                         new_relation = ClassMembership(user_id=current_user.id, class_taking_id=class_to_join.id,
                                                        is_educator=False)
                         new_relation.save()
-                        messages.info(request, "Successfully added you to " + str(class_to_join))
+                        messages.success(request, "Successfully added you to " + str(class_to_join))
                 else:
                     messages.error(request, "Sorry, class code invalid!")
             else:

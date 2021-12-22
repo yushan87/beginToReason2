@@ -15,7 +15,7 @@
                 Catalog of Classes
             </h1>
             <h6 id="jumbo-note" class="font-weight-bold text-center">
-                <strong class="text-uppercase">Note:</strong> Please select one of the following classes to get started.
+                <strong class="text-uppercase">Note:</strong> Please continue working on an assignment or use a code to join a new class.
             </h6>
         </div>
     </div>
@@ -27,68 +27,76 @@
                 <i class="fas fa-arrow-up"></i>
             </button>
         </div>
-        <div class="row mb-5">
-            <div class="col-12 px-5">
-                <div class="page-section-heading my-3">
-                    <h3>My Classes</h3>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {% else %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {% endif %}
+                    <strong>Message:</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
-                <h1 class="mb-0 page-section-heading row">
-                    <div class="col-10">
-                        <h3>My Classes</h3>
-                    </div>
-                    <div class="col-2">
-                        <btn class="btn select-btn btn-block float-right" data-toggle="modal" data-target="#joinClassModal">Join a class</btn>
-                    </div>
-                </h1>
-                {% for class in classes %}
-                    <div id="begin" class="card lesson-card">
-                        <div class="card-horizontal">
-                            <div class="img-square-wrapper">
-                                <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
-                            </div>
-                            <div class="card-body">
-                                <h5 class="card-title">{{class}}</h5>
-                                {% if class.next_lesson_due_date %}
-                                <p class="card-text">Next lesson due: {{ class.next_lesson_due_date }}</p>
-                                {% else %}
-                                <p class="card-text">No current assignments!</p>
-                                {% endif %}
-                                <a href="{% url 'tutor:class' classID=class.id %}">
-                                    <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
-                                        View Class
-                                    </button>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                {% endfor %}
+            {% endfor %}
+        {% endif %}
+        <div class="page-section-heading my-3">
+            <div class="d-flex justify-content-between my-1">
+                <h3>My Classes</h3>
+                <button type="button" class="btn btn-primary btn-sm me-lg-5 me-3" data-bs-toggle="modal" data-bs-target="#joinClassModal">
+                    Join a class
+                </button>
             </div>
+        </div>
+        <div class="row my-4">
+        {% for class in classes %}
+            <div id="begin" class="card lesson-card">
+                <div class="card-horizontal">
+                    <div class="img-square-wrapper">
+                        <img class="" src="{% static 'images/begin.png' %}" id="card-img" alt="Card image cap">
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">{{class}}</h5>
+                        {% if class.next_lesson_due_date %}
+                        <p class="card-text">Next lesson due: {{ class.next_lesson_due_date }}</p>
+                        {% else %}
+                        <p class="card-text">No current assignments!</p>
+                        {% endif %}
+                        <a href="{% url 'tutor:class' classID=class.id %}">
+                            <button class="btn select-btn btn-block" type="submit" aria-pressed="true">
+                                View Class
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
         </div>
     </div>
 
+    <!-- Join Class Modal -->
     <div class="modal fade" id="joinClassModal" tabindex="-1" role="dialog" aria-labelledby="joinClassModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form method="POST" action="{% url 'tutor:classes' %}">{% csrf_token %}
-              <div class="modal-header">
-                <h5 class="modal-title" id="joinClassModalLabel">New class</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                  <div class="form-group">
-                    <label for="class-code" class="col-form-label">Class join code:</label>
-                    <input type="text" class="form-control" id="class-code" name="class-code" required maxlength="6">
-                  </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <input type="submit" value="Join" class="btn select-btn">
-              </div>
-            </form>
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="joinClassModalLabel">Enter the join code for a new class:</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{% url 'tutor:classes' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="class-code" name="class-code" placeholder="Code" required>
+                            <label for="class-code">Code</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" aria-expanded="true">Join</button>
+                    </div>
+                </form>
+            </div>
         </div>
-      </div>
     </div>
 
     <!-- Back To Top -->
