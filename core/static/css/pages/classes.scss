@@ -5,6 +5,7 @@
 @import "../components/_fade";
 @import "../components/_jumbotron.scss";
 @import "../utils/_variables";
+@import url("httpsL//fonts.googleapis.com/css?family=Abril+Fatface");
 
 /* Main Layout-Related CSS */
 #page-content {
@@ -19,168 +20,35 @@
     // Use the jumbotron mixin to generate the necessary CSS code
     @include generateJumbotron($page-content-text-color-light, $page-content-bg-color-1, $page-content-border-color-2);
 
-    // Nav Tabs
-    nav > .nav {
-        &.nav-tabs {
-            color: $page-content-text-color-light;
-            background: $page-content-bg-color-3;
-            border: none;
-        }
-    }
-
-    // Nav Items
-    nav > div .nav-item {
-        // CSS for nav-links
-        &.nav-link {
-            padding: 18px 25px;
-            color: $page-content-text-color-light;
-            background: $page-content-bg-color-3;
-
-            // No border left for the first child
-            &:nth-child(n+2) {
-                border-left: 2px solid $page-content-border-color-2;
-                border-radius: 0;
-            }
-
-            // CSS for nav-links that we hover or focus
-            &:hover,
-            &:focus {
-                background: $page-content-bg-color-1;
-                border: none;
-                transition: background 0.2s linear;
-            }
-
-            // CSS for active nav-links
-            &.active {
-                padding: 19px 25px 1px;
-                background: $page-content-bg-color-1;
-                border: none;
-
-                &::after {
-                    position: relative;
-                    bottom: -23px;
-                    display: block;
-                    width: 0;
-                    height: 0;
-                    margin: auto;
-                    content: "";
-                    border-top: 10px solid $page-content-border-color-2;
-                    border-right: 10px solid transparent;
-                    border-left: 10px solid transparent;
-                }
-            }
-        }
-    }
-
     // Section Heading
     .page-section-heading {
         color: $charcoal;
         border-bottom: 5px solid $page-content-border-color-1;
     }
 
-    // Selected lesson
-    .select-btn {
-        color: $page-content-text-color-light;
-        background-color: $page-content-bg-color-1;
+    // List Styling for My Classes
+    ol {
+        list-style: none;
+        counter-reset: any-name;
+    }
 
-        // CSS for nav-links that we hover or focus
-        &:hover,
-        &:focus {
-            color: $page-content-text-color-light;
-            background-color: $page-content-bg-color-5;
+    ol li {
+        counter-increment: any-name;
+
+        h5 {
+            color: $page-content-text-color-4;
         }
     }
 
-    .accordion {
-        width: 100%;
-        padding: 18px;
-        font-size: 15px;
-        text-align: left;
-        background-color: $white;
-        border: none;
-        transition: 0.4s;
-    }
-
-    .panel {
-        display: none;
-        padding: 0 18px;
-        overflow: hidden;
-        background-color: $white;
-    }
-
-    .rotate {
-        transition: all 0.3s linear;
-    }
-
-    .rotate.down {
-        transform: rotate(90deg);
-    }
-
-    .right-icon-holder {
-        position: relative;
-    }
-
-    .right-icon-holder .fa {
-        position: absolute;
-        top: 50%;
-        right: 10px;
-        margin-top: -12px;
-        line-height: 24px;
-    }
-
-    .card-horizontal {
-        display: flex;
-        flex: 1 1 auto;
+    li::before {
+        color: $page-content-text-color-3;
+        font-weight: bold;
+        font-size: 3rem;
+        font-family: "Abril Fatface", serif;
+        content: counter(any-name);
     }
 }
 
 #jumbo-note {
     color: $page-content-text-color-3;
-}
-
-// CSS for tab content
-.tab-content {
-    padding: 30px 25px;
-    line-height: 25px;
-    border-top: 5px solid $page-content-border-color-2;
-    border-right: 1px solid $page-content-border-color-2;
-    border-bottom: 5px solid $page-content-border-color-2;
-    border-left: 1px solid $page-content-border-color-2;
-}
-
-#jumbo-title {
-    color: $white;
-    text-align: center;
-}
-
-#border {
-    border-top: 5px solid $charcoal;
-}
-
-.lesson-card {
-    margin: 50px 50px 50px 50px;
-}
-
-#card-img {
-    width: 300px;
-    height: 180px;
-}
-
-.recommended {
-    color: $white;
-    background-color: $coral;
-}
-
-.inProgress {
-    color: $white;
-    background-color: #28d148;
-}
-
-.vertical-card {
-    width: 50vh;
-    margin: 5px 5px 5px 5px;
-}
-
-.vertical-img {
-    height: 30vh;
 }
