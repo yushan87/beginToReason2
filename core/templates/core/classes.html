@@ -76,20 +76,20 @@
     <div class="modal fade" id="joinClassModal" tabindex="-1" role="dialog" aria-labelledby="joinClassModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="joinClassModalLabel">Enter the join code for a new class:</h5>
+                <div class="modal-header bg-secondary text-dark-50 bg-opacity-25">
+                    <h5 class="modal-title" id="joinClassModalLabel">Enter the Join Code:</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form action="{% url 'core:classes' %}" method="POST">
                     {% csrf_token %}
                     <div class="modal-body">
-                        <div class="form-floating mb-3">
+                        <div class="form-floating mb-4">
                             <input type="text" class="form-control" id="class-code" name="class-code" placeholder="Code" required>
                             <label for="class-code">Code</label>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="submit" class="btn btn-success" aria-expanded="true">Join</button>
+                        <div class="d-flex flex-row-reverse">
+                            <button type="submit" class="btn btn-success" aria-expanded="true">Join</button>
+                        </div>
                     </div>
                 </form>
             </div>

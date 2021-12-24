@@ -5,7 +5,7 @@
 @import "../components/_fade";
 @import "../components/_jumbotron.scss";
 @import "../utils/_variables";
-@import url("httpsL//fonts.googleapis.com/css?family=Abril+Fatface");
+@import url("https://fonts.googleapis.com/css?family=Abril+Fatface");
 
 /* Main Layout-Related CSS */
 #page-content {
@@ -43,7 +43,7 @@
     li::before {
         color: $page-content-text-color-3;
         font-weight: bold;
-        font-size: 3rem;
+        font-size: 2.5rem;
         font-family: "Abril Fatface", serif;
         content: counter(any-name);
     }
