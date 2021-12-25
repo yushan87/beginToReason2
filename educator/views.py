@@ -2,16 +2,15 @@
 This module contains our Django views for the "educator" application.
 """
 import random
-from datetime import date
 
+from accounts.models import UserInformation
+from core.models import MainSet
+from datetime import date
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
-from accounts.models import UserInformation
-from core.models import MainSet
 from educator.models import Class, ClassMembership, Assignment
 from educator.py_helper_functions.educator_helper import user_auth_inst, user_is_educator, get_classes_taught
 from tutor.py_helper_functions.tutor_helper import user_auth

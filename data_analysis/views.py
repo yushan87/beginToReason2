@@ -1,14 +1,11 @@
 """
 This module contains our Django views for the "data_analysis" application.
 """
-from django.shortcuts import render, redirect
-
 from accounts.models import UserInformation
-from data_analysis.py_helper_functions.lesson_stats import get_main_set_stats, get_main_set_info
 from data_analysis.py_helper_functions.graph_viewer.lesson_reader import lesson_to_json, lesson_info
+from data_analysis.py_helper_functions.lesson_stats import get_main_set_stats, get_main_set_info
+from django.shortcuts import render, redirect
 from educator.models import Assignment
-
-# Create your views here.
 from educator.py_helper_functions.educator_helper import user_educates_class_auth
 
 
@@ -24,7 +21,6 @@ def d3_graph(request, assignmentID, lessonSetIndex, lessonIndex):
     Returns:
         HttpResponse: A generated http response object to the request to generate the graph
     """
-    print(request)
     # Value checking
     try:
         assignment = Assignment.objects.get(id=assignmentID)

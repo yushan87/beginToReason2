@@ -1,18 +1,16 @@
 """
 This module contains our Django helper functions for the "tutor" application.
 """
+import core.models
 import json
 import re
 import time
 import urllib
 import websockets
 
-from django.contrib.auth.models import User
-
-import core.models
 from accounts.models import UserInformation
-from core.models import Lesson
 from data_analysis.models import DataLog
+from django.contrib.auth.models import User
 from tutor.py_helper_functions.mutation import reverse_mutate
 
 
@@ -49,8 +47,6 @@ def alternate_set_check(current_lesson, alternate_type):
         if alternate_type != core.models.AlternateType.DEFAULT:
             try:
                 # If what I was searching for type-wise doesn't exist as an alternate option, try the default
-                print("Lesson", current_lesson, "activated a type of", alternate_type, "but didn't supply a lesson to "
-                                                                                       "redirect to!")
                 return core.models.LessonAlternate.objects.get(lesson=current_lesson,
                                                                type=core.models.AlternateType.DEFAULT)
             except core.models.LessonAlternate.DoesNotExist:
@@ -92,7 +88,6 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
     Returns:
         dict that should be send to front-end JS
     """
-
     if not alt_activated:
         if status == 'success':
             headline = 'Correct'
@@ -176,7 +171,6 @@ def replace_previous(user, code, is_alt):
         code: ? string of code
     """
     if not DataLog.objects.filter(user_key=User.objects.get(email=user)).exists():
-        print("There is no datalog")
         return code
 
     if is_alt:
@@ -186,10 +180,7 @@ def replace_previous(user, code, is_alt):
 
     # Checks if there is code to be replaced
     present = code.find('/*previous')
-
     if present != -1:
-        print("present")
-
         occurrence = 20
         indices1 = []
         indices2 = []

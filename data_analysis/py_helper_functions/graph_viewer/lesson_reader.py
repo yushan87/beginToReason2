@@ -3,14 +3,11 @@ Main file for displaying graphs.
 """
 import json
 import re
+
 from accounts.models import UserInformation
-from core.models import LessonSet, MainSet
 from data_analysis.models import DataLog
 from data_analysis.py_helper_functions.graph_viewer.node import Node
-
-
-# Takes a lesson index and returns a JSON representation fit for D3
-from educator.models import Assignment
+from educator.models import Assignment # Takes a lesson index and returns a JSON representation fit for D3
 
 
 def lesson_to_json(assignment_id, lesson_set_index, lesson_index, is_anonymous):

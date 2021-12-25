@@ -1,16 +1,17 @@
+"""
+This module contains our Django views for the "parsons" application.
+"""
 import random
 
-from django.http import HttpResponse
-from django.shortcuts import render
-
-from django.shortcuts import render, redirect
-from django.contrib.auth import get_user_model
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.datalog_helper import finished_lesson_count
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.contrib.auth import get_user_model
 from educator.models import Assignment
 from educator.py_helper_functions.educator_helper import assignment_auth
-from tutor.py_helper_functions.tutor_helper import user_auth, replace_previous, clean_variable
 from tutor.py_helper_functions.mutation import can_mutate
+from tutor.py_helper_functions.tutor_helper import user_auth, replace_previous, clean_variable
 
 User = get_user_model()
 

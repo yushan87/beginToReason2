@@ -1,12 +1,8 @@
 import json
 
 from data_analysis.models import DataLog
-from core.models import MainSetLessonSets, LessonSetLessons, MainSet
 from data_analysis.py_helper_functions.graph_viewer.lesson_reader import is_user_educator
-
-
-# Returns stats for the mainset based around each lesson set
-from educator.models import Assignment, AssignmentProgress
+from educator.models import Assignment, AssignmentProgress # Returns stats for the mainset based around each lesson set
 
 
 def get_main_set_stats(assignment_id):

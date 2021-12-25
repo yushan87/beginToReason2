@@ -119,31 +119,36 @@ def assignment_auth(request, assignment_id=None):
     if tutor_helper.user_auth(request):
         if assignment_id is None:
             assignment_id = request.POST.get("assignment_id")
+        
         # Do we have the assignment in the DB?
         if Assignment.objects.filter(id=assignment_id).exists():
-            print("HIT")
             assignment = Assignment.objects.get(id=assignment_id)
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
 
             # Is the user already taking this assignment?
             if AssignmentProgress.objects.filter(assignment_key=assignment, user_info_key=current_user).exists():
-                print("old assignment")
                 # Check that assignment hasn't been completed already
                 current_lesson_set, _, current_lesson, _, _ = assignment.get_user_lesson(current_user.id)
                 if current_lesson_set is None or current_lesson is None:
-                    print("Already completed!")
+                    # Already completed
                     return False
+
+                # Have a current lesson that is in progress
                 return True
             else:
                 # Is the user in the class for this assignment?
                 if ClassMembership.objects.filter(user=current_user, class_taking=assignment.class_key).exists():
                     progress = AssignmentProgress(user_info_key=current_user, assignment_key=assignment)
                     progress.save()
-                    print("starting new assignment")
+                    
+                    # Started new assignment
                     return True
-                print("User not in the class for this assignment!")
+
+                # User not in the class for this assignment!
+                return False
         else:
-            print("Assignment doesn't exist!")
+            # Assignment doesn't exist!
+            return False
     else:
-        print("Bad user!")
-    return False
+        # Bad user!
+        return False

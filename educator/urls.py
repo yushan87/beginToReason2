@@ -2,7 +2,6 @@
 This module contains our mapping of URL path expressions to Django views for the "educator" application.
 """
 from django.urls import path
-
 from . import views
 
 # URL namespace for this application.

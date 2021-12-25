@@ -13,9 +13,9 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from educator.models import Assignment
 from educator.py_helper_functions.educator_helper import assignment_auth
+from tutor.py_helper_functions.mutation import can_mutate
 from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier, \
     clean_variable
-from tutor.py_helper_functions.mutation import can_mutate
 
 User = get_user_model()
 
@@ -33,7 +33,6 @@ def grader(request):
     if request.method == 'POST':
         # Case 1a: if the user exists
         if user_auth(request):
-
             data = json.loads(request.body.decode('utf-8'))
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))
             assignment = Assignment.objects.get(id=data['assignment'])
@@ -43,7 +42,9 @@ def grader(request):
             submitted_answer = re.findall("Confirm [^;]*;|ensures [^;]*;", data['code'])
             submitted_answer = ''.join(submitted_answer)
 
+            # Send student code file to RESOLVE verifier
             status, lines, vcs, completion_time = asyncio.run(send_to_verifier(data['code']))
+            
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status,
                      vcs, completion_time)

@@ -34,8 +34,7 @@ def log_data(user_info, assignment, lesson_set, lesson, is_alternate, browser_da
     user_info.mood = face
     user_info.save()
 
-    print("data_logged")
-
+    # Data logged
     data_to_log = DataLog.objects.create(user_key=user,
                                          time_stamp=timezone.now(),
                                          lesson_set_key=lesson_set,
@@ -63,14 +62,9 @@ def get_log_data(user, lesson_name):
         String representation of data log
     """
     user = User.objects.get(email=user)
-    print(user)
     get_user_successes = DataLog.objects.filter(user_key=user)
-    print(get_user_successes)
-
-    print("[][][][]", get_user_successes.filter(lesson_set_key=LessonSet.objects.get(set_name=lesson_name)))
     get_lesson = get_user_successes.filter(lesson_set_key=LessonSet.objects.get(set_name=lesson_name)).order_by('-id')[0]
 
-    print(get_lesson)
     return repr(get_lesson.code).replace("'",''), get_lesson.face, get_lesson.past_answers, get_lesson.explanation
 
 
@@ -84,8 +78,6 @@ def finished_lesson_count(user):
         int of successes found in the logs by the user
     """
     user = User.objects.get(email=user)
-
     get_user_successes = DataLog.objects.filter(user_key=user).filter(status='success')
-    print(get_user_successes.count())
 
     return get_user_successes.count()

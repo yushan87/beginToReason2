@@ -302,7 +302,6 @@ class LessonAlternate(models.Model):
 
     @param models.Model The base model
     """
-
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, null=False)
     alternate_set = models.ForeignKey(LessonSet, on_delete=models.PROTECT, null=False)
     replace = models.BooleanField(null=False, blank=False)  # If true, if alt lesson A is called on lesson 1, after A
