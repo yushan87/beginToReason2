@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from educator.models import Class, ClassMembership
-from educator.py_helper_functions.educator_helper import get_classes
+from educator.py_helper_functions.educator_helper import get_classes, user_in_class_auth
 from tutor.py_helper_functions.tutor_helper import user_auth
 
 User = get_user_model()
@@ -59,6 +59,25 @@ def classes(request):
                 messages.error(request, "Sorry, class code invalid!")
             return redirect("core:classes")
         return render(request, "core/classes.html", {'classes': get_classes(current_user)})
+    else:
+        return redirect("accounts:settings")
+
+
+def class_view(request, classID):
+    """function class_view This function handles the view for the class page of the application.
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+        classID (int): The ID of the class that's being viewed
+    Returns:
+        HttpResponse: A generated http response object to the request depending on whether or not
+                      the user is authenticated.
+    """
+    if user_auth(request):
+        if user_in_class_auth(UserInformation.objects.get(user=User.objects.get(email=request.user.email)), classID):
+            class_to_show = Class.objects.get(id=classID)
+            return render(request, "core/student_assignments.html", {'class': class_to_show})
+        else:
+            return redirect("core:classes")
     else:
         return redirect("accounts:settings")
 

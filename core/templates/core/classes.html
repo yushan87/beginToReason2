@@ -49,23 +49,19 @@
                 </button>
             </div>
         </div>
-        <div class="row mx-3">
+        <div class="row mx-3 mb-5">
             <ol class="list-group list-group-flush">
             {% for class in classes %}
                 <li class="list-group-item d-flex justify-content-between align-items-start mt-3">
                     <div class="ms-4 me-auto">
                         <h5>{{ class }}</h5>
                         {% if class.next_lesson_due_date %}
-                        <p class="card-text">Next lesson due: {{ class.next_lesson_due_date }}</p>
+                        <p>Next lesson due: {{ class.next_lesson_due_date }}</p>
                         {% else %}
-                        <p class="card-text">No current assignments!</p>
+                        <p>No current assignments!</p>
                         {% endif %}
                     </div>
-                    <a href="{% url 'tutor:class' classID=class.id %}">
-                        <button class="btn btn-outline-secondary btn-block" type="submit" aria-pressed="true">
-                            View Class
-                        </button>
-                    </a>
+                    <a class="btn btn-outline-success btn-block" href="{% url 'core:class' classID=class.id %}" aria-pressed="true">View Class</a>
                 </li>
             {% endfor %}
             </ol>

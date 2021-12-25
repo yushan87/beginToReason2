@@ -11,33 +11,13 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from educator.models import Class, Assignment
-from educator.py_helper_functions.educator_helper import user_in_class_auth, assignment_auth
+from educator.models import Assignment
+from educator.py_helper_functions.educator_helper import assignment_auth
 from tutor.py_helper_functions.tutor_helper import user_auth, browser_response, replace_previous, send_to_verifier, \
     clean_variable
 from tutor.py_helper_functions.mutation import can_mutate
 
 User = get_user_model()
-
-
-def class_view(request, classID):
-    """function class_view This function handles the view for the class page of the application.
-    Args:
-        request (HTTPRequest): A http request object created automatically by Django.
-        classID (int): The ID of the class that's being viewed
-    Returns:
-        HttpResponse: A generated http response object to the request depending on whether or not
-                      the user is authenticated.
-    """
-    if user_auth(request):
-        if user_in_class_auth(UserInformation.objects.get(user=User.objects.get(email=request.user.email)), classID):
-            class_to_show = Class.objects.get(id=classID)
-            return render(request, "tutor/assignments_student.html",
-                          {'class': class_to_show})
-        else:
-            return redirect("core:classes")
-    else:
-        return redirect("accounts:settings")
 
 
 @login_required(login_url='/accounts/login/')

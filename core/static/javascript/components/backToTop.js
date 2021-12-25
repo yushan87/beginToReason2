@@ -12,7 +12,7 @@ window.onscroll = function () {
 };
 
 function scrollFunction() {
-    if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+    if (document.body.scrollTop > 150 || document.documentElement.scrollTop > 150) {
         myButton.style.display = "block";
     } else {
         myButton.style.display = "none";

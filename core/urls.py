@@ -12,6 +12,7 @@ app_name = 'core'
 
 # URL patterns to be matched.
 urlpatterns = [
+    path('class/<int:classID>', views.class_view, name='class'),
     path('classes', views.classes, name='classes'),
     path('privacy', views.privacy, name='privacy'),
     path('favicon.ico', RedirectView.as_view(url=staticfiles_storage.url('images/favicon.ico')))
