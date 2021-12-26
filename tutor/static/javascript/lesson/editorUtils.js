@@ -58,11 +58,9 @@ function createEditor(code, explain, lessonName, review, past, isParsons) {
         $("#resultCard").attr("class", "card bg-success text-white");
 
         if (!is_parsons) {
-            console.log(is_parsons);
             document.getElementById("answersCard").removeAttribute("hidden")
             document.getElementById("pastAnswers").innerHTML = past;
         }
-        
 
         $("#resetCode").attr("disabled", "disabled");
         $("#checkCorrectness").attr("disabled", "disabled");
@@ -294,17 +292,9 @@ function createAlertBox(hasError, message) {
     // New HTML Object #2: Close Button
     let closeButton = document.createElement("button");
     closeButton.setAttribute("type", "button");
-    closeButton.setAttribute("class", "close");
-    closeButton.setAttribute("data-dismiss", "alert");
+    closeButton.setAttribute("class", "btn-close");
+    closeButton.setAttribute("data-bs-dismiss", "alert");
     closeButton.setAttribute("aria-label", "Close");
-
-    // New HTML Object #3: Close Icon
-    let closeIconSpan = document.createElement("span");
-    closeIconSpan.setAttribute("aria-hidden", "true");
-    closeIconSpan.innerHTML = "&times;";
-
-    // Add close icon to close button
-    closeButton.appendChild(closeIconSpan);
 
     // Add message and the close button to the alert box
     alertDiv.appendChild(document.createTextNode(message));
@@ -368,14 +358,13 @@ $("#checkCorrectness").click(function () {
     // Check for trivials
     let trivials = checkForTrivials(code);
     if (trivials.overall == "failure") {
-        console.log("trivial: " + trivials.trivial )
         if(trivials.missing){
-            document.getElementById("resultsHeader").innerHTML = "<h3>Try again</h3>";
+            document.getElementById("resultsHeader").innerHTML = "<h5>Try again</h5>";
             document.getElementById("resultDetails").innerHTML = "Consider using initial values of variables.";
 
         }
         else{
-            document.getElementById("resultsHeader").innerHTML = "<h3>Syntax error</h3>";
+            document.getElementById("resultsHeader").innerHTML = "<h5>Syntax error</h5>";
             document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
 
         }
@@ -389,8 +378,8 @@ $("#checkCorrectness").click(function () {
             allAnswers += "</br>";
         }
 
+        let currentAttemptAnswers = ''
         if (!is_parsons) {
-                let currentAttemptAnswers = ''
             for (var i = 0; i < trivials.confirms.length; i++) {
                 aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
                 document.getElementById("answersCard").removeAttribute("hidden")
@@ -406,7 +395,7 @@ $("#checkCorrectness").click(function () {
         unlock();
     }
     else{
-        document.getElementById("resultsHeader").innerHTML = "<h3>Checking Correctness...</h3>";
+        document.getElementById("resultsHeader").innerHTML = "<h5>Checking Correctness...</h5>";
         document.getElementById("resultDetails").innerHTML = '<div class="sk-chase">\n' +
             '  <div class="sk-chase-dot"></div>\n' +
             '  <div class="sk-chase-dot"></div>\n' +
@@ -465,25 +454,17 @@ $("#changeMode").click(function () {
         darkTheme = false;
         $("#changeMode").attr("class", "btn btn-sm btn-dark");
         document.getElementById("changeMode").innerHTML = "<i class=\"fa fa-moon-o\" aria-hidden=\"true\"></i> Dark";
-        $("#right-col").attr("style", "background-color: #C8C8C8");
-        $("#explainCard").attr("style", "position: absolute;\n" +
-            "    bottom: 0;\n" +
-            "    width: 98%;\n" +
-            "    margin: 5px 5px 5px 5px;\n" +
-            "    background-color: #4C6085;\n" +
-            "    color: #fff;");
+        $("#resultsCol").attr("class", "col-3 resultPanel p-0 bg-secondary");
+        $("#resultsCol").attr("style", "--bs-bg-opacity: .2;");
+        $("#explainCard").attr("class", "card mt-auto text-light bg-dark");
     }
     else {
         aceEditor.setTheme("ace/theme/chaos");
         darkTheme = true;
         $("#changeMode").attr("class", "btn btn-sm btn-light");
-        $("#right-col").attr("style", "background-color: #333");
-        $("#explainCard").attr("style", "position: absolute;\n" +
-            "    bottom: 0;\n" +
-            "    width: 98%;\n" +
-            "    margin: 5px 5px 5px 5px;\n" +
-            "    background-color: #E0E0E0;\n" +
-            "    color: #333;");
+        $("#resultsCol").attr("class", "col-3 resultPanel p-0 bg-dark");
+        $("#resultsCol").attr("style", "--bs-bg-opacity: .9;");
+        $("#explainCard").attr("class", "card mt-auto text-dark bg-light");
         document.getElementById("changeMode").innerHTML = "<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-brightness-high-fill\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
             "  <path d=\"M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z\"/>\n" +
             "  <path fill-rule=\"evenodd\" d=\"M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z\"/>\n" +
@@ -492,8 +473,6 @@ $("#changeMode").click(function () {
 
     // Unlock editor for further user edits
     unlock();
-
-    changeTheme();
 });
 
 
@@ -513,52 +492,6 @@ $("#fontIncrease").click(function () {
 
 
 /*
- * Function for opening and closing overlay
- */
-$("#toggleOverlay").click(function () {
-    if(overlayOpen){
-        console.log("toggle overlay is true, turning false")
-        document.getElementById("myNav").style.width = "0%";
-        overlayOpen = false;
-        document.getElementById("toggleOverlay").innerHTML = "<i class=\"fa fa-list\" aria-hidden=\"true\"></i> View Lessons";
-    }
-    else{
-        document.getElementById("myNav").style.width = "25%";
-        overlayOpen = true;
-        document.getElementById("toggleOverlay").innerHTML = "<i class=\"fa fa-times\" aria-hidden=\"true\"></i> Dismiss";
-    }
-});
-
-$(".toggle-sidebar").click(function () {
-    $("#sidebar").toggleClass("collapsed");
-    $("#content").toggleClass("col-md-6 col-md-8");
-    $("#right-col").toggleClass("col-md-3 col-md-4");
-    if(instructOpen){
-        document.getElementById("toggleInstruct").innerHTML = "Show Instructions";
-        instructOpen = false;
-    }
-    else{
-        document.getElementById("toggleInstruct").innerHTML = "Hide Instructions";
-        instructOpen = true;
-    }
-
-    return false;
-});
-
-
-/*
- * Function for x of overlay
- */
-$("#closeOverlay").click(function () {
-
-        document.getElementById("myNav").style.width = "0%";
-        overlayOpen = false;
-        document.getElementById("toggleOverlay").innerHTML = "<i class=\"fa fa-list\" aria-hidden=\"true\"></i> View Lessons";
-
-});
-
-
-/*
  * Function for decreasing the editor's font size.
  */
 $("#fontDecrease").click(function () {
@@ -570,12 +503,6 @@ $("#fontDecrease").click(function () {
     }
 
     return false;
-});
-
-
-$("#lessonList").click(function () {
-    console.log( this.innerHTML)
-
 });
 
 
@@ -674,7 +601,7 @@ $("#prev").click(function () {
 });
 
 /////////////////////////////////////////
-// POST result from Resolve to backend //
+// POST result from RESOLVE to backend //
 /////////////////////////////////////////
 $.postJSON = (url, data, callback) => {
 
@@ -691,8 +618,6 @@ $.postJSON = (url, data, callback) => {
             document.getElementById("resultsHeader").innerHTML = response.resultsHeader;
             document.getElementById("resultDetails").innerHTML = response.resultDetails;
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
-
-            console.log(response.status);
 
             if (response.status == "success") {
                 $("#resultCard").attr("class", "card bg-success text-white");
@@ -725,8 +650,6 @@ $.postJSON = (url, data, callback) => {
                 for (var i = 0; i < lines.length; i++) {
                     if (displayPast) {
                         confirmLine = `${lines[i].lineNum}: ${aceEditor.session.getLine(lines[i].lineNum-1).replace("Confirm", "").replace(";", "")}`
-                        
-                        console.log(confirmLine);
                         
                         if (lines[i].status == 'success') {
                             confirmLine += ' <i class="fas fa-check"></i>'

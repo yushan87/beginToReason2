@@ -68,14 +68,16 @@ def mutate_vars(activity_string):
     #maybe shuffle lists? maybe not
     if random.randint(0, 1) == 1:
         random.shuffle(letters[random_num])
+        
     # list is now a list of the variables to find and switch
     # iterate through the list and assign each variable a new letter
     for var in variable_list:
-
         # assign each variable a new variable in the randomNum sub array
         variable_key[var] = letters[random_num][i]
+
         # make an inverse map
         inverse_variable_key[letters[random_num][i]] = var
+
         i = i + 1
 
 

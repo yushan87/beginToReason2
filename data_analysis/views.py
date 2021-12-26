@@ -48,7 +48,6 @@ def assignment_statistics(request, assignmentID):
     Returns:
         HttpResponse: A generated http response object to the request to show the lesson set
     """
-    print(request)
     # Value checking
     try:
         assignment = Assignment.objects.get(id=assignmentID)

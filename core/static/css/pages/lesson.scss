@@ -2,23 +2,24 @@
 // This file extends _base to generate all the CSS required to render the lesson page
 @import "../base/base";
 @import "../components/_ace";
-@import "../utils/variables";
 @import "../components/_overlay.scss";
 @import "../components/_jumbotron.scss";
 @import "../components/_smiley.scss";
 @import "../components/_stepbar.scss";
+@import "../utils/variables";
 
 /* Tutorial Layout-Related CSS */
 #page-content {
     height: calc(100vh - #{$page-header-min-height});
     overflow: hidden;
+}
+
+/* Tutorial Content Column-Related CSS */
+#tutorialCol {
+    height: calc(100vh - #{$page-header-min-height});
 
     // Use the jumbotron mixin to generate the necessary CSS code
     @include generateJumbotron($page-content-text-color-light, $page-content-bg-color-1, $page-content-border-color-2);
-}
-
-#tutorialCol {
-    height: calc(100vh - #{$page-header-min-height});
 }
 
 #tutorialContent {
@@ -32,59 +33,41 @@
     .inlineCode {
         font-family: "Courier New", Courier, monospace;
     }
+
+    // Section Heading
+    .page-section-heading {
+        color: $charcoal;
+        border-bottom: 5px solid $queen-blue;
+    }
 }
 
+#pastAnswers {
+    color: $page-content-text-color-light; 
+    font-family: "Courier New", Courier, monospace; 
+    font-weight: bold;
+}
+
+/* View Lessons OffCanvas-Related CSS */
+#offcanvasViewLessons {
+    background-color: $page-content-bg-color-3;
+    z-index: 2000;
+
+    a {
+        text-decoration: none;
+    }
+
+    ol li {
+        background-color: $page-content-bg-color-3;
+    }
+}
+
+/* Editor Content Column-Related CSS */
 #editor {
     border-right: 10px solid #3a4958 !important;
 }
 
-.navbar-toggle {
-    float: left !important;
-    margin-left: 15px;
-}
-
-.modal-nav-content {
-    width: 100%;
-    height: auto;
-}
-
-.modal-nav-body {
-    margin-top: 100px;
-
-    ul {
-        width: 100%;
-        color: #fff;
-        list-style-type: none;
-    }
-
-    ul li {
-        padding: 8px;
-        font-size: 130%;
-        text-align: center;
-        text-transform: uppercase;
-    }
-}
-
-.btn-dark {
-    background-color: #30343f;
-}
-
-.btn-dark:hover {
-    background-color: #30343f;
-    border: 1px solid #30343f;
-}
-
-#activity-cards {
-    color: $white;
-    background-color: $queen-blue;
-}
-
-#progress-modal {
-    background-color: rgba(48, 52, 63, 0.9);
-}
-
-#are-you-sure {
-    color: $charcoal;
+#editorToolbar {
+    background-color: $page-content-bg-color-5;
 }
 
 #prev {
@@ -95,12 +78,17 @@
     margin: 2px 2px 2px 2px;
 }
 
+/* Results Content Column-Related CSS */
 #results {
     margin: 5px 5px 5px 5px;
 }
 
 #resultCard {
-    margin: 5px 5px 5px 5px;
+    width: 100%;
+}
+
+#explainCard {
+    width: 100%;
 }
 
 #explainBox {
@@ -115,16 +103,6 @@
 
 #radio {
     margin-left: 36px;
-}
-
-// Section Heading
-.page-section-heading {
-    color: #222529;
-    border-bottom: 5px solid $queen-blue;
-}
-
-.tool-back {
-    background: $charcoal;
 }
 
 .sk-chase {
@@ -222,13 +200,4 @@
     0% {
         transform: scale(1);
     }
-}
-
-.collapsed {
-    display: block;
-    margin-left: -25%; /* same width as sidebar */
-}
-
-#row-main {
-    overflow-x: hidden; /* necessary to hide collapsed sidebar */
 }

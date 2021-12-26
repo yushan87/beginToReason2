@@ -231,7 +231,6 @@ def split_lesson_code(current_lesson):
 
     if current_lesson.multi_confirms:
         random.shuffle(sortable_code)
-    print(confirms)
 
     lesson_code = {'begin_set': begin_set,
                   'end_set': end_set,
