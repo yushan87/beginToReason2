@@ -359,12 +359,12 @@ $("#checkCorrectness").click(function () {
     let trivials = checkForTrivials(code);
     if (trivials.overall == "failure") {
         if(trivials.missing){
-            document.getElementById("resultsHeader").innerHTML = "<h5>Try again</h5>";
+            document.getElementById("resultsHeader").innerHTML = "<h5>Try Again</h5>";
             document.getElementById("resultDetails").innerHTML = "Consider using initial values of variables.";
 
         }
         else{
-            document.getElementById("resultsHeader").innerHTML = "<h5>Syntax error</h5>";
+            document.getElementById("resultsHeader").innerHTML = "<h5>Syntax Error</h5>";
             document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
 
         }
@@ -396,14 +396,13 @@ $("#checkCorrectness").click(function () {
     }
     else{
         document.getElementById("resultsHeader").innerHTML = "<h5>Checking Correctness...</h5>";
-        document.getElementById("resultDetails").innerHTML = '<div class="sk-chase">\n' +
-            '  <div class="sk-chase-dot"></div>\n' +
-            '  <div class="sk-chase-dot"></div>\n' +
-            '  <div class="sk-chase-dot"></div>\n' +
-            '  <div class="sk-chase-dot"></div>\n' +
-            '  <div class="sk-chase-dot"></div>\n' +
-            '  <div class="sk-chase-dot"></div>\n' +
+        document.getElementById("resultDetails").innerHTML = 
+            '<div class="d-flex justify-content-center">\n' +
+            '  <div class="spinner-border" style="width: 5rem; height: 5rem; color: #ff8c5f !important;" role="status">\n' +
+            '    <span class="visually-hidden">Loading...</span>\n' +
+            '  </div>\n' +
             '</div>';
+
         $("#resultCard").attr("class", "card text-light");
         $("#resultCard").attr("style", "background: #4C6085");
 
@@ -455,7 +454,7 @@ $("#changeMode").click(function () {
         $("#changeMode").attr("class", "btn btn-sm btn-dark");
         document.getElementById("changeMode").innerHTML = "<i class=\"fa fa-moon-o\" aria-hidden=\"true\"></i> Dark";
         $("#resultsCol").attr("class", "col-3 resultPanel p-0 bg-secondary");
-        $("#resultsCol").attr("style", "--bs-bg-opacity: .2;");
+        $("#resultsCol").attr("style", "--bs-bg-opacity: .35;");
         $("#explainCard").attr("class", "card mt-auto text-light bg-dark");
     }
     else {
@@ -465,10 +464,7 @@ $("#changeMode").click(function () {
         $("#resultsCol").attr("class", "col-3 resultPanel p-0 bg-dark");
         $("#resultsCol").attr("style", "--bs-bg-opacity: .9;");
         $("#explainCard").attr("class", "card mt-auto text-dark bg-light");
-        document.getElementById("changeMode").innerHTML = "<svg width=\"1em\" height=\"1em\" viewBox=\"0 0 16 16\" class=\"bi bi-brightness-high-fill\" fill=\"currentColor\" xmlns=\"http://www.w3.org/2000/svg\">\n" +
-            "  <path d=\"M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z\"/>\n" +
-            "  <path fill-rule=\"evenodd\" d=\"M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z\"/>\n" +
-            "</svg> Light";
+        document.getElementById("changeMode").innerHTML = "<i class=\"fa fa-sun\" aria-hidden=\"true\"></i> Light";
     }
 
     // Unlock editor for further user edits
@@ -671,8 +667,8 @@ $.postJSON = (url, data, callback) => {
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
             }
             else {
-            document.getElementById("answersCard").removeAttribute("hidden");
-            document.getElementById("pastAnswers").innerHTML = previousAnswers;
+                document.getElementById("answersCard").removeAttribute("hidden");
+                document.getElementById("pastAnswers").innerHTML = previousAnswers;
             }
 
             if (response.unlock_next){
@@ -687,7 +683,7 @@ $.postJSON = (url, data, callback) => {
     Sends to backend for verification
 */
 function verify(code){
-verifying = true;
+    verifying = true;
     let data = {};
     data.assignment = assignment;
     data.pastAnswers = allAnswers; //Doesn't include the current one!!!

@@ -146,12 +146,7 @@
                                     <i class="fas fa-minus fa-fw" aria-hidden="true" title="-"></i>
                                 </button>
                                 <button class="btn btn-sm btn-light" id="changeMode" type="button" title="Change Mode" data-toggle="tooltip" data-placement="top" title="Change theme">
-                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-brightness-high-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M12 8a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/>
-                                        <path fill-rule="evenodd"
-                                              d="M8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
-                                    </svg>
-                                    Light
+                                    <i class="fas fa-sun" aria-hidden="true"></i> Light
                                 </button>
                             </div>
                             <!-- Compiler-Related Buttons -->
@@ -242,7 +237,7 @@
 
             <!-- Column 3: Results Contents -->
             <div class="col-3 resultPanel p-0 bg-dark" id="resultsCol" style="--bs-bg-opacity: .9;"> 
-                <div class="d-flex flex-column align-items-end h-100">
+                <div class="d-flex flex-column align-items-end h-100 p-2">
                     <div id="resultCard" class="card">
                         <h6 class="card-header text-center" id="resultsHeader"></h6>
                         <div class="card-body">
@@ -255,8 +250,7 @@
                             <div id="results">
                                 <b>{{ reason }}</b>
                             </div>
-                            <textarea id="explainBox" rows="4" name="comment" form="usrform"
-                                        placeholder="Type answer here..." required></textarea>
+                            <textarea id="explainBox" rows="4" name="comment" form="usrform" placeholder="Type answer here..." required></textarea>
                         </form>
                         {% elif lesson.reason.reasoning_type == 'MC' %}
                         <form id="multiform">
@@ -296,38 +290,14 @@
                                 <i class="fa fa-question-circle" aria-hidden="true"></i>
                             </a>
                         </div>
-                        <form id="smileys" style="text-align: center;">
-                            {% if mood == "upset" %}
-                            <input type="radio" name="smiley" value="upset" class="upset" checked="checked">
-                            <input type="radio" name="smiley" value="sad" class="sad">
-                            <input type="radio" name="smiley" value="neutral" class="neutral">
-                            <input type="radio" name="smiley" value="happy" class="happy">
-                            <input type="radio" name="smiley" value="excited" class="excited">
-                            {% elif mood == "sad" %}
-                            <input type="radio" name="smiley" value="upset" class="upset">
-                            <input type="radio" name="smiley" value="sad" class="sad" checked="checked">
-                            <input type="radio" name="smiley" value="neutral" class="neutral">
-                            <input type="radio" name="smiley" value="happy" class="happy">
-                            <input type="radio" name="smiley" value="excited" class="excited">
-                            {% elif mood == "neutral" %}
-                            <input type="radio" name="smiley" value="upset" class="upset">
-                            <input type="radio" name="smiley" value="sad" class="sad">
-                            <input type="radio" name="smiley" value="neutral" class="neutral" checked="checked">
-                            <input type="radio" name="smiley" value="happy" class="happy">
-                            <input type="radio" name="smiley" value="excited" class="excited">
-                            {% elif mood == "happy" %}
-                            <input type="radio" name="smiley" value="upset" class="upset">
-                            <input type="radio" name="smiley" value="sad" class="sad">
-                            <input type="radio" name="smiley" value="neutral" class="neutral">
-                            <input type="radio" name="smiley" value="happy" class="happy" checked="checked">
-                            <input type="radio" name="smiley" value="excited" class="excited">
-                            {% elif mood == "excited" %}
-                            <input type="radio" name="smiley" value="upset" class="upset">
-                            <input type="radio" name="smiley" value="sad" class="sad">
-                            <input type="radio" name="smiley" value="neutral" class="neutral">
-                            <input type="radio" name="smiley" value="happy" class="happy">
-                            <input type="radio" name="smiley" value="excited" class="excited" checked="checked">
-                            {% endif %}
+                        <form id="smileys" class="pb-2" style="text-align: center;">
+                            <div class="d-flex flex-row flex-nowrap justify-content-evenly align-items-center">
+                                <input type="radio" name="smiley" value="upset" class="upset" {% if mood == "upset" %}checked="checked"{% endif %}>
+                                <input type="radio" name="smiley" value="sad" class="sad" {% if mood == "sad" %}checked="checked"{% endif %}>
+                                <input type="radio" name="smiley" value="neutral" class="neutral" {% if mood == "neutral" %}checked="checked"{% endif %}>
+                                <input type="radio" name="smiley" value="happy" class="happy" {% if mood == "happy" %}checked="checked"{% endif %}>
+                                <input type="radio" name="smiley" value="excited" class="excited" {% if mood == "excited" %}checked="checked"{% endif %}>
+                            </div>
                         </form>
                     </div>
                 </div>

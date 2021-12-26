@@ -6,13 +6,30 @@ form {
     &#smileys {
         input {
             appearance: none;
-            width: 60px;
-            height: 60px;
-            margin: 5px 5px 5px;
+            width: 25px;
+            height: 25px;
             cursor: pointer;
             filter: grayscale(100%);
             border: none;
             transition: all 0.2s ease;
+
+            // Medium devices (tablets, 768px and up)
+            @media (min-width: 768px) {
+                width: 30px;
+                height: 30px;
+            }
+
+            // Large devices (desktops, 992px and up)
+            @media (min-width: 992px) {
+                width: 45px;
+                height: 45px;
+            }
+
+            // XX-Large devices (larger desktops, 1400px and up)
+            @media (min-width: 1400px) {
+                width: 60px;
+                height: 60px;
+            }
 
             &:hover,
             &:checked {
