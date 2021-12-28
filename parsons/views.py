@@ -1,13 +1,16 @@
 """
 This module contains our Django views for the "parsons" application.
 """
+# Library Imports
 import random
 
-from accounts.models import UserInformation
-from data_analysis.py_helper_functions.datalog_helper import finished_lesson_count
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth import get_user_model
+
+# Our Own Imports
+from accounts.models import UserInformation
+from data_analysis.py_helper_functions.datalog_helper import finished_lesson_count
 from educator.models import Assignment
 from educator.py_helper_functions.educator_helper import assignment_auth
 from tutor.py_helper_functions.mutation import can_mutate
@@ -15,8 +18,16 @@ from tutor.py_helper_functions.tutor_helper import user_auth, replace_previous, 
 
 User = get_user_model()
 
-# Create your views here.
+
 def parsons_problem(request, assignmentID):
+    """function parsons_problem This function handles giving parson problem code to the browser.
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+        assignmentID (Integer): ID of the assignment that the user is requesting code for
+    Returns:
+        HttpResponse: A generated http response object to the request depending on whether or not
+                      the user is authenticated.
+    """
     if request.method == 'GET':
         if assignment_auth(request, assignmentID):
             # Case 2a: User is valid and is taking this assignment
@@ -37,9 +48,10 @@ def parsons_problem(request, assignmentID):
                                                                is_alternate)
             current_lesson.code.lesson_code = clean_variable(current_lesson.code.lesson_code)
 
-            lesson_code = split_lesson_code(current_lesson)            
+            lesson_code = split_lesson_code(current_lesson)
+            
             # Case 2aa: if questions if MC or Both
-            if current_lesson.reason.reasoning_type == 'MC' or current_lesson.reason.reasoning_type == 'Both':
+            if current_lesson.reason.reasoning_type in ('MC', 'Both'):
                 return render(request, 'parsons/parsons_problem.html',
                               {'lesson': current_lesson,
                                'assignment': assignment,
@@ -119,10 +131,16 @@ def parsons_problem(request, assignmentID):
     return redirect("accounts:profile")
 
 
-def split_lesson_code(current_lesson):
+def split_lesson_code(currentLesson):
+    """function split_lesson_code This function splits the lesson code into parts for producing a parson's problem.
+    Args:
+        currentLesson (LessonSet): A lesson.
+    Returns:
+        dict: A dictionary containing the multiple parts of a parson's problem.
+    """
     #Split code on newlines
-    code = current_lesson.code.lesson_code.split(r'\n')
-    sortables_lines = current_lesson.sortable_lines.split(r'\n')
+    code = currentLesson.code.lesson_code.split(r'\n')
+    sortables_lines = currentLesson.sortable_lines.split(r'\n')
 
     first_code_end_point_ind = 0
     finished_set_code = False
@@ -138,7 +156,7 @@ def split_lesson_code(current_lesson):
 
     i = 0
     while i < len(code):
-        if not current_lesson.multi_confirms:
+        if not currentLesson.multi_confirms:
             #Find first confirm
             if 'Confirm' in code[i] or code[i].replace(r'\r', "").replace(r'\n', "").strip() == "end;":
                 end_point_ind = i
@@ -153,11 +171,11 @@ def split_lesson_code(current_lesson):
     sortable_code = []
     confirms = []
 
-    first_code_end_point = current_lesson.code.lesson_code.find(code[first_code_end_point_ind])
-    begin_set = current_lesson.code.lesson_code[0:first_code_end_point + len(code[first_code_end_point_ind]) + 2]
+    first_code_end_point = currentLesson.code.lesson_code.find(code[first_code_end_point_ind])
+    begin_set = currentLesson.code.lesson_code[0:first_code_end_point + len(code[first_code_end_point_ind]) + 2]
 
-    end_point = current_lesson.code.lesson_code.rfind(code[end_point_ind])
-    end_set = current_lesson.code.lesson_code[end_point: end_point + len(current_lesson.code.lesson_code)]
+    end_point = currentLesson.code.lesson_code.rfind(code[end_point_ind])
+    end_set = currentLesson.code.lesson_code[end_point: end_point + len(currentLesson.code.lesson_code)]
 
     #Get sortable lines of code
     loop_index = -1
@@ -167,12 +185,12 @@ def split_lesson_code(current_lesson):
         if 'While' in sortables_lines[i] or 'For' in sortables_lines[i]:
             loop_index += 1
             comments.append("")
-        
+
         if 'increasing' in sortables_lines[i] or 'decreasing' in sortables_lines[i] or 'changing' in sortables_lines[i]:
             sortables_lines[i] = sortables_lines[i].replace(r"\r", "")
             comments[loop_index] += sortables_lines[i].strip()
 
-        
+
         elif sortables_lines[i] != r'\r':
             #Get line of code with proper indentation
             sortables_lines[i] = sortables_lines[i].replace(r"\r", "")
@@ -183,39 +201,38 @@ def split_lesson_code(current_lesson):
             tabs = ""
             for _ in range(int(num_tabs)):
                 tabs += r'\t'
-                
+
             sortables_lines[i] = tabs + line
             if sortables_lines[i] != "":
                 sortable_code.append(sortables_lines[i])
         i += 1
-    
+
     confirm = ""
-    if current_lesson.multi_confirms:
+    if currentLesson.multi_confirms:
         i = first_code_end_point_ind + 1
         while i < end_point_ind:
             if len(code[i].replace(r'\r', "").replace(r'\n', "").strip()) != 0 and 'Confirm' not in code[i]:
-                confirm_ind = current_lesson.code.lesson_code.find(code[i])
-                confirm += current_lesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i])]
+                confirm_ind = currentLesson.code.lesson_code.find(code[i])
+                confirm += currentLesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i])]
                 confirm += r"\n"
 
             if 'Confirm' in code[i]:
-                confirm_ind = current_lesson.code.lesson_code.find(code[i])
-                confirm += current_lesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i])]
+                confirm_ind = currentLesson.code.lesson_code.find(code[i])
+                confirm += currentLesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i])]
 
                 if 'Confirm' in code[i + 1] and i + 1 != end_point_ind:
-                    confirm_ind = current_lesson.code.lesson_code.find(code[i + 1])
+                    confirm_ind = currentLesson.code.lesson_code.find(code[i + 1])
                     confirm += r"\n"
-                    confirm += current_lesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i + 1])]
+                    confirm += currentLesson.code.lesson_code[confirm_ind: confirm_ind + len(code[i + 1])]
                     i += 1
 
                 elif len(code[i + 1].replace(r'\r', "").replace(r'\n', "").strip()) != 0 and i + 1 != end_point_ind:
-                    confirm_ind = current_lesson.code.lesson_code.find(code[i + 1])
+                    confirm_ind = currentLesson.code.lesson_code.find(code[i + 1])
                     confirm += r"\n"
-                    confirm += current_lesson.code.lesson_code[confirm_ind: 
-                    confirm_ind + len(code[i + 1])]
+                    confirm += currentLesson.code.lesson_code[confirm_ind:confirm_ind + len(code[i + 1])]
                     confirm += r"\n"
                     i += 1
-                    
+
                 confirm = confirm.replace(r'\r', "")
                 confirms.append(confirm)
                 confirm = ""
@@ -229,7 +246,7 @@ def split_lesson_code(current_lesson):
         confirms[i] = confirms[i].replace("    ", r"\t")
         i += 1
 
-    if current_lesson.multi_confirms:
+    if currentLesson.multi_confirms:
         random.shuffle(sortable_code)
 
     lesson_code = {'begin_set': begin_set,
@@ -237,10 +254,19 @@ def split_lesson_code(current_lesson):
                   'sort': sortable_code,
                   'confirms': confirms,
                   'comments': comments,}
-    
+
     return lesson_code
 
+
 def advance_parsons_lesson(request, assignmentID):
+    """function tutor This function advances to the next parson's problem lesson.
+    Args:
+        request (HTTPRequest): A http request object created automatically by Django.
+        assignmentID (Integer): ID of the assignment that the user is requesting code for
+    Returns:
+        HttpResponse: A generated http response object to the request depending on whether or not
+                      the user is authenticated.
+    """
     if request.method == 'GET':
         if user_auth(request):
             current_user = UserInformation.objects.get(user=User.objects.get(email=request.user.email))

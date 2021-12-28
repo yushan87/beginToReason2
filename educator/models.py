@@ -2,11 +2,14 @@
 This module contains model templates for the "educator" application. When we create a new item in the database,
 a new instance of a model will be made.
 """
-from accounts.models import UserInformation
-from core.models import MainSet, LessonSet
+# Library Imports
 from datetime import date
 from django.core.validators import MinLengthValidator
 from django.db import models
+
+# Our Own Imports
+from accounts.models import UserInformation
+from core.models import MainSet, LessonSet
 import tutor.py_helper_functions as tutor_helper
 
 

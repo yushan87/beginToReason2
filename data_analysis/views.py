@@ -1,10 +1,13 @@
 """
 This module contains our Django views for the "data_analysis" application.
 """
+# Library Imports
+from django.shortcuts import render, redirect
+
+# Our Own Imports
 from accounts.models import UserInformation
 from data_analysis.py_helper_functions.graph_viewer.lesson_reader import lesson_to_json, lesson_info
 from data_analysis.py_helper_functions.lesson_stats import get_main_set_stats, get_main_set_info
-from django.shortcuts import render, redirect
 from educator.models import Assignment
 from educator.py_helper_functions.educator_helper import user_educates_class_auth
 

@@ -1,11 +1,14 @@
 """
 This module contains our Django views for the "core" application.
 """
-from accounts.models import UserInformation
+# Library Imports
 from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
+
+# Our Own Imports
+from accounts.models import UserInformation
 from educator.models import Class, ClassMembership
 from educator.py_helper_functions.educator_helper import get_classes, user_in_class_auth
 from tutor.py_helper_functions.tutor_helper import user_auth

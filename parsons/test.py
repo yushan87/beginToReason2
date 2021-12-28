@@ -1,4 +1,4 @@
-setCode = """Facility BeginToReason;
+SET_CODE = """Facility BeginToReason;
     uses Integer_Ext_Theory;
 
     Operation Main();
@@ -58,43 +58,41 @@ end BeginToReason;"""
 answers = ["end;", "If I &gt;= K then", "K := I;", "K := J;"]
 
 def test():
-    foundBreak = False
-    studentCode = ""
+    found_break = False
+    student_code = ""
     i = 0
-    while i < len(setCode) - 10:
+    while i < len(SET_CODE) - 10:
         #print("First loop")
         j = 0
         while j < 10:
             #print("Second loop")
-            print(ord(setCode[i]))
-            print(ord(setCode[i + j]))
-            if setCode[i] != setCode[i + j]:
+            print(ord(SET_CODE[i]))
+            print(ord(SET_CODE[i + j]))
+            if SET_CODE[i] != SET_CODE[i + j]:
                 #print("Unequal chars")
-                foundBreak = False
+                found_break = False
                 i += 1
                 j += 1
                 break
             else:
                 #print("Equals chars")
-                foundBreak = True
+                found_break = True
                 j += 1
                 continue
-            
-            
 
-        if foundBreak and j == 10:
+        if found_break and j == 10:
             #print("Found break")
-            studentCode = setCode[0: i]
+            student_code = SET_CODE[0: i]
             k = 0
             while k < len(answers):
                 #print("Answers while loop")
-                studentCode += answers[k]
+                student_code += answers[k]
                 k += 1
-            studentCode += setCode[i + 1: len(setCode)]
+            student_code += SET_CODE[i + 1: len(SET_CODE)]
             break
-        
+
         i += 1
 
-    print(studentCode)
+    print(student_code)
 
 test()

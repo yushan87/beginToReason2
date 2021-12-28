@@ -1,16 +1,19 @@
 """
 This module contains our Django views for the "tutor" application.
 """
+# Library Imports
 import asyncio
 import json
 import re
 
-from accounts.models import UserInformation
-from data_analysis.py_helper_functions.datalog_helper import log_data, finished_lesson_count
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+
+# Our Own Imports
+from accounts.models import UserInformation
+from data_analysis.py_helper_functions.datalog_helper import log_data, finished_lesson_count
 from educator.models import Assignment
 from educator.py_helper_functions.educator_helper import assignment_auth
 from tutor.py_helper_functions.mutation import can_mutate
@@ -28,7 +31,6 @@ def grader(request):
     Returns:
         JsonResponse: A JSON response informing the browser of the results and the user's current state
     """
-
     # Case 1: We have received a POST request submitting code (needs a lot of work)
     if request.method == 'POST':
         # Case 1a: if the user exists
@@ -44,7 +46,7 @@ def grader(request):
 
             # Send student code file to RESOLVE verifier
             status, lines, vcs, completion_time = asyncio.run(send_to_verifier(data['code']))
-            
+
             # Log data
             log_data(current_user, assignment, current_lesson_set, current_lesson, is_alternate, data, status,
                      vcs, completion_time)

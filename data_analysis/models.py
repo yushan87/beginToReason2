@@ -2,10 +2,13 @@
 This module contains model templates for the "data_analysis" application. When we create a new item in the database,
 a new instance of a model will be made.
 """
-from core.models import Lesson, LessonSet
+# Library Imports
 from datetime import datetime
 from django.db import models
 from django.contrib.auth import get_user_model
+
+# Our Own Imports
+from core.models import Lesson, LessonSet
 from educator.models import Assignment
 
 User = get_user_model()
