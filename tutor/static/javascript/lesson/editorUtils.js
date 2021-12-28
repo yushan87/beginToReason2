@@ -476,11 +476,17 @@ $("#changeMode").click(function () {
  * Function for increasing the editor's font size.
  */
 $("#fontIncrease").click(function () {
-    // Increase font size
+    // Increase font size for reasoning lessons
     if (!is_parsons) {
         let currentFontSize = $("#editor").css("font-size");
         currentFontSize = parseFloat(currentFontSize) * 1.2;
         $("#editor").css("font-size", currentFontSize);
+    }
+    // Increase font size for parson problem lessons
+    else {
+        let currentFontSize = $("#codeContainer").css("font-size");
+        currentFontSize = parseFloat(currentFontSize) * 1.2;
+        $("#codeContainer").css("font-size", currentFontSize);
     }
 
     return false;
@@ -491,11 +497,17 @@ $("#fontIncrease").click(function () {
  * Function for decreasing the editor's font size.
  */
 $("#fontDecrease").click(function () {
-    // Decrease font size
+    // Decrease font size for reasoning lessons
     if (!is_parsons) {
         let currentFontSize = $("#editor").css("font-size");
         currentFontSize = parseFloat(currentFontSize) / 1.2;
         $("#editor").css("font-size", currentFontSize);
+    }
+    // Decrease font size for parson problem lessons
+    else {
+        let currentFontSize = $("#codeContainer").css("font-size");
+        currentFontSize = parseFloat(currentFontSize) / 1.2;
+        $("#codeContainer").css("font-size", currentFontSize);
     }
 
     return false;

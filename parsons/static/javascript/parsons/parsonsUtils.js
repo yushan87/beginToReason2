@@ -64,8 +64,6 @@ function getParsonsFeedback (event, beginSet, endSet, parson, comments) {
             }
         })
 
-        
-        console.log(comments);
         comments = comments.replaceAll("&#x27;", "");
         comments = comments.replace("[", "");
         comments = comments.replace("]", "");
@@ -73,7 +71,6 @@ function getParsonsFeedback (event, beginSet, endSet, parson, comments) {
         let commentInd = 0;
 
         answers.forEach((element, index) => {
-            console.log(index);
             if (answers[index].includes("While") || answers[index].includes("For")) {
                 doInd = answers[index].indexOf(" do");
                 answers[index] = answers[index].substring(0, doInd) + commentArr[commentInd] + answers[index].substring(doInd, answers[index].len);
@@ -95,8 +92,6 @@ function getParsonsFeedback (event, beginSet, endSet, parson, comments) {
         studentCode = studentCode.split("&gt;").join(">");
         studentCode = studentCode.split("&lt;").join("<");
 
-        console.log(studentCode);
-
         document.getElementById("resultsHeader").innerHTML = "<h3>Checking Correctness...</h3>";
         document.getElementById("resultDetails").innerHTML = '<div class="sk-chase">\n' +
             '  <div class="sk-chase-dot"></div>\n' +
@@ -117,7 +112,6 @@ function getParsonsFeedback (event, beginSet, endSet, parson, comments) {
             document.getElementById("resultDetails").innerHTML = feedback[0];
             $("#resultCard").attr("class", "card bg-danger text-white");
         }
-
         else {
             verify(studentCode);
         }
@@ -220,8 +214,6 @@ function getMulitConfirmFeedback (event, beginSet, endSet, confirms, comments) {
         studentCode = studentCode.split("&lt;").join("<");
         studentCode = studentCode.replaceAll(/\\n/g, "");
 
-        console.log(studentCode);
-
         document.getElementById("resultsHeader").innerHTML = "<h3>Checking Correctness...</h3>";
         document.getElementById("resultDetails").innerHTML = '<div class="sk-chase">\n' +
             '  <div class="sk-chase-dot"></div>\n' +
@@ -276,19 +268,9 @@ function changeTheme() {
     }
 }
 
-function increaseFont() {
-    fontSize = parseFloat(fontSize) * 1.2;
-    $(".codeContainer").css("font-size", fontSize);
-}
-
-function decreaseFont() {
-    fontSize = parseFloat(fontSize) /  1.2;
-    $(".codeContainer").css("font-size", fontSize);
-}
-
 function resizeCodeContainer() {
     let leftWidth = document.getElementById("tutorialCol").offsetWidth;
-    let rightWidth = document.getElementById("right-col").offsetWidth;
+    let rightWidth = document.getElementById("resultsCol").offsetWidth;
     width = window.innerWidth - leftWidth - rightWidth - 10;
     let widthString = "width:" + width + "px";
 
