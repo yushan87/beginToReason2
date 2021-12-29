@@ -37,19 +37,17 @@ $body-font: $font-family-1;
 $page-header-min-height: 70px;
 $page-header-bg-color: $charcoal;
 
+// Page-Header-Navbar
 $page-header-navbrand-color: $white;
 $page-header-navbrand-hover-color: $coral;
-
 $page-header-navlink-color: $sage;
 $page-header-navlink-hover-color: $white;
-
 $page-header-dropdownlink-color: $steel-blue;
 $page-header-dropdownlink-hover-color: $white;
 $page-header-dropdownlink-bg-color: $charcoal;
-
 $page-header-site-title-font: $font-family-2;
 
-// Page-Content
+// Page-Content-Text
 $page-content-text-color-1: $queen-blue;
 $page-content-text-color-2: $sage;
 $page-content-text-color-3: $coral;
@@ -58,9 +56,11 @@ $page-content-text-color-5: $charcoal;
 $page-content-text-color-dark: $black;
 $page-content-text-color-light: $white;
 
+// Page-Content-Navlink
 $page-content-navlink-color: $steel-blue;
 $page-content-navlink-hover-color: $sage;
 
+// Page-Content-Background
 $page-content-bg-color-1: $queen-blue;
 $page-content-bg-color-2: $sage;
 $page-content-bg-color-3: $coral;
@@ -69,6 +69,7 @@ $page-content-bg-color-5: $charcoal;
 $page-content-bg-color-dark: $black;
 $page-content-bg-color-light: $white;
 
+// Page-Content-Border
 $page-content-border-color-1: $queen-blue;
 $page-content-border-color-2: $sage;
 $page-content-border-color-3: $coral;
@@ -82,5 +83,6 @@ $page-footer-height: 90px;
 $page-footer-color: $white;
 $page-footer-bg-color: $gray-web;
 
+// Page-Footer-Navlink
 $page-footer-navlink-color: $sage;
 $page-footer-navlink-hover-color: $steel-blue;

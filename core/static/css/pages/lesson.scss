@@ -1,11 +1,11 @@
 // lesson.scss
 // This file extends _base to generate all the CSS required to render the lesson page
 @import "../base/base";
-@import "../components/_ace";
-@import "../components/_overlay.scss";
-@import "../components/_jumbotron.scss";
-@import "../components/_smiley.scss";
-@import "../components/_stepbar.scss";
+@import "../components/ace";
+@import "../components/overlay";
+@import "../components/jumbotron";
+@import "../components/smiley";
+@import "../components/stepbar";
 @import "../utils/variables";
 
 /* Tutorial Layout-Related CSS */
@@ -42,15 +42,15 @@
 }
 
 #pastAnswers {
-    color: $page-content-text-color-light; 
-    font-family: "Courier New", Courier, monospace; 
-    font-weight: bold;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: 700;
+    color: $page-content-text-color-light;
 }
 
 /* View Lessons OffCanvas-Related CSS */
 #offcanvasViewLessons {
-    background-color: $page-content-bg-color-3;
     z-index: 2000;
+    background-color: $page-content-bg-color-3;
 
     a {
         text-decoration: none;
@@ -71,16 +71,16 @@
 }
 
 #prev {
-    margin: 2px 2px 2px 2px;
+    margin: 2px;
 }
 
 #next {
-    margin: 2px 2px 2px 2px;
+    margin: 2px;
 }
 
 /* Results Content Column-Related CSS */
 #results {
-    margin: 5px 5px 5px 5px;
+    margin: 5px;
 }
 
 #resultCard {

@@ -1,8 +1,8 @@
 // privacy.scss
 // This file extends _base to generate all the CSS required to render the privacy page
 @import "../base/base";
-@import "../components/_backtotop.scss";
-@import "../components/_jumbotron.scss";
+@import "../components/backtotop";
+@import "../components/jumbotron";
 @import "../utils/variables";
 
 /* Main Layout-Related CSS */

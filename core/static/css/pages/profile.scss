@@ -1,8 +1,8 @@
 // profile.scss
 // This file extends _base to generate all the CSS required to render the profile page
 @import "../base/base";
-@import "../components/_fade";
-@import "../components/_jumbotron.scss";
+@import "../components/fade";
+@import "../components/jumbotron";
 @import "../utils/variables";
 
 /* Main Layout-Related CSS */

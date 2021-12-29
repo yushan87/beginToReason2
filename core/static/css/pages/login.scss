@@ -1,8 +1,8 @@
 // login.scss
 // This file generates all the CSS required to render the sign-in page
-@import "../base/_base";
-@import "../components/_fade";
-@import "../utils/_variables";
+@import "../base/base";
+@import "../components/fade";
+@import "../utils/variables";
 
 /* General CSS */
 html {
@@ -11,14 +11,14 @@ html {
 }
 
 body {
-    height: 100%;
     display: flex;
     align-items: center;
+    height: 100%;
     padding-top: 40px;
     padding-bottom: 40px;
-    background-color: $page-content-bg-color-1;
     font-family: $body-font;
     font-size: 1.5rem;
+    background-color: $page-content-bg-color-1;
 }
 
 /* Main Layout-Related CSS */

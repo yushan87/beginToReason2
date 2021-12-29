@@ -1,9 +1,11 @@
 // _stepbar.scss
 // This file extends _base to generate all the CSS required to render the lesson page
 @import "../utils/variables";
+
 // $lesson-width: 90px; for size of each indiv bar
 // number of lessons also needed
 $number-lessons: 5;
+
 // 42vw / $number-lessons = vw per lesson
 
 #stepProgressBar {

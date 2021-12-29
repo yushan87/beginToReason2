@@ -1,10 +1,10 @@
 // classes.scss
 // This file extends _base to generate all the CSS required to render the catalog of classes page.
-@import "../base/_base";
-@import "../components/_backtotop.scss";
-@import "../components/_fade";
-@import "../components/_jumbotron.scss";
-@import "../utils/_variables";
+@import "../base/base";
+@import "../components/backtotop";
+@import "../components/fade";
+@import "../components/jumbotron";
+@import "../utils/variables";
 @import url("https://fonts.googleapis.com/css?family=Abril+Fatface");
 
 /* Main Layout-Related CSS */
@@ -41,10 +41,10 @@
     }
 
     li::before {
-        color: $page-content-text-color-3;
-        font-weight: bold;
-        font-size: 2.5rem;
         font-family: "Abril Fatface", serif;
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: $page-content-text-color-3;
         content: counter(any-name);
     }
 }

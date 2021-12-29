@@ -4,7 +4,7 @@
 }
 
 .keyword {
-    color: rgb(255, 232, 0);
+    color: #ffe800;
 }
 
 .operation {
@@ -65,7 +65,7 @@
 }
 
 .ui-sortable {
-    background-color: rgba(48, 52, 63, 0.9);
+    background-color: #30343fe6;
 }
 
 #sortableTrash {
@@ -101,7 +101,7 @@
 
 ul.output {
     top: 0%;
-    background-color: rgba(48, 52, 63, 0.9);
+    background-color: #30343fe6;
 }
 
 .sortable-code li {
@@ -110,7 +110,7 @@ ul.output {
     overflow: hidden;
     white-space: nowrap;
     cursor: move;
-    background-color: rgba(48, 52, 63, 0.9);
+    background-color: #30343fe6;
     border-radius: 10px;
 }
 
@@ -125,12 +125,12 @@ li.incorrectIndent {
 li.incorrectPosition,
 .testcase.fail,
 .testcase.error {
-    background-color: #rgba(48, 52, 63, 0.9);
+    background-color: #30343fe6;
 }
 
 li.correctPosition,
 .testcase.pass {
-    background-color: #rgba(48, 52, 63, 0.9);
+    background-color: #30343fe6;
 }
 
 .testcase {

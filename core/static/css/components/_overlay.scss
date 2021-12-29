@@ -10,7 +10,7 @@
     width: 0;
     height: calc(100vh);
     overflow-x: hidden;
-    background-color: rgba(255, 140, 95, 1);
+    background-color: $page-content-bg-color-3;
     transition: 0.5s;
 }
 
@@ -30,7 +30,7 @@
 
 .overlay a:hover,
 .overlay a:focus {
-    color: rgb(58, 73, 88);
+    color: $page-content-text-color-5;
 }
 
 .overlay .closebtn {
