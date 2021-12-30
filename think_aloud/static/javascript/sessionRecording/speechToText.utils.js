@@ -1,17 +1,17 @@
-/* global speechRecognitionUniqueId */
-/* global postPartialTranscript */
-/*eslint no-empty-function: "error"*/
+/* global generateSessionId postPartialTranscript */
+/* eslint no-empty-function: "error" */
+
 let recognitionObject = null; // Stores the recognition object
 let currentTranscript = ""; // Stores the transcribed text starting from the last upload to server
 let tempTranscript = ""; // Stores the transcript that is being uploaded to the server
 let recognitionCapable = false; // Indicates whether user's browser supports webkitSpeechRecognition
 let recognitionOn = false; // Indicates whether recognition is "supposed" to be on or off
-let speechRecognitionUniqueId = '';
+let speechRecognitionUniqueId = "";
+
 /**
  * The main function for setting and running everything related to SpeechToText
  */
 function transcribeAudio(userId, lessonNumber, lessonName) {
-    console.log('Transcribing audio');
     if (!("webkitSpeechRecognition" in window)) {
         setBrowserCompatibility(false);
         return;
@@ -33,8 +33,6 @@ function setupTranscriptUploading() {
             tempTranscript = currentTranscript;
             currentTranscript = "";
             handlePostPartialTranscript(speechRecognitionUniqueId, tempTranscript);
-        } else {
-
         }
     }, 10000);
 }

@@ -1,11 +1,14 @@
+/* global postPerAttemptData savePartialRecordingAPI */
+
 /*** Start of Global variables ***/
 const VIDEO_FRAGMENT_LENGTH = 10000; // Stores the length of a video fragment
 let blobCounter = -1; // Stores the current number of a video fragment, used for enumerating video fragments
 let currentSessionRecordingId = null; // Session ID returned by API, used for identifying this specific session in transcripts and screen recordings
-let currentUserId = ''; // Current user ID
+let currentUserId = ""; // Current user ID
 
 
 // let activeUploads = 0; // Counts the current number of active uploads
+/* eslint-disable */
 let activeUploads = {
     count: 0,
     aListener: function (val) {
@@ -21,6 +24,7 @@ let activeUploads = {
         this.aListener = listener;
     }
 };
+/* eslint-enable */
 
 let mediaStream = null; // Holds the mediaStream object
 let mediaRecorder = null; // Holds the mediaRecorder object
@@ -32,7 +36,8 @@ let currentAttemptEndTime;
 
 let currentAttemptCount = 0;
 
-let currentSessionRecordingLessonIndex = -1, currentSessionRecordingLessonName = 'undefined';
+let currentSessionRecordingLessonIndex = -1;
+let currentSessionRecordingLessonName = "undefined";
 
 /*** End of Global variables ***/
 
@@ -119,13 +124,13 @@ async function getMediaStream(audio, screen) {
 }
 
 /**
- * Formula: userId + '__' + start_timestamp + '__' + lessonIndex + '__' + lessonName
+ * Formula: userId + "__" + start_timestamp + "__" + lessonIndex + "__" + lessonName
  * @param {string} userId
  * @param {number} lessonIndex
  * @param {string} lessonName
  */
 function generateSessionId(userId, lessonIndex, lessonName) {
-    return userId + '__' + Date.now() + '__' + lessonIndex + '__' + lessonName;
+    return userId + "__" + Date.now() + "__" + lessonIndex + "__" + lessonName;
 }
 
 function resetVariables() {
@@ -151,7 +156,7 @@ async function setupRecording(doAudio, doScreen, userId, lessonIndex, lessonName
     currentSessionRecordingLessonIndex = lessonIndex;
     currentSessionRecordingLessonName = lessonName;
     if (!navigator.mediaDevices) {
-        console.log("ERROR: getUserMedia not supported in this browser.");
+        console.error("ERROR: getUserMedia not supported in this browser.");
         return;
     }
 
@@ -198,10 +203,10 @@ function stopRecording() {
  */
 function download(blobData) {
     const url = window.URL.createObjectURL(blobData);
-    const a = document.createElement('a');
-    a.style.display = 'none';
+    const a = document.createElement("a");
+    a.style.display = "none";
     a.href = url;
-    a.download = 'test.webm';
+    a.download = "test.webm";
     document.body.appendChild(a);
     a.click();
     setTimeout(() => {
@@ -214,7 +219,7 @@ function completeCurrentAttempt(attemptIsSuccessful, errorReason, solutionEntere
     // capture attempt ending time
     currentAttemptEndTime = Date.now();
 
-    solutionEntered = solutionEntered ? solutionEntered : '';
+    solutionEntered = solutionEntered ? solutionEntered : "";
 
     handlePostPerAtteptDataRequest(currentSessionRecordingId, currentUserId, attemptIsSuccessful, currentAttemptCount, errorReason,
         solutionEntered, code, currentSessionRecordingLessonIndex, currentSessionRecordingLessonName, currentAttemptEndTime, currentAttemptEndTime);
@@ -253,8 +258,8 @@ function startNewAttempt() {
  * @param endTimestamp
  */
 function handlePostPerAtteptDataRequest(sessionId, userId, attemptIsSuccessful, attemptCount, errorReason, solutionEntered, code, lessonIndex, lessonName, startTimestamp, endTimestamp) {
-    startTimestamp = Math.floor(startTimestamp/1000);
-    endTimestamp = Math.floor(endTimestamp/1000);
+    startTimestamp = Math.floor(startTimestamp / 1000);
+    endTimestamp = Math.floor(endTimestamp / 1000);
     postPerAttemptData(sessionId, userId, attemptIsSuccessful, attemptCount, errorReason, solutionEntered, code, lessonIndex, lessonName, startTimestamp, endTimestamp).then(
         function (response) {
             if (response.status === "Success") {

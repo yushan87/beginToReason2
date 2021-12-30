@@ -1,4 +1,4 @@
-/* global ace */
+/* global ace assignment activeUploads closeThinkAloudFunctions previousAnswers verifying */
 
 //////////////////////
 // Global Variables //
@@ -6,7 +6,6 @@
 
 let aceEditor; // This is the ACE Editor embedded to the page.
 let editorContent = ""; // Content to be displayed in ACE Editor
-let Range;
 let correctnessChecking = false; // A flag that indicates whether or not the check correctness button has been clicked.
 let lineErrorMap; // This contains error information for each line in the current file.
 let fontSize; // The current font size
@@ -15,12 +14,11 @@ let hasFR;
 let hasMC;
 let darkTheme = true;
 let prevAnswers = []; //add to this and check
-let name;
 let overlayOpen = false;
 let allAnswers = "";
 let multiAnswer;
 let instructOpen = true;
-let is_parsons;
+let isParsonsProblem;
 
 
 ///////////////////////////////////////
@@ -31,7 +29,8 @@ let is_parsons;
  * Function for creating and embedding the ACE Editor into our page.
  */
 function createEditor(code, explain, lessonName, review, past, isParsons) {
-    is_parsons = isParsons;
+    isParsonsProblem = isParsons;
+
     // RESOLVE mode
     let ResolveMode = ace.require("ace/mode/resolve").Mode;
     Range = ace.require("ace/range").Range;
@@ -48,17 +47,16 @@ function createEditor(code, explain, lessonName, review, past, isParsons) {
     name = lessonName;
     aceEditor.session.setValue(editorContent);
     //$("#prev").attr("disabled", "disabled");
-    if(review == 'none') {
+    if (review == "none") {
         document.getElementById("resultCard").style.display = "none";
-    }
-    else {
+    } else {
         document.getElementById("resultCard").style.display = "block";
         document.getElementById("resultsHeader").innerHTML = "Correct!";
         document.getElementById("resultDetails").innerHTML = review;
         $("#resultCard").attr("class", "card bg-success text-white");
 
-        if (!is_parsons) {
-            document.getElementById("answersCard").removeAttribute("hidden")
+        if (!isParsonsProblem) {
+            document.getElementById("answersCard").removeAttribute("hidden");
             document.getElementById("pastAnswers").innerHTML = past;
         }
 
@@ -74,19 +72,16 @@ function createEditor(code, explain, lessonName, review, past, isParsons) {
     aceEditor.getSession().setMode(new ResolveMode());
     //style = "visibility: hidden"; to hide text area element
     //use if statement to decide if should hide or show and if we need to check if it is full
-    if (explain == 'MC') {
+    if (explain == "MC") {
         hasFR = false;
         hasMC = true;
-    }
-    else if (explain == 'Text'){
+    } else if (explain == "Text") {
         hasFR = true;
         hasMC = false;
-    }
-    else if (explain == 'Both'){
+    } else if (explain == "Both") {
         hasFR = true;
         hasMC = true;
-    }
-    else {
+    } else {
         hasFR = false;
         hasMC = false;
     }
@@ -136,15 +131,13 @@ function loadLesson(code, explain, lessonName) {
     name = lessonName;
     aceEditor.session.setValue(editorContent);
 
-    if (explain == 'MC') {
+    if (explain == "MC") {
         hasFR = false;
         hasMC = true;
-    }
-    else if (explain == 'Text'){
+    } else if (explain == "Text") {
         hasFR = true;
         hasMC = false;
-    }
-    else {
+    } else {
         hasFR = true;
         hasMC = true;
     }
@@ -160,7 +153,7 @@ function loadLesson(code, explain, lessonName) {
 function checkForTrivials(content) {
     var lines = content.split("\n");
     var confirms = [];
-    var overall = 'success';
+    var overall = "success";
     var regex;
     var i;
     var missing = false;
@@ -170,13 +163,20 @@ function checkForTrivials(content) {
     for (i = 0; i < lines.length; i++) {
         var confirm = lines[i].match(regex);
         if (confirm) {
-            confirms.push({lineNum: i+1, text: confirm[0], status: 'success'})
+            confirms.push({
+                lineNum: i + 1,
+                text: confirm[0],
+                status: "success"
+            });
         }
     }
 
-    regex = new RegExp("requires [^;]*;" ,"g");
+    regex = new RegExp("requires [^;]*;", "g");
     if (confirms.length == 0 && !regex.test(content)) {
-        return {confirms: [], overall: 'failure'}
+        return {
+            confirms: [],
+            overall: "failure"
+        };
     }
 
     for (i = 0; i < confirms.length; i++) {
@@ -187,18 +187,18 @@ function checkForTrivials(content) {
         // Search for an illegal "/="
         regex = new RegExp("/=");
         if (statement.search(regex) > -1) {
-            overall = 'failure';
+            overall = "failure";
             confirms[i].status = "failure";
-            continue
+            continue;
         }
 
         // Split the string at the conditional, first looking for >= and <=
         regex = new RegExp(">=|<=");
         var parts = statement.split(regex);
         if (parts.length > 2) {
-            overall = 'failure';
+            overall = "failure";
             confirms[i].status = "failure";
-            continue
+            continue;
         }
 
         // If there is no >= or <=
@@ -206,9 +206,9 @@ function checkForTrivials(content) {
             regex = new RegExp("=");
             parts = statement.split(regex);
             if (parts.length > 2) {
-                overall = 'failure';
+                overall = "failure";
                 confirms[i].status = "failure";
-                continue
+                continue;
             }
         }
 
@@ -217,21 +217,21 @@ function checkForTrivials(content) {
             regex = new RegExp(">|<");
             parts = statement.split(regex);
             if (parts.length != 2) {
-                overall = 'failure';
+                overall = "failure";
                 confirms[i].status = "failure";
-                continue
+                continue;
             }
         }
 
         // Find the variables used on the left side. If there are none, mark it correct.
         var left = parts[0];
         var right = parts[1];
-        regex = new RegExp("[a-np-zA-QS-Z]", "g") // Temporary fix to allow Reverse(#S) o #T on section2, lesson6
+        regex = new RegExp("[a-np-zA-QS-Z]", "g"); // Temporary fix to allow Reverse(#S) o #T on section2, lesson6
         var variables = left.match(regex);
         if (variables === null) {
-            overall = 'failure';
+            overall = "failure";
             confirms[i].status = "failure";
-            continue
+            continue;
         }
 
         // Search for these variables on the right side
@@ -240,19 +240,24 @@ function checkForTrivials(content) {
             var variable = variables[j];
             regex = new RegExp(" " + variable, "g");
             if (right.search(regex) > -1) {
-                overall = 'failure';
+                overall = "failure";
                 confirms[i].status = "failure";
                 missing = true;
-                continue
+                continue;
             }
         }
     }
 
     // Get rid of the text field
-    for (var confirm of confirms) {
-        delete confirm.text
+    for (let confirm of confirms) {
+        delete confirm.text;
     }
-    return {confirms: confirms, overall: overall, missing: missing}
+
+    return {
+        confirms: confirms,
+        overall: overall,
+        missing: missing
+    };
 }
 
 
@@ -322,8 +327,6 @@ $("#checkCorrectness").click(function () {
 
     /*** Think-aloud: Handle an attempt end ***/
 
-
-
     //is explanation long enough
     if (hasFR) {
         let boxVal = document.forms["usrform"]["comment"].value;
@@ -338,14 +341,14 @@ $("#checkCorrectness").click(function () {
     }
     let blank = true;
     if (hasMC) {
-        let radios = document.getElementsByName('selectExplain');
+        let radios = document.getElementsByName("selectExplain");
         for (let i = 0, length = radios.length; i < length; i++) {
             if (radios[i].checked) {
                 blank = false;
                 multiAnswer = radios[i].value;
             }
         }
-        if (blank){
+        if (blank) {
             let msg = "You must choose an answer to the right";
             createAlertBox(true, msg);
             unlock();
@@ -358,15 +361,12 @@ $("#checkCorrectness").click(function () {
     // Check for trivials
     let trivials = checkForTrivials(code);
     if (trivials.overall == "failure") {
-        if(trivials.missing){
+        if (trivials.missing) {
             document.getElementById("resultsHeader").innerHTML = "<h5>Try Again</h5>";
             document.getElementById("resultDetails").innerHTML = "Consider using initial values of variables.";
-
-        }
-        else{
+        } else {
             document.getElementById("resultsHeader").innerHTML = "<h5>Syntax Error</h5>";
             document.getElementById("resultDetails").innerHTML = "Check each of the following: <br>1. Did you fill out all confirm assertions? <br>2. Is there a semicolon at the end of each assertion? <br>3. Did you use the correct variable names?";
-
         }
         $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
         $("#resultCard").attr("class", "card bg-danger text-white");
@@ -374,39 +374,38 @@ $("#checkCorrectness").click(function () {
         //this will need to be fixed based on verifier return
         //log data
 
-        if (allAnswers != '') {
+        if (allAnswers != "") {
             allAnswers += "</br>";
         }
 
-        let currentAttemptAnswers = ''
-        if (!is_parsons) {
+        let currentAttemptAnswers = "";
+        if (!isParsonsProblem) {
             for (var i = 0; i < trivials.confirms.length; i++) {
-                aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
-                document.getElementById("answersCard").removeAttribute("hidden")
-                allAnswers += `${trivials.confirms[i].lineNum}: ${aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace('Confirm','').replace(';', '')}</br>`;
-                currentAttemptAnswers += aceEditor.session.getLine(trivials.confirms[i].lineNum-1).replace(/\t/g,'') + '\n';
+                aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum - 1, "ace_error");
+                document.getElementById("answersCard").removeAttribute("hidden");
+                allAnswers += `${trivials.confirms[i].lineNum}: ${aceEditor.session.getLine(trivials.confirms[i].lineNum - 1).replace("Confirm", "").replace(";", "")}</br>`;
+                currentAttemptAnswers += aceEditor.session.getLine(trivials.confirms[i].lineNum - 1).replace(/\t/g, "") + "\n";
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
             }
         }
 
-        closeThinkAloudFunctions(false, 'trivial', currentAttemptAnswers, code); // for the think-aloud recording
+        closeThinkAloudFunctions(false, "trivial", currentAttemptAnswers, code); // for the think-aloud recording
 
         // Unlock editor for further user edits
         unlock();
-    }
-    else{
+    } else {
         document.getElementById("resultsHeader").innerHTML = "<h5>Checking Correctness...</h5>";
-        document.getElementById("resultDetails").innerHTML = 
-            '<div class="d-flex justify-content-center">\n' +
-            '  <div class="spinner-border" style="width: 5rem; height: 5rem; color: #ff8c5f !important;" role="status">\n' +
-            '    <span class="visually-hidden">Loading...</span>\n' +
-            '  </div>\n' +
-            '</div>';
+        document.getElementById("resultDetails").innerHTML =
+            "<div class=\"d-flex justify-content-center\">\n" +
+            "  <div class=\"spinner-border\" style=\"width: 5rem; height: 5rem; color: #ff8c5f !important;\" role=\"status\">\n" +
+            "    <span class=\"visually-hidden\">Loading...</span>\n" +
+            "  </div>\n" +
+            "</div>";
 
         $("#resultCard").attr("class", "card text-light");
         $("#resultCard").attr("style", "background: #4C6085");
 
-        verify(code)
+        verify(code);
     }
 });
 
@@ -423,7 +422,7 @@ $("#resetCode").click(function () {
     // Unlock editor for further user edits
     unlock();
 
-    $('#areYouSure').modal('hide')
+    $("#areYouSure").modal("hide");
 
     return false;
 });
@@ -448,7 +447,7 @@ $("#changeMode").click(function () {
     // Lock editor to stop user from making changes
     lock();
 
-    if (darkTheme){
+    if (darkTheme) {
         aceEditor.setTheme("ace/theme/solarized_light");
         darkTheme = false;
         $("#changeMode").attr("class", "btn btn-sm btn-dark");
@@ -456,8 +455,7 @@ $("#changeMode").click(function () {
         $("#resultsCol").attr("class", "col-3 resultPanel p-0 bg-secondary");
         $("#resultsCol").attr("style", "--bs-bg-opacity: .35;");
         $("#explainCard").attr("class", "card mt-auto text-light bg-dark");
-    }
-    else {
+    } else {
         aceEditor.setTheme("ace/theme/chaos");
         darkTheme = true;
         $("#changeMode").attr("class", "btn btn-sm btn-light");
@@ -477,13 +475,11 @@ $("#changeMode").click(function () {
  */
 $("#fontIncrease").click(function () {
     // Increase font size for reasoning lessons
-    if (!is_parsons) {
+    if (!isParsonsProblem) {
         let currentFontSize = $("#editor").css("font-size");
         currentFontSize = parseFloat(currentFontSize) * 1.2;
         $("#editor").css("font-size", currentFontSize);
-    }
-    // Increase font size for parson problem lessons
-    else {
+    } else { // Increase font size for parson problem lessons
         let currentFontSize = $("#codeContainer").css("font-size");
         currentFontSize = parseFloat(currentFontSize) * 1.2;
         $("#codeContainer").css("font-size", currentFontSize);
@@ -498,13 +494,11 @@ $("#fontIncrease").click(function () {
  */
 $("#fontDecrease").click(function () {
     // Decrease font size for reasoning lessons
-    if (!is_parsons) {
+    if (!isParsonsProblem) {
         let currentFontSize = $("#editor").css("font-size");
         currentFontSize = parseFloat(currentFontSize) / 1.2;
         $("#editor").css("font-size", currentFontSize);
-    }
-    // Decrease font size for parson problem lessons
-    else {
+    } else { // Decrease font size for parson problem lessons
         let currentFontSize = $("#codeContainer").css("font-size");
         currentFontSize = parseFloat(currentFontSize) / 1.2;
         $("#codeContainer").css("font-size", currentFontSize);
@@ -569,21 +563,21 @@ $("#next").click(function () {
 });
 
 function moveToNextExercise() {
-     $.ajax({
-        url: 'tutor',
-        datatype: 'json',
-        type: 'GET',
+    $.ajax({
+        url: "tutor",
+        datatype: "json",
+        type: "GET",
         headers: {
-            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+            "X-CSRFToken": $("input[name=\"csrfmiddlewaretoken\"]").val()
         },
-        success: function(data) {
+        success: function (data) {
             //loadLesson()
 
         }
     });
 
-     location.reload();
-     unlock();
+    location.reload();
+    unlock();
 }
 
 /*
@@ -593,13 +587,13 @@ $("#prev").click(function () {
     lock();
 
     $.ajax({
-        url: 'completed',
-        datatype: 'json',
-        type: 'GET',
+        url: "completed",
+        datatype: "json",
+        type: "GET",
         headers: {
-            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+            "X-CSRFToken": $("input[name=\"csrfmiddlewaretoken\"]").val()
         },
-        success: function(data) {
+        success: function (data) {
             //loadLesson()
 
         }
@@ -620,9 +614,9 @@ $.postJSON = (url, data, callback) => {
         data: JSON.stringify(data),
         dataType: "json",
         headers: {
-            'X-CSRFToken': $('input[name="csrfmiddlewaretoken"]').val()
+            "X-CSRFToken": $("input[name=\"csrfmiddlewaretoken\"]").val()
         },
-        success: function(response){
+        success: function (response) {
             document.getElementById("resultsHeader").innerHTML = response.resultsHeader;
             document.getElementById("resultDetails").innerHTML = response.resultDetails;
             $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
@@ -632,58 +626,56 @@ $.postJSON = (url, data, callback) => {
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
                 $("#ul-sortable").attr("style", "background-color: #20a001d7;");
-                closeThinkAloudFunctions(true, 'correct solution', data.answer, data.code); // for the think-aloud recording
+                closeThinkAloudFunctions(true, "correct solution", data.answer, data.code); // for the think-aloud recording
                 unlock();
-            } else if (response.status == 'failure'){
+            } else if (response.status == "failure") {
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
                 $("#ul-sortable").attr("style", "background-color: #ce0000bb;");
-                closeThinkAloudFunctions(false, 'incorrect solution', data.answer, data.code); // for the think-aloud recording
+                closeThinkAloudFunctions(false, "incorrect solution", data.answer, data.code); // for the think-aloud recording
                 unlock();
             } else {
                 $("#explainBox").attr("style", "display: block; width: 100%; resize: none;");
                 $("#resultCard").attr("class", "card bg-danger text-white");
                 $("#ul-sortable").attr("style", "background-color: #161616;");
-                closeThinkAloudFunctions(false, 'something went wrong',  data.answer, data.code); // for the think-aloud recording
+                closeThinkAloudFunctions(false, "something went wrong",  data.answer, data.code); // for the think-aloud recording
                 unlock();
             }
 
-            if (!is_parsons) {
-                let lines = response.lines
-                var confirmLine
-                displayPast = response.status != "success"
-                if (displayPast && allAnswers != '') {
+            if (!isParsonsProblem) {
+                let lines = response.lines;
+                var confirmLine;
+                let displayPast = response.status != "success";
+                if (displayPast && allAnswers != "") {
                     allAnswers += "</br>";
                 }
                 for (var i = 0; i < lines.length; i++) {
                     if (displayPast) {
-                        confirmLine = `${lines[i].lineNum}: ${aceEditor.session.getLine(lines[i].lineNum-1).replace("Confirm", "").replace(";", "")}`
-                        
-                        if (lines[i].status == 'success') {
-                            confirmLine += ' <i class="fas fa-check"></i>'
+                        confirmLine = `${lines[i].lineNum}: ${aceEditor.session.getLine(lines[i].lineNum - 1).replace("Confirm", "").replace(";", "")}`;
+
+                        if (lines[i].status == "success") {
+                            confirmLine += " <i class=\"fas fa-check\"></i>";
                         }
-                        if (!confirmLine.includes('Operation Main()')) {
-                            allAnswers += confirmLine  + "</br>";
+                        if (!confirmLine.includes("Operation Main()")) {
+                            allAnswers += confirmLine + "</br>";
                         }
                     }
-                    if (!confirmLine.includes('Operation Main()')) {
+                    if (!confirmLine.includes("Operation Main()")) {
                         if (lines[i].status == "success") {
-                            aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_correct")
-                        }
-                        else if (response.status != "error") {
-                            aceEditor.session.addGutterDecoration(lines[i].lineNum-1, "ace_error");
-                            document.getElementById("answersCard").removeAttribute("hidden")
+                            aceEditor.session.addGutterDecoration(lines[i].lineNum - 1, "ace_correct");
+                        } else if (response.status != "error") {
+                            aceEditor.session.addGutterDecoration(lines[i].lineNum - 1, "ace_error");
+                            document.getElementById("answersCard").removeAttribute("hidden");
                         }
                     }
                 }
                 document.getElementById("pastAnswers").innerHTML = allAnswers;
-            }
-            else {
+            } else {
                 document.getElementById("answersCard").removeAttribute("hidden");
                 document.getElementById("pastAnswers").innerHTML = previousAnswers;
             }
 
-            if (response.unlock_next){
+            if (response.unlock_next) {
                 $("#next").removeAttr("disabled", "disabled");
                 $("#checkCorrectness").attr("disabled", "disabled");
             }
@@ -694,22 +686,28 @@ $.postJSON = (url, data, callback) => {
 /*
     Sends to backend for verification
 */
-function verify(code){
+function verify(code) {
     verifying = true;
     let data = {};
     data.assignment = assignment;
     data.pastAnswers = allAnswers; //Doesn't include the current one!!!
     data.code = code;
-    if (hasFR){data.explanation = document.forms["usrform"]["comment"].value;}
-    else if (hasMC){data.explanation = multiAnswer;}
-    else {data.explanation = "No Explanation Requested";}
+    if (hasFR) {
+        data.explanation = document.forms["usrform"]["comment"].value;
+    } else if (hasMC) {
+        data.explanation = multiAnswer;
+    } else {
+        data.explanation = "No Explanation Requested";
+    }
 
-    for (const face of document.querySelectorAll('input[name="smiley"]')) {
+    for (const face of document.querySelectorAll("input[name=\"smiley\"]")) {
         if (face.checked) {
-            data.face = face.value
-            break
+            data.face = face.value;
+            break;
         }
     }
 
-    $.postJSON("grader", data, (results) => {test});
+    $.postJSON("grader", data, (results) => {
+        let test;
+    });
 }

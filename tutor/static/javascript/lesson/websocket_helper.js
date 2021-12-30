@@ -7,15 +7,15 @@
     the VCs on that line are proven.
 */
 function mergeVCsAndLineNums(provedList, lineNums) {
-    var overall = 'success';
+    var overall = "success";
     var lines = {};
 
     for (var vc of lineNums) {
-        if (provedList[vc.vc] != 'success') {
-            overall = 'failure';
+        if (provedList[vc.vc] != "success") {
+            overall = "failure";
         }
 
-        if (lines[vc.lineNum] != 'failure') {
+        if (lines[vc.lineNum] != "failure") {
             lines[vc.lineNum] = provedList[vc.vc];
         }
     }
@@ -23,10 +23,16 @@ function mergeVCsAndLineNums(provedList, lineNums) {
     // Convert from hashtable to array
     var lineArray = [];
     for (var entry of Object.entries(lines)) {
-        lineArray.push({'lineNum': entry[0], 'status': entry[1]});
+        lineArray.push({
+            lineNum: entry[0],
+            status: entry[1]
+        });
     }
 
-    return {'overall': overall, 'lines': lineArray}
+    return {
+        overall: overall,
+        lines: lineArray
+    };
 }
 
 
@@ -51,7 +57,7 @@ function encode(data) {
     json.parent = "undefined";
     json.type = "f";
 
-    return JSON.stringify(json)
+    return JSON.stringify(json);
 }
 
 
@@ -59,9 +65,9 @@ function decode(data) {
     var regex1 = new RegExp("%20", "g");
     var regex2 = new RegExp("%2B", "g");
     var regex3 = new RegExp("<vcFile>(.*)</vcFile>", "g");
-    var regex4 = new RegExp("\n", "g");
+    var regex4 = new RegExp("\\n", "g");
 
-    var content = decodeURIComponent(data)
+    var content = decodeURIComponent(data);
     content = content.replace(regex1, " ");
     content = content.replace(regex2, "+");
     content = content.replace(regex3, "$1");
@@ -74,37 +80,31 @@ function decode(data) {
     return obj;
 }
 
-function verify(code){
-    var vcs = {}
-    var ws = new WebSocket('wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project')
+function verify(code) {
+    var vcs = {};
+    var ws = new WebSocket("wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project");
 
     //opening
-    ws.on('open', () => {
-        ws.send(encode(code))
-    })
-    console.log("sent")
+    ws.on("open", () => {
+        ws.send(encode(code));
+    });
 
-    ws.on('message', (message) => {
-        message = JSON.parse(message)
-        if (message.status == 'error' || message.status == '') {
-            console.log('unparsable')
-            ws.close()
-        }
-        else if (message.status == 'processing') {
-            var regex = new RegExp('^Proved')
+    ws.on("message", (message) => {
+        message = JSON.parse(message);
+        if (message.status == "error" || message.status == "") {
+            ws.close();
+        } else if (message.status == "processing") {
+            var regex = new RegExp("^Proved");
             if (regex.test(message.result.result)) {
-                vcs[message.result.id] = 'success'
+                vcs[message.result.id] = "success";
             } else {
-                vcs[message.result.id] = 'failure'
+                vcs[message.result.id] = "failure";
             }
-        }
-        else if (message.status == 'complete') {
-            var lineNums = decode(message.result)
-            var lines = mergeVCsAndLineNums(vcs, lineNums.vcs)
+        } else if (message.status == "complete") {
+            var lineNums = decode(message.result);
+            var lines = mergeVCsAndLineNums(vcs, lineNums.vcs);
 
-            console.log(lines.overall)
-            ws.close()
-
+            ws.close();
         }
-    })
+    });
 }

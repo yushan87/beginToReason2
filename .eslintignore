@@ -1,3 +1,11 @@
 # ACE Editor Related Files
 tutor/static/javascript/lesson/editorUpdate.js
 tutor/static/javascript/lesson/mode-resolve.js
+
+# D3 Related Files
+data_analysis/static/javascript/d3graph/d3.v4.js
+data_analysis/static/javascript/d3graph/d3graph.js
+
+# Parson's Problem Related Files
+parsons/static/javascript/parsons/lis.js
+parsons/static/javascript/parsons/parsons.js

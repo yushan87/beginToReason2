@@ -87,7 +87,17 @@ function uploadFile(file, s3fields, s3url, callback) {
 function postPerAttemptData(sessionId, userId, attemptIsSuccessful, attemptCount, errorReason, solutionEntered, code, lessonIndex, lessonName, startTimestamp, endTimestamp) {
     return postRequest(API_ENDPOINT + SAVE_PER_ATTEMPT_DATA_API,
         {
-            sessionId, userId, attemptIsSuccessful, attemptCount, errorReason, solutionEntered, code, lessonIndex, lessonName, startTimestamp, endTimestamp
+            sessionId,
+            userId,
+            attemptIsSuccessful,
+            attemptCount,
+            errorReason,
+            solutionEntered,
+            code,
+            lessonIndex,
+            lessonName,
+            startTimestamp,
+            endTimestamp
         });
 }
 
