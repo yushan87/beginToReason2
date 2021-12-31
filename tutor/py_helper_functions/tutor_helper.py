@@ -222,8 +222,8 @@ async def send_to_verifier(code):
     @return: Tuple defined as (status string, lines dict, vcs dict, time taken)
     """
     async with websockets.connect(
-            'wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project', ping_interval=None) \
-            as ws:
+            'wss://resolve.cs.clemson.edu/teaching/Compiler?job=verify2&project=Teaching_Project', open_timeout=None,
+            close_timeout=None, ping_interval=None) as ws:
         start_time = time.time()
         await ws.send(encode(code))
         vcs = {}  # vc ID to 'success' or 'failure'
