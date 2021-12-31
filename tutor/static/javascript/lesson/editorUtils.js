@@ -465,6 +465,11 @@ $("#changeMode").click(function () {
         document.getElementById("changeMode").innerHTML = "<i class=\"fa fa-sun\" aria-hidden=\"true\"></i> Light";
     }
 
+    // Change theme for Parson's problem
+    if (isParsonsProblem) {
+        changeTheme();
+    }
+
     // Unlock editor for further user edits
     unlock();
 });
