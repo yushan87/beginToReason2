@@ -120,7 +120,7 @@ def class_view_educator(request, classID):
                 del request.session['error']
                 messages.error(request, error)
 
-            return render(request, "educator/assignments_educator.html",
+            return render(request, "educator/assignments.html",
                           {'class': Class.objects.get(id=classID), 'main_sets': MainSet.objects.filter(show=True),
                            'today': date.today().isoformat()})
         else:

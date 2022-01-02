@@ -3,17 +3,84 @@
 
 {% block css %}
     {% compress css %}
-        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/catalog.scss' %}" media="screen">
-        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/pages/profile.scss' %}" media="screen">
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/layout/sections.scss' %}" media="screen">
     {% endcompress %}
 {% endblock %}
 
 {% block main_content %}
-    <div class="jumbotron jumbotron-fluid py-5 mb-0">
-        <div class="container p-0">
-            <h1 class="font-weight-bold" id="jumbo-title">
-                    {{class.class_name}}
+    <!--- Custom Jumbotron -->
+    <div class="container-fluid jumbotron mb-4 py-5">
+        <div class="container">
+            <h1 class="font-weight-bold display-6 text-center mb-3">
+                {{ class.class_name }}
             </h1>
+        </div>
+    </div>
+
+    <!-- Current Assignments Section -->
+    <div class="container pb-5 mb-5">
+        <div class="">
+            <button type="button" class="position-fixed btn btn-danger btn-lg" id="btn-back-to-top">
+                <i class="fas fa-arrow-up"></i>
+            </button>
+        </div>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {% else %}
+                <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {% endif %}
+                    <strong>Message:</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="page-section-heading my-2">
+            <div class="d-flex justify-content-between my-1">
+                <h3>Current Assignments</h3>
+                <button type="button" class="btn btn-primary btn-sm me-lg-5 me-3" data-bs-toggle="modal" data-bs-target="#newAssignmentModal">
+                    New assignment
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Assignment Modal -->
+    <div class="modal fade" id="newAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="newAssignmentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form method="POST" action="{% url 'educator:class-view' class.id %}">{% csrf_token %}
+                    <div class="modal-header bg-secondary text-dark-50 bg-opacity-25">
+                        <h5 class="modal-title" id="newClassModalLabel">New Assignment</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-floating mb-4">
+                            <select class="form-select" id="main-set" name="main_set" aria-label="Lesson Plan Select" required>
+                                <option value="" selected disabled>--</option>
+                                {% for main_set in main_sets %}
+                                <option value="{{ main_set.id }}">{{ main_set }}</option>
+                                {% endfor %}
+                            </select>
+                            <label for="main-set">Lesson Plan</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="date" class="form-control" id="start-date" name="start_date" value="{{ today }}">
+                            <label for="start-date">Start Date</label>
+                        </div>
+                        <div class="form-floating mb-4">
+                            <input type="date" class="form-control" id="end-date" name="end_date" min="{{ today }}" required>
+                            <label for="end-date">Due Date</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" aria-expanded="true">Create assignment</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -144,44 +211,6 @@
         </div>
     </div>
 
-    <div class="modal fade" id="newAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="newAssignmentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <form method="POST" action="{% url 'educator:class-view' class.id %}">{% csrf_token %}
-              <div class="modal-header">
-                <h5 class="modal-title" id="newAssignmentModalLabel">New assignment</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-                  <div class="form-group">
-                    <label for="main-set" class="col-form-label">Lesson Plan:</label>
-                    <select class="form-control" id="main-set" name="main_set" required>
-                        <option value="" selected disabled>--</option>
-                      {% for main_set in main_sets %}
-                      <option value="{{ main_set.id }}">{{ main_set }}</option>
-                      {% endfor %}
-                    </select>
-                  </div>
-                  <div class="form-group">
-                    <label for="start-date" class="col-form-label">Start date:</label>
-                    <input type="date" class="form-control" id="start-date" name="start_date" value="{{ today }}">
-                  </div>
-                  <div class="form-group">
-                    <label for="end-date" class="col-form-label">Due date:</label>
-                    <input type="date" class="form-control" id="end-date" name="end_date" min="{{ today }}"required>
-                  </div>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <input type="submit" value="Create assignment" class="btn select-btn">
-              </div>
-            </form>
-        </div>
-      </div>
-    </div>
-
     <div class="modal fade" id="editAssignmentModal" tabindex="-1" role="dialog" aria-labelledby="editAssignmentModalLabel" aria-hidden="true" style="transform: translate(0, 25%);">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -236,42 +265,10 @@
       </div>
     </div>
 
-    <script type="application/javascript">
-        $(document).ready(function () {
-            document.getElementById("top").style.display = "none";
-        });
+    <!-- Back To Top -->
+    <script src="{% static 'javascript/components/backToTop.js' %}"></script>
 
-        var mybutton = document.getElementById("top");
-        // When the user scrolls down 20px from the top of the document, show the button
-        window.onscroll = function() {scrollFunction()};
-        function scrollFunction() {
-            if (document.body.scrollTop > 250 || document.documentElement.scrollTop > 250) {
-                mybutton.style.display = "block";
-            } else {
-            mybutton.style.display = "none";
-            }
-        }
-
-        // When the user clicks on the button, scroll to the top of the document
-        function topFunction() {
-            document.body.scrollTop = 0;
-            document.documentElement.scrollTop = 0;
-        }
-
-        var acc = document.getElementsByClassName("accordion");
-        var i;
-
-        for (i = 0; i < acc.length; i++) {
-            acc[i].addEventListener("click", function() {
-                this.classList.toggle("active");
-                var panel = this.nextElementSibling;
-                if (panel.style.display === "block") {
-                    panel.style.display = "none";
-                } else {
-                    panel.style.display = "block";
-                }
-            });
-        }
-    </script>
+    <!-- Page Footer -->
+    {% include "core/partial/_footer.html" %}
 {% endblock %}
 
