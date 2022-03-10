@@ -200,7 +200,7 @@ class Lesson(models.Model):
     lesson_concept = models.ManyToManyField(Concept, blank=True)
     instruction = models.TextField(default='Please complete the Confirm assertion(s) and check correctness.')
     code = models.ForeignKey(Code, on_delete=models.CASCADE)
-    reference_set = models.ManyToManyField(Reference, blank=True)
+    reference_set = models.CharField(max_length=500, default='')
     reason = models.ForeignKey(Reasoning, on_delete=models.CASCADE, blank=True, null=True)
     correct_feedback = models.TextField(default='Proceeding to the next lesson.')
     feedback = models.ManyToManyField(Feedback, blank=True)
