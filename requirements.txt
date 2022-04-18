@@ -1,10 +1,10 @@
-Django==4.0.3
+Django==4.0.4
 django-ace==1.0.11
 django-compressor==3.1
 django-libsass==0.9
 social-auth-app-django==5.0.0
 django-crispy-forms==1.14.0
 django-mathfilters==1.0.0
-websockets==10.2
+websockets==10.3
 asgiref==3.5.0
 python-dotenv==0.20.0
