@@ -372,7 +372,6 @@ $("#checkCorrectness").click(function () {
         if(trivials.missing){
             document.getElementById("resultsHeader").innerHTML = "<h3>Try again</h3>";
             document.getElementById("resultDetails").innerHTML = "Consider using initial values of variables.";
-
         }
         else{
             document.getElementById("resultsHeader").innerHTML = "<h3>Syntax error</h3>";
@@ -389,8 +388,8 @@ $("#checkCorrectness").click(function () {
             allAnswers += "</br>";
         }
 
+        let currentAttemptAnswers = ''
         if (!is_parsons) {
-                let currentAttemptAnswers = ''
             for (var i = 0; i < trivials.confirms.length; i++) {
                 aceEditor.session.addGutterDecoration(trivials.confirms[i].lineNum-1, "ace_error");
                 document.getElementById("answersCard").removeAttribute("hidden")

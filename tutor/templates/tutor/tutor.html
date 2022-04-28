@@ -84,9 +84,7 @@
                         <div class="card bg-light mb-3">
                             <div class="card-body">
                                 <div class="" id="referenceMaterial">
-                                    {% for obj in referenceSet %}
-                                        <p> {{ obj | safe }} </p>
-                                    {% endfor %}
+                                    <p> {{ referenceSet | safe }} </p>
                                 </div>
                             </div>
                         </div>

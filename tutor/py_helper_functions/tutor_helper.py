@@ -113,8 +113,8 @@ def browser_response(current_lesson, current_assignment, current_user, submitted
                 headline = "Try Again!"
                 text = "Did you read the reference material?"
     else:
-        headline = "ALT!"
-        text = "[explanation about alt, directions to hit next lesson]"
+        headline = "Sublesson"
+        text = "Sorry, not correct. Click next and try this other lesson!"
 
     return {'resultsHeader': headline,
             'resultDetails': text,
