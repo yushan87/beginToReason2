@@ -79,7 +79,7 @@ class Class(models.Model):
         """
         record = date.max
         for assignment in self.get_current_assignments():
-            record = min(record, end_date)
+            record = min(record, assignment.end_date)
 
         if record == date.max:
             return None
