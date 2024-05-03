@@ -1,4 +1,4 @@
-Django==5.0.1
+Django==5.0.4
 django-ace==1.32.4
 django-compressor==4.4
 django-libsass==0.9
