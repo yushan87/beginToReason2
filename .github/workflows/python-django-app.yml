@@ -5,9 +5,9 @@ name: Lint & Test BeginToReason2
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   pylint:
